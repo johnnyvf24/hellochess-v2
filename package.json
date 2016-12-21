@@ -27,6 +27,8 @@
   },
   "dependencies": {
     "babel-preset-stage-1": "^6.1.18",
+    "chess.js": "^0.10.2",
+    "chessboardjs": "0.0.1",
     "lodash": "^3.10.1",
     "react": "^0.14.3",
     "react-dom": "^0.14.3",

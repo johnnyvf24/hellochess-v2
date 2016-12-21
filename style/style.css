@@ -1,0 +1,84 @@
+body {
+    background-image: url('http://img01.deviantart.net/65b1/i/2005/143/8/a/wood_texture_by_reaperofblood.jpg');
+}
+
+#search-input-group {
+    padding: 20px;
+}
+
+#chatbox-wrapper {
+    position: absolute;
+    top: 74px;
+    bottom: 0;
+}
+
+#left-chatbox {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    overflow: hidden;
+    background-color: grey;
+}
+
+
+.chatbox-top-stats {
+    height: 65px;
+    padding-right: 20px;
+    color: white;
+}
+
+.chatbox-message-list {
+    font-size: 14px;
+    position: absolute;
+    top: 65px;
+    right: 0px;
+    left: 0px;
+    bottom: 74px;
+    overflow-y: hidden;
+}
+
+.chatbox-message-list .list-group-item {
+    padding: 5px 4px;
+    min-height: 50px;
+}
+
+.chatbox-message-list .float-xs-left {
+    width: 55px;
+    text-align: center;
+}
+
+.chatbox-input-send {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    height: 60px;
+    padding: 10px;
+}
+
+#profile-pic {
+    padding-top: 10px;
+    max-height: 75px;
+}
+
+.chat_list .list-group-item-text {
+    word-wrap: break-word;
+    display: flex;
+    overflow: auto;
+}
+
+#board {
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+#right-bottom-tab-list{
+
+}
+
+#right-bottom-tab-list .tab-content {
+    height: 100%;
+    background-color: grey;
+}
