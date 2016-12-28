@@ -1,9 +1,9 @@
 {
-  "name": "redux-simple-starter",
+  "name": "Hello_Chess",
   "version": "1.0.0",
-  "description": "Simple starter package for Redux with React and Babel support",
-  "main": "index.js",
-  "repository": "git@github.com:StephenGrider/ReduxSimpleStarter.git",
+  "description": "Live Chess Server",
+  "main": "public/index.jsx",
+  "repository": "",
   "scripts": {
     "start": "node ./node_modules/webpack-dev-server/bin/webpack-dev-server.js",
     "test": "mocha --compilers js:babel-core/register --require ./test/test_helper.js --recursive ./test",
@@ -23,12 +23,13 @@
     "mocha": "^2.4.5",
     "react-addons-test-utils": "^0.14.7",
     "webpack": "^1.12.9",
-    "webpack-dev-server": "^1.14.0"
+    "webpack-dev-server": "^1.16.2"
   },
   "dependencies": {
     "babel-preset-stage-1": "^6.1.18",
     "chess.js": "^0.10.2",
     "chessboardjs": "0.0.1",
+    "express": "^4.14.0",
     "lodash": "^3.10.1",
     "react": "^0.14.3",
     "react-dom": "^0.14.3",
