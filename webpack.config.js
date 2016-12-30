@@ -1,11 +1,12 @@
+const path = require('path');
+
 module.exports = {
     entry: [
         './public/index.jsx'
     ],
     output: {
-        path: __dirname,
-        publicPath: './public',
-        filename: './public/bundle.js'
+        path: path.join(__dirname, 'public'),
+        filename: './bundle.js'
     },
     module: {
         loaders: [{
@@ -22,6 +23,7 @@ module.exports = {
     },
     devServer: {
         historyApiFallback: true,
-        contentBase: './public/'
+        contentBase: './public',
+        inline: true
     }
 };

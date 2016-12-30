@@ -11,16 +11,17 @@ var {TwoGame} = require('./models/two_game');
 var {User} = require('./models/user');
 var {authenticate} = require('./middleware/authenticate');
 
-io.on('connection', (socket) => {
-    console.log('User connected');
-    socket.on('new-message', message => {
-        console.log(message);
-        io.emit('receive-message', message);
-    });
+//set port variable
+app.set('port', process.env.PORT || 8080);
+
+//listen to the required port
+http.listen(app.get('port'), function() {
+  console.log(`Express server listening on port ${app.get('port')}`);
 });
 
-app.set('port', process.env.PORT || 8080);
+//use middleware
 app.use(bodyParser.json());
+//serve up static public folder
 app.use(express.static(path.join(__dirname, '../public')));
 
 app.get('/api/users/me', authenticate, (req, res) => {
@@ -39,7 +40,6 @@ app.post('/api/users', (req, res) => {
         res.status(400).send(e);
     });
 });
-
 
 app.post('/api/users/login', (req, res) => {
     var body = _.pick(req.body, ['username', 'email', 'password']);
@@ -66,6 +66,15 @@ app.post('/api/twogames', (req, res) => {
     console.log(req.body);
 });
 
-app.listen(app.get('port'), function() {
-  console.log(`Express server listening on port ${app.get('port')}`);
+io.on('connection', (socket) => {
+    console.log('User connected');
+    socket.on('action', (action) => {
+        if (action.type === 'server/hello') {
+            console.log('Got hello data!', action.data);
+            socket.emit('action', {
+                type: 'message',
+                data: 'good day!'
+            });
+        }
+    });
 });
