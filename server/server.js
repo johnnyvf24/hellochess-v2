@@ -40,6 +40,19 @@ app.post('/api/users', (req, res) => {
     });
 });
 
+
+app.post('/api/users/login', (req, res) => {
+    var body = _.pick(req.body, ['username', 'email', 'password']);
+
+    User.findByCredentials(body.email, body.password).then(user=>{
+        return user.generateAuthToken().then(token =>{
+            res.header('x-auth', token).send(user);
+        });
+    }).catch( (e) => {
+        res.status(400).send(e);
+    });
+});
+
 //Get all two player games (Dev only)
 app.get('/api/twogames', (req, res) => {
     TwoGame.find({}).then((games) => {
