@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "babel-preset-stage-1": "^6.1.18",
+    "bcryptjs": "^2.4.0",
     "body-parser": "^1.15.2",
     "chess.js": "^0.10.2",
     "chessboardjs": "0.0.1",

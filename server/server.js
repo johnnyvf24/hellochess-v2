@@ -23,8 +23,6 @@ app.set('port', process.env.PORT || 8080);
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, '../public')));
 
-
-
 app.get('/api/users/me', authenticate, (req, res) => {
     res.send(req.user);
 });
