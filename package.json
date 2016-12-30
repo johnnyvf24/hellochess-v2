@@ -9,7 +9,7 @@
     "test": "mocha --compilers js:babel-core/register --require ./test/test_helper.js --recursive ./test",
     "test:watch": "npm run test -- --watch"
   },
-  "author": "",
+  "author": "John V. Flickinger",
   "license": "ISC",
   "devDependencies": {
     "babel-core": "^6.2.1",
@@ -27,14 +27,23 @@
   },
   "dependencies": {
     "babel-preset-stage-1": "^6.1.18",
+    "body-parser": "^1.15.2",
     "chess.js": "^0.10.2",
     "chessboardjs": "0.0.1",
+    "crypto-js": "^3.1.9-1",
     "express": "^4.14.0",
+    "http": "0.0.0",
+    "jsonwebtoken": "^7.2.1",
     "lodash": "^3.10.1",
+    "mongoose": "^4.7.5",
+    "morgan": "^1.7.0",
+    "path": "^0.12.7",
     "react": "^0.14.3",
     "react-dom": "^0.14.3",
     "react-redux": "^4.0.0",
     "react-router": "^2.0.1",
-    "redux": "^3.0.4"
+    "redux": "^3.0.4",
+    "socket.io": "^1.7.2",
+    "validator": "^6.2.0"
   }
 }
