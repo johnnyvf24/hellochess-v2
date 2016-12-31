@@ -15,7 +15,6 @@ class Live extends Component {
                     <div className="col-xs-4"></div>
                     <div className="col-xs-4">
                         <SearchBar />
-
                     </div>
                     <div className="col-xs-4"></div>
                 </div>

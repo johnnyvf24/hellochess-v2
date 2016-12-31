@@ -12,7 +12,7 @@ var {User} = require('./models/user');
 var {authenticate} = require('./middleware/authenticate');
 
 //set port variable
-app.set('port', process.env.PORT || 8080);
+app.set('port', process.env.PORT || 3000);
 
 //listen to the required port
 http.listen(app.get('port'), function() {
@@ -23,6 +23,15 @@ http.listen(app.get('port'), function() {
 app.use(bodyParser.json());
 //serve up static public folder
 app.use(express.static(path.join(__dirname, '../public')));
+
+app.get('/', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../public/index.html'));
+});
+
+app.get('/live', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../public/index.html'));
+});
+
 
 app.get('/api/users/me', authenticate, (req, res) => {
     res.send(req.user);
@@ -69,11 +78,10 @@ app.post('/api/twogames', (req, res) => {
 io.on('connection', (socket) => {
     console.log('User connected');
     socket.on('action', (action) => {
-        if (action.type === 'server/hello') {
-            console.log('Got hello data!', action.data);
+        if (action.type === 'server/newmessage') {
             socket.emit('action', {
-                type: 'message',
-                data: 'good day!'
+                type: 'newmessage',
+                payload: action.payload
             });
         }
     });
