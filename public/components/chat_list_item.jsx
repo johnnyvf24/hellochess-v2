@@ -1,6 +1,7 @@
 import React from 'react';
 
-export default () => {
+export default (props) => {
+    var text = props.text;
     return (
         <li className="list-group-item">
             <div className="float-xs-left">
@@ -9,7 +10,7 @@ export default () => {
             <div>
                 <small className="list-group-item-heading text-muted text-primary">User1</small>
                 <p className="list-group-item-text">
-                    Hi! this message is FOR you.
+                    {text}
                 </p>
             </div>
         </li>

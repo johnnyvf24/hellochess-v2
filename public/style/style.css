@@ -36,7 +36,7 @@ body {
     right: 0px;
     left: 0px;
     bottom: 74px;
-    overflow-y: hidden;
+    overflow-y: scroll;
 }
 
 .chatbox-message-list .list-group-item {

@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import sendMessage from '../actions/index';
 
 //The input where the users can send messages to a chat
 class MessageSend extends Component {
@@ -21,7 +20,8 @@ class MessageSend extends Component {
     }
 
     onMessageSend(event) {
-        this.props.dispatch({type:'server/newmessage', payload:this.state.msg});
+        this.props.dispatch({type:'server/new-message', payload:this.state.msg});
+        this.setState({msg: ''});
         event.preventDefault();
     }
 
@@ -31,7 +31,7 @@ class MessageSend extends Component {
                 <div className="input-group">
                     <input
                         type="text"
-                        value={this.state.value}
+                        value={this.state.msg}
                         onChange={this.onInputChange}
                         className="form-control"
                         placeholder="Write a Message" />
@@ -52,4 +52,4 @@ function mapStoreToProps(store) {
     };
 }
 
-export default connect(mapStoreToProps, sendMessage)(MessageSend);
+export default connect(mapStoreToProps)(MessageSend);

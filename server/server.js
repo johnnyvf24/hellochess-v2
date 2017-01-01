@@ -76,11 +76,10 @@ app.post('/api/twogames', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-    console.log('User connected');
     socket.on('action', (action) => {
-        if (action.type === 'server/newmessage') {
-            socket.emit('action', {
-                type: 'newmessage',
+        if (action.type === 'server/new-message') {
+            io.emit('action', {
+                type: 'receive-message',
                 payload: action.payload
             });
         }
