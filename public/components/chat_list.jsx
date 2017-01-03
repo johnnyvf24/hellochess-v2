@@ -19,7 +19,9 @@ class ChatList extends Component {
             <ChatListItem
                 key={index}
                 text={message.msg}
-                user={message.user}/>
+                user={message.user}
+                picture={message.picture}
+            />
         );
     }
 

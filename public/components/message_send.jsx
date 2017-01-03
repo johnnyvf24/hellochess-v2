@@ -16,7 +16,7 @@ class MessageSend extends Component {
     }
 
     onInputChange(event) {
-        this.setState({msg: event.target.value})
+        this.setState({msg: event.target.value});
     }
 
     onMessageSend(event) {
@@ -24,8 +24,9 @@ class MessageSend extends Component {
         this.props.dispatch({
             type:'server/new-message',
             payload: {
-                user: this.props.profile.name,
-                msg: msg
+                user: this.props.profile.user_metadata.username,
+                msg: msg,
+                picture: this.props.profile.picture
             }
         });
         this.setState({msg: ''});

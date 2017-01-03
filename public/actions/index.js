@@ -1,13 +1,18 @@
-import {CALL_API} from '../middleware/api'
-
-import { browserHistory } from 'react-router'
+import axios from 'axios';
+import {browserHistory} from 'react-router'
 import Auth0Lock from 'auth0-lock';
 
+import {CALL_API} from '../middleware/api'
+
+const CLIENT_ID = 'mosofgFAPwKVNHrSkDEnltRUcDKEBJ13';
+const DOMAIN = 'johnnyvf24.auth0.com';
+
+const AUTH_URL = `https://${DOMAIN}/api/v2/`
 
 export const LOGIN_SUCCESS = 'LOCK_SUCCESS'
 export const LOGIN_ERROR = 'LOCK_ERROR'
 
-const lock = new Auth0Lock('mosofgFAPwKVNHrSkDEnltRUcDKEBJ13', 'johnnyvf24.auth0.com', {
+const lock = new Auth0Lock(CLIENT_ID, DOMAIN, {
     auth: {
         redirectUrl: 'http://localhost:8080/login',
         responseType: 'token'
@@ -40,7 +45,6 @@ function loginError(error) {
         error
     }
 }
-
 
 export function login() {
     // display the lock widget
@@ -83,5 +87,27 @@ export function doAuthentication() {
                 return dispatch(loginSuccess(profile))
             });
         });
+    }
+}
+
+export const PATCH_USERNAME = 'PATCH_USERNAME'
+
+export function saveUsername(userId, username) {
+    const config = {
+        headers: {
+            "Authorization": `bearer ${localStorage.getItem('id_token')}`,
+            "Content-Type": "application/json"
+        }
+    }
+    const URL = `${AUTH_URL}users/${userId}`;
+    const request = axios.patch(URL, {
+        user_metadata: {
+            username: username
+        }
+    }, config);
+
+    return {
+        type: PATCH_USERNAME,
+        payload: request
     }
 }

@@ -93,3 +93,12 @@ body {
     height: 100%;
     background-color: grey;
 }
+
+.msg-pic {
+    max-width: 40px;
+    max-height: 40px;
+}
+
+.btn-save-username {
+    margin-top: 10px;
+}

@@ -1,24 +1,71 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import AuthService from '../utils/AuthService';
+import { browserHistory } from 'react-router';
+import {ModalContainer, ModalDialog} from 'react-modal-dialog';
+
 import SearchBar from './search_bar';
 import TwoBoard from './two_board';
 import ChatViewer from './chat_viewer';
 import NewGame from './new_game';
 import AvailableRooms from './available_rooms';
-import {logout} from '../actions'
-import { browserHistory } from 'react-router'
+import { logout, saveUsername } from '../actions'
 
 class Live extends Component {
 
     constructor(props) {
-        super(props)
+        super(props);
+
+        this.state = {
+            usernameInput: '',
+            errorMessage: '',
+        }
+
+        this.onInputChange = this.onInputChange.bind(this);
+        this.saveUsername = this.saveUsername.bind(this);
     }
 
     logout() {
         this.props.logout();
         browserHistory.replace('/login')
+    }
+
+    saveUsername(event) {
+        const username = this.state.usernameInput;
+        if(username.length > 3) {
+            this.props.saveUsername(this.props.profile.user_id, username);
+        }
+        event.preventDefault();
+    }
+
+    onInputChange(event) {
+        this.setState({usernameInput: event.target.value})
+    }
+
+    renderInputUsername() {
+        if(this.props.profile.user_metadata) {
+            return;
+        }
+
+        return (
+            <ModalContainer >
+              <ModalDialog>
+                  <form onSubmit={this.saveUsername} >
+                      <h2>Enter a username</h2>
+                      <input
+                          value={this.state.usernameInput}
+                          onChange={this.onInputChange}
+                          className="form-control"
+                          placeholder="Type here..."/>
+                      <button
+                          type="submit"
+                          className="btn btn-warning btn-save-username float-xs-right">
+                          Save
+                     </button>
+                 </form>
+              </ModalDialog>
+            </ModalContainer>
+        );
     }
 
     render() {
@@ -30,7 +77,9 @@ class Live extends Component {
         return (
             <div>
                 <div className="row">
-                    <div className="col-xs-4"></div>
+                    <div className="col-xs-4">
+                        { this.renderInputUsername() }
+                    </div>
                     <div className="col-xs-4">
                         <SearchBar/>
                     </div>
@@ -69,4 +118,4 @@ function mapStateToProps(state) {
     return {profile: state.auth.profile}
 }
 
-export default connect (mapStateToProps, {logout}) (Live);
+export default connect (mapStateToProps, {logout, saveUsername}) (Live);

@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "auth0-lock": "^10.7.3",
+    "axios": "^0.15.3",
     "babel-preset-stage-1": "^6.1.18",
     "bcryptjs": "^2.4.0",
     "body-parser": "^1.15.2",
@@ -45,6 +46,8 @@
     "path": "^0.12.7",
     "react": "^0.14.3",
     "react-dom": "^0.14.3",
+    "react-modal-dialog": "^4.0.3",
+    "react-popout": "^0.6.0",
     "react-redux": "^4.0.0",
     "react-router": "^2.8.1",
     "redux": "^3.0.4",
