@@ -20,7 +20,14 @@ class MessageSend extends Component {
     }
 
     onMessageSend(event) {
-        this.props.dispatch({type:'server/new-message', payload:this.state.msg});
+        const msg = this.state.msg;
+        this.props.dispatch({
+            type:'server/new-message',
+            payload: {
+                user: this.props.profile.name,
+                msg: msg
+            }
+        });
         this.setState({msg: ''});
         event.preventDefault();
     }
@@ -48,7 +55,8 @@ class MessageSend extends Component {
 
 function mapStoreToProps(store) {
     return {
-        socket: store.socket
+        socket: store.socket,
+        profile: store.auth.profile
     };
 }
 

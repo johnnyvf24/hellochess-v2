@@ -2,38 +2,48 @@ import {
     isTokenExpired
 } from '../utils/jwtHelper';
 
-import {
-    LOCK_SUCCESS,
-    LOGOUT_SUCCESS
-} from '../index';
 
+import * as ActionTypes from '../actions'
+
+function getProfile() {
+  return JSON.parse(localStorage.getItem('profile'));
+}
+
+
+
+//SETUP initial app state
 let authenticated = false;
 const token = localStorage.getItem('id_token');
 if (token && !isTokenExpired(token)) {
     authenticated = true;
 }
-
 const INITIAL_STATE = {
-    isFetching: false,
+    profile: getProfile(),
     isAuthenticated: authenticated
 }
 
 //The auth reducer
 function auth(state = INITIAL_STATE, action) {
-    switch (action.type) {
-        case LOCK_SUCCESS:
-            return Object.assign({}, state, {
-                isFetching: false,
-                isAuthenticated: true,
-                errorMessage: ''
-            })
-        case LOGOUT_SUCCESS:
-            return Object.assign({}, state, {
-                isFetching: true,
-                isAuthenticated: false
-            })
-        default:
-            return state
+  switch (action.type) {
+    case ActionTypes.LOGIN_SUCCESS:
+      return Object.assign({}, state, {
+        isAuthenticated: true,
+        profile: action.profile,
+        error: ''
+      })
+    case ActionTypes.LOGIN_ERROR:
+      return Object.assign({}, state, {
+        isAuthenticated: false,
+        profile: null,
+        error: action.error
+      })
+    case ActionTypes.LOGOUT_SUCCESS:
+      return Object.assign({}, state, {
+        isAuthenticated: false,
+        profile: null
+      })
+    default:
+      return state
     }
 }
 

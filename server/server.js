@@ -32,36 +32,6 @@ app.get('/live', (req, res) => {
     res.sendFile(path.resolve(__dirname, '../public/index.html'));
 });
 
-
-app.get('/api/users/me', authenticate, (req, res) => {
-    res.send(req.user);
-});
-
-app.post('/api/users', (req, res) => {
-    var body = _.pick(req.body, ['username','email', 'password']);
-    var user = new User(body);
-
-    user.save().then(() => {
-        return user.generateAuthToken();
-    }).then(token => {
-        res.header('x-auth', token).send(user);
-    }).catch((e) => {
-        res.status(400).send(e);
-    });
-});
-
-app.post('/api/users/login', (req, res) => {
-    var body = _.pick(req.body, ['username', 'email', 'password']);
-
-    User.findByCredentials(body.email, body.password).then(user=>{
-        return user.generateAuthToken().then(token =>{
-            res.header('x-auth', token).send(user);
-        });
-    }).catch( (e) => {
-        res.status(400).send(e);
-    });
-});
-
 //Get all two player games (Dev only)
 app.get('/api/twogames', (req, res) => {
     TwoGame.find({}).then((games) => {

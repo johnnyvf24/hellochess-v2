@@ -14,10 +14,6 @@ import routes from './routes';
 let createStoreWithMiddleware = applyMiddleware(ReduxPromise, thunkMiddleware, api, socketIoMiddleware)(createStore);
 let store = createStoreWithMiddleware(reducers);
 
-store.subscribe(() => {
-    console.log('new client state', store.getState());
-});
-
 ReactDOM.render(
     <Provider store={store}>
     <Router history={browserHistory} routes={routes}/>

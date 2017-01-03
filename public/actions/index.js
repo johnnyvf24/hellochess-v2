@@ -1,15 +1,25 @@
-import {
-    CALL_API
-} from '../middleware/api'
+import {CALL_API} from '../middleware/api'
 
+import { browserHistory } from 'react-router'
 import Auth0Lock from 'auth0-lock';
-// There are two possible states for our login
-// process and we need actions for each of them.
-//
-// We also need one to show the Lock widget.
-export const SHOW_LOCK = 'SHOW_LOCK'
-export const LOCK_SUCCESS = 'LOCK_SUCCESS'
-export const LOCK_ERROR = 'LOCK_ERROR'
+
+
+export const LOGIN_SUCCESS = 'LOCK_SUCCESS'
+export const LOGIN_ERROR = 'LOCK_ERROR'
+
+const lock = new Auth0Lock('mosofgFAPwKVNHrSkDEnltRUcDKEBJ13', 'johnnyvf24.auth0.com', {
+    auth: {
+        redirectUrl: 'http://localhost:8080/login',
+        responseType: 'token'
+    },
+    theme: {
+        logo: 'https://www.hellochess.com/img/alpha_banner.png'
+    },
+    languageDictionary: {
+        emailInputPlaceholder: "your email",
+        title: "Log in"
+    },
+});
 
 function showLock() {
     return {
@@ -17,68 +27,61 @@ function showLock() {
     }
 }
 
-function lockSuccess(profile, token) {
+function loginSuccess(profile) {
     return {
-        type: LOCK_SUCCESS,
-        profile,
-        token
+        type: LOGIN_SUCCESS,
+        profile
     }
 }
 
-function lockError(err) {
+function loginError(error) {
     return {
-        type: LOCK_ERROR,
-        err
+        type: LOGIN_ERROR,
+        error
     }
 }
 
-// Opens the Lock widget and
-// dispatches actions along the way
+
 export function login() {
-    const lock = new Auth0Lock('mosofgFAPwKVNHrSkDEnltRUcDKEBJ13', 'johnnyvf24.auth0.com');
+    // display the lock widget
     return dispatch => {
-        lock.show((err, profile, token) => {
-            if (err) {
-                dispatch(lockError(err))
-                return
-            }
-            localStorage.setItem('profile', JSON.stringify(profile))
-            localStorage.setItem('id_token', token)
-            dispatch(lockSuccess(profile, token))
-        })
+        lock.show();
     }
 }
 
-// Three possible states for our logout process as well.
-// Since we are using JWTs, we just need to remove the token
-// from localStorage. These actions are more useful if we
-// were calling the API to log the user out
-export const LOGOUT_REQUEST = 'LOGOUT_REQUEST'
 export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS'
-export const LOGOUT_FAILURE = 'LOGOUT_FAILURE'
 
-function requestLogout() {
+function logoutSuccess(profile) {
     return {
-        type: LOGOUT_REQUEST,
-        isFetching: true,
-        isAuthenticated: true
+        type: LOGOUT_SUCCESS
     }
 }
 
-function receiveLogout() {
-    return {
-        type: LOGOUT_SUCCESS,
-        isFetching: false,
-        isAuthenticated: false
-    }
-}
-
-
-// Logs the user out
-export function logoutUser() {
+export function logout() {
     return dispatch => {
-        dispatch(requestLogout())
-        localStorage.removeItem('id_token')
-        dispatch(receiveLogout())
+        localStorage.removeItem('id_token');
+        localStorage.removeItem('profile');
+        return dispatch(logoutSuccess());
+    }
+}
+
+// Listen to authenticated event and get the profile of the user
+export function doAuthentication() {
+
+    return dispatch => {
+        lock.on("authenticated", function(authResult) {
+            lock.getProfile(authResult.idToken, function(error, profile) {
+
+                if (error) {
+                    // handle error
+                    return dispatch(loginError(error))
+                }
+
+                localStorage.setItem('profile', JSON.stringify(profile))
+                localStorage.setItem('id_token', authResult.idToken)
+                browserHistory.replace('/live')
+                return dispatch(loginSuccess(profile))
+            });
+        });
     }
 }

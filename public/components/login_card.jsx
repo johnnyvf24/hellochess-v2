@@ -1,10 +1,13 @@
 import React, { Component, PropTypes as T } from 'react';
 import { connect, bindActionCreators } from 'react-redux';
-import login from '../actions/index'
+import { login, doAuthentication } from '../actions/index'
 
 class LoginCard extends Component {
     constructor(props) {
         super(props);
+
+        this.onClick = this.onClick.bind(this);
+        this.props.doAuthentication();
     }
 
     onClick(event) {
@@ -13,7 +16,6 @@ class LoginCard extends Component {
 
     render() {
         const { errorMessage } = this.props;
-        console.log(this.props);
         return (
             <div className="row">
                 <div className="hidden-sm-down col-md-4 col-lg-4">
@@ -23,7 +25,7 @@ class LoginCard extends Component {
                 </div>
                 <div className="col-xs-12 col-md-4 col-lg-4">
                     <div className="card card-container landing-card">
-                        <button className="btn btn-warning btn-block btn-signin" onClick = {event => this.onClick(event)} type="submit">Make an account!</button>
+                        <button className="btn btn-warning btn-block btn-signin" onClick = {this.onClick} type="submit">Make an account!</button>
                     </div>
 
 
@@ -50,4 +52,4 @@ LoginCard.T = {
   errorMessage: T.string
 }
 
-export default LoginCard
+export default connect (null, {doAuthentication, login}) (LoginCard);

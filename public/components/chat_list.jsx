@@ -18,7 +18,8 @@ class ChatList extends Component {
         return (
             <ChatListItem
                 key={index}
-                text={message} />
+                text={message.msg}
+                user={message.user}/>
         );
     }
 

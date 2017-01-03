@@ -1,4 +1,4 @@
-import React, {Component,  PropTypes as T } from 'react';
+import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import AuthService from '../utils/AuthService';
@@ -7,25 +7,26 @@ import TwoBoard from './two_board';
 import ChatViewer from './chat_viewer';
 import NewGame from './new_game';
 import AvailableRooms from './available_rooms';
+import {logout} from '../actions'
+import { browserHistory } from 'react-router'
 
 class Live extends Component {
 
-    constructor(props, context) {
-        super(props, context)
-    }
-
-    componentWillMount() {
-        // this.props.getProfileInfo();
+    constructor(props) {
+        super(props)
     }
 
     logout() {
-        // destroys the session data
-        this.props.auth.logout()
-        // redirects to login page
-        this.context.router.push('/login');
+        this.props.logout();
+        browserHistory.replace('/login')
     }
 
     render() {
+        if(!this.props.profile) {
+            return (
+                <div>Loading...</div>
+            )
+        }
         return (
             <div>
                 <div className="row">
@@ -36,7 +37,7 @@ class Live extends Component {
                     <div className="col-xs-4">
                         <div className="dropdown float-xs-right">
                             <a className="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img id="profile-pic" className="img-fluid rounded-circle" src="" alt="" />
+                                <img id="profile-pic" className="img-fluid rounded-circle" src={this.props.profile.picture} alt="" />
                             </a>
 
                             <div className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
@@ -64,5 +65,8 @@ class Live extends Component {
         )
     }
 }
+function mapStateToProps(state) {
+    return {profile: state.auth.profile}
+}
 
-export default Live;
+export default connect (mapStateToProps, {logout}) (Live);
