@@ -1,13 +1,17 @@
 import React from 'react';
-import {Route, IndexRoute} from 'react-router';
+import {Route, IndexRedirect} from 'react-router';
 
-import App from './components/app';
+import AuthService from './utils/AuthService'
+
+import App from './containers/app';
 import Login from './components/login';
 import Live from './components/live';
 
+
 export default (
     <Route path="/" component={App} >
-        <IndexRoute component={Login} />
+        <IndexRedirect to="/live" />
         <Route path="/live" component={Live} />
+        <Route path="/login" component={Login} />
     </Route>
 );

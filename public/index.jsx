@@ -4,16 +4,15 @@ import {Provider} from 'react-redux';
 import {createStore, applyMiddleware} from 'redux';
 import {Router, browserHistory} from 'react-router';
 import ReduxPromise from 'redux-promise';
-import createSocketIoMiddleware from 'redux-socket.io';
-import io from 'socket.io-client';
+import socketIoMiddleware from './middleware/socketio';
+import thunkMiddleware from 'redux-thunk'
+import api from './middleware/api'
 
 import reducers from './reducers';
 import routes from './routes';
 
-let socket = io('http://localhost:3000');
-let socketIoMiddleware = createSocketIoMiddleware(socket, "server/");
-
-let store = applyMiddleware(ReduxPromise, socketIoMiddleware)(createStore)(reducers);
+let createStoreWithMiddleware = applyMiddleware(ReduxPromise, thunkMiddleware, api, socketIoMiddleware)(createStore);
+let store = createStoreWithMiddleware(reducers);
 
 store.subscribe(() => {
     console.log('new client state', store.getState());

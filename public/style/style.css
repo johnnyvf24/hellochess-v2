@@ -2,6 +2,17 @@ body {
     background-image: url('http://img01.deviantart.net/65b1/i/2005/143/8/a/wood_texture_by_reaperofblood.jpg');
 }
 
+.landing-card {
+            background-color: #76bdd5;
+            padding: 60px;
+            float: center;
+        }
+
+.home-logo {
+    padding: 40px 0;
+}
+
+
 #search-input-group {
     padding: 20px;
 }
@@ -59,8 +70,8 @@ body {
 }
 
 #profile-pic {
-    padding-top: 10px;
-    max-height: 75px;
+    margin-top: 10px;
+    height: 60px;
 }
 
 .chat_list .list-group-item-text {
