@@ -12,6 +12,10 @@ export default class TwoBoard extends Component {
 
     componentDidMount() {
         this.board = new ChessBoard('board');
+
+        window.addEventListener('resize', (event) => {
+            this.board.resize();
+        });
     }
 
     render() {

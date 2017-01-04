@@ -5,7 +5,7 @@ import AuthService from './utils/AuthService'
 
 import App from './containers/app';
 import Login from './components/login';
-import Live from './components/live';
+import Live from './containers/live';
 
 
 export default (

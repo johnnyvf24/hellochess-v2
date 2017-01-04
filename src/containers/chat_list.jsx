@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import ChatListItem from './chat_list_item';
+import ChatListItem from '../components/chat_list_item';
 import { connect } from 'react-redux';
 
 class ChatList extends Component {

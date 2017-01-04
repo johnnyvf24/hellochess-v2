@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
-import MessageSend from './message_send';
-import ChatList from './chat_list';
+import MessageSend from '../containers/message_send';
+import ChatList from '../containers/chat_list';
 
 export default class ChatViewer extends Component {
     render() {

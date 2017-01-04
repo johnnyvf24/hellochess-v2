@@ -45,7 +45,9 @@ app.post('/api/twogames', (req, res) => {
     console.log(req.body);
 });
 
+let numConnectedUsers = 0;  //total users connected
 io.on('connection', (socket) => {
+    io.sockets.emit('num-users', ++numConnectedUsers);
     socket.on('action', (action) => {
         if (action.type === 'server/new-message') {
             io.emit('action', {

@@ -21,6 +21,10 @@ class MessageSend extends Component {
 
     onMessageSend(event) {
         const msg = this.state.msg;
+        if(msg.length < 1) {
+            event.preventDefault();
+            return;
+        }
         this.props.dispatch({
             type:'server/new-message',
             payload: {

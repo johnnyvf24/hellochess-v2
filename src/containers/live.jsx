@@ -4,11 +4,11 @@ import { bindActionCreators } from 'redux';
 import { browserHistory } from 'react-router';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 
-import SearchBar from './search_bar';
-import TwoBoard from './two_board';
-import ChatViewer from './chat_viewer';
-import NewGame from './new_game';
-import AvailableRooms from './available_rooms';
+import SearchBar from '../components/search_bar';
+import TwoBoard from '../components/two_board';
+import ChatViewer from '../components/chat_viewer';
+import NewGame from '../components/new_game';
+import AvailableRooms from '../components/available_rooms';
 import { logout, saveUsername } from '../actions'
 
 class Live extends Component {
