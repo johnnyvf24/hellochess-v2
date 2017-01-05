@@ -1,10 +1,10 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import { connect } from 'react-redux';
 import MessageSend from '../containers/message_send';
 import ChatList from '../containers/chat_list';
 
-export default class ChatViewer extends Component {
+class ChatViewer extends Component {
     render() {
-        const { dispatch, isAuthenticated, errorMessage } = this.props
         return (
             <div id="chatbox-wrapper" className="col-sm-6">
                 <div id="left-chatbox" className="card">
@@ -30,8 +30,10 @@ export default class ChatViewer extends Component {
     }
 }
 
-ChatViewer.PropTypes = {
-    dispatch: PropTypes.func.isRequired,
-    isAuthenticated: PropTypes.bool.isRequired,
-    errorMessage: PropTypes.string
+function mapStateToProps(state) {
+    return {
+
+    };
 }
+
+export default connect(mapStateToProps) (ChatViewer);

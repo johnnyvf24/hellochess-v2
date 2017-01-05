@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import ChatRoomList from '../containers/chat_room_list';
 
 function AvailableRooms(props) {
     return (
@@ -16,7 +17,7 @@ function AvailableRooms(props) {
                         <a className="nav-link" data-toggle="tab" href="#messages" role="tab" aria-controls="messages">Friends</a>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link" data-toggle="tab" href="#settings" role="tab" aria-controls="settings">Chat Rooms</a>
+                        <a className="nav-link" data-toggle="tab" href="#chat-room-list" role="tab" aria-controls="settings">Chat Rooms</a>
                     </li>
                 </ul>
 
@@ -24,7 +25,7 @@ function AvailableRooms(props) {
                     <div className="tab-pane active" id="home" role="tabpanel">stuff</div>
                     <div className="tab-pane" id="profile" role="tabpanel">stuff2</div>
                     <div className="tab-pane" id="messages" role="tabpanel">adsfasdf</div>
-                    <div className="tab-pane" id="settings" role="tabpanel">...</div>
+                    <ChatRoomList />
                 </div>
             </div>
         </div>

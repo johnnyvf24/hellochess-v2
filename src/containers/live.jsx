@@ -6,7 +6,7 @@ import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 
 import SearchBar from '../components/search_bar';
 import TwoBoard from '../components/two_board';
-import ChatViewer from '../components/chat_viewer';
+import ChatViewer from '../containers/chat_viewer';
 import NewGame from '../components/new_game';
 import AvailableRooms from '../components/available_rooms';
 import { logout, saveUsername } from '../actions'

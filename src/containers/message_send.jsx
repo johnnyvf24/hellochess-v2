@@ -60,7 +60,7 @@ class MessageSend extends Component {
 
 function mapStoreToProps(store) {
     return {
-        socket: store.socket,
+        messages: store.messages,
         profile: store.auth.profile
     };
 }

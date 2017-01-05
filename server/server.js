@@ -46,14 +46,31 @@ app.post('/api/twogames', (req, res) => {
 });
 
 let numConnectedUsers = 0;  //total users connected
+let chatRooms = [];    //all the chat rooms
 io.on('connection', (socket) => {
-    io.sockets.emit('num-users', ++numConnectedUsers);
+    io.emit('action', {
+        type: 'update-user-count',
+        payload: {
+            name:  'global',
+            count: ++numConnectedUsers
+        }
+    });
     socket.on('action', (action) => {
-        if (action.type === 'server/new-message') {
-            io.emit('action', {
-                type: 'receive-message',
-                payload: action.payload
-            });
+        switch(action.type) {
+            case 'server/new-message':
+                io.emit('action', {
+                    type: 'receive-message',
+                    payload: action.payload
+                });
+                break;
+            case 'server/join-chat':
+                break;
+            case 'server/new-chatroom':
+                socket.join(action.payload);
+                chatRooms.push(action.payload);
+                socket.broadcast.emit('new-chatroom');
+                console.log(chatRooms);
+                break;
         }
     });
 });

@@ -34,8 +34,8 @@ class ChatList extends Component {
     }
 }
 
-function mapStateToProps({socket}) {
-    return {messages: socket.messages};
+function mapStateToProps(state) {
+    return {messages: state.messages.data};
 }
 
 export default connect(mapStateToProps)(ChatList);
