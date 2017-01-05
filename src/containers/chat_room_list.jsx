@@ -1,9 +1,24 @@
 import React, {Component} from 'react';
+import { connect } from 'react-redux';
 import CreateChatRoom from '../containers/create_chat_room';
 
-export default class ChatRoomList extends Component {
+class ChatRoomList extends Component {
     constructor (props) {
         super(props)
+    }
+
+    componentWillMount() {
+        this.props.dispatch({
+            type: 'server/get-chatrooms'
+        })
+    }
+
+    renderChatRoomItems(item) {
+        return (
+            <li key={item.name} className="list-group-item">
+                {item.name}
+            </li>
+        );
     }
 
     render() {
@@ -14,9 +29,9 @@ export default class ChatRoomList extends Component {
                 role="tabpanel"
                 style={{padding: "0px"}}>
                 <ul className="list-group">
-                    <li className="list-group-item">
 
-                    </li>
+                    {this.props.chatRooms.map(this.renderChatRoomItems)}
+
                 </ul>
 
                 <CreateChatRoom />
@@ -24,3 +39,11 @@ export default class ChatRoomList extends Component {
         );
     }
 }
+
+function mapStateToProps(state) {
+    return {
+        chatRooms: state.chat
+    }
+}
+
+export default connect(mapStateToProps) (ChatRoomList)

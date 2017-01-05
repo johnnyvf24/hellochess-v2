@@ -47,6 +47,16 @@ app.post('/api/twogames', (req, res) => {
 
 let numConnectedUsers = 0;  //total users connected
 let chatRooms = [];    //all the chat rooms
+
+function chatRoomExists(name) {
+    for(let i = 0; i < chatRooms.length; i++) {
+        if(name == chatRooms[i].name) {
+            return true;
+        }
+    }
+    return false;
+}
+
 io.on('connection', (socket) => {
     io.emit('action', {
         type: 'update-user-count',
@@ -66,10 +76,27 @@ io.on('connection', (socket) => {
             case 'server/join-chat':
                 break;
             case 'server/new-chatroom':
-                socket.join(action.payload);
-                chatRooms.push(action.payload);
-                socket.broadcast.emit('new-chatroom');
-                console.log(chatRooms);
+                if(!chatRoomExists(action.payload.name)) {
+                    socket.join(action.payload);
+                    chatRooms.push(action.payload);
+                    io.emit('action', {
+                        type: 'new-chatroom',
+                        payload: chatRooms
+                    });
+                } else {
+                    io.emit('action', {
+                        type: 'error',
+                        payload: {
+                            error: `Chat room with name '${action.payload.name}' already exists`
+                        }
+                    });
+                }
+                break;
+            case 'server/get-chatrooms':
+                io.emit('action', {
+                    type: 'new-chatroom',
+                    payload: chatRooms
+                });
                 break;
         }
     });

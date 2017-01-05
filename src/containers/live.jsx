@@ -3,13 +3,15 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { browserHistory } from 'react-router';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
+import ReactTimeout from 'react-timeout';
+import Notifications from 'react-notification-system-redux';
 
 import SearchBar from '../components/search_bar';
 import TwoBoard from '../components/two_board';
 import ChatViewer from '../containers/chat_viewer';
 import NewGame from '../components/new_game';
 import AvailableRooms from '../components/available_rooms';
-import { logout, saveUsername } from '../actions'
+import { logout, saveUsername, clearError} from '../actions'
 
 class Live extends Component {
 
@@ -23,11 +25,38 @@ class Live extends Component {
 
         this.onInputChange = this.onInputChange.bind(this);
         this.saveUsername = this.saveUsername.bind(this);
+        this.saveUsername = this.saveUsername.bind(this);
+        this.renderError = this.renderError.bind(this);
     }
 
     logout() {
         this.props.logout();
         browserHistory.replace('/login')
+    }
+
+    onCloseError(event) {
+        console.log(this.props);
+    }
+
+    renderError() {
+        const error = this.props.error;
+
+        if(error.length > 0) {
+            const notificationOpts = {
+                // uid: 'once-please', // you can specify your own uid if required
+                title: 'Oops...',
+                message: error,
+                position: 'tc',
+                autoDismiss: 5
+            };
+
+            this.props.dispatch(
+                Notifications.error(notificationOpts)
+            );
+
+
+            this.props.clearError();
+        }
     }
 
     saveUsername(event) {
@@ -74,11 +103,33 @@ class Live extends Component {
                 <div>Loading...</div>
             )
         }
+
+        const {notifications} = this.props;
+
+        //Optional styling
+        const style = {
+          NotificationItem: { // Override the notification item
+            DefaultStyle: { // Applied to every notification, regardless of the notification level
+              margin: '10px 5px 2px 1px'
+            },
+
+            success: { // Applied only to the success notification item
+              color: 'red'
+            }
+          }
+        };
+
         return (
             <div>
+                <Notifications
+                    notifications={notifications}
+                    style={style}
+                />
+                { this.renderError() }
                 <div className="row">
+                    { this.renderInputUsername() }
                     <div className="col-xs-4">
-                        { this.renderInputUsername() }
+
                     </div>
                     <div className="col-xs-4">
                         <SearchBar/>
@@ -115,7 +166,13 @@ class Live extends Component {
     }
 }
 function mapStateToProps(state) {
-    return {profile: state.auth.profile}
+    return {
+        profile: state.auth.profile,
+        error: state.error.error,
+        notifications: state.notifications
+    }
 }
 
-export default connect (mapStateToProps, {logout, saveUsername}) (Live);
+Live = ReactTimeout(Live);
+
+export default connect (mapStateToProps, {logout, saveUsername, clearError}) (Live);

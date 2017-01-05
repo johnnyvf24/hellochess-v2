@@ -5,6 +5,7 @@ class App extends Component {
     static contextTypes = {
         router: T.object
     }
+
     render() {
         const {dispatch, isAuthenticated, errorMessage} = this.props;
         let children = null;
@@ -25,8 +26,7 @@ class App extends Component {
 
 App.T = {
     dispatch: T.func.isRequired,
-    isAuthenticated: T.bool.isRequired,
-    errorMessage: T.string
+    isAuthenticated: T.bool.isRequired
 }
 
 function mapStateToProps(state) {

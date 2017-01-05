@@ -111,3 +111,12 @@ export function saveUsername(userId, username) {
         payload: request
     }
 }
+
+
+export const CLEAR_ERROR = 'CLEAR_ERROR'
+
+export function clearError() {
+    return {
+        type: CLEAR_ERROR,
+    }
+}

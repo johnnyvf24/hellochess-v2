@@ -1,11 +1,13 @@
 
-const initialState = {
-    data: []
-}
+const initialState = []
 
-function chats(state = initialState, action) {
+function chat(state = initialState, action) {
     switch(action.type) {
-        case 'blah':
-            break;
+        case 'new-chatroom':
+            return action.payload;
+        default:
+            return state;
     }
 }
+
+export default chat
