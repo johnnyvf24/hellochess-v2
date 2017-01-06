@@ -120,21 +120,20 @@ class Live extends Component {
         };
 
         return (
-            <div>
+            <div id="main-panel">
                 <Notifications
                     notifications={notifications}
                     style={style}
                 />
                 { this.renderError() }
-                <div className="row">
-                    { this.renderInputUsername() }
-                    <div className="col-xs-4">
+                { this.renderInputUsername() }
 
-                    </div>
-                    <div className="col-xs-4">
+                <div className="row flex-items-xs-right">
+
+                    <div className="col-xs-10 col-md-6 col-lg-4">
                         <SearchBar/>
                     </div>
-                    <div className="col-xs-4">
+                    <div className="col-xs-2 col-md-4 col-lg-4">
                         <div className="dropdown float-xs-right">
                             <a className="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <img id="profile-pic" className="img-fluid rounded-circle" src={this.props.profile.picture} alt="" />
@@ -146,17 +145,19 @@ class Live extends Component {
                         </div>
                     </div>
                 </div>
-                <div className="row">
-                    <ChatViewer username=""/>
-                    <div className="col-sm-6"></div>
-                    <div className="col-sm-6 text-xs-center">
-                        <NewGame/>
-                        <div className="row">
-                            <div className="hidden-md-down col-lg-3"></div>
-                            <div className="col-lg-6">
+
+                <div id="wrapper" className="row">
+                    <div id="chatbox-wrapper" className="hidden-sm-down col-md-4 col-lg-6">
+                        <ChatViewer username=""/>
+                    </div>
+                    <div id="right-side-wrapper" className="col-sm-12 col-md-8 col-lg-6 text-xs-center">
+                        <div id="top-btns-wrapper" className="row flex-items-xs-center">
+                            <NewGame/>
+                        </div>
+                        <div id="board-wrapper" className="row flex-items-xs-center">
+                            <div className="col-xs-10 col-sm-10 col-md-8 col-lg-6">
                                 <TwoBoard/>
                             </div>
-                            <div className="hidden-md-down col-lg-3"></div>
                         </div>
                         <AvailableRooms/>
                     </div>

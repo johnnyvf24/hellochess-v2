@@ -39,7 +39,7 @@ class MessageSend extends Component {
 
     render() {
         return (
-            <form onSubmit={this.onMessageSend} className="chatbox-input-send">
+            <form onSubmit={this.onMessageSend} className="col-xs-12 chatbox-input-send">
                 <div className="input-group">
                     <input
                         type="text"

@@ -17,7 +17,7 @@ class App extends Component {
             })
         }
         return (
-            <div>
+            <div id="main-content">
                 {children}
             </div>
         );

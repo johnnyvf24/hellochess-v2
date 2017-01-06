@@ -58,13 +58,6 @@ function chatRoomExists(name) {
 }
 
 io.on('connection', (socket) => {
-    io.emit('action', {
-        type: 'update-user-count',
-        payload: {
-            name:  'global',
-            count: ++numConnectedUsers
-        }
-    });
     socket.on('action', (action) => {
         switch(action.type) {
             case 'server/new-message':
@@ -82,6 +75,10 @@ io.on('connection', (socket) => {
                     io.emit('action', {
                         type: 'new-chatroom',
                         payload: chatRooms
+                    });
+                    socket.emit('action', {
+                        type: 'joined-chatroom',
+                        payload: 2
                     });
                 } else {
                     io.emit('action', {

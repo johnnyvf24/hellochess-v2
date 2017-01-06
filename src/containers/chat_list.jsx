@@ -10,8 +10,8 @@ class ChatList extends Component {
     }
 
     componentDidUpdate() {
-        const objDiv = document.getElementById('message-list');
-        objDiv.scrollTop = objDiv.scrollHeight;
+        const msgList = this.refs.msgList;
+        msgList.scrollTop = msgList.scrollHeight;
     }
 
     renderChatListItem(message, index) {
@@ -27,7 +27,7 @@ class ChatList extends Component {
 
     render() {
         return (
-            <ul id="message-list" className="list-group chatbox-message-list">
+            <ul ref="msgList" className="list-group chatbox-message-list">
                 {this.props.messages.map(this.renderChatListItem)}
             </ul>
         );

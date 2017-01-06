@@ -3,9 +3,8 @@ import ChatRoomList from '../containers/chat_room_list';
 
 function AvailableRooms(props) {
     return (
-        <div id="right-bottom-tab-list" className="row">
-            <div className="hidden-md-down col-lg-1"></div>
-            <div className="col-sm-12 col-lg-10">
+        <div id="right-bottom-tab-list" className="row flex-items-xs-center">
+            <div id="tab-list-card" className="col-xs-11 card">
                 <ul className="nav nav-tabs" id="myTab" role="tablist">
                     <li className="nav-item">
                         <a className="nav-link active" data-toggle="tab" href="#home" role="tab" aria-controls="home">Four Player</a>
