@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import CreateChatRoom from '../containers/create_chat_room';
 
-class ChatRoomList extends Component {
+class ExistingChatRoomList extends Component {
     constructor (props) {
         super(props)
     }
@@ -42,8 +42,8 @@ class ChatRoomList extends Component {
 
 function mapStateToProps(state) {
     return {
-        chatRooms: state.chat
+        chatRooms: state.existingChatRooms
     }
 }
 
-export default connect(mapStateToProps) (ChatRoomList)
+export default connect(mapStateToProps) (ExistingChatRoomList)

@@ -30,6 +30,7 @@ class MessageSend extends Component {
             payload: {
                 user: this.props.profile.user_metadata.username,
                 msg: msg,
+                thread: this.props.activeThread.name,
                 picture: this.props.profile.picture
             }
         });
@@ -59,9 +60,11 @@ class MessageSend extends Component {
 }
 
 function mapStoreToProps(store) {
+    console.log(store);
     return {
         messages: store.messages,
-        profile: store.auth.profile
+        profile: store.auth.profile,
+        activeThread: store.activeThread
     };
 }
 

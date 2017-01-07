@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import ChatListItem from '../components/chat_list_item';
+import MessageListItem from '../components/message_list_item';
 import { connect } from 'react-redux';
 
-class ChatList extends Component {
+class MessageList extends Component {
 
     constructor(props) {
         super(props);
@@ -38,4 +38,4 @@ function mapStateToProps(state) {
     return {messages: state.messages.data};
 }
 
-export default connect(mapStateToProps)(ChatList);
+export default connect(mapStateToProps)(MessageList);

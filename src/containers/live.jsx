@@ -159,7 +159,9 @@ class Live extends Component {
                                 <TwoBoard/>
                             </div>
                         </div>
-                        <AvailableRooms/>
+                        <div id="right-bottom-wrapper" className="row flex-items-xs-center">
+                            <AvailableRooms/>
+                        </div>
                     </div>
                 </div>
             </div>

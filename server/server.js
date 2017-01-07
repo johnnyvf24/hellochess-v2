@@ -58,19 +58,34 @@ function chatRoomExists(name) {
 }
 
 io.on('connection', (socket) => {
+
+    console.log(chatRooms);
     socket.on('action', (action) => {
         switch(action.type) {
             case 'server/new-message':
-                io.emit('action', {
+                io.to(action.payload.thread).emit('action', {
                     type: 'receive-message',
                     payload: action.payload
                 });
                 break;
             case 'server/join-chat':
+                if(!chatRoomExists(action.payload.name)) {
+                    chatRooms.push(action.payload);
+                    io.emit('action', {
+                        type: 'new-chatroom',
+                        payload: chatRooms
+                    });
+                }
+                socket.join(action.payload.name);
+                socket.emit('action', {
+                    type: 'joined-chatroom',
+                    payload: action.payload
+                });
+
                 break;
             case 'server/new-chatroom':
                 if(!chatRoomExists(action.payload.name)) {
-                    socket.join(action.payload);
+                    socket.join(action.payload.name);
                     chatRooms.push(action.payload);
                     io.emit('action', {
                         type: 'new-chatroom',
@@ -78,7 +93,7 @@ io.on('connection', (socket) => {
                     });
                     socket.emit('action', {
                         type: 'joined-chatroom',
-                        payload: 2
+                        payload: action.payload
                     });
                 } else {
                     io.emit('action', {

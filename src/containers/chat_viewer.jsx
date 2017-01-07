@@ -1,32 +1,61 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import MessageSend from '../containers/message_send';
-import ChatList from '../containers/chat_list';
+import MessageList from '../containers/message_list';
+
 
 class ChatViewer extends Component {
 
-    componentDidMount() {
+    componentWillMount() {
         this.props.dispatch({
-            type:'server/join-chatroom',
+            type:'server/join-chat',
             payload: {
                 name: 'Global Chat'
             }
         });
     }
 
-    renderNavTab(chat) {
+    renderActiveNavTab(activeThread) {
         return (
             <li className="nav-item">
-                <a className="nav-link active" data-toggle="tab" href="#global-chat">{chat.name}</a>
+                <a className="nav-link active" data-toggle="tab" href={"#" +activeThread.name + "-chat"}>{activeThread.name}</a>
             </li>
         );
     }
 
-    renderTabContent(){
+    renderNavTab(chat) {
         return (
-            <div role="tabpanel" className="tab-pane active chat-tab-pane">
-                <div className="row chatbox-top-stats flex-items-xs-right">
-                    <span className="float-xs-right">
+            <li className="nav-item">
+                <a className="nav-link active" data-toggle="tab" href={"#" +chat.name + "-chat"}>{chat.name}</a>
+            </li>
+        );
+    }
+
+    renderActiveChatContent(activeThread) {
+        const chat = this.props.activeChat;
+
+        return (
+            <div id={activeThread.name + "-chat"} role="tabpanel" className="tab-pane chat-tab-pane">
+                <div className="row chatbox-top-stats-wrapper flex-items-xs-right">
+                    <span className="float-xs-right chatbox-top-stats">
+                        {activeThread.users} users
+                    </span>
+                </div>
+                <div className="row chatbox-message-list-wrapper">
+                    <MessageList />
+                </div>
+                <div className="row chatbox-input-send-wrapper">
+                    <MessageSend />
+                </div>
+            </div>
+        );
+    }
+
+    renderTabContent(chat){
+        return (
+            <div id={chat.name + "-chat"} role="tabpanel" className="tab-pane chat-tab-pane">
+                <div className="row chatbox-top-stats-wrapper flex-items-xs-right">
+                    <span className="float-xs-right chatbox-top-stats">
                         1000 users
                     </span>
                 </div>
@@ -41,15 +70,21 @@ class ChatViewer extends Component {
     }
 
     render() {
-        console.log(this.props.openChats);
+        const {activeThread} = this.props;
+
+        if(!activeThread) {
+            return <div>Loading...</div>;
+        }
+
         return (
             <div id="left-chatbox">
 
                 <ul className="nav nav-tabs">
-                    {this.props.openChats.map(this.renderNavTab)}
+                    {this.renderActiveNavTab(activeThread)}
+
                 </ul>
                 <div id="chat-tab-content" className="tab-content">
-                    {this.props.openChats.map(this.renderTabContent)}
+                    {this.renderActiveChatContent(activeThread)}
                 </div>
 
             </div>
@@ -58,8 +93,10 @@ class ChatViewer extends Component {
 }
 
 function mapStateToProps(state) {
+    console.log(state);
     return {
-        openChats: state.openChats
+        activeThread: state.activeThread,
+        threads: state.threads
     };
 }
 

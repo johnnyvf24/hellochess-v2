@@ -1,7 +1,7 @@
 
 const initialState = []
 
-function chat(state = initialState, action) {
+export default function existingChatRooms(state = initialState, action) {
     switch(action.type) {
         case 'new-chatroom':
             return action.payload;
@@ -9,5 +9,3 @@ function chat(state = initialState, action) {
             return state;
     }
 }
-
-export default chat
