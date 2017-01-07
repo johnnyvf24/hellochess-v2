@@ -50,6 +50,7 @@
     "morgan": "^1.7.0",
     "path": "^0.12.7",
     "react": "^0.14.3",
+    "react-bootstrap-tabs": "0.0.1",
     "react-dom": "^0.14.3",
     "react-modal-dialog": "^4.0.3",
     "react-notification-system": "^0.2.11",

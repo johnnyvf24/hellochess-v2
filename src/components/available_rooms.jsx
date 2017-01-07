@@ -4,7 +4,7 @@ import ExistingChatRoomList from '../containers/existing_chat_room_list';
 function AvailableRooms(props) {
     return (
         <div id="right-bottom" className="col-xs-12">
-            <ul className="nav nav-tabs" id="myTab" role="tablist">
+            <ul className="nav nav-tabs nav-justified" id="myTab" role="tablist">
                 <li className="nav-item">
                     <a className="nav-link active" data-toggle="tab" href="#home" role="tab" aria-controls="home">Four Player</a>
                 </li>

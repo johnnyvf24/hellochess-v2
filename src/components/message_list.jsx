@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import MessageListItem from '../components/message_list_item';
-import { connect } from 'react-redux';
+import {mapObject} from '../utils'
 
-class MessageList extends Component {
+export default class MessageList extends Component {
 
     constructor(props) {
         super(props);
@@ -14,28 +14,24 @@ class MessageList extends Component {
         msgList.scrollTop = msgList.scrollHeight;
     }
 
-    renderChatListItem(message, index) {
+    renderChatListItem(index, message) {
         return (
-            <ChatListItem
+            <MessageListItem
                 key={index}
-                text={message.msg}
-                user={message.user}
+                text={message.message}
+                user={message.username}
                 picture={message.picture}
             />
         );
     }
 
     render() {
+        const { messages } = this.props;
+
         return (
             <ul ref="msgList" className="list-group chatbox-message-list">
-                {this.props.messages.map(this.renderChatListItem)}
+                {mapObject(messages, this.renderChatListItem)}
             </ul>
         );
     }
 }
-
-function mapStateToProps(state) {
-    return {messages: state.messages.data};
-}
-
-export default connect(mapStateToProps)(MessageList);
