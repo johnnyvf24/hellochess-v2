@@ -20,7 +20,7 @@ export default class Login extends Component {
                 <LoginCard
                     errorMessage= {errorMessage}
                     onLoginClick={() =>dispatch(login())}
-                    />
+                />
             </div>
         );
     }

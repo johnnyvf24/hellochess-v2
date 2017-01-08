@@ -45,8 +45,11 @@ app.post('/api/twogames', (req, res) => {
     console.log(req.body);
 });
 
-let numConnectedUsers = 0;  //total users connected
+
+
+
 let chatRooms = [];    //all the chat rooms
+let clients = {};
 
 function mapObject(object, callback) {
     return Object.keys(object).map(function (key) {
@@ -67,12 +70,27 @@ function chatRoomExists(name) {
     return foundMatch;
 }
 
-io.on('connection', (socket) => {
+function getMemberBySocketId(socketId) {
+    return clients[socketId];
+}
 
-    console.log(chatRooms);
+function getAllRoomMembers(room) {
+    var roomMembers = [];
+    mapObject(io.sockets.adapter.rooms[room].sockets, (key, val) => {
+        roomMembers.push(clients[key].user);
+    });
+
+    return roomMembers;
+}
+
+io.on('connection', (socket) => {
+    // console.log(JSON.stringify(chatRooms, null, 2));
     socket.on('action', (action) => {
-        let chatObjName, chatObj = null;
+        let chatObjName, chatObj, chatUser = null;
         switch(action.type) {
+            case 'server/connected-user':
+                clients[socket.id] = action.payload;
+                break;
             case 'server/new-message':
                 io.to(action.payload.thread).emit('action', {
                     type: 'receive-message',
@@ -81,7 +99,10 @@ io.on('connection', (socket) => {
                 break;
             case 'server/join-chat':
                 chatObjName = [Object.keys(action.payload)[0]];
-                chatObj = action.payload[chatObjName];
+
+                //Deep copy the Chat object
+                chatObj = JSON.parse(JSON.stringify(action.payload[chatObjName]));
+
                 if(!chatRoomExists(chatObj.name)) {
                     chatRooms.push(action.payload);
                     io.emit('action', {
@@ -89,16 +110,28 @@ io.on('connection', (socket) => {
                         payload: chatRooms
                     });
                 }
+
+                //connect this user to this react-notification-system-redux
                 socket.join(chatObj.name);
+                //get the list of all members
+                chatObj.users = getAllRoomMembers(chatObj.name);
+
                 socket.emit('action', {
                     type: 'joined-chatroom',
                     payload: chatObj
                 });
 
+                //Tell everyone in the room that a new user has connnected
+                io.to(chatObj.name).emit('action', {
+                    type: 'user-room-joined',
+                    payload: chatObj
+                })
+
                 break;
             case 'server/new-chat':
                 chatObjName = [Object.keys(action.payload)[0]];
-                chatObj = action.payload[chatObjName];
+                chatObj = JSON.parse(JSON.stringify(action.payload[chatObjName]));
+                delete action.payload[chatObjName].user;
                 if(!chatRoomExists(chatObj.name)) {
                     socket.join(chatObj.name);
                     chatRooms.push(action.payload);
@@ -106,6 +139,7 @@ io.on('connection', (socket) => {
                         type: 'new-chatroom',
                         payload: chatRooms
                     });
+                    chatObj.users = getAllRoomMembers(chatObj.name);
                     socket.emit('action', {
                         type: 'joined-chatroom',
                         payload: chatObj
@@ -127,4 +161,14 @@ io.on('connection', (socket) => {
                 break;
         }
     });
+
+    socket.on('disconnect', function() {
+
+        mapObject(clients, (key, val) => {
+            if(key === socket.id) {
+                delete clients[key];
+            }
+        })
+        console.log('A client disconnected. There are ' + Object.keys(clients).length + ' sockets connected');
+    })
 });

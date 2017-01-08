@@ -25,7 +25,7 @@ class LoginCard extends Component {
                 </div>
                 <div className="col-xs-12 col-md-4 col-lg-4">
                     <div className="card card-container landing-card">
-                        <button className="btn btn-warning btn-block btn-signin" onClick = {this.onClick} type="submit">Make an account!</button>
+                        <button className="btn btn-warning btn-block btn-signin" onClick = {this.onClick} type="submit">Login/Make An Account!</button>
                     </div>
 
 

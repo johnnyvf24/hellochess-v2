@@ -17,12 +17,17 @@ function activeThread (state = 'Global', action) {
 }
 
 function openThreads(state = {}, action) {
+    let obj = null;
     switch(action.type) {
+        case 'user-room-joined':
+            const users = action.payload.users;
+            obj = {...state[action.payload.name], users};
+            return {...state, [action.payload.name]: obj};
         case 'joined-chatroom':
             return {...state, [action.payload.name]: action.payload };
         case 'receive-message':
             const messages = [...state[action.payload.thread].messages, action.payload];
-            const obj = {...state[action.payload.thread], messages};
+            obj = {...state[action.payload.thread], messages};
             return {...state, [action.payload.thread]: obj };
         default:
             return state;

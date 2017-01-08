@@ -66,6 +66,7 @@ body .container-fluid {
 .chatbox-top-stats-wrapper {
     border-radius: 5px;
     flex: 0 1 auto;
+    display: block;
 }
 
 .chatbox-top-stats {
@@ -74,14 +75,15 @@ body .container-fluid {
 }
 
 .chatbox-message-list-wrapper {
-    flex: 1 1 auto;
+    flex: 0 1 auto;
     margin: 5px;
+    height: 100%;
 }
 
 .chatbox-message-list {
     height: 100%;
     width: 100%;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .chatbox-input-send-wrapper {
@@ -90,6 +92,7 @@ body .container-fluid {
     padding-top: 5px;
     padding-bottom: 5px;
     background-color: #d6d6d6;
+    display: block;
 }
 
 .chatbox-message-list .list-group-item {

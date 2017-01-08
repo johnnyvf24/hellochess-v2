@@ -3,11 +3,12 @@ import { connect } from 'react-redux';
 import MessageSend from '../containers/message_send';
 import MessageList from '../components/message_list';
 import {mapObject} from '../utils/';
-import { selectedChat, joinChat } from '../actions';
+import { selectedChat, joinChat, userConnect } from '../actions';
 
 class ChatViewer extends Component {
 
     componentWillMount() {
+        this.props.userConnect(this.props.profile);    //Connect the user to the server
         this.props.joinChat('Global');
     }
 
@@ -57,8 +58,6 @@ class ChatViewer extends Component {
     render() {
         let {activeThread, openThreads} = this.props;
 
-        console.log(activeThread);
-
         if(!activeThread || !openThreads) {
             return <div>Loading...</div>;
         }
@@ -81,8 +80,9 @@ class ChatViewer extends Component {
 function mapStateToProps(state) {
     return {
         activeThread: state.activeThread,
-        openThreads: state.openThreads
+        openThreads: state.openThreads,
+        profile: state.auth.profile
     };
 }
 
-export default connect(mapStateToProps, {selectedChat, joinChat}) (ChatViewer);
+export default connect(mapStateToProps, {selectedChat, joinChat, userConnect}) (ChatViewer);

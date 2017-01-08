@@ -132,13 +132,27 @@ export function selectedChat(name) {
     }
 }
 
+export function userConnect(profile) {
+    return (dispatch) => {
+        return dispatch({
+            type: 'server/connected-user',
+            payload: {
+                user: {
+                    username: profile.user_metadata.username,
+                    user_id: profile.user_id,
+                    picture: profile.picture
+                }
+            }
+        });
+    }
+}
+
 export function newChat(name) {
     return (dispatch) => {
         let obj = {};
         obj[name] = {
             name: name,
             messages: [],
-            users: []
         }
 
         return dispatch({
@@ -154,7 +168,6 @@ export function joinChat(name) {
         obj[name] = {
             name: name,
             messages: [],
-            users: []
         }
 
         return dispatch({
