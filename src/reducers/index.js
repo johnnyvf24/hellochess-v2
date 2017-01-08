@@ -5,59 +5,36 @@ import threads from './threads_reducer';
 import AuthReducer from './auth_reducer';
 import {reducer as notifications} from 'react-notification-system-redux';
 
-function activeThread (state, action) {
-    return 'global';
+import {SELECTED_CHAT} from '../actions';
+
+function activeThread (state = 'Global', action) {
+    switch(action.type) {
+        case SELECTED_CHAT:
+            return action.payload;
+        default:
+            return state;
+    }
 }
 
-function openThreads(state, action) {
-    return {
-        "global": {
-            name: 'global',
-            messages: [{
-                    at: 'UTCTime',
-                    username: 'bob',
-                    message: 'hello'
-                },
-                {
-                    at: 'UTCTime',
-                    username: 'joi',
-                    message: 'hi'
-                },
-                {
-                    at: 'UTCTime',
-                    username: 'angie',
-                    message: 'I am awesome at building stuff'
-                }
-            ],
-            users: ['bob', 'bill', 'angie']
-        },
-        "test": {
-            name: 'test',
-            messages: [{
-                    at: 'UTCTime',
-                    username: 'lightning',
-                    message: 'fart'
-                },
-                {
-                    at: 'UTCTime',
-                    username: 'tough',
-                    message: 'haha'
-                },
-                {
-                    at: 'UTCTime',
-                    username: 'dark',
-                    message: 'I am awesome at building stuff'
-                }
-            ],
-            users: ['dark', 'tough', 'lightning']
-        }
+function openThreads(state = {}, action) {
+    switch(action.type) {
+        case 'joined-chatroom':
+            return {...state, [action.payload.name]: action.payload };
+        case 'receive-message':
+            const messages = [...state[action.payload.thread].messages, action.payload];
+            const obj = {...state[action.payload.thread], messages};
+            return {...state, [action.payload.thread]: obj };
+        default:
+            return state;
+
     }
+    return
 }
 
 
 const rootReducer = combineReducers({
-    error,          //will contain the error to show as a notification
     notifications,  //notification-center lib
+    error,
     existingChatRooms,      //A list of all Open Chat Rooms
     activeThread,
     openThreads,

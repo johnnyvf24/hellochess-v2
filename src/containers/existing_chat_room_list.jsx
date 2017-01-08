@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import CreateChatRoom from '../containers/create_chat_room';
+import { mapObject } from '../utils/'
 
 class ExistingChatRoomList extends Component {
     constructor (props) {
@@ -13,15 +14,19 @@ class ExistingChatRoomList extends Component {
         })
     }
 
-    renderChatRoomItems(item) {
-        return (
-            <li key={item.name} className="list-group-item">
-                {item.name}
-            </li>
-        );
+    renderChatRoomItems(chatRoom) {
+        return mapObject( chatRoom, (key, value) => {
+            return (
+                <li key={key} className="list-group-item">
+                    {value.name}
+                </li>
+            );
+        });
     }
 
     render() {
+        const { chatRooms } = this.props;
+        // console.log(chatRooms);
         return (
             <div
                 className="tab-pane"
@@ -30,7 +35,7 @@ class ExistingChatRoomList extends Component {
                 style={{padding: "0px"}}>
                 <ul className="list-group">
 
-                    {this.props.chatRooms.map(this.renderChatRoomItems)}
+                    {chatRooms.map(this.renderChatRoomItems)}
 
                 </ul>
 

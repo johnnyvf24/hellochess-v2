@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
-import {connect } from 'react-redux';
+import {connect} from 'react-redux';
+
+import {newChat} from '../actions/'
 
 class CreateChatRoom extends Component {
 
@@ -25,16 +27,12 @@ class CreateChatRoom extends Component {
         event.preventDefault();
         const chatName = this.state.nameChat;
         if(chatName.length > 0) {
-            this.props.dispatch({
-                type:'server/new-chatroom',
-                payload: {
-                    name: chatName
-                }
-            });
 
             this.setState({
                 nameChat: ''
             });
+
+            this.props.newChat(chatName);
 
             this.refs.modalClose.click();
         }
@@ -106,8 +104,4 @@ class CreateChatRoom extends Component {
     }
 }
 
-function mapStoreToProps(store) {
-    return {};
-}
-
-export default connect(mapStoreToProps) (CreateChatRoom);
+export default connect(null, {newChat}) (CreateChatRoom);

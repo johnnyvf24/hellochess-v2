@@ -25,6 +25,10 @@ body .container-fluid {
     height: 100%;
 }
 
+#search-input-group {
+    padding: 15px;
+}
+
 #profile-pic {
     margin-top: 10px;
     height: 60px;
@@ -46,13 +50,13 @@ body .container-fluid {
     height: 100%;
 }
 
-#left-chatbox .tabs .tab-content {
+#left-chatbox .tab-content {
     height: 100%;
     border-radius: 5px;
 }
 
 
-#left-chatbox .tabs .tab-content>div{
+#left-chatbox .tab-content>.active{
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -183,8 +187,7 @@ body .container-fluid {
 /* NAV TABS FULL WIDTH OF PARENT FIX */
 
 .nav-justified {
-  width: 100%;
-  border-bottom: 0; }
+  width: 100%;}
   .nav-justified .nav-item {
     float: none; }
   .nav-justified .nav-link {

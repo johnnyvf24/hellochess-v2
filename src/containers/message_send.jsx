@@ -25,12 +25,13 @@ class MessageSend extends Component {
             event.preventDefault();
             return;
         }
+
         this.props.dispatch({
             type:'server/new-message',
             payload: {
                 user: this.props.profile.user_metadata.username,
                 msg: msg,
-                thread: this.props.activeThread.name,
+                thread: this.props.activeThread,
                 picture: this.props.profile.picture
             }
         });

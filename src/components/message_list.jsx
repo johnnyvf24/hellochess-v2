@@ -18,8 +18,8 @@ export default class MessageList extends Component {
         return (
             <MessageListItem
                 key={index}
-                text={message.message}
-                user={message.username}
+                text={message.msg}
+                user={message.user}
                 picture={message.picture}
             />
         );
@@ -27,7 +27,7 @@ export default class MessageList extends Component {
 
     render() {
         const { messages } = this.props;
-
+        
         return (
             <ul ref="msgList" className="list-group chatbox-message-list">
                 {mapObject(messages, this.renderChatListItem)}

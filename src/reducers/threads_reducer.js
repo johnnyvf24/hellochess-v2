@@ -9,14 +9,3 @@ function activeThread(state, action) {
             return state;
     }
 }
-
-export default function threads(state = [], action) {
-    switch(action.type) {
-        case 'joined-chatroom':
-            return [...state, action.payload];
-        case 'receive-message':
-            return state;
-        default:
-            return state;
-    }
-}

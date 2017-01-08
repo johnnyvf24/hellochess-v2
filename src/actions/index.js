@@ -112,11 +112,54 @@ export function saveUsername(userId, username) {
     }
 }
 
-
-export const CLEAR_ERROR = 'CLEAR_ERROR'
+export const CLEAR_ERROR = 'CLEAR_ERROR';
 
 export function clearError() {
-    return {
-        type: CLEAR_ERROR,
+    return  {
+        type: CLEAR_ERROR
+    }
+}
+
+
+export const SELECTED_CHAT = 'SELECTED_CHAT';
+
+export function selectedChat(name) {
+    return (dispatch) =>{
+        return dispatch({
+            type: SELECTED_CHAT,
+            payload: name
+        });
+    }
+}
+
+export function newChat(name) {
+    return (dispatch) => {
+        let obj = {};
+        obj[name] = {
+            name: name,
+            messages: [],
+            users: []
+        }
+
+        return dispatch({
+            type: 'server/new-chat',
+            payload: obj
+        });
+    }
+}
+
+export function joinChat(name) {
+    return (dispatch) => {
+        let obj = {};
+        obj[name] = {
+            name: name,
+            messages: [],
+            users: []
+        }
+
+        return dispatch({
+            type: 'server/join-chat',
+            payload: obj
+        });
     }
 }

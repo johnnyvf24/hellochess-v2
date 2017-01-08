@@ -48,19 +48,30 @@ app.post('/api/twogames', (req, res) => {
 let numConnectedUsers = 0;  //total users connected
 let chatRooms = [];    //all the chat rooms
 
+function mapObject(object, callback) {
+    return Object.keys(object).map(function (key) {
+    return callback(key, object[key]);
+    });
+}
+
+
 function chatRoomExists(name) {
+    let foundMatch = false;
     for(let i = 0; i < chatRooms.length; i++) {
-        if(name == chatRooms[i].name) {
-            return true;
-        }
+        mapObject(chatRooms[i], (key, val) => {
+            if(val.name.toUpperCase() === name.toUpperCase()) {
+                foundMatch = true;
+            }
+        });
     }
-    return false;
+    return foundMatch;
 }
 
 io.on('connection', (socket) => {
 
     console.log(chatRooms);
     socket.on('action', (action) => {
+        let chatObjName, chatObj = null;
         switch(action.type) {
             case 'server/new-message':
                 io.to(action.payload.thread).emit('action', {
@@ -69,23 +80,27 @@ io.on('connection', (socket) => {
                 });
                 break;
             case 'server/join-chat':
-                if(!chatRoomExists(action.payload.name)) {
+                chatObjName = [Object.keys(action.payload)[0]];
+                chatObj = action.payload[chatObjName];
+                if(!chatRoomExists(chatObj.name)) {
                     chatRooms.push(action.payload);
                     io.emit('action', {
                         type: 'new-chatroom',
                         payload: chatRooms
                     });
                 }
-                socket.join(action.payload.name);
+                socket.join(chatObj.name);
                 socket.emit('action', {
                     type: 'joined-chatroom',
-                    payload: action.payload
+                    payload: chatObj
                 });
 
                 break;
-            case 'server/new-chatroom':
-                if(!chatRoomExists(action.payload.name)) {
-                    socket.join(action.payload.name);
+            case 'server/new-chat':
+                chatObjName = [Object.keys(action.payload)[0]];
+                chatObj = action.payload[chatObjName];
+                if(!chatRoomExists(chatObj.name)) {
+                    socket.join(chatObj.name);
                     chatRooms.push(action.payload);
                     io.emit('action', {
                         type: 'new-chatroom',
@@ -93,13 +108,13 @@ io.on('connection', (socket) => {
                     });
                     socket.emit('action', {
                         type: 'joined-chatroom',
-                        payload: action.payload
+                        payload: chatObj
                     });
                 } else {
                     io.emit('action', {
                         type: 'error',
                         payload: {
-                            error: `Chat room with name '${action.payload.name}' already exists`
+                            error: `Chat room with name '${chatObj.name}' already exists`
                         }
                     });
                 }
