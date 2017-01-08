@@ -60,7 +60,7 @@ class ChatViewer extends Component {
                                         <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
-                                        <h5 className="modal-title" id="exampleModalLabel">Chat Users</h5>
+                                        <h5 className="modal-title" id="exampleModalLabel">Chat Members</h5>
                                     </div>
                                     <div className="modal-body">
                                         <ul className="list-group"></ul>

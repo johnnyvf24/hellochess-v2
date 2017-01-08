@@ -1,16 +1,17 @@
-var express = require('express');
-var app = express();
-var http = require('http').Server(app);
-var path = require('path');
-var bodyParser = require('body-parser');
-var _ = require('lodash');
-var io = require('socket.io')(http);
+const express = require('express');
+const app = express();
+const http = require('http').Server(app);
+const path = require('path');
+const bodyParser = require('body-parser');
+const morgan = require('morgan');
+const _ = require('lodash');
+const io = require('socket.io')(http);
+const router = require('./router');
 
-var {mongoose} = require('./db/mongoose');
-var {TwoGame} = require('./models/two_game');
-var {User} = require('./models/user');
-var {authenticate} = require('./middleware/authenticate');
-require('./sockets')(io);
+const {mongoose} = require('./db/mongoose');
+const {TwoGame} = require('./models/two_game');
+const {User} = require('./models/user');
+const {authenticate} = require('./middleware/authenticate');
 
 //set port variable
 app.set('port', process.env.PORT || 3000);
@@ -21,28 +22,10 @@ http.listen(app.get('port'), function() {
 });
 
 //use middleware
+// app.use(morgan('combined'));
 app.use(bodyParser.json());
 //serve up static public folder
 app.use(express.static(path.join(__dirname, '../public')));
 
-app.get('/', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../public/index.html'));
-});
-
-app.get('/live', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../public/index.html'));
-});
-
-//Get all two player games (Dev only)
-app.get('/api/twogames', (req, res) => {
-    TwoGame.find({}).then((games) => {
-        res.send(games);
-    }, (e) => {
-        res.status(400).send();
-    })
-});
-
-
-app.post('/api/twogames', (req, res) => {
-    console.log(req.body);
-});
+require('./sockets')(io);
+router(app);

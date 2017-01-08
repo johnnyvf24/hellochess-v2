@@ -1,20 +1,23 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 const bcrypt = require('bcryptjs');
+const config = require('../config');
 
-var UserSchema = new mongoose.Schema({
+var UserSchema = new Schema({
     username: {
         type: String,
-        required: true,
+        lowercase: true,
         trim: true,
         minlength: 3,
-        unique: true
+        maxlength: 15,
     },
     email: {
         type: String,
         required: true,
+        lowercase: true,
         trim: true,
         minlength: 3,
         unique: true,
@@ -50,7 +53,8 @@ UserSchema.methods.toJSON = function() {
 UserSchema.methods.generateAuthToken = function() {
     var user = this;
     var access = 'auth';
-    var token = jwt.sign({_id: user._id.toHexString(), access}, 'abc123').toString();
+    const timestamp = new Date().getTime();
+    var token = jwt.sign({ sub: user._id.toHexString(), iat: timestamp, access}, config.secret).toString();
 
     user.tokens.push({access, token});
 
@@ -59,47 +63,26 @@ UserSchema.methods.generateAuthToken = function() {
     });
 };
 
-UserSchema.statics.findByToken = function(token) {
+UserSchema.methods.comparePassword = function(candidatePassword, callback) {
     var User = this;
-    var decoded;
-
-    try {
-        decoded = jwt.verify(token, 'abc123');
-    } catch(e) {
-        return Promise.reject();
-    }
-
-    return User.findOne({
-        '_id': decoded._id,
-        'tokens.token': token,
-        'tokens.access': 'auth'
-    });
-};
-
-UserSchema.statics.findByCredentials = function(email, password) {
-    var User = this;
-    return User.findOne({ email }).then(user => {
-        if(!user) {
-            return Promise.reject();
+    bcrypt.compare(candidatePassword, User.password, (err, res) => {
+        if(err) {
+            return callback(err);
         }
 
-        return new Promise((resolve, reject) => {
-            bcrypt.compare(password, user.password, (err, res) => {
-                if(res) {
-                    resolve(user);
-                } else {
-                    reject();
-                }
-            });
-        });
+        callback(null, res);
     });
 };
 
+
+//Before saving hash and salt passwords
 UserSchema.pre('save', function(next) {
     var user = this;
 
     if (user.isModified('password')) {
+        //generate a salt
         bcrypt.genSalt(11, (err, salt) => {
+            //hash using salt
             bcrypt.hash(user.password, salt, (err, hash) => {
                 user.password = hash;
                 next();

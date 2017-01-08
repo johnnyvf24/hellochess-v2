@@ -30,7 +30,6 @@ module.exports = function(io) {
         return roomMembers;
     }
 
-
     io.on('connection', (socket) => {
         // console.log(JSON.stringify(chatRooms, null, 2));
         socket.on('action', (action) => {
@@ -116,7 +115,18 @@ module.exports = function(io) {
                 if(key === socket.id) {
                     delete clients[key];
                 }
-            })
+            });
+            console.log('before', chatRooms);
+            // chatRooms.map((chat, i) => {
+            //     mapObject(chat, (key, value) => {
+            //         if(!io.sockets.adapter.rooms[key]) {
+            //             delete chatRooms[i];
+            //         }
+            //     });
+            //
+            // });
+            console.log('after', chatRooms);
+
             // console.log('A client disconnected. There are ' + Object.keys(clients).length + ' sockets connected');
         })
     });
