@@ -1,29 +1,19 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect, bindActionCreators } from 'react-redux';
-import { login, doAuthentication } from '../../actions/index'
+import { loginUser } from '../../actions/index';
+import App from '../app';
 import SignUpForm from './signup_form';
 import LoginForm from './login_form';
 
 class AuthCard extends Component {
-    constructor(props) {
-        super(props);
-
-        this.onClick = this.onClick.bind(this);
-        this.props.doAuthentication();
-    }
-
-    onClick(event) {
-        this.props.onLoginClick();
-    }
 
     onSignUpSubmit(values) {
         const {signUpEmail, signUpPassword} = values;
-
-        console.log(signUpEmail, signUpPassword);
     }
 
     onLoginSubmit(values) {
-        console.log(values);
+
+        this.props.loginUser(values);
     }
 
     render() {
@@ -56,7 +46,7 @@ class AuthCard extends Component {
                             Sign Up
                         </a>
                         <div id="signUp" className="collapse">
-                            <SignUpForm onSubmit={this.onSignUpSubmit} />
+                            <SignUpForm onSubmit={this.onSignUpSubmit.bind(this)} />
                         </div>
 
                         <a href="#logIn"
@@ -67,9 +57,8 @@ class AuthCard extends Component {
                             Log In
                         </a>
                         <div id="logIn" className="collapse">
-                            <LoginForm onSubmit={this.onLoginSubmit} />
+                            <LoginForm onSubmit={this.onLoginSubmit.bind(this)} />
                         </div>
-                        <button className="btn btn-warning btn-block btn-learn-more" >Learn More</button>
                     </div>
 
 
@@ -91,4 +80,14 @@ class AuthCard extends Component {
     }
 }
 
-export default connect (null, {doAuthentication, login}) (AuthCard);
+App.contextTypes = {
+  store: PropTypes.object
+};
+
+function mapStateToProps(state) {
+    return {
+        errorMessage: state.auth.error,
+    };
+}
+
+export default connect (mapStateToProps, {loginUser}) (AuthCard);

@@ -1,12 +1,12 @@
-import {
-    isTokenExpired
-} from '../utils/jwtHelper';
-
-
-import * as ActionTypes from '../actions'
+import {isTokenExpired} from '../utils/jwtHelper';
+import * as ActionTypes from '../actions/types'
 
 function getProfile() {
   return JSON.parse(localStorage.getItem('profile'));
+}
+
+function setProfile(profile) {
+    return localStorage.setItem('profile', JSON.stringify(profile));
 }
 
 //SETUP initial app state
@@ -24,23 +24,16 @@ const INITIAL_STATE = {
 function auth(state = INITIAL_STATE, action) {
     switch (action.type) {
         case ActionTypes.LOGIN_SUCCESS:
-            return Object.assign({}, state, {
-                isAuthenticated: true,
-                profile: action.profile,
-                error: ''
-            })
+            return {...state, authenticated: true, profile: action.payload};
         case ActionTypes.LOGIN_ERROR:
-            return Object.assign({}, state, {
-                isAuthenticated: false,
-                profile: null,
-                error: action.error
-            })
+            return {...state, authenticated: false};
         case ActionTypes.LOGOUT_SUCCESS:
             return Object.assign({}, state, {
-                isAuthenticated: false,
+                authenticated: false,
                 profile: null
             })
-        case ActionTypes.PATCH_USERNAME:
+        case ActionTypes.UPDATE_USERNAME:
+            setProfile(action.payload.data)
             return Object.assign({}, state, {
                 profile: action.payload.data
             })

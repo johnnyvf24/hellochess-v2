@@ -29,7 +29,7 @@ class MessageSend extends Component {
         this.props.dispatch({
             type:'server/new-message',
             payload: {
-                user: this.props.profile.user_metadata.username,
+                user: this.props.profile.username,
                 msg: msg,
                 thread: this.props.activeThread,
                 picture: this.props.profile.picture

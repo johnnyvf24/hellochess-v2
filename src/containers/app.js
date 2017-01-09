@@ -1,39 +1,41 @@
-import React, {Component, PropTypes as T} from 'react';
+import React, {Component} from 'react';
 import {connect} from 'react-redux';
 
-class App extends Component {
-    static contextTypes = {
-        router: T.object
-    }
+import Notifications from 'react-notification-system-redux';
 
+class App extends Component {
     render() {
-        const {dispatch, isAuthenticated, errorMessage} = this.props;
-        let children = null;
-        if (this.props.children) {
-            children = React.cloneElement(this.props.children, {
-                errorMessage: errorMessage,
-                isAuthenticated: isAuthenticated,
-                dispatch: dispatch
-            })
-        }
+        const {notifications} = this.props;
+
+        const style = {
+            NotificationItem: { // Override the notification item
+                DefaultStyle: { // Applied to every notification, regardless of the notification level
+                    margin: '10px 5px 2px 1px'
+                },
+
+                success: { // Applied only to the success notification item
+                    color: 'red'
+                }
+            }
+        };
+
         return (
             <div id="main-content">
-                {children}
+                <Notifications
+                    notifications={notifications}
+                    style={style}
+                />
+                {this.props.children}
             </div>
         );
     }
 }
 
-App.T = {
-    dispatch: T.func.isRequired,
-    isAuthenticated: T.bool.isRequired
-}
 
 function mapStateToProps(state) {
-    const {auth} = state;
-    const {isAuthenticated, errorMessage} = auth;
-
-    return {isAuthenticated, errorMessage}
+    return {
+        notifications: state.notifications
+    }
 }
 
 export default connect(mapStateToProps)(App)

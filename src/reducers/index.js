@@ -7,7 +7,7 @@ import existingChatRooms from './chat_rooms_reducer';
 import threads from './threads_reducer';
 import AuthReducer from './auth_reducer';
 
-import {SELECTED_CHAT} from '../actions';
+import {SELECTED_CHAT} from '../actions/types';
 
 function activeThread (state = 'Global', action) {
     switch(action.type) {
@@ -33,7 +33,6 @@ function openThreads(state = {}, action) {
             return {...state, [action.payload.thread]: obj };
         default:
             return state;
-
     }
     return
 }

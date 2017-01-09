@@ -29,17 +29,23 @@ var UserSchema = new Schema({
     password: {
         type: String,
         require: true,
-        minlength: 6
+        minlength: 6,
+        select: false
+    },
+    picture: {
+        type: String,
+        default: 'https://www.hellochess.com/img/default-img.png'
     },
     tokens: [{
         access: {
             type: String,
-            required: true
+            required: true,
         },
         token: {
             type: String,
-            required: true
-        }
+            required: true,
+        },
+        select: false
     }]
 });
 
@@ -47,7 +53,7 @@ UserSchema.methods.toJSON = function() {
     var user = this;
     var userObject = user.toObject();
 
-    return _.pick(userObject, ['_id', 'username', 'email'])
+    return _.pick(userObject, ['_id', 'picture', 'email', 'username'])
 };
 
 UserSchema.methods.generateAuthToken = function() {
@@ -91,6 +97,12 @@ UserSchema.pre('save', function(next) {
     } else {
         next();
     }
+});
+
+UserSchema.post('findOne', function(next) {
+    var user = this;
+    delete user.tokens;
+    delete user.password;
 });
 
 var User = mongoose.model('User', UserSchema);

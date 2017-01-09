@@ -4,7 +4,6 @@ const {User} = require('../models/user');
 exports.signup = (req, res, next) => {
 
     const body = _.pick(req.body, [
-        'username',
         'email',
         'password'
     ]);
@@ -25,7 +24,7 @@ exports.login = (req, res, next) => {
     req.user.generateAuthToken().then((token) => {
         res.header('x-auth', token).send(req.user);
     }).catch((e) => {
-        res.status(400).send();
+        res.status(401).send();
     })
 
 }

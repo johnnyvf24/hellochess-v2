@@ -67,7 +67,7 @@ class ChatViewer extends Component {
                                         {value.users.map((user) => {
                                             return (
                                                 <li
-                                                    key={user.user_id}
+                                                    key={user._id}
                                                     className="list-group-item">
                                                     {user.username}
                                                 </li>
@@ -91,6 +91,11 @@ class ChatViewer extends Component {
     }
 
     render() {
+        if(!this.props.profile.username) {
+            return <div>
+            </div>
+        }
+
         let {activeThread, openThreads} = this.props;
 
         if(!activeThread || !openThreads) {

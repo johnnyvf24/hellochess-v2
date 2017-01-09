@@ -4,7 +4,6 @@ import { bindActionCreators } from 'redux';
 import { browserHistory } from 'react-router';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import ReactTimeout from 'react-timeout';
-import Notifications from 'react-notification-system-redux';
 
 import SearchBar from '../components/search_bar';
 import TwoBoard from '../components/two_board';
@@ -26,7 +25,6 @@ class Live extends Component {
         this.onInputChange = this.onInputChange.bind(this);
         this.saveUsername = this.saveUsername.bind(this);
         this.saveUsername = this.saveUsername.bind(this);
-        this.renderError = this.renderError.bind(this);
     }
 
     logout() {
@@ -38,31 +36,10 @@ class Live extends Component {
         console.log(this.props);
     }
 
-    renderError() {
-        const error = this.props.error;
-
-        if(error.length > 0) {
-            const notificationOpts = {
-                // uid: 'once-please', // you can specify your own uid if required
-                title: 'Oops...',
-                message: error,
-                position: 'tc',
-                autoDismiss: 5
-            };
-
-            this.props.dispatch(
-                Notifications.error(notificationOpts)
-            );
-
-
-            this.props.clearError();
-        }
-    }
-
     saveUsername(event) {
         const username = this.state.usernameInput;
         if(username.length > 3) {
-            this.props.saveUsername(this.props.profile.user_id, username);
+            this.props.saveUsername(this.props.profile._id, username);
         }
         event.preventDefault();
     }
@@ -72,29 +49,27 @@ class Live extends Component {
     }
 
     renderInputUsername() {
-        if(this.props.profile.user_metadata) {
-            return;
+        if(!this.props.profile.username) {
+            return (
+                <ModalContainer >
+                  <ModalDialog>
+                      <form onSubmit={this.saveUsername} >
+                          <h2>Enter a username</h2>
+                          <input
+                              value={this.state.usernameInput}
+                              onChange={this.onInputChange}
+                              className="form-control"
+                              placeholder="Type here..."/>
+                          <button
+                              type="submit"
+                              className="btn btn-warning btn-save-username float-xs-right">
+                              Save
+                         </button>
+                     </form>
+                  </ModalDialog>
+                </ModalContainer>
+            );
         }
-
-        return (
-            <ModalContainer >
-              <ModalDialog>
-                  <form onSubmit={this.saveUsername} >
-                      <h2>Enter a username</h2>
-                      <input
-                          value={this.state.usernameInput}
-                          onChange={this.onInputChange}
-                          className="form-control"
-                          placeholder="Type here..."/>
-                      <button
-                          type="submit"
-                          className="btn btn-warning btn-save-username float-xs-right">
-                          Save
-                     </button>
-                 </form>
-              </ModalDialog>
-            </ModalContainer>
-        );
     }
 
     render() {
@@ -104,28 +79,8 @@ class Live extends Component {
             )
         }
 
-        const {notifications} = this.props;
-
-        //Optional styling
-        const style = {
-          NotificationItem: { // Override the notification item
-            DefaultStyle: { // Applied to every notification, regardless of the notification level
-              margin: '10px 5px 2px 1px'
-            },
-
-            success: { // Applied only to the success notification item
-              color: 'red'
-            }
-          }
-        };
-
         return (
             <div id="main-panel">
-                <Notifications
-                    notifications={notifications}
-                    style={style}
-                />
-                { this.renderError() }
                 { this.renderInputUsername() }
 
                 <div className="row flex-items-xs-right">
@@ -171,8 +126,7 @@ class Live extends Component {
 function mapStateToProps(state) {
     return {
         profile: state.auth.profile,
-        error: state.error.error,
-        notifications: state.notifications
+        error: state.error.error
     }
 }
 
