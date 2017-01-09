@@ -1,10 +1,9 @@
-import React, { Component, PropTypes as T } from 'react'
-import LoginCard from './login_card';
-import { login, logoutUser } from '../actions/index'
+import React, { Component } from 'react'
+import AuthCard from './auth_card';
+import { login, logoutUser } from '../../actions/index'
 
 export default class Login extends Component {
     render() {
-        const { dispatch, isAuthenticated, errorMessage } = this.props;
 
         return (
             <div>
@@ -17,17 +16,8 @@ export default class Login extends Component {
                     <div className="col-sm-hidden col-md-3 col-lg-4">
                     </div>
                 </div>
-                <LoginCard
-                    errorMessage= {errorMessage}
-                    onLoginClick={() =>dispatch(login())}
-                />
+                <AuthCard />
             </div>
         );
     }
-}
-
-Login.T = {
-    dispatch: T.func.isRequired,
-    isAuthenticated: T.bool.isRequired,
-    errorMessage: T.string
 }

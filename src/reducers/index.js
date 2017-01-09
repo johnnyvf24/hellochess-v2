@@ -1,9 +1,11 @@
 import {combineReducers} from 'redux';
+import {reducer as notifications} from 'react-notification-system-redux';
+import { reducer as formReducer } from 'redux-form'
+
 import error from './error_reducer';
 import existingChatRooms from './chat_rooms_reducer';
 import threads from './threads_reducer';
 import AuthReducer from './auth_reducer';
-import {reducer as notifications} from 'react-notification-system-redux';
 
 import {SELECTED_CHAT} from '../actions';
 
@@ -44,6 +46,7 @@ const rootReducer = combineReducers({
     activeThread,
     openThreads,
     auth: AuthReducer,
+    form: formReducer
 });
 
 export default rootReducer;

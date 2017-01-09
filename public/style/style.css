@@ -21,6 +21,24 @@ body .container-fluid {
     padding: 40px 0;
 }
 
+#signUpForm {
+    background: none;
+    border: none;
+}
+
+#loginForm {
+    background: none;
+    border: none;
+}
+
+#signUpShower {
+    margin-bottom: 10px;
+}
+
+#LoginShower {
+    margin-bottom: 10px;
+}
+
 #main-content, #main-panel, #wrapper {
     height: 100%;
 }
@@ -190,7 +208,9 @@ body .container-fluid {
 /* NAV TABS FULL WIDTH OF PARENT FIX */
 
 .nav-justified {
-  width: 100%;}
+  width: 100%;
+  overflow-y: auto;
+}
   .nav-justified .nav-item {
     float: none; }
   .nav-justified .nav-link {
