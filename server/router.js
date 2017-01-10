@@ -6,11 +6,18 @@ const passport = require('passport');
 const requireAuth = passport.authenticate('jwt', {session: false});
 const requireLogin = passport.authenticate('local', {session: false});
 
+const requireFBCallBack = passport.authenticate('facebook-token');
+
 module.exports = function(app) {
-    app.get('/api', requireAuth, (req, res) => {
-        res.send({message: 'Super secret code is ABC123!'});
-    })
-    app.post('/api/users', Authentication.signup);
+
+    app.use(passport.initialize());
+    app.use(passport.session());
+
+    //Authentication routes
+    app.post('/api/users/signup', Authentication.signup);
     app.post('/api/users/login', requireLogin, Authentication.login);
-    app.patch('/api/users/:id', requireAuth, User.updateUser)
+    app.post('/api/auth/facebook/token', requireFBCallBack, Authentication.fbLogin);
+
+    app.patch('/api/users/:id', requireAuth, User.updateUser);
+
 }

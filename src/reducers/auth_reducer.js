@@ -24,7 +24,7 @@ const INITIAL_STATE = {
 function auth(state = INITIAL_STATE, action) {
     switch (action.type) {
         case ActionTypes.LOGIN_SUCCESS:
-            return {...state, authenticated: true, profile: action.payload};
+            return {...state, authenticated: true, profile: getProfile()}
         case ActionTypes.LOGIN_ERROR:
             return {...state, authenticated: false};
         case ActionTypes.LOGOUT_SUCCESS:

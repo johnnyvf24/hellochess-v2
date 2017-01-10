@@ -1,17 +1,18 @@
 const passport = require('passport');
-const {User} = require('../models/user');
-const config  = require('../config');
 const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
+var FacebookTokenStrategy = require('passport-facebook-token');
+const {User} = require('../models/user');
+const config  = require('../../config/config');
 const LocalStrategy = require('passport-local');
 
 const localOptions = {
     usernameField: 'email'
 }
 
+//Login strategy, verifies auth token.
 const localLogin = new LocalStrategy(localOptions, (email, password, done) => {
     User.findOne({email})
-    .select('+password')
     .then((user) => {
         if(!user) {
             done(null, false);
@@ -54,6 +55,49 @@ const jwtLogin = new JwtStrategy(jwtOptions, function(payload, done) {
     });
 });
 
+const { clientID, clientSecret, callbackURL, profileFields } = config.facebookAuth;
+
+const FBLogin = new FacebookTokenStrategy({ clientID, clientSecret, profileFields },
+    function(accessToken, refreshToken, profile, done) {
+        User.findOne({'socialProvider.id': profile.id}, (err, user) => {
+            // console.log(JSON.stringify(profile, null, 2));
+            if(err) {
+                return done()
+            }
+            if(user) {
+                return done(null, user);
+            }
+            else {
+                let newUser = new User();
+
+                newUser.socialProvider.name = 'facebook',
+                newUser.socialProvider.id = profile.id;
+                newUser.social = true;
+                newUser.name = profile.name.givenName + ' ' + profile.name.familyName;
+                newUser.email = profile.emails[0].value;
+                newUser.picture = profile._json.picture.data.url;
+                newUser.social.token = accessToken;
+
+                newUser.save((err) => {
+                    if(err) {
+                        console.log(err)
+                    }
+                    return done(null, newUser);
+                });
+            }
+        })
+    }
+);
+
+passport.serializeUser(function(user, cb) {
+  cb(null, user);
+});
+
+passport.deserializeUser(function(obj, cb) {
+  cb(null, obj);
+});
+
 //tell passport to use Strategies
 passport.use(jwtLogin);
 passport.use(localLogin);
+passport.use(FBLogin);

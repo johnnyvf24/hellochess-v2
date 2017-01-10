@@ -26,9 +26,18 @@ body .container-fluid {
     border: none;
 }
 
+#signUpForm {
+    background: none;
+    border: none;
+}
+
 #loginForm {
     background: none;
     border: none;
+}
+
+.form-error {
+    color: red;
 }
 
 #signUpShower {

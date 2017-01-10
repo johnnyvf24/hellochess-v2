@@ -4,7 +4,7 @@ const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 const bcrypt = require('bcryptjs');
-const config = require('../config');
+const config = require('../../config/config');
 
 var UserSchema = new Schema({
     username: {
@@ -16,7 +16,6 @@ var UserSchema = new Schema({
     },
     email: {
         type: String,
-        required: true,
         lowercase: true,
         trim: true,
         minlength: 3,
@@ -28,13 +27,24 @@ var UserSchema = new Schema({
     },
     password: {
         type: String,
-        require: true,
         minlength: 6,
         select: false
     },
     picture: {
         type: String,
         default: 'https://www.hellochess.com/img/default-img.png'
+    },
+    name: {
+        type: String,
+        trim: true
+    },
+    social: {
+        type: Boolean,
+        default: false
+    },
+    socialProvider: {
+        name: String,
+        id: String
     },
     tokens: [{
         access: {

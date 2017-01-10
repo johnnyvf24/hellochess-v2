@@ -1,19 +1,27 @@
 import React, { Component, PropTypes } from 'react';
 import { connect, bindActionCreators } from 'react-redux';
-import { loginUser } from '../../actions/index';
+import { Link } from 'react-router';
+import FacebookLogin from 'react-facebook-login';
+import { loginUser, signUpUser, fbLoginUser } from '../../actions/index';
 import App from '../app';
 import SignUpForm from './signup_form';
 import LoginForm from './login_form';
+import config from '../../../config/config';
 
 class AuthCard extends Component {
 
     onSignUpSubmit(values) {
-        const {signUpEmail, signUpPassword} = values;
+        this.props.signUpUser(values);
     }
 
     onLoginSubmit(values) {
 
         this.props.loginUser(values);
+    }
+
+    fbCallback(response) {
+        //send user credentials to server
+        this.props.fbLoginUser(response.accessToken);
     }
 
     render() {
@@ -28,9 +36,14 @@ class AuthCard extends Component {
                 <div className="col-xs-12 col-md-4 col-lg-4">
                     <div className="card card-container landing-card">
                         <div className="panel-group">
-                            <a href="" className="btn btn-block btn-social btn-facebook">
-                                <span className="fa fa-facebook" aria-hidden="true"></span> Facebook
-                            </a>
+                            <FacebookLogin
+                                appId={config.facebookAuth.clientID}
+                                autoLoad={false}
+                                fields={config.facebookAuth.fields}
+                                callback={this.fbCallback.bind(this)}
+                                scope="public_profile,user_friends,email"
+                                cssClass="btn btn-block btn-social btn-facebook"
+                                icon="fa fa-facebook" />
 
                             <a href="" className="btn btn-block btn-social btn-google">
                                 <span className="fa fa-google"></span> Google
@@ -90,4 +103,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect (mapStateToProps, {loginUser}) (AuthCard);
+export default connect (mapStateToProps, {loginUser, signUpUser, fbLoginUser}) (AuthCard);

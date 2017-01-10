@@ -55,6 +55,7 @@
     "react": "^15.4.2",
     "react-bootstrap-tabs": "0.0.1",
     "react-dom": "^15.4.2",
+    "react-facebook-login": "^3.4.3",
     "react-modal-dialog": "^4.0.3",
     "react-notification-system": "^0.2.11",
     "react-notification-system-redux": "^1.0.11",

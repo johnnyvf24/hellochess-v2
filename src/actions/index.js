@@ -13,6 +13,68 @@ import Notifications from 'react-notification-system-redux';
 
 const ROOT_URL = 'http://localhost:3000';
 
+export function fbLoginUser(token) {
+    return (dispatch) => {
+        axios.post(`${ROOT_URL}/api/auth/facebook/token`, {
+            access_token: token
+        }).then((res) => {
+            localStorage.setItem('token', res.headers['x-auth']);
+            localStorage.setItem('profile', JSON.stringify(res.data));
+            browserHistory.push('/live');
+            return dispatch({type: LOGIN_SUCCESS, payload: res.data});
+        }).catch((e) => {
+            const notificationOpts = {
+                // uid: 'once-please', // you can specify your own uid if required
+                title: 'Failed to authenticate',
+                message: error.response.data,
+                position: 'tc',
+                autoDismiss: 0
+            };
+
+            //Show failed log in
+            dispatch(
+                Notifications.error(notificationOpts)
+            );
+
+            dispatch({type: LOGIN_ERROR});
+        })
+    }
+}
+
+export function signUpUser({signUpEmail, signUpPassword}) {
+    return (dispatch) => {
+        const data = {
+            email: signUpEmail,
+            password: signUpPassword
+        }
+        axios.post(`${ROOT_URL}/api/users/signup`, data)
+            .then((res) => {
+                //Save access token to local storage
+                localStorage.setItem('token', res.headers['x-auth']);
+                localStorage.setItem('profile', JSON.stringify(res.data));
+                //redirect to main page
+                browserHistory.push('/live');
+                return dispatch({type: LOGIN_SUCCESS, payload: res.data});
+            })
+            .catch(function (error) {
+                const notificationOpts = {
+                    // uid: 'once-please', // you can specify your own uid if required
+                    title: 'Authentication error',
+                    message: error.response.data,
+                    position: 'tc',
+                    autoDismiss: 0
+                };
+
+                //Show failed log in
+                dispatch(
+                    Notifications.error(notificationOpts)
+                );
+
+                dispatch({type: LOGIN_ERROR});
+            })
+    }
+}
+
 export function loginUser({loginEmail, loginPassword}) {
     return (dispatch) => {
         const data = {
@@ -26,10 +88,10 @@ export function loginUser({loginEmail, loginPassword}) {
                 localStorage.setItem('token', res.headers['x-auth']);
                 localStorage.setItem('profile', JSON.stringify(res.data));
                 //redirect to main page
+                dispatch({type: LOGIN_SUCCESS, payload: res.data});
                 browserHistory.push('/live');
-                return dispatch({type: LOGIN_SUCCESS, payload: res.data});
             })
-            .catch((e) =>{
+            .catch((res) =>{
                 const notificationOpts = {
                     // uid: 'once-please', // you can specify your own uid if required
                     title: 'Authentication error',
