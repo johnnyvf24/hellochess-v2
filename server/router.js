@@ -6,7 +6,8 @@ const passport = require('passport');
 const requireAuth = passport.authenticate('jwt', {session: false});
 const requireLogin = passport.authenticate('local', {session: false});
 
-const requireFBCallBack = passport.authenticate('facebook-token');
+const requireFB = passport.authenticate('facebook-token');
+const requireGoogle = passport.authenticate('google-plus-token');
 
 module.exports = function(app) {
 
@@ -16,7 +17,8 @@ module.exports = function(app) {
     //Authentication routes
     app.post('/api/users/signup', Authentication.signup);
     app.post('/api/users/login', requireLogin, Authentication.login);
-    app.post('/api/auth/facebook/token', requireFBCallBack, Authentication.fbLogin);
+    app.post('/api/auth/facebook/token', requireFB, Authentication.fbLogin);
+    app.get('/api/auth/google/token', requireGoogle, Authentication.googleLogin)
 
     app.patch('/api/users/:id', requireAuth, User.updateUser);
 

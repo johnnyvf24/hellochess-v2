@@ -24,9 +24,9 @@ exports.signup = (req, res, next) => {
     }).then((token) => {
         res.header('x-auth', token).send(user);
     }).catch((e) => {
-        if(e.code === 11000) {
-            res.status(422).send("Email already in use!");
-        }
+        // if(e.code === 11000) {
+        //     res.status(422).send("Email already in use!");
+        // }
         res.status(400);
     })
 }
@@ -40,6 +40,14 @@ exports.login = (req, res, next) => {
 }
 
 exports.fbLogin = (req, res) => {
+    req.user.generateAuthToken().then((token) => {
+        res.header('x-auth', token).send(req.user);
+    }).catch((e) => {
+        res.status(401).send();
+    })
+}
+
+exports.googleLogin = (req, res) => {
     req.user.generateAuthToken().then((token) => {
         res.header('x-auth', token).send(req.user);
     }).catch((e) => {

@@ -13,6 +13,35 @@ import Notifications from 'react-notification-system-redux';
 
 const ROOT_URL = 'http://localhost:3000';
 
+export function googleLoginUser(token) {
+    return (dispatch) => {
+        axios.get(`${ROOT_URL}/api/auth/google/token?access_token=${token}`, {
+            access_token: token
+        }).then((res) => {
+            localStorage.setItem('token', res.headers['x-auth']);
+            localStorage.setItem('profile', JSON.stringify(res.data));
+            dispatch({type: LOGIN_SUCCESS, payload: res.data});
+            browserHistory.push('/live');
+        }).catch((e) => {
+
+            const notificationOpts = {
+                // uid: 'once-please', // you can specify your own uid if required
+                title: 'Failed to authenticate through Google',
+                message: e.response.data,
+                position: 'tc',
+                autoDismiss: 0
+            };
+
+            //Show failed log in
+            dispatch(
+                Notifications.error(notificationOpts)
+            );
+
+            dispatch({type: LOGIN_ERROR});
+        })
+    }
+}
+
 export function fbLoginUser(token) {
     return (dispatch) => {
         axios.post(`${ROOT_URL}/api/auth/facebook/token`, {
@@ -20,13 +49,13 @@ export function fbLoginUser(token) {
         }).then((res) => {
             localStorage.setItem('token', res.headers['x-auth']);
             localStorage.setItem('profile', JSON.stringify(res.data));
+            dispatch({type: LOGIN_SUCCESS, payload: res.data});
             browserHistory.push('/live');
-            return dispatch({type: LOGIN_SUCCESS, payload: res.data});
         }).catch((e) => {
             const notificationOpts = {
                 // uid: 'once-please', // you can specify your own uid if required
-                title: 'Failed to authenticate',
-                message: error.response.data,
+                title: 'Failed to authenticate through FB',
+                message: e.response.data,
                 position: 'tc',
                 autoDismiss: 0
             };
@@ -53,8 +82,9 @@ export function signUpUser({signUpEmail, signUpPassword}) {
                 localStorage.setItem('token', res.headers['x-auth']);
                 localStorage.setItem('profile', JSON.stringify(res.data));
                 //redirect to main page
+
+                dispatch({type: LOGIN_SUCCESS, payload: res.data});
                 browserHistory.push('/live');
-                return dispatch({type: LOGIN_SUCCESS, payload: res.data});
             })
             .catch(function (error) {
                 const notificationOpts = {

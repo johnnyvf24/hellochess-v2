@@ -1,11 +1,65 @@
 import React, {Component} from 'react';
+import { connect } from 'react-redux';
+import Select from 'react-select';
 
-function NewGame(props) {
-    return (
-        <div className="row">
-            <button type="button" className="btn btn-warning">New Game</button>
-        </div>
-    );
+import CreateGameRoom from './create_game/create_game_room';
+import NewGameModalContent from './create_game/new_game_modal_content';
+
+
+class NewGame extends Component {
+
+    constructor(props) {
+        super(props);
+
+        this.renderModal = this.renderModal.bind(this);
+        this.renderModalContent = this.renderModalContent.bind(this);
+    }
+
+
+    renderModalContent() {
+        if(this.props.makingGameRoom) {
+            return <CreateGameRoom />
+        } else {
+            return <NewGameModalContent />
+        }
+    }
+
+    renderModal() {
+
+        return (
+            <div className="modal fade"
+                id="new-game-modal"
+                role="dialog"
+                aria-hidden="true">
+                <div className="modal-dialog" role="document">
+                    {this.renderModalContent()}
+                </div>
+            </div>
+        );
+    }
+
+    render() {
+        return (
+            <div className="row">
+                <button
+                    type="button"
+                    className="btn btn-warning"
+                    data-toggle="modal"
+                    data-target="#new-game-modal">
+                    New Game
+                </button>
+
+                {this.renderModal()}
+            </div>
+        );
+    }
+
 }
 
-export default NewGame;
+function mapStateToProps(state) {
+    return {
+        makingGameRoom: state.newGameOptions.isMakingGameRoom
+    }
+}
+
+export default connect(mapStateToProps) (NewGame);

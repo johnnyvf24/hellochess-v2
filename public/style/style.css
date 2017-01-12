@@ -11,6 +11,10 @@ body .container-fluid {
     height: 80%;
 }
 
+.btn-google {
+    margin-top: 10px;
+}
+
 .landing-card {
     background-color: #76bdd5;
     padding: 60px;
@@ -255,4 +259,16 @@ body .container-fluid {
 
 .nav-link {
     background-color: #d6d6d6;
+}
+
+.fa-stack {
+    color: black;
+}
+
+.fa-stack:hover {
+    cursor: pointer;
+}
+
+.voice-chat-enable-disable {
+    margin-top: 15px;
 }

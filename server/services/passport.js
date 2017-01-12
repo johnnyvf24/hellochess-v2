@@ -1,7 +1,8 @@
 const passport = require('passport');
 const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
-var FacebookTokenStrategy = require('passport-facebook-token');
+const FacebookTokenStrategy = require('passport-facebook-token');
+const GooglePlusTokenStrategy = require('passport-google-plus-token');
 const {User} = require('../models/user');
 const config  = require('../../config/config');
 const LocalStrategy = require('passport-local');
@@ -60,7 +61,6 @@ const { clientID, clientSecret, callbackURL, profileFields } = config.facebookAu
 const FBLogin = new FacebookTokenStrategy({ clientID, clientSecret, profileFields },
     function(accessToken, refreshToken, profile, done) {
         User.findOne({'socialProvider.id': profile.id}, (err, user) => {
-            // console.log(JSON.stringify(profile, null, 2));
             if(err) {
                 return done()
             }
@@ -89,6 +89,42 @@ const FBLogin = new FacebookTokenStrategy({ clientID, clientSecret, profileField
     }
 );
 
+const { GoogleClientID, GoogleClientSecret } = config.googleAuth;
+
+const GoogleLogin = new GooglePlusTokenStrategy({
+    clientID: GoogleClientID,
+    clientSecret: GoogleClientSecret,
+    passReqToCallback: true },
+    function(req, accessToken, refreshToken, profile, done) {
+        User.findOne({'socialProvider.id': profile.id}, (err, user) => {
+            if(err) {
+                return done()
+            }
+            if(user) {
+                return done(null, user);
+            }
+            else {
+                let newUser = new User();
+
+                newUser.socialProvider.name = profile.provider
+                newUser.socialProvider.id = profile.id;
+                newUser.social = true;
+                newUser.name = profile.name.givenName + ' ' + profile.name.familyName ;
+                newUser.email = profile.emails[0].value;
+                newUser.picture = profile._json.image.url;
+                newUser.social.token = accessToken;
+
+                newUser.save((err) => {
+                    if(err) {
+                        console.log(err)
+                    }
+                    return done(null, newUser);
+                });
+            }
+        })
+    }
+);
+
 passport.serializeUser(function(user, cb) {
   cb(null, user);
 });
@@ -101,3 +137,4 @@ passport.deserializeUser(function(obj, cb) {
 passport.use(jwtLogin);
 passport.use(localLogin);
 passport.use(FBLogin);
+passport.use(GoogleLogin);

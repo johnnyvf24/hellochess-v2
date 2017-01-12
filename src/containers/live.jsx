@@ -29,7 +29,7 @@ class Live extends Component {
 
     logout() {
         this.props.logout();
-        browserHistory.replace('/login')
+        browserHistory.replace('/')
     }
 
     onCloseError(event) {
@@ -110,7 +110,7 @@ class Live extends Component {
                             <NewGame/>
                         </div>
                         <div id="board-wrapper" className="row flex-items-xs-center">
-                            <div className="col-xs-10 col-sm-10 col-md-8 col-lg-6">
+                            <div className="col-xs-10 col-sm-10 col-md-8 col-lg-7">
                                 <TwoBoard/>
                             </div>
                         </div>

@@ -2,7 +2,8 @@ import React, { Component, PropTypes } from 'react';
 import { connect, bindActionCreators } from 'react-redux';
 import { Link } from 'react-router';
 import FacebookLogin from 'react-facebook-login';
-import { loginUser, signUpUser, fbLoginUser } from '../../actions/index';
+import GoogleLogin from 'react-google-login';
+import { loginUser, signUpUser, fbLoginUser, googleLoginUser } from '../../actions/index';
 import App from '../app';
 import SignUpForm from './signup_form';
 import LoginForm from './login_form';
@@ -24,6 +25,10 @@ class AuthCard extends Component {
         this.props.fbLoginUser(response.accessToken);
     }
 
+    googleCallback(response) {
+        this.props.googleLoginUser(response.accessToken);
+    }
+
     render() {
         const { errorMessage } = this.props;
         return (
@@ -36,18 +41,26 @@ class AuthCard extends Component {
                 <div className="col-xs-12 col-md-4 col-lg-4">
                     <div className="card card-container landing-card">
                         <div className="panel-group">
-                            <FacebookLogin
-                                appId={config.facebookAuth.clientID}
-                                autoLoad={false}
-                                fields={config.facebookAuth.fields}
-                                callback={this.fbCallback.bind(this)}
-                                scope="public_profile,user_friends,email"
-                                cssClass="btn btn-block btn-social btn-facebook"
-                                icon="fa fa-facebook" />
-
-                            <a href="" className="btn btn-block btn-social btn-google">
-                                <span className="fa fa-google"></span> Google
-                            </a>
+                            <div>
+                                <FacebookLogin
+                                    appId={config.facebookAuth.clientID}
+                                    autoLoad={false}
+                                    fields={config.facebookAuth.fields}
+                                    callback={this.fbCallback.bind(this)}
+                                    scope="public_profile,user_friends,email"
+                                    cssClass="btn btn-block btn-social btn-facebook"
+                                    icon="fa fa-facebook"
+                                />
+                            </div>
+                            <div>
+                                <GoogleLogin
+                                    clientId={config.googleAuth.GoogleClientID}
+                                    onSuccess={this.googleCallback.bind(this)}
+                                    className="btn btn-block btn-social btn-google">
+                                    Connect with Google
+                                    <span className="fa fa-google"></span>
+                                </GoogleLogin>
+                            </div>
                         </div>
                         <hr />
 
@@ -103,4 +116,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect (mapStateToProps, {loginUser, signUpUser, fbLoginUser}) (AuthCard);
+export default connect (mapStateToProps, {loginUser, signUpUser, fbLoginUser, googleLoginUser}) (AuthCard);

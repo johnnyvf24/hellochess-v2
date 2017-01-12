@@ -6,6 +6,7 @@ import error from './error_reducer';
 import existingChatRooms from './chat_rooms_reducer';
 import threads from './threads_reducer';
 import AuthReducer from './auth_reducer';
+import newGameOptions from './new_game_reducer';
 
 import {SELECTED_CHAT} from '../actions/types';
 
@@ -34,7 +35,6 @@ function openThreads(state = {}, action) {
         default:
             return state;
     }
-    return
 }
 
 
@@ -44,6 +44,7 @@ const rootReducer = combineReducers({
     existingChatRooms,      //A list of all Open Chat Rooms
     activeThread,
     openThreads,
+    newGameOptions,
     auth: AuthReducer,
     form: formReducer
 });
