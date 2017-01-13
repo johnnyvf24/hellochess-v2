@@ -1,9 +1,11 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import {showError} from '../actions/index'
 
 import Notifications from 'react-notification-system-redux';
 
 class App extends Component {
+
     render() {
         const {notifications} = this.props;
 
@@ -33,9 +35,10 @@ class App extends Component {
 
 
 function mapStateToProps(state) {
+    console.log(state);
     return {
         notifications: state.notifications
     }
 }
 
-export default connect(mapStateToProps)(App)
+export default connect(mapStateToProps, {showError})(App)

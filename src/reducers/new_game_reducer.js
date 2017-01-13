@@ -21,6 +21,8 @@ const initialState = {
     room: {
         name: 'random' + makeid(),
         voiceChat: false,
+        maxPlayers: 50,
+        private: false
     }
 }
 
@@ -41,6 +43,10 @@ export default function newGameOptions (state=initialState, action) {
         }
         case ActionTypes.RESET_NEW_GAME_MODAL:
             return initialState;
+        case ActionTypes.SET_MAX_PLAYERS:
+            return {...state, room: {...state.room, maxPlayers: action.payload}}
+        case ActionTypes.TOGGLE_PRIVATE:
+            return {...state, room: {...state.room, private: !state.room.private}}
         default:
             return state;
     }

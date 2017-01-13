@@ -30,7 +30,8 @@ class NewGame extends Component {
             <div className="modal fade"
                 id="new-game-modal"
                 role="dialog"
-                aria-hidden="true">
+                aria-hidden="true"
+                data-backdrop="static">
                 <div className="modal-dialog" role="document">
                     {this.renderModalContent()}
                 </div>

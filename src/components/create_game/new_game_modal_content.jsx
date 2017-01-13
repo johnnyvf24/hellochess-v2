@@ -13,7 +13,7 @@ import {
 const gameTypeOptions = [
     { value: 'two-player', label: 'Two Player'},
     { value: 'four-player', label: 'Four Player'},
-    { value: 'four-player', label: 'Four Player Teams'}
+    { value: 'four-player-team', label: 'Four Player Teams'}
 ]
 
 class NewGameModalContent extends Component {
@@ -47,7 +47,7 @@ class NewGameModalContent extends Component {
     }
 
     onSelectGameType(val) {
-        this.props.selectedGameType(val);
+        this.props.selectedGameType(val.value);
     }
 
     onChangeTime(event) {

@@ -3,12 +3,11 @@ import { connect } from 'react-redux';
 import MessageSend from '../containers/message_send';
 import MessageList from '../components/message_list';
 import {mapObject} from '../utils/';
-import { selectedChat, joinChat, userConnect } from '../actions';
+import { selectedChat, joinChat } from '../actions';
 
 class ChatViewer extends Component {
 
     componentWillMount() {
-        this.props.userConnect(this.props.profile);    //Connect the user to the server
         this.props.joinChat('Global');                  //join the default chatroom
     }
 
@@ -125,4 +124,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, {selectedChat, joinChat, userConnect}) (ChatViewer);
+export default connect(mapStateToProps, {selectedChat, joinChat}) (ChatViewer);

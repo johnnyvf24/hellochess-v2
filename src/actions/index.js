@@ -54,7 +54,7 @@ export function fbLoginUser(token) {
         }).catch((e) => {
             const notificationOpts = {
                 // uid: 'once-please', // you can specify your own uid if required
-                title: 'Failed to authenticate through FB',
+                title: 'Failed to authenticate through Facebook',
                 message: e.response.data,
                 position: 'tc',
                 autoDismiss: 0
@@ -220,5 +220,22 @@ export function joinChat(name) {
             type: 'server/join-chat',
             payload: obj
         });
+    }
+}
+
+export function showError(error) {
+    return (dispatch) => {
+        const notificationOpts = {
+            // uid: 'once-please', // you can specify your own uid if required
+            title: 'oops...',
+            message: error,
+            position: 'tc',
+            autoDismiss: 2
+        };
+
+        //Show failed log in
+        dispatch(
+            Notifications.error(notificationOpts)
+        );
     }
 }

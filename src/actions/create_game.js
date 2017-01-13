@@ -5,7 +5,9 @@ import {
     CREATE_GAME_ROOM,
     GAME_ROOM_NAME,
     ENABLE_VOICE_CHAT,
-    RESET_NEW_GAME_MODAL
+    RESET_NEW_GAME_MODAL,
+    SET_MAX_PLAYERS,
+    TOGGLE_PRIVATE
 } from './types';
 
 export function selectedGameType(value) {
@@ -51,5 +53,30 @@ export function enableVoiceChat() {
 export function resetNewGameModal() {
     return {
         type: RESET_NEW_GAME_MODAL
+    }
+}
+
+export function changeMaxPlayers(value) {
+    return {
+        type: SET_MAX_PLAYERS,
+        payload: value
+    }
+}
+
+export function togglePrivate() {
+    return {
+        type: TOGGLE_PRIVATE
+    }
+}
+
+export function finalizeGameRoom(game, host) {
+    delete game.isMakingGameRoom;
+    delete host.email;
+    game.host = host;
+    return (dispatch) => {
+        return dispatch({
+            type: 'server/new-gameroom',
+            payload: game
+        });
     }
 }

@@ -1,9 +1,22 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {gameRoomNameChange, enableVoiceChat, resetNewGameModal} from '../../actions/create_game';
+import {
+    gameRoomNameChange,
+    enableVoiceChat,
+    resetNewGameModal,
+    changeMaxPlayers,
+    togglePrivate,
+    finalizeGameRoom
+ } from '../../actions/create_game';
+import {showError} from '../../actions'
 import ToggleButton from 'react-toggle-button'
 
-class CreateGameRoom extends Component{
+function isNormalInteger(str) {
+    var n = Math.floor(Number(str));
+    return String(n) === str && n >= 0;
+}
+
+class CreateGameRoom extends Component {
 
     onInputChange(event) {
         this.props.gameRoomNameChange(event.target.value);
@@ -61,6 +74,19 @@ class CreateGameRoom extends Component{
 
     }
 
+    onChangeMaxInput(event) {
+        if(event.target.value && !isNormalInteger(event.target.value)) {
+            return this.props.showError('Invalid value in input!')
+        }
+
+        this.props.changeMaxPlayers(event.target.value);
+    }
+
+    submitRoom() {
+        this.props.resetNewGameModal()
+        this.props.finalizeGameRoom(this.props.game, this.props.profile);
+    }
+
     render() {
         return (
             <div className="modal-content">
@@ -94,12 +120,27 @@ class CreateGameRoom extends Component{
                             <div className="col-xs-6">
                                 <input type="text"
                                     className="form-control"
-                                    placeholder="Min Players" />
+                                    value={this.props.room.maxPlayers}
+                                    placeholder="max-players"
+                                    onChange={this.onChangeMaxInput.bind(this)}/>
                             </div>
                             <div className="col-xs-6">
-                                <input type="text"
-                                    className="form-control"
-                                    placeholder="max-players" />
+                                <label
+                                    className="private-game-option-label">
+                                    Private game{'?'}
+                                </label>
+                                <div className="private-game-option">
+                                    <ToggleButton
+                                        inactiveLabel={'NO'}
+                                        activeLabel={'YES'}
+                                        value={this.props.room.private}
+                                        onToggle={(value) => {
+                                                this.props.togglePrivate();
+                                            }
+                                        }
+                                    />
+                                </div>
+
                             </div>
                         </div>
 
@@ -119,7 +160,9 @@ class CreateGameRoom extends Component{
                         Cancel
                     </button>
                     <button type="button"
-                        className="btn btn-warning">
+                        className="btn btn-warning"
+                        data-dismiss="modal"
+                        onClick={this.submitRoom.bind(this)}>
                         Create Game
                     </button>
                 </div>
@@ -130,8 +173,17 @@ class CreateGameRoom extends Component{
 
 function mapStateToProps(state) {
     return {
-        room: state.newGameOptions.room
+        room: state.newGameOptions.room,
+        game: state.newGameOptions,
+        profile: state.auth.profile
     }
 }
 
-export default connect(mapStateToProps, {gameRoomNameChange, enableVoiceChat, resetNewGameModal}) (CreateGameRoom)
+export default connect(mapStateToProps, {gameRoomNameChange,
+    enableVoiceChat,
+    resetNewGameModal,
+    showError,
+    changeMaxPlayers,
+    togglePrivate,
+    finalizeGameRoom
+}) (CreateGameRoom)
