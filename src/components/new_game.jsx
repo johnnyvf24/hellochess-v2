@@ -41,13 +41,13 @@ class NewGame extends Component {
 
     render() {
         return (
-            <div className="row">
+            <div>
                 <button
                     type="button"
                     className="btn btn-warning"
                     data-toggle="modal"
                     data-target="#new-game-modal">
-                    New Game
+                    Create Game
                 </button>
 
                 {this.renderModal()}

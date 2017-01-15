@@ -22,7 +22,6 @@ function activeThread (state = 'Global', action) {
 function openThreads(state = {}, action) {
     let obj = null;
     switch(action.type) {
-        case 'duplicate-login':
         case 'user-room-joined':
             const users = action.payload.users;
             obj = {...state[action.payload.name], users};
@@ -38,12 +37,12 @@ function openThreads(state = {}, action) {
     }
 }
 
-function connection(state = {connected: false, error: true}, action) {
+function connection(state = {status: false, error: false}, action) {
     switch(action.type) {
         case 'duplicate-login':
-            return {status: false, error: 'Detected multiple logins!'};
+            return {status: false, error: true};
         case 'connected':
-            return {status: true, error: false};
+            return {status: true};
         default:
             return state;
     }

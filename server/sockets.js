@@ -62,26 +62,25 @@ module.exports = function(io) {
                         if(val.user._id === action.payload.user._id) {
                             //same user
                             foundDuplicate = true;
-                            return socket.emit('action', {
-                                type: 'duplicate-login'
-                            });
                         }
                     });
                     if(foundDuplicate) {
-                        return;
+                        return socket.emit('action', {
+                            type: 'duplicate-login'
+                        });
+                    } else {
+                        //set the clients obj with the user's info
+                        clients[socket.id] = action.payload;
+
+                        //maintain a list of all the rooms this user is in.
+                        clients[socket.id].rooms = [];
+                        socket.username = action.payload.user.username;
+
+                        socket.emit('action', {
+                            type: 'connected'
+                        })
                     }
 
-
-                    //set the clients obj with the user's info
-                    clients[socket.id] = action.payload;
-
-                    //maintain a list of all the rooms this user is in.
-                    clients[socket.id].rooms = [];
-                    socket.username = action.payload.user.username;
-
-                    socket.emit('action', {
-                        type: 'connected'
-                    })
                     break;
                 case 'server/new-message':
                     io.to(action.payload.thread).emit('action', {

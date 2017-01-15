@@ -29,10 +29,9 @@ class ExistingChatRoomList extends Component {
         // console.log(chatRooms);
         return (
             <div
+                id="chat-list"
                 className="tab-pane"
-                id="chat-room-list"
-                role="tabpanel"
-                style={{padding: "0px"}}>
+                role="tabpanel">
                 <ul className="list-group">
 
                     {chatRooms.map(this.renderChatRoomItems)}

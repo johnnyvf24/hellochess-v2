@@ -52,6 +52,15 @@ body .container-fluid {
     margin-bottom: 10px;
 }
 
+.center {
+    margin: auto;
+    padding: 10px;
+}
+
+#main-loading-message {
+    color: black;
+}
+
 #main-content, #main-panel, #wrapper {
     height: 100%;
 }
@@ -171,53 +180,6 @@ body .container-fluid {
     cursor: pointer;
 }
 
-#right-side-wrapper {
-    height: 103%;
-    display: flex;
-    flex-direction: column;
-}
-
-#top-btns-wrapper {
-    flex: 0 0 auto;
-}
-
-#board-wrapper {
-    flex: 1 0 auto;
-    padding-top: 15px;
-    padding-bottom: 15px;
-}
-
-#board {
-    display: block;
-}
-
-/* Tab list wrapper */
-#right-bottom-wrapper {
-    flex: 1 1 auto;
-}
-
-/* The bottom right hand side tablist */
-#right-bottom {
-    flex: 1;
-    margin: 0px;
-    margin-right: 15px;
-    padding: 0px;
-    display: block;
-}
-
-#right-bottom .nav-tabs {
-    border-radius: 5px;
-
-}
-
-#right-bottom .tab-content {
-    background-color: #d6d6d6;
-    height: 87%;
-    border-radius: 5px;
-    overflow-y: auto;
-}
-
-
 /* NAV TABS FULL WIDTH OF PARENT FIX */
 
 .nav-justified {
@@ -257,6 +219,13 @@ body .container-fluid {
   /*---------------------------------------------*/
 
 
+#start-game-btns .btn {
+    margin-bottom: 15px;
+    margin-left: 1px;
+    margin-right: 1px;
+}
+
+
 .nav-link {
     background-color: #d6d6d6;
 }
@@ -285,4 +254,9 @@ body .container-fluid {
     margin-top: 10px;
     display: inline;
     margin-bottom: none;
+}
+
+#time-ads-column {
+    padding-top: 50px;
+    margin-right: -15px;
 }

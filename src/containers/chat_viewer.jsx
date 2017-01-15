@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import MessageSend from '../containers/message_send';
 import MessageList from '../components/message_list';
+import ExistingChatRoomList from './existing_chat_room_list';
 import {mapObject} from '../utils/';
 import { selectedChat, joinChat } from '../actions';
 
@@ -105,9 +106,19 @@ class ChatViewer extends Component {
             <div id="left-chatbox">
 
                 <ul className="nav nav-tabs nav-justified">
+                    <li className="nav-item">
+                        <a className="nav-link"
+                            data-toggle="tab"
+                            href="#chat-list"
+                            role="tab"
+                            onClick={(event) => this.onTabClick("Chat Rooms")}>
+                            Chat Rooms
+                        </a>
+                    </li>
                     {this.renderNavTab(openThreads, activeThread)}
                 </ul>
                 <div id="chat-tab-content" className="tab-content">
+                    <ExistingChatRoomList />
                     {this.renderTabContent(openThreads, activeThread)}
                 </div>
 

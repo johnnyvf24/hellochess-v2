@@ -60,6 +60,7 @@
     "react-dom": "^15.4.2",
     "react-facebook-login": "^3.4.3",
     "react-google-login": "^2.7.0",
+    "react-loading": "0.0.9",
     "react-modal-dialog": "^4.0.3",
     "react-notification-system": "^0.2.11",
     "react-notification-system-redux": "^1.0.11",

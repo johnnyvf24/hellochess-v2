@@ -4,12 +4,12 @@ import { bindActionCreators } from 'redux';
 import { browserHistory } from 'react-router';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import ReactTimeout from 'react-timeout';
+var Loading = require('react-loading');
 
 import SearchBar from '../components/search_bar';
 import TwoBoard from '../components/two_board';
 import ChatViewer from '../containers/chat_viewer';
 import NewGame from '../components/new_game';
-import AvailableRooms from '../components/available_rooms';
 import { logout, saveUsername, clearError, userConnect} from '../actions'
 
 class Live extends Component {
@@ -77,25 +77,34 @@ class Live extends Component {
     }
 
     render() {
-
         if(this.props.connection.error) {
             return <div>
                 <ModalContainer >
                   <ModalDialog>
-                      Multiple Logins detected!
+                      <div className="row">
+                          <strong className="center">Multiple Logins detected!</strong>
+                      </div>
+                      <p>Please check that only one tab is open or that you are only logged in on one device</p>
                   </ModalDialog>
                 </ModalContainer>
             </div>
         }
 
-        if(!this.props.profile) {
+        else if(!this.props.connection.status) {
             return (
-                <div>Loading...</div>
-            )
-        }
+                <div>
+                    <div className="row">
+                        <div className="center">
+                            <Loading type='cylon' color='#e3e3e3' >
+                            </Loading>
+                        </div>
 
-        if(!this.props.connection.status) {
-            return <div>Attempting to connect!</div>
+                    </div>
+                    <div className="row">
+                        <h2 id="main-loading-message" className="center">Connecting To Server</h2>
+                    </div>
+                </div>
+            );
         }
         else {
             return (
@@ -103,7 +112,6 @@ class Live extends Component {
                     { this.renderInputUsername() }
 
                     <div className="row flex-items-xs-right">
-
                         <div className="col-xs-10 col-md-6 col-lg-4">
                             <SearchBar/>
                         </div>
@@ -121,21 +129,83 @@ class Live extends Component {
                     </div>
 
                     <div id="wrapper" className="row">
-                        <div id="chatbox-wrapper" className="hidden-sm-down col-md-4 col-lg-6">
+                        <div id="chatbox-wrapper" className="hidden-sm-down col-md-6">
                             <ChatViewer username=""/>
                         </div>
-                        <div id="right-side-wrapper" className="col-sm-12 col-md-8 col-lg-6 text-xs-center">
-                            <div id="top-btns-wrapper" className="row flex-items-xs-center">
+                        <div className="col-xs-12 col-sm-12 col-md-4">
+                            <div id="start-game-btns" className="row flex-items-xs-center">
                                 <NewGame/>
+                                <button type="button" className="btn btn-warning">Join Game</button>
+                                <button type="button" className="btn btn-warning">Game Rooms</button>
                             </div>
-                            <div id="board-wrapper" className="row flex-items-xs-center">
-                                <div className="col-xs-10 col-sm-10 col-md-8 col-lg-7">
-                                    <TwoBoard/>
+
+                            <div id="board-wrapper">
+                                <TwoBoard/>
+                            </div>
+
+                        </div>
+                        <div id="time-ads-column" className="col-xs-12 col-sm-12 col-md-2">
+
+                            <div className="col-xs-12">
+                                <div className="card">
+                                    <div className="card-block">
+                                        <h3 className="card-title">2:56</h3>
+                                        <div className="row">
+                                            <img className="rounded-circle" src={this.props.profile.picture} />
+                                            <div className="text-center">
+                                                <h4>{this.props.profile.username}</h4>
+                                                <h6>1245</h6>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div id="right-bottom-wrapper" className="row flex-items-xs-center">
-                                <AvailableRooms/>
+
+                            <div className="col-xs-12">
+                                <div className="card">
+                                    <div className="card-block">
+                                        <h3 className="card-title">2:56</h3>
+                                        <div className="row">
+                                            <img className="rounded-circle" src={this.props.profile.picture} />
+                                            <div className="text-center">
+                                                <h4>{this.props.profile.username}</h4>
+                                                <h6>1245</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
+
+                            <div className="col-xs-12">
+                                <div className="card">
+                                    <div className="card-block">
+                                        <h3 className="card-title">2:56</h3>
+                                        <div className="row">
+                                            <img className="rounded-circle" src={this.props.profile.picture} />
+                                            <div className="text-center">
+                                                <h4>{this.props.profile.username}</h4>
+                                                <h6>1245</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="col-xs-12">
+                                <div className="card">
+                                    <div className="card-block">
+                                        <h3 className="card-title">2:56</h3>
+                                        <div className="row">
+                                            <img className="rounded-circle" src={this.props.profile.picture} />
+                                            <div className="text-center">
+                                                <h4>{this.props.profile.username}</h4>
+                                                <h6>1245</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
