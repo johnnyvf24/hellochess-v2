@@ -26,7 +26,7 @@ function openThreads(state = {}, action) {
             const users = action.payload.users;
             obj = {...state[action.payload.name], users};
             return {...state, [action.payload.name]: obj};
-        case 'joined-chatroom':
+        case 'joined-room':
             return {...state, [action.payload.name]: action.payload };
         case 'receive-message':
             const messages = [...state[action.payload.thread].messages, action.payload];

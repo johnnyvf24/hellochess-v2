@@ -10,6 +10,7 @@ import SearchBar from '../components/search_bar';
 import TwoBoard from '../components/two_board';
 import ChatViewer from '../containers/chat_viewer';
 import NewGame from '../components/new_game';
+import BrowseGames from './browse_games';
 import { logout, saveUsername, clearError, userConnect} from '../actions'
 
 class Live extends Component {
@@ -28,12 +29,15 @@ class Live extends Component {
     }
 
     componentWillMount() {
+        this.props.dispatch({
+            type: 'server/get-chatrooms'
+        });
         this.props.userConnect(this.props.profile);    //Connect the user to the server
     }
 
     logout() {
         this.props.logout();
-        browserHistory.replace('/')
+        browserHistory.replace('/');
     }
 
     onCloseError(event) {
@@ -135,8 +139,7 @@ class Live extends Component {
                         <div className="col-xs-12 col-sm-12 col-md-4">
                             <div id="start-game-btns" className="row flex-items-xs-center">
                                 <NewGame/>
-                                <button type="button" className="btn btn-warning">Join Game</button>
-                                <button type="button" className="btn btn-warning">Game Rooms</button>
+                                <BrowseGames />
                             </div>
 
                             <div id="board-wrapper">
@@ -147,61 +150,57 @@ class Live extends Component {
                         <div id="time-ads-column" className="col-xs-12 col-sm-12 col-md-2">
 
                             <div className="col-xs-12">
-                                <div className="card">
+                                <div className="card player-card">
                                     <div className="card-block">
-                                        <h3 className="card-title">2:56</h3>
+
                                         <div className="row">
                                             <img className="rounded-circle" src={this.props.profile.picture} />
-                                            <div className="text-center">
-                                                <h4>{this.props.profile.username}</h4>
-                                                <h6>1245</h6>
-                                            </div>
+                                            <div className="card-text"><h5>{this.props.profile.username}</h5>1245</div>
                                         </div>
+
+                                        <h4 className="card-title pull-right">2:56</h4>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="col-xs-12">
-                                <div className="card">
-                                    <div className="card-block">
-                                        <h3 className="card-title">2:56</h3>
+                                <div className="card player-card">
+                                    <div className="card-block black-player">
+
                                         <div className="row">
                                             <img className="rounded-circle" src={this.props.profile.picture} />
-                                            <div className="text-center">
-                                                <h4>{this.props.profile.username}</h4>
-                                                <h6>1245</h6>
-                                            </div>
+                                            <div className="card-text"><h5>{this.props.profile.username}</h5>1245</div>
                                         </div>
+
+                                        <h4 className="card-title pull-right">2:56</h4>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="col-xs-12">
-                                <div className="card">
-                                    <div className="card-block">
-                                        <h3 className="card-title">2:56</h3>
+                                <div className="card player-card">
+                                    <div className="card-block gold-player">
+
                                         <div className="row">
                                             <img className="rounded-circle" src={this.props.profile.picture} />
-                                            <div className="text-center">
-                                                <h4>{this.props.profile.username}</h4>
-                                                <h6>1245</h6>
-                                            </div>
+                                            <div className="card-text"><h5>{this.props.profile.username}</h5>1245</div>
                                         </div>
+
+                                        <h4 className="card-title pull-right">2:56</h4>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="col-xs-12">
-                                <div className="card">
-                                    <div className="card-block">
-                                        <h3 className="card-title">2:56</h3>
+                                <div className="card player-card">
+                                    <div className="card-block red-player">
+
                                         <div className="row">
                                             <img className="rounded-circle" src={this.props.profile.picture} />
-                                            <div className="text-center">
-                                                <h4>{this.props.profile.username}</h4>
-                                                <h6>1245</h6>
-                                            </div>
+                                            <div className="card-text"><h5>{this.props.profile.username}</h5>1245</div>
                                         </div>
+
+                                        <h4 className="card-title pull-right">2:56</h4>
                                     </div>
                                 </div>
                             </div>

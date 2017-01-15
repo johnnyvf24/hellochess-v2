@@ -4,12 +4,12 @@ import MessageSend from '../containers/message_send';
 import MessageList from '../components/message_list';
 import ExistingChatRoomList from './existing_chat_room_list';
 import {mapObject} from '../utils/';
-import { selectedChat, joinChat } from '../actions';
+import { selectedChat, joinRoom } from '../actions';
 
 class ChatViewer extends Component {
 
     componentWillMount() {
-        this.props.joinChat('Global');                  //join the default chatroom
+        this.props.joinRoom('Global');                  //join the default chatroom
     }
 
     onTabClick(chatName) {
@@ -135,4 +135,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, {selectedChat, joinChat}) (ChatViewer);
+export default connect(mapStateToProps, {selectedChat, joinRoom}) (ChatViewer);

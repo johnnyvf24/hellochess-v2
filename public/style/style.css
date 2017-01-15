@@ -120,6 +120,16 @@ body .container-fluid {
     height: 100%;
 }
 
+#chat-list {
+    flex: 0 1 auto;
+    height: 100%;
+}
+
+.chatbox-chatroom-list {
+    display: block;
+    overflow-y: auto;
+}
+
 .chatbox-message-list {
     height: 100%;
     width: 100%;
@@ -225,6 +235,11 @@ body .container-fluid {
     margin-right: 1px;
 }
 
+tr:hover {
+    cursor: pointer;
+    background-color: #d5d5d5;
+}
+
 
 .nav-link {
     background-color: #d6d6d6;
@@ -259,4 +274,45 @@ body .container-fluid {
 #time-ads-column {
     padding-top: 50px;
     margin-right: -15px;
+    margin-left: 0px;
+    padding-left: 0px;
+}
+
+.player-card {
+    border: none;
+    border-radius: 5px;
+}
+
+.player-card .card-block {
+    padding-top: 5px;
+    padding-bottom: 0px;
+    padding-left: 20px;
+    padding-right: 15px;
+    margin: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+    border-radius: 5px;
+}
+
+.player-card .card-block .row {
+    overflow-x: hidden;
+}
+
+.player-card .card-block .row .card-text {
+    padding-left: 5px;
+}
+
+.player-card .black-player {
+    background-color: black;
+    color: white;
+}
+
+.player-card .red-player {
+    background-color: red;
+    color: white;
+}
+
+.player-card .gold-player {
+    background-color: gold;
+    color: black;
 }

@@ -193,7 +193,7 @@ export function userConnect(profile) {
     }
 }
 
-export function newChat(name) {
+export function newRoom(name) {
     return (dispatch) => {
         let obj = {};
         obj[name] = {
@@ -202,13 +202,13 @@ export function newChat(name) {
         }
 
         return dispatch({
-            type: 'server/new-chat',
+            type: 'server/new-room',
             payload: obj
         });
     }
 }
 
-export function joinChat(name) {
+export function joinRoom(name) {
     return (dispatch) => {
         let obj = {};
         obj[name] = {
@@ -217,7 +217,7 @@ export function joinChat(name) {
         }
 
         return dispatch({
-            type: 'server/join-chat',
+            type: 'server/join-room',
             payload: obj
         });
     }

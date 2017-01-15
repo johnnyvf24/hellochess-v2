@@ -47,7 +47,7 @@ class NewGame extends Component {
                     className="btn btn-warning"
                     data-toggle="modal"
                     data-target="#new-game-modal">
-                    Create Game
+                    Play
                 </button>
 
                 {this.renderModal()}

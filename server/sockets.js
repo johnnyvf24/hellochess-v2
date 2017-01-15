@@ -88,7 +88,7 @@ module.exports = function(io) {
                         payload: action.payload
                     });
                     break;
-                case 'server/join-chat':
+                case 'server/join-room':
                     chatObjName = [Object.keys(action.payload)[0]];
 
                     //Deep copy the Chat object
@@ -97,7 +97,7 @@ module.exports = function(io) {
                     if(!chatRoomExists(chatObj.name)) {
                         chatRooms.push(action.payload);
                         io.emit('action', {
-                            type: 'new-chatroom',
+                            type: 'all-chatrooms',
                             payload: chatRooms
                         });
                     }
@@ -109,7 +109,7 @@ module.exports = function(io) {
                     chatObj.users = getAllRoomMembers(chatObj.name);
 
                     socket.emit('action', {
-                        type: 'joined-chatroom',
+                        type: 'joined-room',
                         payload: chatObj
                     });
 
@@ -120,21 +120,21 @@ module.exports = function(io) {
                     })
 
                     break;
-                case 'server/new-chat':
+                case 'server/new-room':
                     chatObjName = [Object.keys(action.payload)[0]];
                     chatObj = JSON.parse(JSON.stringify(action.payload[chatObjName]));
                     delete action.payload[chatObjName].user;
-                    if(!chatRoomExists(chatObj.name)) {
+                    if(!chatRoomExists(chatObj.name) && chatObj.name !== "Chat Rooms") {
                         socket.join(chatObj.name);
                         chatRooms.push(action.payload);
                         clients[socket.id].rooms.push(chatObj.name);
                         io.emit('action', {
-                            type: 'new-chatroom',
+                            type: 'all-chatrooms',
                             payload: chatRooms
                         });
                         chatObj.users = getAllRoomMembers(chatObj.name);
                         socket.emit('action', {
-                            type: 'joined-chatroom',
+                            type: 'joined-room',
                             payload: chatObj
                         });
                     } else {
@@ -151,53 +151,10 @@ module.exports = function(io) {
                     break;
                 case 'server/get-chatrooms':
                     io.emit('action', {
-                        type: 'new-chatroom',
+                        type: 'all-chatrooms',
                         payload: chatRooms
                     });
                     break;
-                case 'server/new-gameroom':
-                    const gameRoomName = action.payload.room.name;
-
-                    //Better organize content
-                    const obj = {};
-                    obj[gameRoomName] = action.payload.room;
-                    obj[gameRoomName].time = action.payload.time;
-                    obj[gameRoomName].host = action.payload.host;
-                    obj[gameRoomName].users = [];
-
-                    switch(action.payload.gameType) {
-                        case 'four-player':
-                            if(!fourRoomExists(gameRoomName)) {
-                                socket.join(gameRoomName);
-                                fourRooms.push(obj);
-
-                                obj[gameRoomName].users = getAllRoomMembers(gameRoomName);
-                                io.emit('action', {
-                                    type: 'new-four-player-room',
-                                    payload: fourRooms
-                                });
-                                // console.log(JSON.stringify(obj, null, 2));
-                                // socket.emit('action', {
-                                //     type: 'joined-chatroom',
-                                //     payload: chatObj
-                                // });
-                            }
-                            break;
-                        case 'two-player':
-                            break;
-                        case 'four-player-team':
-                            break;
-                        default:
-                            //TODO error
-                            break;
-                    }
-                    break;
-                case 'server/get-four-player':
-                    // console.log(JSON.stringify(fourRooms, null, 2) );
-                    io.emit('action', {
-                        type: 'new-four-player-room',
-                        payload: fourRooms
-                    });
             }
         });
 

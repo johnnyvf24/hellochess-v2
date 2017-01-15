@@ -7,13 +7,6 @@ class ExistingChatRoomList extends Component {
     constructor (props) {
         super(props)
     }
-
-    componentWillMount() {
-        this.props.dispatch({
-            type: 'server/get-chatrooms'
-        })
-    }
-
     renderChatRoomItems(chatRoom) {
         return mapObject( chatRoom, (key, value) => {
             return (
@@ -26,13 +19,12 @@ class ExistingChatRoomList extends Component {
 
     render() {
         const { chatRooms } = this.props;
-        // console.log(chatRooms);
         return (
             <div
                 id="chat-list"
                 className="tab-pane"
                 role="tabpanel">
-                <ul className="list-group">
+                <ul className="list-group chatbox-chatroom-list">
 
                     {chatRooms.map(this.renderChatRoomItems)}
 

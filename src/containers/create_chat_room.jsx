@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 
-import {newChat} from '../actions/'
+import {newRoom} from '../actions/'
 
 class CreateChatRoom extends Component {
 
@@ -32,7 +32,7 @@ class CreateChatRoom extends Component {
                 nameChat: ''
             });
 
-            this.props.newChat(chatName);
+            this.props.newRoom(chatName);
 
             this.refs.modalClose.click();
         }
@@ -104,4 +104,4 @@ class CreateChatRoom extends Component {
     }
 }
 
-export default connect(null, {newChat}) (CreateChatRoom);
+export default connect(null, {newRoom}) (CreateChatRoom);
