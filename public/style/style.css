@@ -109,9 +109,10 @@ body .container-fluid {
     display: block;
 }
 
-.chatbox-top-stats {
+.chatbox-top-stats a{
     border-radius: 5px;
     margin-right: 20px;
+    margin-left: 20px;
 }
 
 .chatbox-message-list-wrapper {
@@ -315,4 +316,9 @@ tr:hover {
 .player-card .gold-player {
     background-color: gold;
     color: black;
+}
+
+.chat-room-item:hover {
+    cursor: pointer;
+    background-color: #e5e5e5;
 }

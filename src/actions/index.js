@@ -193,12 +193,13 @@ export function userConnect(profile) {
     }
 }
 
-export function newRoom(name) {
+export function newRoom(name, profile) {
     return (dispatch) => {
         let obj = {};
         obj[name] = {
             name: name,
             messages: [],
+            host: profile
         }
 
         return dispatch({

@@ -11,6 +11,7 @@ import TwoBoard from '../components/two_board';
 import ChatViewer from '../containers/chat_viewer';
 import NewGame from '../components/new_game';
 import BrowseGames from './browse_games';
+import PlayerTimes from './player_times';
 import { logout, saveUsername, clearError, userConnect} from '../actions'
 
 class Live extends Component {
@@ -148,63 +149,7 @@ class Live extends Component {
 
                         </div>
                         <div id="time-ads-column" className="col-xs-12 col-sm-12 col-md-2">
-
-                            <div className="col-xs-12">
-                                <div className="card player-card">
-                                    <div className="card-block">
-
-                                        <div className="row">
-                                            <img className="rounded-circle" src={this.props.profile.picture} />
-                                            <div className="card-text"><h5>{this.props.profile.username}</h5>1245</div>
-                                        </div>
-
-                                        <h4 className="card-title pull-right">2:56</h4>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="col-xs-12">
-                                <div className="card player-card">
-                                    <div className="card-block black-player">
-
-                                        <div className="row">
-                                            <img className="rounded-circle" src={this.props.profile.picture} />
-                                            <div className="card-text"><h5>{this.props.profile.username}</h5>1245</div>
-                                        </div>
-
-                                        <h4 className="card-title pull-right">2:56</h4>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="col-xs-12">
-                                <div className="card player-card">
-                                    <div className="card-block gold-player">
-
-                                        <div className="row">
-                                            <img className="rounded-circle" src={this.props.profile.picture} />
-                                            <div className="card-text"><h5>{this.props.profile.username}</h5>1245</div>
-                                        </div>
-
-                                        <h4 className="card-title pull-right">2:56</h4>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="col-xs-12">
-                                <div className="card player-card">
-                                    <div className="card-block red-player">
-
-                                        <div className="row">
-                                            <img className="rounded-circle" src={this.props.profile.picture} />
-                                            <div className="card-text"><h5>{this.props.profile.username}</h5>1245</div>
-                                        </div>
-
-                                        <h4 className="card-title pull-right">2:56</h4>
-                                    </div>
-                                </div>
-                            </div>
-
+                            <PlayerTimes />
                         </div>
                     </div>
                 </div>

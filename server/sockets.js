@@ -51,8 +51,8 @@ module.exports = function(io) {
     }
 
     io.on('connection', (socket) => {
-
-        console.log('connected clients: ', JSON.stringify(clients, null, 2));
+        console.log(chatRooms);
+        // console.log('connected clients: ', JSON.stringify(clients, null, 2));
         socket.on('action', (action) => {
             let chatObjName, chatObj, chatUser = null;
             switch(action.type) {

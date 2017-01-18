@@ -48,6 +48,20 @@ function connection(state = {status: false, error: false}, action) {
     }
 }
 
+function viewingGame(state=false, action) {
+    switch(action.type) {
+        default:
+            return state;
+    }
+}
+
+function activeGame(state=false, action) {
+    switch(action.type) {
+        default:
+            return state;
+    }
+}
+
 const rootReducer = combineReducers({
     connection,
     notifications,  //notification-center lib
@@ -57,7 +71,9 @@ const rootReducer = combineReducers({
     newGameOptions,
     fourPlayerRooms,
     auth: AuthReducer,
-    form: formReducer
+    form: formReducer,
+    viewingGame,
+    activeGame
 });
 
 export default rootReducer;

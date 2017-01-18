@@ -26,13 +26,14 @@ class CreateChatRoom extends Component {
     onSubmit(event) {
         event.preventDefault();
         const chatName = this.state.nameChat;
+        const { profile } = this.props;
         if(chatName.length > 0) {
 
             this.setState({
                 nameChat: ''
             });
 
-            this.props.newRoom(chatName);
+            this.props.newRoom(chatName, profile);
 
             this.refs.modalClose.click();
         }
@@ -104,4 +105,10 @@ class CreateChatRoom extends Component {
     }
 }
 
-export default connect(null, {newRoom}) (CreateChatRoom);
+function mapStateToProps(state) {
+    return {
+        profile: state.auth.profile
+    }
+}
+
+export default connect(mapStateToProps, {newRoom}) (CreateChatRoom);
