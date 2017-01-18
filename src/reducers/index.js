@@ -20,14 +20,26 @@ function activeThread (state = 'Global', action) {
 }
 
 function openThreads(state = {}, action) {
-    let obj = null;
+    let obj = null, newState = null;
     switch(action.type) {
         case 'user-room-joined':
             const users = action.payload.users;
             obj = {...state[action.payload.name], users};
             return {...state, [action.payload.name]: obj};
+        case 'user-room-left':
+            const roomName= action.payload.name;
+            const user = action.payload.user;
+            newState = Object.assign({}, state);
+            newState[roomName].users = newState[roomName].users.filter((member) => {
+                return user.user._id !== member._id;
+            });
+            return newState;
         case 'joined-room':
             return {...state, [action.payload.name]: action.payload };
+        case 'left-room':
+            newState = Object.assign({}, state);
+            delete newState[action.payload];
+            return newState;
         case 'receive-message':
             const messages = [...state[action.payload.thread].messages, action.payload];
             obj = {...state[action.payload.thread], messages};

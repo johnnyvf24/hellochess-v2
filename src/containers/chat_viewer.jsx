@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import ExistingChatRoomList from './existing_chat_room_list';
 import ChatTab from '../components/chat_tab/chat_tab';
 import {mapObject} from '../utils/';
-import { selectedChat, joinRoom } from '../actions';
+import { selectedChat, joinRoom, leaveRoom } from '../actions';
 
 
 class ChatViewer extends Component {
@@ -20,6 +20,10 @@ class ChatViewer extends Component {
         this.props.selectedChat(chatName);
     }
 
+    onCloseChatTab(chatName, event) {
+        this.props.leaveRoom(chatName);
+    }
+
     renderNavTab(chats, active) {
 
         return mapObject(chats, (key, value) => {
@@ -30,6 +34,10 @@ class ChatViewer extends Component {
                         data-toggle="tab"
                         href={"#" +key + "-chat"}
                         onClick={(event) => this.onTabClick(key)}>
+                        <button
+                            className="close"
+                            type="button"
+                            onClick={this.onCloseChatTab.bind(this, key)}>×</button>
                         {value.name}
                     </a>
                 </li>
@@ -92,4 +100,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, {selectedChat, joinRoom}) (ChatViewer);
+export default connect(mapStateToProps, {selectedChat, joinRoom, leaveRoom}) (ChatViewer);

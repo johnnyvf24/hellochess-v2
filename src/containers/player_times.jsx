@@ -14,7 +14,7 @@ class PlayerTimes extends Component {
                         <div className="card-block">
 
                             <div className="row">
-                                <img className="rounded-circle" src={this.props.profile.picture} />
+                                <img className="player-img rounded-circle" src={this.props.profile.picture} />
                                 <div className="card-text"><h5>{this.props.profile.username}</h5>1245</div>
                             </div>
 
@@ -28,7 +28,7 @@ class PlayerTimes extends Component {
                         <div className="card-block black-player">
 
                             <div className="row">
-                                <img className="rounded-circle" src={this.props.profile.picture} />
+                                <img className="player-img rounded-circle" src={this.props.profile.picture} />
                                 <div className="card-text"><h5>{this.props.profile.username}</h5>1245</div>
                             </div>
 
@@ -42,7 +42,7 @@ class PlayerTimes extends Component {
                         <div className="card-block gold-player">
 
                             <div className="row">
-                                <img className="rounded-circle" src={this.props.profile.picture} />
+                                <img className="player-img rounded-circle" src={this.props.profile.picture} />
                                 <div className="card-text"><h5>{this.props.profile.username}</h5>1245</div>
                             </div>
 
@@ -56,7 +56,7 @@ class PlayerTimes extends Component {
                         <div className="card-block red-player">
 
                             <div className="row">
-                                <img className="rounded-circle" src={this.props.profile.picture} />
+                                <img className="player-img rounded-circle" src={this.props.profile.picture} />
                                 <div className="card-text"><h5>{this.props.profile.username}</h5>1245</div>
                             </div>
 

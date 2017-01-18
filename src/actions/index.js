@@ -224,6 +224,15 @@ export function joinRoom(name) {
     }
 }
 
+export function leaveRoom(name) {
+    return (dispatch) => {
+        return dispatch({
+            type: 'server/leave-room',
+            payload: name
+        });
+    }
+}
+
 export function showError(error) {
     return (dispatch) => {
         const notificationOpts = {

@@ -54,7 +54,7 @@ module.exports = function(io) {
         console.log(chatRooms);
         // console.log('connected clients: ', JSON.stringify(clients, null, 2));
         socket.on('action', (action) => {
-            let chatObjName, chatObj, chatUser = null;
+            let chatObjName, chatObj, chatUser, roomName = null;
             switch(action.type) {
                 case 'server/connected-user':
                     let foundDuplicate = false;
@@ -88,6 +88,32 @@ module.exports = function(io) {
                         payload: action.payload
                     });
                     break;
+                case 'server/leave-room':
+                    roomName = action.payload;
+                    chatUser = clients[socket.id];
+                    clients[socket.id].rooms = clients[socket.id].rooms.map((room) => {
+                        if(room !== roomName) {
+                            return room;
+                        }
+                    });
+
+                    socket.leave(roomName);
+
+                    socket.emit('action', {
+                        type: 'left-room',
+                        payload: roomName
+                    });
+
+                    //Tell everyone in the room that a new user has connnected
+                    io.to(roomName).emit('action', {
+                        type: 'user-room-left',
+                        payload: {
+                            name: roomName,
+                            user: chatUser
+                        }
+                    });
+
+                    break;
                 case 'server/join-room':
                     chatObjName = [Object.keys(action.payload)[0]];
 
@@ -117,7 +143,7 @@ module.exports = function(io) {
                     io.to(chatObj.name).emit('action', {
                         type: 'user-room-joined',
                         payload: chatObj
-                    })
+                    });
 
                     break;
                 case 'server/new-room':

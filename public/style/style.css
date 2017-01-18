@@ -192,7 +192,6 @@ body .container-fluid {
 }
 
 /* NAV TABS FULL WIDTH OF PARENT FIX */
-
 .nav-justified {
   width: 100%;
   overflow-y: auto;
@@ -226,8 +225,14 @@ body .container-fluid {
     .nav-justified .nav-link.active:hover,
     .nav-justified .nav-link.active:focus {
       border-bottom-color: #fff; } }
-
   /*---------------------------------------------*/
+
+
+  /*----------BOOTSTRAP CLOSE TAB----------------*/
+  .nav-tabs > li .close {
+      margin: -2px 0 0 10px;
+      font-size: 18px;
+  }
 
 
 #start-game-btns .btn {
@@ -321,4 +326,9 @@ tr:hover {
 .chat-room-item:hover {
     cursor: pointer;
     background-color: #e5e5e5;
+}
+
+.player-img {
+    margin-top: 7px;
+    max-height: 50px;
 }
