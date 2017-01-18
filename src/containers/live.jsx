@@ -112,6 +112,7 @@ class Live extends Component {
             );
         }
         else {
+            const { viewingGame } = this.props;
             return (
                 <div id="main-panel">
                     { this.renderInputUsername() }
@@ -149,7 +150,11 @@ class Live extends Component {
 
                         </div>
                         <div id="time-ads-column" className="col-xs-12 col-sm-12 col-md-2">
-                            <PlayerTimes />
+                            {this.props.viewingGame ? (
+                                <PlayerTimes />
+                            ) : (
+                                <img className="img-fluid" src="https://www.adspeed.com/placeholder-200x400.gif" />
+                            )}
                         </div>
                     </div>
                 </div>
@@ -162,6 +167,7 @@ function mapStateToProps(state) {
     return {
         profile: state.auth.profile,
         connection: state.connection,
+        viewingGame: state.viewingGame
     }
 }
 

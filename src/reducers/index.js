@@ -77,7 +77,7 @@ function activeGame(state=false, action) {
 const rootReducer = combineReducers({
     connection,
     notifications,  //notification-center lib
-    existingChatRooms,      //A list of all Open Chat Rooms
+    existingChatRooms,      //A list of all available Chat Rooms
     activeThread,
     openThreads,
     newGameOptions,

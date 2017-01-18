@@ -32,7 +32,6 @@ export default class ChatSettings extends Component {
 
     render() {
         const {value} = this.props;
-
         if(value.host) {
             return (
                 <div>

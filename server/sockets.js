@@ -51,7 +51,7 @@ module.exports = function(io) {
     }
 
     io.on('connection', (socket) => {
-        console.log(chatRooms);
+        // console.log(chatRooms);
         // console.log('connected clients: ', JSON.stringify(clients, null, 2));
         socket.on('action', (action) => {
             let chatObjName, chatObj, chatUser, roomName = null;
@@ -131,7 +131,11 @@ module.exports = function(io) {
                     //connect this user to this react-notification-system-redux
                     socket.join(chatObj.name);
                     clients[socket.id].rooms.push(chatObj.name);
-                    //get the list of all members
+
+                    //Find the existing chat room
+                    chatObj = findChatRoomByName(chatObj.name);
+
+                    //get the list of all room members
                     chatObj.users = getAllRoomMembers(chatObj.name);
 
                     socket.emit('action', {
