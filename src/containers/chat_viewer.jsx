@@ -21,7 +21,10 @@ class ChatViewer extends Component {
     }
 
     onCloseChatTab(chatName, event) {
+
         this.props.leaveRoom(chatName);
+        this.refs.mainTab.click();
+        event.stopPropagation();
     }
 
     renderNavTab(chats, active) {
@@ -76,8 +79,9 @@ class ChatViewer extends Component {
                             data-toggle="tab"
                             href="#chat-list"
                             role="tab"
-                            onClick={(event) => this.onTabClick("Chat Rooms")}>
-                            Chat Rooms
+                            ref="mainTab"
+                            onClick={(event) => this.onTabClick("Games")}>
+                            Games
                         </a>
                     </li>
                     {this.renderNavTab(openThreads, activeThread)}

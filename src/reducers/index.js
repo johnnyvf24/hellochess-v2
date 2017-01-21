@@ -60,7 +60,7 @@ function connection(state = {status: false, error: false}, action) {
     }
 }
 
-function viewingGame(state=false, action) {
+function viewingGame(state=true, action) {
     switch(action.type) {
         default:
             return state;

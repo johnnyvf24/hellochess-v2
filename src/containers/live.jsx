@@ -10,7 +10,6 @@ import SearchBar from '../components/search_bar';
 import TwoBoard from '../components/two_board';
 import ChatViewer from '../containers/chat_viewer';
 import NewGame from '../components/new_game';
-import BrowseGames from './browse_games';
 import PlayerTimes from './player_times';
 import { logout, saveUsername, clearError, userConnect} from '../actions'
 
@@ -141,7 +140,6 @@ class Live extends Component {
                         <div className="col-xs-12 col-sm-12 col-md-4">
                             <div id="start-game-btns" className="row flex-items-xs-center">
                                 <NewGame/>
-                                <BrowseGames />
                             </div>
 
                             <div id="board-wrapper">
