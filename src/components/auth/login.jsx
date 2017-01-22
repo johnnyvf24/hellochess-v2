@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import AuthCard from './auth_card';
+import AuthCard from '../../containers/auth_card';
 import { login, logoutUser } from '../../actions/index'
 
 export default class Login extends Component {

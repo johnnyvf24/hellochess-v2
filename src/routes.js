@@ -2,9 +2,9 @@ import React from 'react';
 import {Route, IndexRoute} from 'react-router';
 
 import App from './containers/app';
-import Login from './containers/auth/login';
+import Login from './components/auth/login';
 import Live from './containers/live';
-import RequireAuth from './containers/auth/require_auth';
+import RequireAuth from './components/auth/require_auth';
 
 
 export default (

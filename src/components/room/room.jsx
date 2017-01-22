@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import RoomUserList from './room_user_list';
-import MessageList from '../message_list';
+import MessageList from '../chat_message/message_list';
 import RoomSettings from './room_settings';
 import MessageSend from '../../containers/message_send';
 

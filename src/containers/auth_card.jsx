@@ -3,11 +3,11 @@ import { connect, bindActionCreators } from 'react-redux';
 import { Link } from 'react-router';
 import FacebookLogin from 'react-facebook-login';
 import GoogleLogin from 'react-google-login';
-import { loginUser, signUpUser, fbLoginUser, googleLoginUser } from '../../actions/index';
-import App from '../app';
-import SignUpForm from './signup_form';
-import LoginForm from './login_form';
-import config from '../../../config/config';
+import { loginUser, signUpUser, fbLoginUser, googleLoginUser } from '../actions/index';
+import App from './app';
+import SignUpForm from '../components/auth/signup_form';
+import LoginForm from '../components/auth/login_form';
+import config from '../../config/config';
 
 class AuthCard extends Component {
 

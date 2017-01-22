@@ -2,8 +2,8 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import Select from 'react-select';
 
-import CreateGameRoom from './create_game/create_game_room';
-import NewGameModalContent from './create_game/new_game_modal_content';
+import CreateGameRoom from '../components/create_game/create_game_room';
+import NewGameModalContent from '../components/create_game/new_game_modal_content';
 
 
 class NewGame extends Component {

@@ -9,7 +9,7 @@ var Loading = require('react-loading');
 import SearchBar from '../components/search_bar';
 import TwoBoard from '../components/two_board';
 import RoomViewer from '../containers/room_viewer';
-import NewGame from '../components/new_game';
+import NewGame from './new_game';
 import PlayerTimes from './player_times';
 import { logout, saveUsername, clearError, userConnect} from '../actions'
 

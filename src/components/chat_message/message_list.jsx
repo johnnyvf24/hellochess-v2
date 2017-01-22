@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import MessageListItem from '../components/message_list_item';
-import {mapObject} from '../utils'
+import MessageListItem from './message_list_item';
+import {mapObject} from '../../utils'
 
 export default class MessageList extends Component {
 
