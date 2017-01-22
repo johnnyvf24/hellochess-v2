@@ -131,12 +131,6 @@ body .container-fluid {
     height: 100%;
 }
 
-#chat-list table {
-    padding-right: 10px;
-    padding-left: 10px;
-    height: 100%;
-}
-
 .chatbox-chatroom-list {
     display: block;
     overflow-y: auto;
@@ -245,6 +239,13 @@ body .container-fluid {
       font-size: 18px;
   }
 
+
+.table-responsive {
+    display: table;
+    width: 100%;
+    overflow-x: scroll;
+
+}
 
 /*--------------------------------------------*/
 .table-curved {

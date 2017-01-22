@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import ExistingRoomList from './existing_room_list';
 import Room from '../components/room/room';
 import {mapObject} from '../utils/';
-import { selectedChat, joinRoom, leaveRoom } from '../actions';
+import { selectedRoom, joinRoom, leaveRoom } from '../actions';
 
 
 class RoomViewer extends Component {
@@ -16,27 +16,28 @@ class RoomViewer extends Component {
         this.props.joinRoom('Global');                  //join the default chatroom
     }
 
-    onTabClick(chatName) {
-        this.props.selectedChat(chatName);
+    onTabClick(chatName, event) {
+        this.props.selectedRoom(chatName);
+        event.stopPropagation();
     }
 
     onCloseChatTab(chatName, event) {
-
         this.props.leaveRoom(chatName);
-        this.refs.mainTab.click();
         event.stopPropagation();
+        this.refs.mainTab.click();
     }
 
     renderNavTab(chats, active) {
 
         return mapObject(chats, (key, value) => {
             return (
-                <li key={key} className={key === active ? "nav-item active" : "nav-item"}>
+                <li key={key} className={key === active ? "nav-item active" : "nav-item"}
+                    onClick={(event) => this.onTabClick(key, event)}>
                     <a
                         className={key === active ? "nav-link active" : "nav-link"}
                         data-toggle="tab"
                         href={"#" +key + "-chat"}
-                        onClick={(event) => this.onTabClick(key)}>
+                        >
                         <button
                             className="close"
                             type="button"
@@ -80,7 +81,7 @@ class RoomViewer extends Component {
                             href="#chat-list"
                             role="tab"
                             ref="mainTab"
-                            onClick={(event) => this.onTabClick("Games")}>
+                            onClick={(event) => this.onTabClick("Games", event)}>
                             Games
                         </a>
                     </li>
@@ -104,4 +105,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, {selectedChat, joinRoom, leaveRoom}) (RoomViewer);
+export default connect(mapStateToProps, {selectedRoom, joinRoom, leaveRoom}) (RoomViewer);

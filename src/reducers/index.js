@@ -6,11 +6,11 @@ import rooms from './rooms_reducer';
 import AuthReducer from './auth_reducer';
 import newGameOptions from './new_game_reducer';
 
-import {SELECTED_CHAT} from '../actions/types';
+import {SELECTED_ROOM} from '../actions/types';
 
 function activeThread (state = 'Global', action) {
     switch(action.type) {
-        case SELECTED_CHAT:
+        case SELECTED_ROOM:
             return action.payload;
         default:
             return state;
@@ -19,13 +19,15 @@ function activeThread (state = 'Global', action) {
 
 function openThreads(state = {}, action) {
     let obj = null, newState = null;
+    let roomName = null;
     switch(action.type) {
         case 'user-room-joined':
             const users = action.payload.users;
-            obj = {...state[action.payload.name], users};
-            return {...state, [action.payload.name]: obj};
+            roomName = action.payload.room.name;
+            obj = {...state[roomName], users};
+            return {...state, [roomName]: obj};
         case 'user-room-left':
-            const roomName= action.payload.name;
+            roomName = action.payload.name;
             const user = action.payload.user;
             newState = Object.assign({}, state);
             newState[roomName].users = newState[roomName].users.filter((member) => {

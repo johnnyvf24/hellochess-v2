@@ -5,7 +5,7 @@ import {
     LOGIN_SUCCESS,
     LOGIN_ERROR,
     LOGOUT_SUCCESS,
-    SELECTED_CHAT,
+    SELECTED_ROOM,
     UPDATE_USERNAME
 } from './types'
 
@@ -169,10 +169,10 @@ export function saveUsername(id, username) {
     }
 }
 
-export function selectedChat(name) {
+export function selectedRoom(name) {
     return (dispatch) =>{
         return dispatch({
-            type: SELECTED_CHAT,
+            type: SELECTED_ROOM,
             payload: name
         });
     }

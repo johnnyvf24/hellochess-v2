@@ -30,7 +30,7 @@ class Live extends Component {
 
     componentWillMount() {
         this.props.dispatch({
-            type: 'server/get-chatrooms'
+            type: 'server/get-rooms'
         });
         this.props.userConnect(this.props.profile);    //Connect the user to the server
     }

@@ -25,15 +25,18 @@ class ExistingRoomList extends Component {
 
     renderRoomItems(room) {
         return mapObject( room, (key, value) => {
+            if(!value.users) {
+                return;
+            }
             return (
                 <tr key={key} onClick={this.onClickRoom.bind(this, key)}>
                     <td>{value.room.name}</td>
-                    <td>{value.room.gameType}</td>
+                    <td>{value.gameType}</td>
                     <td>{`${value.time.value}mins/${value.time.increment}secs` }</td>
                     <td>1245</td>
-                    <td>10</td>
-                    <td>Yes</td>
-                    <td>No</td>
+                    <td>{value.users.length}</td>
+                    <td>{value.room.private ? "yes" : "no"}</td>
+                    <td>{value.room.voiceChat ? "yes": "no"}</td>
                 </tr>
             );
         });
@@ -68,23 +71,24 @@ class ExistingRoomList extends Component {
                         </div>
                     </span>
                 </div>
-
-                <table className="table table-responsive table-sm table-curved">
-                    <thead className="thead-inverse">
-                        <tr>
-                            <th>Title</th>
-                            <th>Game Type</th>
-                            <th>Time Control</th>
-                            <th>Average Elo</th>
-                            <th># of players</th>
-                            <th>{"Private?"}</th>
-                            <th>{"Voice?"}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {rooms.map(this.renderRoomItems)}
-                    </tbody>
-                </table>
+                <div className="col-xs-8 col-xs-10 col-md-12">
+                    <table className="table-responsive table-sm table-curved">
+                        <thead className="thead-inverse">
+                            <tr>
+                                <th>Title</th>
+                                <th>Game Type</th>
+                                <th>Time Control</th>
+                                <th>Average Elo</th>
+                                <th># of players</th>
+                                <th>{"Private?"}</th>
+                                <th>{"Voice?"}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {rooms.map(this.renderRoomItems)}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         );
     }
