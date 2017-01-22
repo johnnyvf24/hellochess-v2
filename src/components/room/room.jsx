@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import RoomUserList from './room_user_list';
 import MessageList from '../message_list';
-import ChatSettings from './chat_settings';
+import RoomSettings from './room_settings';
 import MessageSend from '../../containers/message_send';
 
 
-export default class ChatTab extends Component {
+export default class Room extends Component {
     constructor(props) {
         super(props);
     }
@@ -19,7 +19,7 @@ export default class ChatTab extends Component {
                 className= {index === active ? "tab-pane active" : "tab-pane"}>
                 <div className="row chatbox-top-stats-wrapper">
                     <span className="chatbox-top-stats">
-                        <ChatSettings value={value}/>
+                        <RoomSettings value={value}/>
                         <a  className="float-xs-right"
                             href="#"
                             data-toggle="modal"
@@ -38,7 +38,7 @@ export default class ChatTab extends Component {
                                     <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
-                                    <h5 className="modal-title" id="exampleModalLabel">Chat Members</h5>
+                                    <h5 className="modal-title" id="exampleModalLabel">Room Members</h5>
                                 </div>
                                 <div className="modal-body">
                                     <RoomUserList users={value.users}/>

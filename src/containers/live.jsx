@@ -8,7 +8,7 @@ var Loading = require('react-loading');
 
 import SearchBar from '../components/search_bar';
 import TwoBoard from '../components/two_board';
-import ChatViewer from '../containers/chat_viewer';
+import RoomViewer from '../containers/room_viewer';
 import NewGame from '../components/new_game';
 import PlayerTimes from './player_times';
 import { logout, saveUsername, clearError, userConnect} from '../actions'
@@ -135,7 +135,7 @@ class Live extends Component {
 
                     <div id="wrapper" className="row">
                         <div id="chatbox-wrapper" className="hidden-sm-down col-md-6">
-                            <ChatViewer username=""/>
+                            <RoomViewer username=""/>
                         </div>
                         <div className="col-xs-12 col-sm-12 col-md-4">
                             <div id="start-game-btns" className="row flex-items-xs-center">

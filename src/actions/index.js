@@ -209,13 +209,24 @@ export function newRoom(name, profile) {
     }
 }
 
-export function joinRoom(name) {
+let initGameOptions = {
+    gameType: 'four-player',
+    room: {
+        private: false,
+        voiceChat: false,
+        maxPlayers: 10000,
+    },
+    time: {
+        increment: 0,
+        value: 10
+    }
+};
+
+export function joinRoom(name, gameOptions = initGameOptions) {
     return (dispatch) => {
         let obj = {};
-        obj[name] = {
-            name: name,
-            messages: [],
-        }
+        gameOptions.room.name = name;
+        obj[name] = gameOptions;
 
         return dispatch({
             type: 'server/join-room',

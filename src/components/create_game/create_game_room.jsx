@@ -172,6 +172,7 @@ class CreateGameRoom extends Component {
 }
 
 function mapStateToProps(state) {
+    console.log(state.newGameOptions);
     return {
         room: state.newGameOptions.room,
         game: state.newGameOptions,

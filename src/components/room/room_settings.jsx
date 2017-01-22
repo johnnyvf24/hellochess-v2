@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-export default class ChatSettings extends Component {
+export default class RoomSettings extends Component {
     constructor(props) {
         super(props);
     }
@@ -18,7 +18,7 @@ export default class ChatSettings extends Component {
                             <h5 className="modal-title" id="exampleModalLabel">{value.name} Settings</h5>
                         </div>
                         <div className="modal-body">
-                            
+
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>

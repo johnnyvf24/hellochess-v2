@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import Select from 'react-select';
 import { connect } from 'react-redux';
-import CreateChatRoom from '../containers/create_chat_room';
 import { mapObject } from '../utils/'
 import {joinRoom} from '../actions/';
 
@@ -13,24 +12,24 @@ const gameTypeOptions = [
 ]
 
 
-class ExistingChatRoomList extends Component {
+class ExistingRoomList extends Component {
     constructor (props) {
         super(props)
 
-        this.renderChatRoomItems = this.renderChatRoomItems.bind(this);
+        this.renderRoomItems = this.renderRoomItems.bind(this);
     }
 
     onClickRoom(key, event) {
         this.props.joinRoom(key);
     }
 
-    renderChatRoomItems(chatRoom) {
-        return mapObject( chatRoom, (key, value) => {
+    renderRoomItems(room) {
+        return mapObject( room, (key, value) => {
             return (
                 <tr key={key} onClick={this.onClickRoom.bind(this, key)}>
-                    <td>{value.name}</td>
-                    <td>Two Player</td>
-                    <td>5min/2sec</td>
+                    <td>{value.room.name}</td>
+                    <td>{value.room.gameType}</td>
+                    <td>{`${value.time.value}mins/${value.time.increment}secs` }</td>
                     <td>1245</td>
                     <td>10</td>
                     <td>Yes</td>
@@ -41,7 +40,7 @@ class ExistingChatRoomList extends Component {
     }
 
     render() {
-        const { chatRooms } = this.props;
+        const { rooms } = this.props;
         return (
             <div
                 id="chat-list"
@@ -63,7 +62,7 @@ class ExistingChatRoomList extends Component {
                             </div>
                             <div className="col-xs-4">
                             <a className="float-xs-right">
-                                {chatRooms.length} Game Rooms
+                                {rooms.length} Game Rooms
                             </a>
                             </div>
                         </div>
@@ -83,19 +82,19 @@ class ExistingChatRoomList extends Component {
                         </tr>
                     </thead>
                     <tbody>
-                        {chatRooms.map(this.renderChatRoomItems)}
+                        {rooms.map(this.renderRoomItems)}
                     </tbody>
                 </table>
-                <CreateChatRoom />
             </div>
         );
     }
 }
 
 function mapStateToProps(state) {
+    // console.log(state);
     return {
-        chatRooms: state.existingChatRooms
+        rooms: state.rooms
     }
 }
 
-export default connect(mapStateToProps, {joinRoom}) (ExistingChatRoomList)
+export default connect(mapStateToProps, {joinRoom}) (ExistingRoomList)

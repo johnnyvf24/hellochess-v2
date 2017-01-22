@@ -2,9 +2,7 @@ import {combineReducers} from 'redux';
 import {reducer as notifications} from 'react-notification-system-redux';
 import { reducer as formReducer } from 'redux-form'
 
-import existingChatRooms from './chat_rooms_reducer';
-import fourPlayerRooms from './four_player_rooms_reducer';
-import threads from './threads_reducer';
+import rooms from './rooms_reducer';
 import AuthReducer from './auth_reducer';
 import newGameOptions from './new_game_reducer';
 
@@ -35,7 +33,7 @@ function openThreads(state = {}, action) {
             });
             return newState;
         case 'joined-room':
-            return {...state, [action.payload.name]: action.payload };
+            return {...state, [action.payload.room.name]: action.payload };
         case 'left-room':
             newState = Object.assign({}, state);
             delete newState[action.payload];
@@ -77,11 +75,10 @@ function activeGame(state=false, action) {
 const rootReducer = combineReducers({
     connection,
     notifications,  //notification-center lib
-    existingChatRooms,      //A list of all available Chat Rooms
+    rooms,      //A list of all available Chat Rooms
     activeThread,
     openThreads,
     newGameOptions,
-    fourPlayerRooms,
     auth: AuthReducer,
     form: formReducer,
     viewingGame,

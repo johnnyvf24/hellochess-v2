@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import ExistingChatRoomList from './existing_chat_room_list';
-import ChatTab from '../components/chat_tab/chat_tab';
+import ExistingRoomList from './existing_room_list';
+import Room from '../components/room/room';
 import {mapObject} from '../utils/';
 import { selectedChat, joinRoom, leaveRoom } from '../actions';
 
 
-class ChatViewer extends Component {
+class RoomViewer extends Component {
 
     constructor(props) {
         super(props);
@@ -41,7 +41,7 @@ class ChatViewer extends Component {
                             className="close"
                             type="button"
                             onClick={this.onCloseChatTab.bind(this, key)}>×</button>
-                        {value.name}
+                        {key}
                     </a>
                 </li>
             );
@@ -49,10 +49,10 @@ class ChatViewer extends Component {
     }
 
 
-    renderTabContent(chats, active){
+    renderTabContent(chats, active) {
         return mapObject(chats, (key, value) => {
             return (
-                <ChatTab key={key} index={key} value={value} active={active}/>
+                <Room key={key} index={key} value={value} active={active}/>
             );
         });
 
@@ -87,7 +87,7 @@ class ChatViewer extends Component {
                     {this.renderNavTab(openThreads, activeThread)}
                 </ul>
                 <div id="chat-tab-content" className="tab-content">
-                    <ExistingChatRoomList />
+                    <ExistingRoomList />
                     {this.renderTabContent(openThreads, activeThread)}
                 </div>
 
@@ -104,4 +104,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, {selectedChat, joinRoom, leaveRoom}) (ChatViewer);
+export default connect(mapStateToProps, {selectedChat, joinRoom, leaveRoom}) (RoomViewer);
