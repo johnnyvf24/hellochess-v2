@@ -7,7 +7,7 @@ import ReactTimeout from 'react-timeout';
 var Loading = require('react-loading');
 
 import SearchBar from '../components/search_bar';
-import TwoBoard from '../components/two_board';
+import BoardWrapper from './board/board_wrapper';
 import RoomViewer from '../containers/room_viewer';
 import NewGame from './new_game';
 import PlayerTimes from './player_times';
@@ -111,7 +111,9 @@ class Live extends Component {
             );
         }
         else {
-            const { viewingGame } = this.props;
+
+            let {activeThread} = this.props;
+
             return (
                 <div id="main-panel">
                     { this.renderInputUsername() }
@@ -134,25 +136,19 @@ class Live extends Component {
                     </div>
 
                     <div id="wrapper" className="row">
-                        <div id="chatbox-wrapper" className="hidden-sm-down col-md-6">
+                        <div id="chatbox-wrapper" className="hidden-sm-down col-md-4 col-lg-6">
                             <RoomViewer username=""/>
                         </div>
-                        <div className="col-xs-12 col-sm-12 col-md-4">
+                        <div className="col-xs-12 col-sm-12 col-md-6 col-lg-4">
                             <div id="start-game-btns" className="row flex-items-xs-center">
                                 <NewGame/>
                             </div>
 
-                            <div id="board-wrapper">
-                                <TwoBoard/>
-                            </div>
+                            <BoardWrapper />
 
                         </div>
-                        <div id="time-ads-column" className="col-xs-12 col-sm-12 col-md-2">
-                            {this.props.viewingGame ? (
-                                <PlayerTimes />
-                            ) : (
-                                <img className="img-fluid" src="https://www.adspeed.com/placeholder-200x400.gif" />
-                            )}
+                        <div id="time-ads-column" className="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+                            <PlayerTimes />
                         </div>
                     </div>
                 </div>
@@ -165,7 +161,6 @@ function mapStateToProps(state) {
     return {
         profile: state.auth.profile,
         connection: state.connection,
-        viewingGame: state.viewingGame
     }
 }
 

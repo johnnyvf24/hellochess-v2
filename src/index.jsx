@@ -7,6 +7,7 @@ import ReduxPromise from 'redux-promise';
 import thunkMiddleware from 'redux-thunk'
 
 import socketIoMiddleware from './middleware/socketio';
+import {socket} from './middleware/socketio';
 import api from './middleware/api'
 import reducers from './reducers';
 import routes from './routes';
@@ -25,6 +26,11 @@ if(token && profile) {
         type: LOGIN_SUCCESS
     });
 }
+
+socket.on('connect_timeout', () => store.dispatch({ type: 'disconnect' }));
+socket.on('connect_error', () => store.dispatch({ type: 'disconnect' }));
+socket.on('reconnect_error', () => store.dispatch({ type: 'disconnect' }));
+socket.on('reconnect', () => store.dispatch({ type: 'reconnect' }));
 
 ReactDOM.render(
     <Provider store={store}>

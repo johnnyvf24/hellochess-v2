@@ -31,12 +31,16 @@ function auth(state = INITIAL_STATE, action) {
             return Object.assign({}, state, {
                 authenticated: false,
                 profile: null
-            })
+            });
         case ActionTypes.UPDATE_USERNAME:
             setProfile(action.payload.data)
             return Object.assign({}, state, {
                 profile: action.payload.data
             })
+        case 'reconnect':
+            localStorage.removeItem('token');
+            localStorage.removeItem('profile');
+            return INITIAL_STATE;
         default:
             return state
     }

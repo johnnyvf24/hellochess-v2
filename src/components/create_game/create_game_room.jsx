@@ -47,27 +47,29 @@ class CreateGameRoom extends Component {
 
         if(!voiceChat) {
             return (
-                <div className="voice-chat-enable-disable"
+                <div className="row"
                     onClick={(event) => this.props.enableVoiceChat()}>
-                    <span className="fa-stack fa-2x">
-                        <i className="fa fa-circle fa-stack-2x"></i>
-                        <i className="fa fa-microphone fa-inverse fa-stack-1x"></i>
-                        <i className="fa fa-ban fa-stack-2x text-danger"></i>
-                    </span>
-                    <div>Voice Chat {voiceChat ? "ON": "OFF"}</div>
+                    <div className="center voice-chat-enable-disable">
+                        <span className="fa-stack fa-2x">
+                            <i className="fa fa-circle fa-stack-2x"></i>
+                            <i className="fa fa-microphone fa-inverse fa-stack-1x"></i>
+                            <i className="fa fa-ban fa-stack-2x text-danger"></i>
+                        </span>
+                    </div>
                 </div>
             );
         }
 
 
         return (
-            <div className="voice-chat-enable-disable"
+            <div className="row"
                 onClick={(event) => this.props.enableVoiceChat()}>
-                <span className="fa-stack fa-2x">
-                    <i className="fa fa-circle fa-stack-2x"></i>
-                    <i className="fa fa-microphone fa-inverse fa-stack-1x"></i>
-                </span>
-                <div>Voice Chat {voiceChat ? "ON": "OFF"}</div>
+                <div className="center voice-chat-enable-disable">
+                    <span className="fa-stack fa-2x">
+                        <i className="fa fa-circle fa-stack-2x"></i>
+                        <i className="fa fa-microphone fa-inverse fa-stack-1x"></i>
+                    </span>
+                </div>
             </div>
         );
 
@@ -118,6 +120,9 @@ class CreateGameRoom extends Component {
                     <div className="form-group">
                         <div className="row">
                             <div className="col-xs-6">
+                                <label>
+                                    Maximum # Players
+                                </label>
                                 <input type="text"
                                     className="form-control"
                                     value={this.props.room.maxPlayers}
@@ -172,7 +177,6 @@ class CreateGameRoom extends Component {
 }
 
 function mapStateToProps(state) {
-    console.log(state.newGameOptions);
     return {
         room: state.newGameOptions.room,
         game: state.newGameOptions,

@@ -69,14 +69,17 @@ export function togglePrivate() {
     }
 }
 
+//Sends a request to create a new game room
 export function finalizeGameRoom(game, host) {
     delete game.isMakingGameRoom;
     delete host.email;
     game.host = host;
+    let obj = {};
+    obj[game.room.name] = game;
     return (dispatch) => {
         return dispatch({
-            type: 'server/new-gameroom',
-            payload: game
+            type: 'server/join-room',
+            payload: obj
         });
     }
 }

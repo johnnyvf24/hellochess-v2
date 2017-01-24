@@ -53,15 +53,10 @@ function connection(state = {status: false, error: false}, action) {
     switch(action.type) {
         case 'duplicate-login':
             return {status: false, error: true};
+        case 'disconnect':
+            return {status: false};
         case 'connected':
             return {status: true};
-        default:
-            return state;
-    }
-}
-
-function viewingGame(state=true, action) {
-    switch(action.type) {
         default:
             return state;
     }
@@ -83,8 +78,6 @@ const rootReducer = combineReducers({
     newGameOptions,
     auth: AuthReducer,
     form: formReducer,
-    viewingGame,
-    activeGame
 });
 
 export default rootReducer;

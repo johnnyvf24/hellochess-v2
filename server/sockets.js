@@ -43,17 +43,16 @@ function findRoomIndexByName(name) {
 }
 
 function deleteRoomByName(name) {
-    let index;
     for(let i = 0; i < rooms.length; i++) {
         if(rooms[i] !== undefined) {
             mapObject(rooms[i], (key, val) => {
                 if(key.toUpperCase() === name.toUpperCase()) {
-                    index = i;
+                    rooms.splice(i, 1);
                 }
             });
         }
     }
-    rooms.splice(index, 1);
+
 }
 
 function getMemberBySocketId(socketId) {
@@ -75,7 +74,7 @@ module.exports = function(io) {
         // console.log("\n\n\n",JSON.stringify(rooms, null, 2));
         // console.log('connected clients: ', JSON.stringify(clients, null, 2));
         socket.on('action', (action) => {
-            let roomName, roomObj, chatUser, roomIndex;
+            let roomName, roomObj, chatUser, roomIndex, color;
             switch(action.type) {
                 //Client emiits message this after loading page
                 case 'server/connected-user':
@@ -112,6 +111,11 @@ module.exports = function(io) {
                         type: 'receive-message',
                         payload: action.payload
                     });
+                    break;
+
+                //User is requesting to play as a certain color
+                case 'server/sit-down-board':
+
                     break;
                 //client is leaving a game room
                 case 'server/leave-room':
@@ -155,6 +159,7 @@ module.exports = function(io) {
 
                     break;
                 case 'server/join-room':
+                    //TODO limit the number of rooms that a user can create
                     roomName = [Object.keys(action.payload)[0]];
 
                     //Deep copy the Chat object
@@ -236,7 +241,10 @@ module.exports = function(io) {
 
                     } else {
                         //there are no users in this room
-                        deleteRoomByName(val);
+                        if(val) {
+                            deleteRoomByName(val);
+                        }
+
                     }
                 })
 
