@@ -1,9 +1,18 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import {sitDownBoard} from '../../actions/room';
 
 class SitBlack extends Component {
     constructor(props) {
         super(props);
+    }
+
+    onSit(event) {
+        let obj = {};
+        obj.profile = this.props.profile;
+        obj.roomName = this.props.activeThread;
+        obj.color = 'b';
+        this.props.sitDownBoard(obj);
     }
 
     render() {
@@ -12,7 +21,9 @@ class SitBlack extends Component {
             <div className="card player-card">
                 <div className="card-block black-player">
                     <div className="row">
-                        <button className="btn btn-default">
+                        <button
+                            className="btn btn-default"
+                            onClick={this.onSit.bind(this)}>
                             Play Black
                         </button>
                     </div>
@@ -26,9 +37,10 @@ class SitBlack extends Component {
 
 function mapStateToProps(state) {
     return {
-        profile: state.auth.profile
+        profile: state.auth.profile,
+        activeThread: state.activeThread
     }
 }
 
 
-export default connect(mapStateToProps,  {}) (SitBlack)
+export default connect(mapStateToProps,  {sitDownBoard}) (SitBlack)

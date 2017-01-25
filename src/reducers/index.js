@@ -44,6 +44,14 @@ function openThreads(state = {}, action) {
             const messages = [...state[action.payload.thread].messages, action.payload];
             obj = {...state[action.payload.thread], messages};
             return {...state, [action.payload.thread]: obj };
+        case 'sit-down-white':
+            newState = Object.assign({}, state);
+            newState[action.payload.thread].white = action.payload.room;
+            return newState;
+        case 'sit-down-black':
+            newState = Object.assign({}, state);
+            newState[action.payload.thread].black = action.payload.room;
+            return newState;
         default:
             return state;
     }

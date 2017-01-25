@@ -16,7 +16,7 @@ function roomExists(name) {
     return foundMatch;
 }
 
-function findRoomByName(name) {
+function getRoomByName(name) {
     let obj = {};
     for(let i = 0; i < rooms.length; i++) {
         mapObject(rooms[i], (key, val) => {
@@ -74,7 +74,7 @@ module.exports = function(io) {
         // console.log("\n\n\n",JSON.stringify(rooms, null, 2));
         // console.log('connected clients: ', JSON.stringify(clients, null, 2));
         socket.on('action', (action) => {
-            let roomName, roomObj, chatUser, roomIndex, color;
+            let roomName, roomObj, userObj, roomIndex, color, index;
             switch(action.type) {
                 //Client emiits message this after loading page
                 case 'server/connected-user':
@@ -115,12 +115,94 @@ module.exports = function(io) {
 
                 //User is requesting to play as a certain color
                 case 'server/sit-down-board':
+                    roomName = action.payload.roomName;
+                    userObj = action.payload.profile;
+                    color = action.payload.color;
+                    if(roomName && userObj && color) {
+                        delete userObj.email;   //delete sensitive info
+                        index = findRoomIndexByName(roomName);
+                        roomObj = rooms[index];
+                        if(roomObj) {
+                            switch(color) {
+                                case 'w':
+                                    if(!roomObj.white) {
+                                        userObj.color = color;
 
+                                        //initialize the players time (ms)
+                                        userObj.time =
+                                            rooms[index][roomName].time.value * 60 * 1000;
+
+                                        rooms[index][roomName].white = userObj;
+
+                                        //tell everyone in the room
+                                        io.to(roomName).emit('action', {
+                                            type: 'sit-down-white',
+                                            payload: {
+                                                thread: roomName,
+                                                room: rooms[index][roomName].white
+                                            }
+                                        });
+                                    }
+                                    break;
+                                case 'b':
+                                    if(!roomObj.black) {
+                                        userObj.color = color;
+
+                                        //initialize the players time (ms)
+                                        userObj.time =
+                                            rooms[index][roomName].time.value * 60 * 1000;
+
+                                        rooms[index][roomName].black = userObj;
+
+                                        //tell everyone in the room
+                                        io.to(roomName).emit('action', {
+                                            type: 'sit-down-black',
+                                            payload: {
+                                                thread: roomName,
+                                                room: rooms[index][roomName].black
+                                            }
+                                        });
+                                    }
+                                    break;
+                                case 'g':
+                                    if(!roomObj.gold) {
+                                        userObj.color = color;
+
+                                        //initialize the players time (ms)
+                                        userObj.time =
+                                            rooms[index][roomName].time.value * 60 * 1000;
+
+                                        rooms[index][roomName].gold = userObj;
+
+                                        //tell everyone in the room
+                                        io.to(roomName).emit('action', {
+                                            type: 'all-rooms',
+                                            payload: rooms
+                                        });
+                                    }
+                                    break;
+                                case 'r':
+
+                                    if(!roomObj.black) {
+                                        userObj.color = color;
+
+                                        //initialize the players time (ms)
+                                        userObj.time =
+                                            rooms[index][roomName].time.red * 60 * 1000;
+
+                                        rooms[index][roomName].red = userObj;
+                                    }
+                                    break;
+                                default:
+                                    console.log("NOT a valid color");
+                            }
+                        }
+                    }
                     break;
                 //client is leaving a game room
                 case 'server/leave-room':
                     roomName = action.payload;
-                    chatUser = clients[socket.id];
+                    userObj = clients[socket.id];
                     clients[socket.id].rooms = clients[socket.id].rooms.map((room) => {
                         if(room !== roomName) {
                             return room;
@@ -139,7 +221,7 @@ module.exports = function(io) {
                         type: 'user-room-left',
                         payload: {
                             name: roomName,
-                            user: chatUser
+                            user: userObj
                         }
                     });
 
@@ -180,7 +262,7 @@ module.exports = function(io) {
                     clients[socket.id].rooms.push(roomName);
 
                     //Find the existing chat room
-                    roomObj = findRoomByName(roomName);
+                    roomObj = getRoomByName(roomName);
 
                     //get the list of all room members
                     roomObj.users = getAllRoomMembers(roomName);
@@ -219,8 +301,8 @@ module.exports = function(io) {
         socket.on('disconnect', function() {
             if(clients[socket.id]) {
                 //Get all the rooms that user is connected to and the user info
-                const chatUser = clients[socket.id]
-                const joinedRooms = chatUser.rooms;
+                const userObj = clients[socket.id]
+                const joinedRooms = userObj.rooms;
                 // console.log(rooms)
                 mapObject(joinedRooms, (key, val) => {
                     let roomIndex;
@@ -231,7 +313,7 @@ module.exports = function(io) {
                             type: 'user-room-left',
                             payload: {
                                 name: val,
-                                user: chatUser
+                                user: userObj
                             }
                         });
 

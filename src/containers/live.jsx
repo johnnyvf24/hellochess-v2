@@ -136,10 +136,10 @@ class Live extends Component {
                     </div>
 
                     <div id="wrapper" className="row">
-                        <div id="chatbox-wrapper" className="hidden-sm-down col-md-4 col-lg-6">
+                        <div id="chatbox-wrapper" className="hidden-sm-down col-md-4 col-lg-5">
                             <RoomViewer username=""/>
                         </div>
-                        <div className="col-xs-12 col-sm-12 col-md-6 col-lg-4">
+                        <div className="col-xs-12 col-sm-12 col-md-6 col-lg-5">
                             <div id="start-game-btns" className="row flex-items-xs-center">
                                 <NewGame/>
                             </div>

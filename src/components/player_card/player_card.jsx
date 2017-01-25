@@ -3,6 +3,8 @@ import SitWhite from '../../containers/empty_card/sit_white';
 import SitBlack from '../../containers/empty_card/sit_black';
 import SitGold from '../../containers/empty_card/sit_gold';
 import SitRed from '../../containers/empty_card/sit_red';
+import OnWhite from './occupied/on_white';
+import OnBlack from './occupied/on_black';
 
 export default class PlayerCard extends Component {
 
@@ -25,7 +27,16 @@ export default class PlayerCard extends Component {
     }
 
     renderCardWithPlayer(player, color) {
-
+        switch(color) {
+            case 'w':
+                return <OnWhite player={player} />
+            case 'b':
+                return <OnBlack player={player} />
+            case 'g':
+                // return <OnGold time={time} />
+            case 'r':
+                // return <OnRed time={time} />
+        }
     }
 
     render() {
@@ -34,21 +45,7 @@ export default class PlayerCard extends Component {
             //render regular card
             return this.renderEmptyCard(time, color);
         } else {
-            return this.renderPlayerCard();
+            return this.renderCardWithPlayer(player, color);
         }
-
-        return (
-            <div className="card player-card">
-                <div className="card-block">
-
-                    <div className="row">
-                        <img className="player-img rounded-circle" src={profile.picture} />
-                        <div className="card-text"><h5>{profile.username}</h5>1245</div>
-                    </div>
-
-                    <h4 className="card-title pull-right">{`${thread.time.value}:00`}</h4>
-                </div>
-            </div>
-        );
     }
 }

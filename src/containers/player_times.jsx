@@ -5,18 +5,51 @@ import PlayerCard from '../components/player_card/player_card';
 class PlayerTimes extends Component {
     constructor(props) {
         super(props);
+
+        this.renderWhitePlayer = this.renderWhitePlayer.bind(this);
+        this.renderBlackPlayer = this.renderBlackPlayer.bind(this);
+        this.renderGoldPlayer = this.renderGoldPlayer.bind(this);
+        this.renderRedPlayer = this.renderRedPlayer.bind(this);
     }
 
     renderWhitePlayer(thread) {
-        return <PlayerCard time={thread.time} color="w"/>
+        let time = 0, player = undefined;
+        if(thread.white) {
+            player = thread.white;
+            time = thread.white.team;
+        } else {
+            player = undefined;
+            time = thread.time;
+        }
+
+        return <PlayerCard player={player} time={time} color="w"/>
     }
 
     renderBlackPlayer(thread) {
-        return <PlayerCard time={thread.time} color="b"/>
+
+        let time = 0, player = undefined;
+        if(thread.black) {
+            player = thread.black;
+            time = thread.black.team;
+        } else {
+            player = undefined;
+            time = thread.time;
+        }
+
+        return <PlayerCard player={player} time={time} color="b"/>
     }
 
     renderGoldPlayer(thread) {
-        return <PlayerCard time={thread.time} color="g"/>
+        let time = 0, player = undefined;
+        if(thread.gold) {
+            player = thread.gold;
+            time = thread.gold.team;
+        } else {
+            player = undefined;
+            time = thread.time;
+        }
+
+        return <PlayerCard player={player} time={time} color="g"/>
     }
 
     renderRedPlayer(thread) {

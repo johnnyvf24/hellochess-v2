@@ -1,13 +1,6 @@
-import {
-    SIT_DOWN_BOARD
-} from './types';
-
-export function sitDownBoard(color, roomName, profile) {
+export function sitDownBoard(details) {
     return {
         type: 'server/sit-down-board',
-        payload: {
-            color,
-            roomName
-        }
+        payload: details
     }
 }

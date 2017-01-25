@@ -100,7 +100,8 @@ body .container-fluid {
     height: 100%;
     display: flex;
     flex-direction: column;
-    background-color: #fff;
+    /*background-color: #F6F8C4;*/
+    background-color: white;
 }
 
 .chatbox-top-stats-wrapper {
@@ -124,6 +125,8 @@ body .container-fluid {
     flex: 0 1 auto;
     margin: 5px;
     height: 100%;
+    /*background-image: url(https://openclipart.org/download/140257/loose-leaf-paper.svg);*/
+    /*background-size: cover;*/
 }
 
 #chat-list {
@@ -217,10 +220,15 @@ body .container-fluid {
       margin-bottom: 0; } }
   .nav-justified .nav-link {
     margin-right: 0;
-    border-radius: 0.25rem; }
+    border-radius: 0.25rem;
+    /*background-color: #E6DD93;*/
+    color: black;
+}
   .nav-justified .nav-link.active,
   .nav-justified .nav-link.active:hover,
   .nav-justified .nav-link.active:focus {
+      /*background-color: #F6F8C4;*/
+    background-color: white;
     border: 1px solid #ddd; }
   @media (min-width: 544px) {
     .nav-justified .nav-link {
