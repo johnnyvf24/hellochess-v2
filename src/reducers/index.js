@@ -52,6 +52,30 @@ function openThreads(state = {}, action) {
             newState = Object.assign({}, state);
             newState[action.payload.thread].black = action.payload.room;
             return newState;
+        case 'sit-down-gold':
+            newState = Object.assign({}, state);
+            newState[action.payload.thread].gold = action.payload.room;
+            return newState;
+        case 'sit-down-red':
+            newState = Object.assign({}, state);
+            newState[action.payload.thread].red = action.payload.room;
+            return newState;
+        case 'up-white':
+            newState = Object.assign({}, state);
+            delete newState[action.payload.name].white;
+            return newState;
+        case 'up-black':
+            newState = Object.assign({}, state);
+            delete newState[action.payload.name].black;
+            return newState;
+        case 'up-gold':
+            newState = Object.assign({}, state);
+            delete newState[action.payload.name].gold;
+            return newState;
+        case 'up-red':
+            newState = Object.assign({}, state);
+            delete newState[action.payload.name].red;
+            return newState;
         default:
             return state;
     }

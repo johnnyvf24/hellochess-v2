@@ -59,6 +59,56 @@ function getMemberBySocketId(socketId) {
     return clients[socketId];
 }
 
+function deleteUserFromOtherSeats(io, index, roomName, userId) {
+    let roomObj = rooms[index][roomName];
+    if(roomObj.white) {
+        if(roomObj.white._id === userId) {
+            delete rooms[index][roomName].white;
+            io.to(roomName).emit('action', {
+                type: 'up-white',
+                payload: {
+                    name: roomName
+                }
+            });
+        }
+    }
+
+    if(roomObj.black) {
+        if(roomObj.black._id === userId) {
+            delete rooms[index][roomName].black;
+            io.to(roomName).emit('action', {
+                type: 'up-black',
+                payload: {
+                    name: roomName
+                }
+            });
+        }
+    }
+
+    if(roomObj.gold) {
+        if(roomObj.gold._id === userId) {
+            delete rooms[index][roomName].gold;
+            io.to(roomName).emit('action', {
+                type: 'up-gold',
+                payload: {
+                    name: roomName
+                }
+            });
+        }
+    }
+    if(roomObj.red) {
+        if(roomObj.red._id === userId) {
+            delete rooms[index][roomName].red;
+            io.to(roomName).emit('action', {
+                type: 'up-red',
+                payload: {
+                    name: roomName
+                }
+            });
+        }
+    }
+}
+
 module.exports = function(io) {
 
     //retrieve all the players in a particular room
@@ -122,6 +172,7 @@ module.exports = function(io) {
                         delete userObj.email;   //delete sensitive info
                         index = findRoomIndexByName(roomName);
                         roomObj = rooms[index];
+                        deleteUserFromOtherSeats(io, index, roomName, userObj._id)
                         if(roomObj) {
                             switch(color) {
                                 case 'w':
@@ -173,24 +224,35 @@ module.exports = function(io) {
                                             rooms[index][roomName].time.value * 60 * 1000;
 
                                         rooms[index][roomName].gold = userObj;
-
                                         //tell everyone in the room
                                         io.to(roomName).emit('action', {
-                                            type: 'all-rooms',
-                                            payload: rooms
+                                            type: 'sit-down-gold',
+                                            payload: {
+                                                thread: roomName,
+                                                room: rooms[index][roomName].gold
+                                            }
                                         });
                                     }
                                     break;
                                 case 'r':
 
-                                    if(!roomObj.black) {
+                                    if(!roomObj.red) {
                                         userObj.color = color;
 
                                         //initialize the players time (ms)
                                         userObj.time =
-                                            rooms[index][roomName].time.red * 60 * 1000;
+                                            rooms[index][roomName].time.value * 60 * 1000;
 
                                         rooms[index][roomName].red = userObj;
+
+                                        //tell everyone in the room
+                                        io.to(roomName).emit('action', {
+                                            type: 'sit-down-red',
+                                            payload: {
+                                                thread: roomName,
+                                                room: rooms[index][roomName].red
+                                            }
+                                        });
                                     }
                                     break;
                                 default:
@@ -320,6 +382,51 @@ module.exports = function(io) {
                         //update this specific room
                         roomIndex = findRoomIndexByName(val);
                         rooms[roomIndex][val].users = getAllRoomMembers(val);
+                        if(rooms[roomIndex][val].white) {
+                            if(rooms[roomIndex][val].white._id === userObj.user._id) {
+                                delete rooms[roomIndex][val].white;
+
+                                io.to(val).emit('action', {
+                                    type: 'up-white',
+                                    payload: {
+                                        name: val
+                                    }
+                                });
+                            }
+                        } else if(rooms[roomIndex][val].black) {
+                            if(rooms[roomIndex][val].black._id === userObj.user._id) {
+                                delete rooms[roomIndex][val].black;
+
+                                io.to(val).emit('action', {
+                                    type: 'up-black',
+                                    payload: {
+                                        name: val
+                                    }
+                                });
+                            }
+                        } else if(rooms[roomIndex][val].gold) {
+                            if(rooms[roomIndex][val].gold._id === userObj.user._id) {
+                                delete rooms[roomIndex][val].gold;
+
+                                io.to(val).emit('action', {
+                                    type: 'up-gold',
+                                    payload: {
+                                        name: val
+                                    }
+                                });
+                            }
+                        } else if(rooms[roomIndex][val].red) {
+                            if(rooms[roomIndex][val].red._id === userObj.user._id) {
+                                delete rooms[roomIndex][val].red;
+
+                                io.to(val).emit('action', {
+                                    type: 'up-red',
+                                    payload: {
+                                        name: val
+                                    }
+                                });
+                            }
+                        }
 
                     } else {
                         //there are no users in this room

@@ -247,14 +247,6 @@ body .container-fluid {
       font-size: 18px;
   }
 
-
-.table-responsive {
-    display: table;
-    width: 100%;
-    overflow-x: scroll;
-
-}
-
 /*--------------------------------------------*/
 .table-curved {
     border-collapse: collapse;

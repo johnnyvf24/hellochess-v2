@@ -5,6 +5,8 @@ import SitGold from '../../containers/empty_card/sit_gold';
 import SitRed from '../../containers/empty_card/sit_red';
 import OnWhite from './occupied/on_white';
 import OnBlack from './occupied/on_black';
+import OnGold from './occupied/on_gold';
+import OnRed from './occupied/on_red';
 
 export default class PlayerCard extends Component {
 
@@ -33,9 +35,9 @@ export default class PlayerCard extends Component {
             case 'b':
                 return <OnBlack player={player} />
             case 'g':
-                // return <OnGold time={time} />
+                return <OnGold player={player} />
             case 'r':
-                // return <OnRed time={time} />
+                return <OnRed player={player} />
         }
     }
 

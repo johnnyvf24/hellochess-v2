@@ -15,7 +15,7 @@ export default class OnBlack extends Component {
         const {player} = this.props;
         return (
             <div className="card player-card">
-                <div className="card-block player-black">
+                <div className="card-block black-player">
 
                     <div className="row">
                         <img className="player-img rounded-circle" src={player.picture} />
@@ -23,8 +23,7 @@ export default class OnBlack extends Component {
                     </div>
 
                     <h4
-                        className="card-title pull-right"
-                    >
+                        className="card-title pull-right">
                         {`${this.millisToMinutesAndSeconds(player.time)}`}
                     </h4>
                 </div>

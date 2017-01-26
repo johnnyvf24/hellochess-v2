@@ -16,7 +16,7 @@ class PlayerTimes extends Component {
         let time = 0, player = undefined;
         if(thread.white) {
             player = thread.white;
-            time = thread.white.team;
+            time = thread.white.time;
         } else {
             player = undefined;
             time = thread.time;
@@ -30,7 +30,7 @@ class PlayerTimes extends Component {
         let time = 0, player = undefined;
         if(thread.black) {
             player = thread.black;
-            time = thread.black.team;
+            time = thread.black.time;
         } else {
             player = undefined;
             time = thread.time;
@@ -43,7 +43,7 @@ class PlayerTimes extends Component {
         let time = 0, player = undefined;
         if(thread.gold) {
             player = thread.gold;
-            time = thread.gold.team;
+            time = thread.gold.time;
         } else {
             player = undefined;
             time = thread.time;
@@ -53,7 +53,16 @@ class PlayerTimes extends Component {
     }
 
     renderRedPlayer(thread) {
-        return <PlayerCard time={thread.time} color="r"/>
+        let time = 0, player = undefined;
+        if(thread.red) {
+            player = thread.red;
+            time = thread.red.time;
+        } else {
+            player = undefined;
+            time = thread.time;
+        }
+
+        return <PlayerCard  player={player} time={time} color="r"/>
     }
 
     render() {
