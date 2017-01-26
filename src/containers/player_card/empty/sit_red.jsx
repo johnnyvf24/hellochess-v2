@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {sitDownBoard} from '../../actions/room';
+import {sitDownBoard} from '../../../actions/room';
 
-class SitBlack extends Component {
+class SitRed extends Component {
     constructor(props) {
         super(props);
     }
@@ -11,20 +11,21 @@ class SitBlack extends Component {
         let obj = {};
         obj.profile = this.props.profile;
         obj.roomName = this.props.activeThread;
-        obj.color = 'b';
+        obj.color = 'r';
         this.props.sitDownBoard(obj);
     }
 
+
     render() {
-        const {time} = this.props;
+        const {game} = this.props;
+        let time = game.time;
         return (
             <div className="card player-card">
-                <div className="card-block black-player">
+                <div className="card-block red-player">
                     <div className="row">
-                        <button
-                            className="btn btn-default"
+                        <button className="btn btn-default"
                             onClick={this.onSit.bind(this)}>
-                            Play Black
+                            Play Red
                         </button>
                     </div>
 
@@ -35,12 +36,13 @@ class SitBlack extends Component {
     }
 }
 
+
 function mapStateToProps(state) {
     return {
         profile: state.auth.profile,
-        activeThread: state.activeThread
+        activeThread: state.activeThread,
+        game: state.openThreads[state.activeThread]
     }
 }
 
-
-export default connect(mapStateToProps,  {sitDownBoard}) (SitBlack)
+export default connect(mapStateToProps,  {sitDownBoard}) (SitRed)

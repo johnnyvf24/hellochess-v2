@@ -10,7 +10,7 @@ import SearchBar from '../components/search_bar';
 import BoardWrapper from './board/board_wrapper';
 import RoomViewer from '../containers/room_viewer';
 import NewGame from './new_game';
-import PlayerTimes from './player_times';
+import PlayerTimes from './player_card/player_times';
 import { logout, saveUsername, clearError, userConnect} from '../actions'
 
 class Live extends Component {

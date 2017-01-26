@@ -1,9 +1,7 @@
 import React, {Component} from 'react';
+import {connect} from 'react-redux';
 
-export default class OnRed extends Component {
-    constructor(props) {
-        super(props);
-    }
+class OnRed extends Component {
 
     millisToMinutesAndSeconds(millis) {
         let minutes = Math.floor(millis / 60000);
@@ -22,8 +20,7 @@ export default class OnRed extends Component {
                         <div className="card-text"><h5>{player.username}</h5>1245</div>
                     </div>
 
-                    <h4
-                        className="card-title pull-right">
+                    <h4 className="card-title pull-right">
                         {`${this.millisToMinutesAndSeconds(player.time)}`}
                     </h4>
                 </div>
@@ -31,3 +28,11 @@ export default class OnRed extends Component {
         );
     }
 }
+
+function mapStateToProps(state) {
+    return {
+        player: state.openThreads[state.activeThread].red
+    }
+}
+
+export default connect(mapStateToProps)(OnRed);

@@ -1,9 +1,7 @@
 import React, {Component} from 'react';
+import {connect} from 'react-redux';
 
-export default class OnGold extends Component {
-    constructor(props) {
-        super(props);
-    }
+class OnWhite extends Component {
 
     millisToMinutesAndSeconds(millis) {
         let minutes = Math.floor(millis / 60000);
@@ -15,15 +13,14 @@ export default class OnGold extends Component {
         const {player} = this.props;
         return (
             <div className="card player-card">
-                <div className="card-block gold-player">
+                <div className="card-block">
 
                     <div className="row">
                         <img className="player-img rounded-circle" src={player.picture} />
                         <div className="card-text"><h5>{player.username}</h5>1245</div>
                     </div>
 
-                    <h4
-                        className="card-title pull-right">
+                    <h4 className="card-title pull-right">
                         {`${this.millisToMinutesAndSeconds(player.time)}`}
                     </h4>
                 </div>
@@ -31,3 +28,11 @@ export default class OnGold extends Component {
         );
     }
 }
+
+function mapStateToProps(state) {
+    return {
+        player: state.openThreads[state.activeThread].white
+    }
+}
+
+export default connect(mapStateToProps)(OnWhite);
