@@ -1,6 +1,7 @@
 import {combineReducers} from 'redux';
 import {reducer as notifications} from 'react-notification-system-redux';
-import { reducer as formReducer } from 'redux-form'
+import { reducer as formReducer } from 'redux-form';
+import Chess from 'chess.js';
 
 import rooms from './rooms_reducer';
 import AuthReducer from './auth_reducer';
@@ -35,6 +36,10 @@ function openThreads(state = {}, action) {
             });
             return newState;
         case 'joined-room':
+            if(action.payload.fen) {
+                action.payload.game = new Chess(action.payload.fen);
+                delete action.payload.fen;
+            }
             return {...state, [action.payload.room.name]: action.payload };
         case 'left-room':
             newState = Object.assign({}, state);
@@ -44,6 +49,11 @@ function openThreads(state = {}, action) {
             const messages = [...state[action.payload.thread].messages, action.payload];
             obj = {...state[action.payload.thread], messages};
             return {...state, [action.payload.thread]: obj };
+        case 'new-move':
+            newState = Object.assign({}, state);
+            newState[action.payload.thread].game = new Chess(action.payload.fen);
+            newState[action.payload.thread].fen = action.payload.fen;
+            return newState;
         case 'sit-down-white':
             newState = Object.assign({}, state);
             newState[action.payload.thread].white = action.payload.room;
@@ -75,6 +85,11 @@ function openThreads(state = {}, action) {
         case 'up-red':
             newState = Object.assign({}, state);
             delete newState[action.payload.name].red;
+            return newState;
+        case 'game-started':
+            newState = Object.assign({}, state);
+            newState[action.payload.thread].game = new Chess();
+            newState[action.payload.thread].fen = action.payload.fen;
             return newState;
         default:
             return state;

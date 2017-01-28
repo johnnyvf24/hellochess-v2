@@ -4,3 +4,14 @@ export function sitDownBoard(details) {
         payload: details
     }
 }
+
+export function newMove(move, roomName) {
+    return {
+        type: 'server/new-move',
+        payload: {
+            thread: roomName,
+            move: move
+        }
+    }
+
+}

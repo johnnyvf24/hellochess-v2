@@ -11,6 +11,9 @@ class OnBlack extends Component {
 
     render() {
         const {player} = this.props;
+        if(!player) {
+            return <div></div>
+        }
         return (
             <div className="card player-card">
                 <div className="card-block black-player">

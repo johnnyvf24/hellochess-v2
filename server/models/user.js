@@ -81,7 +81,6 @@ UserSchema.methods.generateAuthToken = function() {
 
 UserSchema.methods.comparePassword = function(candidatePassword, callback) {
     var User = this;
-    console.log(candidatePassword);
     bcrypt.compare(candidatePassword, User.password, (err, res) => {
         if(err) {
             return callback(err);

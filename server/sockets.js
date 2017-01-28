@@ -1,5 +1,6 @@
 const {mapObject} = require('./utils/utils');
 const Notifications = require('react-notification-system-redux');
+const {Chess} = require('chess.js');
 
 let rooms = [];     //all the chat rooms
 let clients = {};
@@ -59,7 +60,7 @@ function getMemberBySocketId(socketId) {
     return clients[socketId];
 }
 
-function deleteUserFromOtherSeats(io, index, roomName, userId) {
+function deleteUserFromBoardSeats(io, index, roomName, userId) {
     let roomObj = rooms[index][roomName];
     if(roomObj.white) {
         if(roomObj.white._id === userId) {
@@ -163,6 +164,26 @@ module.exports = function(io) {
                     });
                     break;
 
+                case 'server/new-move':
+                    roomName = action.payload.thread;
+                    move = action.payload.move;
+                    index = findRoomIndexByName(roomName);
+
+                    //make the move
+                    move = rooms[index][roomName].game.move(move)
+                    if(move === null) {
+                        //handle cheating scenario
+                    } else {
+                        io.to(roomName).emit('action', {
+                            type: 'new-move',
+                            payload: {
+                                thread: roomName,
+                                fen: rooms[index][roomName].game.fen()
+                            }
+                        })
+                    }
+                    break;
+
                 //User is requesting to play as a certain color
                 case 'server/sit-down-board':
                     roomName = action.payload.roomName;
@@ -172,7 +193,7 @@ module.exports = function(io) {
                         delete userObj.email;   //delete sensitive info
                         index = findRoomIndexByName(roomName);
                         roomObj = rooms[index];
-                        deleteUserFromOtherSeats(io, index, roomName, userObj._id)
+                        deleteUserFromBoardSeats(io, index, roomName, userObj._id);
                         if(roomObj) {
                             switch(color) {
                                 case 'w':
@@ -259,8 +280,43 @@ module.exports = function(io) {
                                     console.log("NOT a valid color");
                             }
                         }
+
+                        if(rooms[index][roomName].gameType === "two-player") {
+                            //Check to see if the game is ready to start
+                            if(rooms[index][roomName].white && rooms[index][roomName].black) {
+
+                                //Notify all players that the game is ready to be played
+                                const notificationOpts = {
+                                    title: 'The game has begun',
+                                    message: '',
+                                    position: 'tr',
+                                    autoDismiss: 3,
+                                };
+
+                                io.to(roomName).emit('action', Notifications.warning(notificationOpts));
+                                rooms[index][roomName].lastMove = Date.now();
+                                rooms[index][roomName].turn = 'white';
+                                rooms[index][roomName].game = new Chess();
+
+                                io.to(roomName).emit('action', {
+                                    type: 'game-started',
+                                    payload: {
+                                        thread: roomName,
+                                        fen: rooms[index][roomName].game.pgn(),
+                                        pgn: rooms[index][roomName].game.fen()
+                                    }
+                                })
+
+                                //start first players timer
+                                // initTimer(roomName, index, 'w');
+
+                                //initialize state on both server and client
+
+                            }
+                        }
                     }
                     break;
+
                 //client is leaving a game room
                 case 'server/leave-room':
                     roomName = action.payload;
@@ -278,7 +334,7 @@ module.exports = function(io) {
                         payload: roomName
                     });
 
-                    //Tell everyone in the room that a new user has connnected
+                    //Tell everyone in the room that a user has disconnnected
                     io.to(roomName).emit('action', {
                         type: 'user-room-left',
                         payload: {
@@ -290,9 +346,9 @@ module.exports = function(io) {
                     if(io.sockets.adapter.rooms[roomName]) { //there are still users in the room
                         roomIndex = findRoomIndexByName(roomName);
                         rooms[roomIndex][roomName].users = getAllRoomMembers(roomName);
+                        deleteUserFromBoardSeats(io, roomIndex, roomName, userObj.user._id);
                     } else { //this was the final user
                         deleteRoomByName(roomName);
-
                     }
 
                     //Update the user count for that room
@@ -326,6 +382,10 @@ module.exports = function(io) {
                     //Find the existing chat room
                     roomObj = getRoomByName(roomName);
 
+                    if(roomObj.game) {
+                        roomObj.fen = roomObj.game.fen();
+                    }
+
                     //get the list of all room members
                     roomObj.users = getAllRoomMembers(roomName);
                     //add a list of messages for client side purposes
@@ -349,8 +409,8 @@ module.exports = function(io) {
                         type: 'all-rooms',
                         payload: rooms
                     });
-
                     break;
+
                 case 'server/get-rooms':
                     io.emit('action', {
                         type: 'all-rooms',
@@ -382,51 +442,7 @@ module.exports = function(io) {
                         //update this specific room
                         roomIndex = findRoomIndexByName(val);
                         rooms[roomIndex][val].users = getAllRoomMembers(val);
-                        if(rooms[roomIndex][val].white) {
-                            if(rooms[roomIndex][val].white._id === userObj.user._id) {
-                                delete rooms[roomIndex][val].white;
-
-                                io.to(val).emit('action', {
-                                    type: 'up-white',
-                                    payload: {
-                                        name: val
-                                    }
-                                });
-                            }
-                        } else if(rooms[roomIndex][val].black) {
-                            if(rooms[roomIndex][val].black._id === userObj.user._id) {
-                                delete rooms[roomIndex][val].black;
-
-                                io.to(val).emit('action', {
-                                    type: 'up-black',
-                                    payload: {
-                                        name: val
-                                    }
-                                });
-                            }
-                        } else if(rooms[roomIndex][val].gold) {
-                            if(rooms[roomIndex][val].gold._id === userObj.user._id) {
-                                delete rooms[roomIndex][val].gold;
-
-                                io.to(val).emit('action', {
-                                    type: 'up-gold',
-                                    payload: {
-                                        name: val
-                                    }
-                                });
-                            }
-                        } else if(rooms[roomIndex][val].red) {
-                            if(rooms[roomIndex][val].red._id === userObj.user._id) {
-                                delete rooms[roomIndex][val].red;
-
-                                io.to(val).emit('action', {
-                                    type: 'up-red',
-                                    payload: {
-                                        name: val
-                                    }
-                                });
-                            }
-                        }
+                        deleteUserFromBoardSeats(io, roomIndex, val, userObj.user._id);
 
                     } else {
                         //there are no users in this room
