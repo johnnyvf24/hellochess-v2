@@ -60,6 +60,21 @@ function getMemberBySocketId(socketId) {
     return clients[socketId];
 }
 
+//Format a turn for easier usage
+function formatTurn(turn) {
+    switch(turn) {
+        case 'w':
+            return 'white';
+        case 'b':
+            return 'black';
+        case 'g':
+            return 'gold';
+        case 'r':
+            return 'red';
+    }
+    return undefined;
+}
+
 function deleteUserFromBoardSeats(io, index, roomName, userId) {
     let roomObj = rooms[index][roomName];
     if(roomObj.white) {
@@ -110,6 +125,50 @@ function deleteUserFromBoardSeats(io, index, roomName, userId) {
     }
 }
 
+function userSittingAndGameOngoing(userObj, roomObj) {
+    let user = userObj.user;
+    if(roomObj.game) {
+        if(roomObj.white && user._id === roomObj.white._id) {
+            return true;
+        }
+        if(roomObj.black && user._id === roomObj.black._id) {
+            return true;
+        }
+        if(roomObj.gold && user._id === roomObj.gold._id) {
+            return true;
+        }
+        if(roomObj.red && user._id === roomObj.red._id) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//Synchronize clocks every half second
+function initTimerSync(io, roomName, index) {
+    let synchronizer = setInterval(() =>{
+        let turn = rooms[index][roomName].game.turn();
+        let lastMove = rooms[index][roomName].lastMove
+        turn = formatTurn(turn);
+        let timeElapsed = Date.now() - lastMove;
+        let timeLeft = rooms[index][roomName][turn].time;
+        let time = timeLeft - timeElapsed;
+        if(time <= 100) {
+            time = 1;
+            clearInterval(synchronizer);
+        }
+        io.to(roomName).emit('action', {
+            type: 'timer-sync',
+            payload: {
+                thread: roomName,
+                turn: turn,
+                timeLeft: time
+            }
+        });
+    }, 500);
+}
+
 module.exports = function(io) {
 
     //retrieve all the players in a particular room
@@ -125,7 +184,7 @@ module.exports = function(io) {
         // console.log("\n\n\n",JSON.stringify(rooms, null, 2));
         // console.log('connected clients: ', JSON.stringify(clients, null, 2));
         socket.on('action', (action) => {
-            let roomName, roomObj, userObj, roomIndex, color, index;
+            let roomName, roomObj, userObj, roomIndex, color, index, turn;
             switch(action.type) {
                 //Client emiits message this after loading page
                 case 'server/connected-user':
@@ -169,16 +228,48 @@ module.exports = function(io) {
                     move = action.payload.move;
                     index = findRoomIndexByName(roomName);
 
+                    //get who's turn it is
+                    turn = rooms[index][roomName].game.turn()
+                    turn = formatTurn(turn);
+
                     //make the move
-                    move = rooms[index][roomName].game.move(move)
+                    move = rooms[index][roomName].game.move(move);
+                    if(rooms[index][roomName].game.game_over()) {
+
+                        //get the loser
+                        let nextTurn = rooms[index][roomName].game.turn();
+
+                        nextTurn = formatTurn(nextTurn);
+
+                        const winner = rooms[index][roomName][turn].username;
+                        const loser = rooms[index][roomName][nextTurn].username;
+
+                        //Notify all players that the game is ready to be played
+                        const notificationOpts = {
+                            title: 'Game Over',
+                            message: `${winner} is the winner`,
+                            position: 'tr',
+                            autoDismiss: 5,
+                        };
+
+                        io.to(roomName).emit('action', Notifications.warning(notificationOpts));
+
+                    }
                     if(move === null) {
                         //handle cheating scenario
                     } else {
+                        //calculate the time difference
+                        let timeElapsed = Date.now() - rooms[index][roomName].lastMove;
+                        rooms[index][roomName].lastMove = Date.now();
+                        rooms[index][roomName][turn].time = rooms[index][roomName][turn].time - timeElapsed;
+
                         io.to(roomName).emit('action', {
                             type: 'new-move',
                             payload: {
                                 thread: roomName,
-                                fen: rooms[index][roomName].game.fen()
+                                fen: rooms[index][roomName].game.fen(),
+                                lastTurn: turn,
+                                time: rooms[index][roomName][turn].time
                             }
                         })
                     }
@@ -308,7 +399,7 @@ module.exports = function(io) {
                                 })
 
                                 //start first players timer
-                                // initTimer(roomName, index, 'w');
+                                initTimerSync(io, roomName, index);
 
                                 //initialize state on both server and client
 
@@ -321,8 +412,10 @@ module.exports = function(io) {
                 case 'server/leave-room':
                     roomName = action.payload;
                     userObj = clients[socket.id];
+                    roomIndex = findRoomIndexByName(roomName);
+
                     clients[socket.id].rooms = clients[socket.id].rooms.map((room) => {
-                        if(room !== roomName) {
+                        if (room !== roomName) {
                             return room;
                         }
                     });
@@ -343,10 +436,13 @@ module.exports = function(io) {
                         }
                     });
 
-                    if(io.sockets.adapter.rooms[roomName]) { //there are still users in the room
-                        roomIndex = findRoomIndexByName(roomName);
+                    if (io.sockets.adapter.rooms[roomName]) { //there are still users in the room
+
                         rooms[roomIndex][roomName].users = getAllRoomMembers(roomName);
-                        deleteUserFromBoardSeats(io, roomIndex, roomName, userObj.user._id);
+                        if (!userSittingAndGameOngoing(userObj, rooms[roomIndex][roomName])) {
+                            deleteUserFromBoardSeats(io, roomIndex, roomName, userObj.user._id);
+                        }
+
                     } else { //this was the final user
                         deleteRoomByName(roomName);
                     }
@@ -356,7 +452,6 @@ module.exports = function(io) {
                         type: 'all-rooms',
                         payload: rooms
                     });
-
                     break;
                 case 'server/join-room':
                     //TODO limit the number of rooms that a user can create

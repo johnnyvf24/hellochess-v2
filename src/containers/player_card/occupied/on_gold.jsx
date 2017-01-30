@@ -10,8 +10,8 @@ class OnGold extends Component {
     }
 
     render() {
-        const {player} = this.props;
-        if(!player) {
+        const {player,time} = this.props;
+        if(!player || !time) {
             return <div></div>
         }
         return (
@@ -24,7 +24,7 @@ class OnGold extends Component {
                     </div>
 
                     <h4 className="card-title pull-right">
-                        {`${this.millisToMinutesAndSeconds(player.time)}`}
+                        {`${this.millisToMinutesAndSeconds(time)}`}
                     </h4>
                 </div>
             </div>
@@ -34,7 +34,8 @@ class OnGold extends Component {
 
 function mapStateToProps(state) {
     return {
-        player: state.openThreads[state.activeThread].gold
+        player: state.openThreads[state.activeThread].gold,
+        time: state.openThreads[state.activeThread].gold.time
     }
 }
 

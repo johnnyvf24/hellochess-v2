@@ -53,7 +53,16 @@ function openThreads(state = {}, action) {
             newState = Object.assign({}, state);
             newState[action.payload.thread].game = new Chess(action.payload.fen);
             newState[action.payload.thread].fen = action.payload.fen;
+            newState[action.payload.thread][action.payload.lastTurn].time = action.payload.time;
             return newState;
+
+        case 'timer-sync':
+            if(state[action.payload.thread][action.payload.turn]) {
+                newState = Object.assign({}, state);
+                newState[action.payload.thread][action.payload.turn].time = action.payload.timeLeft;
+                return newState;
+            }
+            return state;
         case 'sit-down-white':
             newState = Object.assign({}, state);
             newState[action.payload.thread].white = action.payload.room;
