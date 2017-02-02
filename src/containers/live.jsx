@@ -11,6 +11,7 @@ import BoardWrapper from './board/board_wrapper';
 import RoomViewer from '../containers/room_viewer';
 import NewGame from './new_game';
 import PlayerTimes from './player_card/player_times';
+import GameButtons from './game_btns';
 import { logout, saveUsername, clearError, userConnect} from '../actions'
 
 class Live extends Component {
@@ -147,7 +148,7 @@ class Live extends Component {
                             </div>
 
                             <BoardWrapper />
-
+                            <GameButtons />
                         </div>
                         <div id="time-ads-column" className="col-xs-12 col-sm-12 col-md-2 col-lg-2">
                             <PlayerTimes />

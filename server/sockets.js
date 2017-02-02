@@ -148,6 +148,13 @@ function userSittingAndGameOngoing(userObj, roomObj) {
 //Synchronize clocks every half second
 function initTimerSync(io, roomName, index) {
     let synchronizer = setInterval(() =>{
+        if(!rooms[index]) {
+            clearInterval(synchronizer);
+            return;
+        } if(!rooms[index][roomName]) {
+            clearInterval(synchronizer);
+            return;
+        }
         let turn = rooms[index][roomName].game.turn();
         let lastMove = rooms[index][roomName].lastMove
         turn = formatTurn(turn);
@@ -537,7 +544,9 @@ module.exports = function(io) {
                         //update this specific room
                         roomIndex = findRoomIndexByName(val);
                         rooms[roomIndex][val].users = getAllRoomMembers(val);
-                        deleteUserFromBoardSeats(io, roomIndex, val, userObj.user._id);
+                        if(!userSittingAndGameOngoing(userObj, rooms[roomIndex][val])) {
+                            deleteUserFromBoardSeats(io, roomIndex, val, userObj.user._id);
+                        }
 
                     } else {
                         //there are no users in this room

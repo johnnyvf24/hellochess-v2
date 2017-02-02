@@ -20,9 +20,12 @@ class TwoBoard extends Component {
 
             if(nextProps.room.black._id === nextProps.profile._id) {
                 this.board.orientation('black');
+            } else {
+                this.board.orientation('white');
             }
+        } else {
+            this.board.clear();
         }
-        // this.board.doSomething();
     }
 
     onDragStart(source, piece, position, orientation) {
@@ -74,6 +77,7 @@ class TwoBoard extends Component {
             draggable: true,
             onDragStart: this.onDragStart,
             onDrop: this.onDrop,
+            moveSpeed: 'fast',
             onMouseoutSquare: this.onMouseoutSquare,
             onMouseoverSquare: this.onMouseoverSquare,
         };
