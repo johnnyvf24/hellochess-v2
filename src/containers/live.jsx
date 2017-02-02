@@ -82,16 +82,18 @@ class Live extends Component {
 
     render() {
         if(this.props.connection.error) {
-            return <div>
-                <ModalContainer >
-                  <ModalDialog>
-                      <div className="row">
-                          <strong className="center">Multiple Logins detected!</strong>
-                      </div>
-                      <p>Please check that only one tab is open or that you are only logged in on one device</p>
-                  </ModalDialog>
-                </ModalContainer>
-            </div>
+            return (
+                <div>
+                    <ModalContainer >
+                      <ModalDialog>
+                          <div className="row">
+                              <strong className="center">Multiple Logins detected!</strong>
+                          </div>
+                          <p>Please check that only one tab is open or that you are only logged in on one device</p>
+                      </ModalDialog>
+                    </ModalContainer>
+                </div>
+            );
         }
 
         else if(!this.props.connection.status) {

@@ -379,3 +379,7 @@ tr:hover {
     margin-top: 7px;
     max-height: 50px;
 }
+
+#board {
+    max-width: 79vh;
+}

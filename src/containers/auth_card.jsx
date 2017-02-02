@@ -9,6 +9,9 @@ import SignUpForm from '../components/auth/signup_form';
 import LoginForm from '../components/auth/login_form';
 import config from '../../config/config';
 
+import TwoBoard from '../components/demo_board/two_board';
+import FourBoard from '../components/demo_board/four_board';
+
 class AuthCard extends Component {
 
     onSignUpSubmit(values) {
@@ -35,7 +38,7 @@ class AuthCard extends Component {
             <div className="row">
                 <div className="hidden-sm-down col-md-4 col-lg-4">
                     <div id="four-player-demo">
-
+                        <FourBoard />
                     </div>
                 </div>
                 <div className="col-xs-12 col-md-4 col-lg-4">
@@ -97,7 +100,7 @@ class AuthCard extends Component {
                 </div>
                 <div className="hidden-sm-down col-md-4 col-lg-4">
                     <div id="two-player-demo">
-
+                        <TwoBoard />
                     </div>
                 </div>
             </div>
