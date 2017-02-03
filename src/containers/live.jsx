@@ -27,6 +27,7 @@ class Live extends Component {
         this.onInputChange = this.onInputChange.bind(this);
         this.saveUsername = this.saveUsername.bind(this);
         this.saveUsername = this.saveUsername.bind(this);
+        this.renderLiveContent = this.renderLiveContent.bind(this);
     }
 
     componentWillMount() {
@@ -55,6 +56,31 @@ class Live extends Component {
 
     onInputChange(event) {
         this.setState({usernameInput: event.target.value})
+    }
+
+    renderLiveContent() {
+        if(!this.props.profile.username) {
+            return <div></div>
+        } else {
+            return (
+                <div id="wrapper" className="row">
+                    <div id="chatbox-wrapper" className="hidden-sm-down col-md-4 col-lg-5">
+                        <RoomViewer username=""/>
+                    </div>
+                    <div className="col-xs-12 col-sm-12 col-md-6 col-lg-5">
+                        <div id="start-game-btns" className="row flex-items-xs-center">
+                            <NewGame/>
+                        </div>
+
+                        <BoardWrapper />
+                        <GameButtons />
+                    </div>
+                    <div id="time-ads-column" className="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+                        <PlayerTimes />
+                    </div>
+                </div>
+            );
+        }
     }
 
     renderInputUsername() {
@@ -119,8 +145,6 @@ class Live extends Component {
 
             return (
                 <div id="main-panel">
-                    { this.renderInputUsername() }
-
                     <div className="row flex-items-xs-right">
                         <div className="col-xs-10 col-md-6 col-lg-4">
                             <SearchBar/>
@@ -137,23 +161,9 @@ class Live extends Component {
                             </div>
                         </div>
                     </div>
+                    { this.renderInputUsername() }
 
-                    <div id="wrapper" className="row">
-                        <div id="chatbox-wrapper" className="hidden-sm-down col-md-4 col-lg-5">
-                            <RoomViewer username=""/>
-                        </div>
-                        <div className="col-xs-12 col-sm-12 col-md-6 col-lg-5">
-                            <div id="start-game-btns" className="row flex-items-xs-center">
-                                <NewGame/>
-                            </div>
-
-                            <BoardWrapper />
-                            <GameButtons />
-                        </div>
-                        <div id="time-ads-column" className="col-xs-12 col-sm-12 col-md-2 col-lg-2">
-                            <PlayerTimes />
-                        </div>
-                    </div>
+                    { this.renderLiveContent() }
                 </div>
             )
         }

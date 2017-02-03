@@ -33,10 +33,11 @@ function auth(state = INITIAL_STATE, action) {
                 profile: null
             });
         case ActionTypes.UPDATE_USERNAME:
-            setProfile(action.payload.data)
-            return Object.assign({}, state, {
-                profile: action.payload.data
-            })
+            setProfile(action.payload.data);
+            console.log(getProfile());
+            let newState = Object.assign({}, state)
+            newState.profile = getProfile();
+            return newState;
         case 'reconnect':
             localStorage.removeItem('token');
             localStorage.removeItem('profile');

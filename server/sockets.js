@@ -151,7 +151,14 @@ function initTimerSync(io, roomName, index) {
         if(!rooms[index]) {
             clearInterval(synchronizer);
             return;
-        } if(!rooms[index][roomName]) {
+        }
+
+        if(!rooms[index][roomName]) {
+            clearInterval(synchronizer);
+            return;
+        }
+
+        if(!rooms[index][roomName].game) {
             clearInterval(synchronizer);
             return;
         }
@@ -192,6 +199,7 @@ module.exports = function(io) {
         // console.log('connected clients: ', JSON.stringify(clients, null, 2));
         socket.on('action', (action) => {
             let roomName, roomObj, userObj, roomIndex, color, index, turn;
+            let loser, winner;
             switch(action.type) {
                 //Client emiits message this after loading page
                 case 'server/connected-user':
@@ -228,6 +236,66 @@ module.exports = function(io) {
                         type: 'receive-message',
                         payload: action.payload
                     });
+                    break;
+
+                //a user is resigning
+                case 'server/resign':
+                    roomName = action.payload.roomName;
+                    loser = clients[socket.id].user;
+                    if(loser._id != action.payload.playerId) {
+                        //TODO cheating?
+                    }
+                    roomIndex = findRoomIndexByName(roomName);
+
+                    if(rooms[roomIndex][roomName].white._id === loser._id) {
+                        winner = rooms[roomIndex][roomName].black;
+                    } else {
+                        winner = rooms[roomIndex][roomName].white;
+                    }
+
+                    //Notify all players that a player has resigned
+                    let notificationOpts = {
+                        title: 'Game Over',
+                        message: `${loser.username} has resigned. ${winner.username} has won! ${loser.username}'s elo is 1200', ${winner.username}'s elo is 1210`,
+                        position: 'tr',
+                        autoDismiss: 5,
+                    };
+
+                    io.to(roomName).emit('action', Notifications.info(notificationOpts));
+
+                    //TODO calculate new elo for both players
+
+                    //TODO tell players their new elos
+
+                    //TODO save game
+
+                    //Stop the clocks
+                    delete rooms[roomIndex][roomName].white;
+                    delete rooms[roomIndex][roomName].black;
+                    delete rooms[roomIndex][roomName].game;
+
+                    //kick both players from board and restart game
+                    setTimeout(() => {
+                        let boardNotif = {
+                            title: 'Board ready',
+                            position: 'tr',
+                            autoDismiss: 5,
+                        };
+                        io.to(roomName).emit('action', Notifications.warning(boardNotif));
+
+                        io.to(roomName).emit('action', {
+                            type: 'game-over',
+                            payload: roomName
+                        })
+
+                        //Update the information about that room
+                        io.emit('action', {
+                            type: 'all-rooms',
+                            payload: rooms
+                        });
+                    }, 3000);
+
+
                     break;
 
                 case 'server/new-move':
@@ -269,6 +337,8 @@ module.exports = function(io) {
                         let timeElapsed = Date.now() - rooms[index][roomName].lastMove;
                         rooms[index][roomName].lastMove = Date.now();
                         rooms[index][roomName][turn].time = rooms[index][roomName][turn].time - timeElapsed;
+                        //Add the time increment
+                        rooms[index][roomName][turn].time += rooms[index][roomName].time.increment * 1000;
 
                         io.to(roomName).emit('action', {
                             type: 'new-move',

@@ -42,6 +42,24 @@ var UserSchema = new Schema({
         type: Boolean,
         default: false
     },
+    elos: {
+        bullet: {
+            type: Number,
+            default: 1200
+        },
+        blitz: {
+            type: Number,
+            default: 1200
+        },
+        rapid: {
+            type: Number,
+            default: 1200
+        },
+        classic: {
+            type: Number,
+            default: 1200
+        }
+    },
     socialProvider: {
         name: String,
         id: String

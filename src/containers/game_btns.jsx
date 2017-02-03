@@ -1,10 +1,13 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
+import {resign} from '../actions/room';
 
 class GameButtons extends Component {
 
     constructor (props) {
         super(props);
+
+        this.onResign = this.onResign.bind(this);
     }
 
     userIsPlaying(userObj, roomObj) {
@@ -22,6 +25,11 @@ class GameButtons extends Component {
         }
 
         return false;
+    }
+
+    onResign(event) {
+        console.log('here');
+        this.props.resign(this.props.profile._id, this.props.activeThread);
     }
 
     render() {
@@ -44,8 +52,17 @@ class GameButtons extends Component {
             <div className="row">
                 <div className="center">
                     <div className="btn-group" role="group" aria-label="Basic example">
-                        <button type="button" className="btn btn-secondary">Resign</button>
-                        <button type="button" className="btn btn-secondary">Send Draw Request</button>
+                        <button
+                            type="button"
+                            className="btn btn-secondary"
+                            onClick={this.onResign}>
+                            Resign
+                        </button>
+                        <button
+                            type="button"
+                            className="btn btn-secondary">
+                            Send Draw Request
+                        </button>
                     </div>
                 </div>
             </div>
@@ -63,4 +80,4 @@ function mapStateToProps(state) {
 
 }
 
-export default connect(mapStateToProps) (GameButtons)
+export default connect(mapStateToProps, {resign}) (GameButtons)

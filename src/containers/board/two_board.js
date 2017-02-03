@@ -16,7 +16,7 @@ class TwoBoard extends Component {
 
     componentWillReceiveProps(nextProps) {
         if(nextProps.game) {
-            this.board.position(nextProps.game.fen());
+            this.board.position(nextProps.game.fen(), false);
 
             if(nextProps.room.black._id === nextProps.profile._id) {
                 this.board.orientation('black');

@@ -15,3 +15,13 @@ export function newMove(move, roomName) {
     }
 
 }
+
+export function resign(playerId, roomName) {
+    return {
+        type: 'server/resign',
+        payload: {
+            playerId,
+            roomName
+        }
+    }
+}

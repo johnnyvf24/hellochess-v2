@@ -55,7 +55,16 @@ function openThreads(state = {}, action) {
             newState[action.payload.thread].fen = action.payload.fen;
             newState[action.payload.thread][action.payload.lastTurn].time = action.payload.time;
             return newState;
-
+        case 'game-over':
+            newState = Object.assign({}, state);
+            delete newState[action.payload].game;
+            delete newState[action.payload].fen;
+            delete newState[action.payload].pgn;
+            delete newState[action.payload].white;
+            delete newState[action.payload].black;
+            delete newState[action.payload].gold;
+            delete newState[action.payload].red;
+            return newState;
         case 'timer-sync':
             if(state[action.payload.thread][action.payload.turn]) {
                 newState = Object.assign({}, state);
