@@ -41,6 +41,10 @@ class GameButtons extends Component {
 
         const {game} = openThreads[activeThread];
 
+        if(openThreads[activeThread].paused) {
+            return <div></div>
+        }
+
         if(!game) {
             return <div></div>
         }

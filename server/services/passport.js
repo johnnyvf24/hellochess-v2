@@ -32,7 +32,7 @@ const localLogin = new LocalStrategy(localOptions, (email, password, done) => {
 
     }).catch((e) => {
         done(e);
-    })
+    });
 });
 
 //options for JWT strategy

@@ -109,6 +109,14 @@ function openThreads(state = {}, action) {
             newState[action.payload.thread].game = new Chess();
             newState[action.payload.thread].fen = action.payload.fen;
             return newState;
+        case 'pause':
+            newState = Object.assign({}, state);
+            newState[action.payload.thread].paused = true;
+            return newState;
+        case 'resume':
+            newState = Object.assign({}, state);
+            newState[action.payload.thread].paused = false;
+            return newState;
         default:
             return state;
     }

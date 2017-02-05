@@ -22,6 +22,7 @@ const INITIAL_STATE = {
 
 //The auth reducer
 function auth(state = INITIAL_STATE, action) {
+    let newState = null;
     switch (action.type) {
         case ActionTypes.LOGIN_SUCCESS:
             return {...state, authenticated: true, profile: getProfile()}
@@ -34,8 +35,12 @@ function auth(state = INITIAL_STATE, action) {
             });
         case ActionTypes.UPDATE_USERNAME:
             setProfile(action.payload.data);
-            console.log(getProfile());
-            let newState = Object.assign({}, state)
+            newState = Object.assign({}, state)
+            newState.profile = getProfile();
+            return newState;
+        case 'user-update':
+            setProfile(action.payload);
+            newState = Object.assign({}, state)
             newState.profile = getProfile();
             return newState;
         case 'reconnect':

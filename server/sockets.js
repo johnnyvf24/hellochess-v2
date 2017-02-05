@@ -1,6 +1,8 @@
 const {mapObject} = require('./utils/utils');
 const Notifications = require('react-notification-system-redux');
 const {Chess} = require('chess.js');
+const Elo = require('elo-js');
+const {User} = require('./models/user');
 
 let rooms = [];     //all the chat rooms
 let clients = {};
@@ -73,6 +75,106 @@ function formatTurn(turn) {
             return 'red';
     }
     return undefined;
+}
+
+function getTimeTypeForTimeControl(game) {
+    let tcIndex;
+    //this time estimate is based on an estimated game length of 35 moves
+    let totalTimeMs = (game.time.value * 60 * 1000) + (35 * game.time.increment * 1000);
+
+    //Two player cutoff times
+    let twoMins = 120000;   //two minutes in ms
+    let eightMins = 480000;
+    let fifteenMins = 900000;
+
+    //four player cutoff times
+    let fourMins = 240000;
+    let twelveMins = 720000;
+    let twentyMins = 12000000;
+
+    switch(game.gameType) {
+        case 'two-player':
+            if( totalTimeMs <= twoMins) {
+                //bullet
+                tcIndex = 'bullet';
+            } else if(totalTimeMs <= eightMins) {
+                //blitz
+                tcIndex = 'blitz';
+            } else if(totalTimeMs <= fifteenMins) {
+                //rapid
+                tcIndex = 'rapid';
+            } else {
+                //classical
+                tcIndex = 'classic';
+            }
+            return tcIndex;
+        case 'four-player':
+            if( totalTimeMs <= fourMins) {
+                //bullet
+                tcIndex = 'bullet';
+            } else if(totalTimeMs <= twelveMins) {
+                //blitz
+                tcIndex = 'blitz';
+            } else if(totalTimeMs <= twentyMins) {
+                //rapid
+                tcIndex = 'rapid';
+            } else {
+                //classical
+                tcIndex = 'classic';
+            }
+            return tcIndex;
+    }
+}
+
+function getEloForTimeControl(game, player) {
+    let eloIndex, tcIndex;
+    //this time estimate is based on an estimated game length of 35 moves
+    let totalTimeMs = (game.time.value * 60 * 1000) + (35 * game.time.increment * 1000);
+
+    //Two player cutoff times
+    let twoMins = 120000;   //two minutes in ms
+    let eightMins = 480000;
+    let fifteenMins = 900000;
+
+    //four player cutoff times
+    let fourMins = 240000;
+    let twelveMins = 720000;
+    let twentyMins = 12000000;
+
+    switch(game.gameType) {
+        case 'two-player':
+            eloIndex = 'two_elos';
+            if( totalTimeMs <= twoMins) {
+                //bullet
+                tcIndex = 'bullet';
+            } else if(totalTimeMs <= eightMins) {
+                //blitz
+                tcIndex = 'blitz';
+            } else if(totalTimeMs <= fifteenMins) {
+                //rapid
+                tcIndex = 'rapid';
+            } else {
+                //classical
+                tcIndex = 'classic';
+            }
+            return player[eloIndex][tcIndex];
+        case 'four-player':
+            eloIndex = 'four_elos';
+            if( totalTimeMs <= fourMins) {
+                //bullet
+                tcIndex = 'bullet';
+            } else if(totalTimeMs <= twelveMins) {
+                //blitz
+                tcIndex = 'blitz';
+            } else if(totalTimeMs <= twentyMins) {
+                //rapid
+                tcIndex = 'rapid';
+            } else {
+                //classical
+                tcIndex = 'classic';
+            }
+            return player[eloIndex][tcIndex];
+    }
 }
 
 function deleteUserFromBoardSeats(io, index, roomName, userId) {
@@ -195,8 +297,6 @@ module.exports = function(io) {
     }
 
     io.on('connection', (socket) => {
-        // console.log("\n\n\n",JSON.stringify(rooms, null, 2));
-        // console.log('connected clients: ', JSON.stringify(clients, null, 2));
         socket.on('action', (action) => {
             let roomName, roomObj, userObj, roomIndex, color, index, turn;
             let loser, winner;
@@ -226,7 +326,22 @@ module.exports = function(io) {
 
                         socket.emit('action', {
                             type: 'connected'
-                        })
+                        });
+
+                        //update the database, keep track of the socketid for that user
+                        User.findById({ _id: action.payload.user._id })
+                        .then((user) => {
+                            user.socket_id = socket.id;
+                            user.save(function(err, updatedUser) {
+                                let notif = {
+                                    title: `Welcome ${updatedUser.username}!`,
+                                    position: 'tc',
+                                    autoDismiss: 3,
+                                };
+                                io.to(socket.id).emit('action', Notifications.success(notif));
+                            });
+                        }).catch((e) => {
+                        });
                     }
 
                     break;
@@ -249,30 +364,92 @@ module.exports = function(io) {
 
                     if(rooms[roomIndex][roomName].white._id === loser._id) {
                         winner = rooms[roomIndex][roomName].black;
+                        loser = rooms[roomIndex][roomName].white;
                     } else {
                         winner = rooms[roomIndex][roomName].white;
+                        loser = rooms[roomIndex][roomName].black;
                     }
 
                     //Notify all players that a player has resigned
                     let notificationOpts = {
                         title: 'Game Over',
-                        message: `${loser.username} has resigned. ${winner.username} has won! ${loser.username}'s elo is 1200', ${winner.username}'s elo is 1210`,
+                        message: `${loser.username} has resigned. ${winner.username} has won!`,
                         position: 'tr',
                         autoDismiss: 5,
                     };
 
                     io.to(roomName).emit('action', Notifications.info(notificationOpts));
 
-                    //TODO calculate new elo for both players
+                    io.to(roomName).emit('action', {
+                        type: 'pause',
+                        payload: {
+                            thread: roomName
+                        }
+                    });
 
-                    //TODO tell players their new elos
+                    let elo = new Elo();
+
+                    //get elos and calculate new elos
+                    let timeType = getTimeTypeForTimeControl(rooms[roomIndex][roomName]);
+
+                    let wOldElo = getEloForTimeControl(rooms[roomIndex][roomName], winner);
+                    let lOldElo = getEloForTimeControl(rooms[roomIndex][roomName], loser);
+                    let wElo = elo.ifWins(wOldElo, lOldElo);
+                    let lElo = elo.ifLoses(lOldElo, wOldElo);
+
+                    let updateObj = {};
+                    updateObj[timeType] = wElo;
+
+                    //save the winner's elo
+                    User.findById({ _id: winner._id })
+                    .then((user) => {
+                        user.two_elos[timeType] = wElo;
+                        user.save(function(err, updatedUser) {
+                            let eloNotif = {
+                                title: `${winner.username}'s elo is now ${wElo} +${wElo - wOldElo}`,
+                                position: 'tr',
+                                autoDismiss: 5,
+                            };
+                            io.to(roomName).emit('action', Notifications.success(eloNotif));
+                            delete updatedUser.tokens;
+                            io.to(updatedUser.socket_id).emit('action', {
+                                type: 'user-update',
+                                payload: updatedUser
+                            });
+                        });
+                    }).catch((e) => {
+
+                    });
+
+                    setTimeout(() => {
+                        //Save the loser's elo
+                        User.findById({ _id: loser._id })
+                        .then((user) => {
+                            user.two_elos[timeType] = lElo;
+                            user.save(function(err, updatedUser) {
+                                let eloNotif = {
+                                    title: `${loser.username}'s elo is now ${lElo} ${lElo - lOldElo}`,
+                                    position: 'tr',
+                                    autoDismiss: 5,
+                                };
+                                io.to(roomName).emit('action', Notifications.error(eloNotif));
+                                delete updatedUser.tokens;
+                                io.to(updatedUser.socket_id).emit('action', {
+                                    type: 'user-update',
+                                    payload: updatedUser
+                                });
+                            });
+                        }).catch((e) => {
+                        });
+                    }, 250);
+
 
                     //TODO save game
 
                     //Stop the clocks
+                    delete rooms[roomIndex][roomName].game;
                     delete rooms[roomIndex][roomName].white;
                     delete rooms[roomIndex][roomName].black;
-                    delete rooms[roomIndex][roomName].game;
 
                     //kick both players from board and restart game
                     setTimeout(() => {
@@ -286,14 +463,21 @@ module.exports = function(io) {
                         io.to(roomName).emit('action', {
                             type: 'game-over',
                             payload: roomName
-                        })
+                        });
 
                         //Update the information about that room
                         io.emit('action', {
                             type: 'all-rooms',
                             payload: rooms
                         });
-                    }, 3000);
+
+                        io.to(roomName).emit('action', {
+                            type: 'resume',
+                            payload: {
+                                thread: roomName
+                            }
+                        });
+                    }, 4000);
 
 
                     break;

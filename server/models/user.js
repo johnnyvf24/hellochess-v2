@@ -42,7 +42,7 @@ var UserSchema = new Schema({
         type: Boolean,
         default: false
     },
-    elos: {
+    two_elos: {
         bullet: {
             type: Number,
             default: 1200
@@ -59,6 +59,27 @@ var UserSchema = new Schema({
             type: Number,
             default: 1200
         }
+    },
+    four_elos: {
+        bullet: {
+            type: Number,
+            default: 1200
+        },
+        blitz: {
+            type: Number,
+            default: 1200
+        },
+        rapid: {
+            type: Number,
+            default: 1200
+        },
+        classic: {
+            type: Number,
+            default: 1200
+        }
+    },
+    socket_id: {
+        type: String
     },
     socialProvider: {
         name: String,
@@ -81,7 +102,15 @@ UserSchema.methods.toJSON = function() {
     var user = this;
     var userObject = user.toObject();
 
-    return _.pick(userObject, ['_id', 'picture', 'email', 'username'])
+    return _.pick(userObject, [
+        '_id',
+        'picture',
+        'email',
+        'username',
+        'social',
+        'two_elos',
+        'four_elos'
+    ]);
 };
 
 UserSchema.methods.generateAuthToken = function() {
