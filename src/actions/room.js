@@ -16,6 +16,15 @@ export function newMove(move, roomName) {
 
 }
 
+export function draw(roomName) {
+    return {
+        type: 'server/draw',
+        payload: {
+            roomName
+        }
+    }
+}
+
 export function resign(playerId, roomName) {
     return {
         type: 'server/resign',

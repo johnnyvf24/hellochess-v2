@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import {resign} from '../actions/room';
+import {resign, draw} from '../actions/room';
 
 class GameButtons extends Component {
 
@@ -8,6 +8,7 @@ class GameButtons extends Component {
         super(props);
 
         this.onResign = this.onResign.bind(this);
+        this.onDraw = this.onDraw.bind(this);
     }
 
     userIsPlaying(userObj, roomObj) {
@@ -28,8 +29,11 @@ class GameButtons extends Component {
     }
 
     onResign(event) {
-        console.log('here');
         this.props.resign(this.props.profile._id, this.props.activeThread);
+    }
+
+    onDraw(event) {
+        this.props.draw(this.props.activeThread);
     }
 
     render() {
@@ -64,7 +68,8 @@ class GameButtons extends Component {
                         </button>
                         <button
                             type="button"
-                            className="btn btn-secondary">
+                            className="btn btn-secondary"
+                            onClick={this.onDraw}>
                             Send Draw Request
                         </button>
                     </div>
@@ -84,4 +89,4 @@ function mapStateToProps(state) {
 
 }
 
-export default connect(mapStateToProps, {resign}) (GameButtons)
+export default connect(mapStateToProps, {resign, draw}) (GameButtons)

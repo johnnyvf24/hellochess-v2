@@ -30,7 +30,11 @@ class TwoBoard extends Component {
 
     onDragStart(source, piece, position, orientation) {
 
-        if(this.props.profile._id === this.props.room.black._id) {
+        if(this.props.room.paused) {
+            return false;
+        }
+
+        else if(this.props.profile._id === this.props.room.black._id) {
             //this is the black player
             if(piece.search(/^w/) !== -1) {
                 return false;

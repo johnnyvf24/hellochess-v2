@@ -248,6 +248,15 @@ function userSittingAndGameOngoing(userObj, roomObj) {
 }
 
 function endGame(io, timeType, wOldElo, lOldElo, winner, loser, roomIndex, roomName, draw) {
+
+    //pause the game
+    io.to(roomName).emit('action', {
+        type: 'pause',
+        payload: {
+            thread: roomName
+        }
+    });
+
     let elo = new Elo();
 
     let wElo = elo.ifWins(wOldElo, lOldElo);
@@ -393,7 +402,7 @@ module.exports = function(io) {
     io.on('connection', (socket) => {
         socket.on('action', (action) => {
             let roomName, roomObj, userObj, roomIndex, color, index, turn;
-            let loser, winner, timeType, wOldElo, lOldElo;
+            let loser, winner, timeType, wOldElo, lOldElo, userObj2;
             switch(action.type) {
                 //Client emiits message this after loading page
                 case 'server/connected-user':
@@ -446,6 +455,34 @@ module.exports = function(io) {
                         payload: action.payload
                     });
                     break;
+                //a user is sending a draw request
+                case 'server/draw':
+                    roomName = action.payload.roomName;
+                    userObj = clients[socket.id].user;
+
+                    roomIndex = findRoomIndexByName(roomName);
+
+                    if(rooms[roomIndex][roomName].white._id === userObj._id) {
+                        userObj2 = rooms[roomIndex][roomName].black;
+                        userObj = rooms[roomIndex][roomName].white;
+                    } else {
+                        userObj2 = rooms[roomIndex][roomName].white;
+                        userObj = rooms[roomIndex][roomName].black;
+                    }
+
+                    User.findById({ _id: userObj2._id })
+                    .then((user) => {
+                        user.two_elos[timeType] = lElo;
+                        io.to(user.socket_id).emit('action', {
+                            type: 'draw-request',
+                            payload: {
+                                thread: roomName
+                            }
+                        });
+                    }).catch((e) => {
+                    });
+
+                    break;
 
                 //a user is resigning
                 case 'server/resign':
@@ -473,13 +510,6 @@ module.exports = function(io) {
                     };
 
                     io.to(roomName).emit('action', Notifications.info(notificationOpts));
-
-                    io.to(roomName).emit('action', {
-                        type: 'pause',
-                        payload: {
-                            thread: roomName
-                        }
-                    });
 
                     //get elos and calculate new elos
                     timeType = getTimeTypeForTimeControl(rooms[roomIndex][roomName]);
