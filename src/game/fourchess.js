@@ -1438,7 +1438,7 @@ var FourChess = function (fen) {
         fen: function() {
             return generateFen();
         },
-        loadFen: function(fen) {
+        position: function(fen) {
             BOARD=loadFen(fen);
         },
         allMoves: function() {
@@ -1623,10 +1623,10 @@ var FourChess = function (fen) {
             }
             return null;
         },
-        getTurn: function() {
+        turn: function() {
             return TURN;
         },
-        gameOver: function() {
+        game_over: function() {
             return gameOver();
         },
         reset: function() {
@@ -1749,6 +1749,10 @@ var FourChess = function (fen) {
             return sum;
         },
 
+        set_turn: function(turn) {
+            TURN = turn;
+        },
+
         findMove: function(depth) {
             var move = search(BOARD.slice(), -1000000, 1000000, depth, true);
             console.log(move.v);
@@ -1757,3 +1761,9 @@ var FourChess = function (fen) {
 
     };
 };
+
+/* export Chess object if using node or any other CommonJS compatible
+ * environment */
+if (typeof exports !== 'undefined') exports.FourChess = FourChess;
+/* export Chess object for any RequireJS compatible environment */
+if (typeof define !== 'undefined') define( function () { return FourChess;  });

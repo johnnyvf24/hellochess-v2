@@ -3,6 +3,7 @@ const Notifications = require('react-notification-system-redux');
 const {Chess} = require('chess.js');
 const Elo = require('elo-js');
 const {User} = require('./models/user');
+const {FourChess} = require('./game/fourchess');
 
 let rooms = [];     //all the chat rooms
 let clients = {};
@@ -678,8 +679,95 @@ module.exports = function(io) {
                             endGame(io, timeType, wOldElo, lOldElo, winner, loser, index, roomName, false);
                         }
                     }
-
                     break;
+
+                    case 'server/four-new-move':
+                        roomName = action.payload.thread;
+                        move = action.payload.move;
+                        index = findRoomIndexByName(roomName);
+
+                        //get who's turn it is
+                        turn = rooms[index][roomName].game.turn()
+                        turn = formatTurn(turn);
+
+                        //make the move
+                        move = rooms[index][roomName].game.move(move);
+                        if(move === null) {
+                            //handle cheating scenario
+                        } else {
+                            //calculate the time difference
+                            let timeElapsed = Date.now() - rooms[index][roomName].lastMove;
+                            rooms[index][roomName].lastMove = Date.now();
+                            rooms[index][roomName][turn].time = rooms[index][roomName][turn].time - timeElapsed;
+                            //Add the time increment
+                            rooms[index][roomName][turn].time += rooms[index][roomName].time.increment * 1000;
+
+                            io.to(roomName).emit('action', {
+                                type: 'four-new-move',
+                                payload: {
+                                    thread: roomName,
+                                    fen: rooms[index][roomName].game.fen(),
+                                    currentTurn: rooms[index][roomName].game.turn(),
+                                    lastTurn: turn,
+                                    time: rooms[index][roomName][turn].time
+                                }
+                            })
+                        }
+
+                        //check to see if the game is over
+                        if(rooms[index][roomName].game.game_over()) {
+
+                            //get the loser
+                            let nextTurn = rooms[index][roomName].game.turn();
+
+                            nextTurn = formatTurn(nextTurn);
+
+                            winner = rooms[index][roomName][turn].username;
+                            loser = rooms[index][roomName][nextTurn].username;
+
+                            if(rooms[index][roomName].game.in_draw()) {
+                                //Notify all players that the game is ready to be played
+                                const notificationOpts = {
+                                    title: 'Game Over',
+                                    message: `The game ended in a draw!`,
+                                    position: 'tr',
+                                    autoDismiss: 5,
+                                };
+
+                                io.to(roomName).emit('action', Notifications.warning(notificationOpts));
+
+                                winner = rooms[index][roomName][turn];
+                                loser = rooms[index][roomName][nextTurn];
+
+                                timeType = getTimeTypeForTimeControl(rooms[index][roomName]);
+
+                                wOldElo = getEloForTimeControl(rooms[index][roomName], winner);
+                                lOldElo = getEloForTimeControl(rooms[index][roomName], loser);
+
+                                endGame(io, timeType, wOldElo, lOldElo, winner, loser, index, roomName, true);
+                            } else {
+                                //Notify all players that the game is ready to be played
+                                const notificationOpts = {
+                                    title: 'Game Over',
+                                    message: `${winner} is the winner`,
+                                    position: 'tr',
+                                    autoDismiss: 5,
+                                };
+
+                                io.to(roomName).emit('action', Notifications.warning(notificationOpts));
+
+                                winner = rooms[index][roomName][turn];
+                                loser = rooms[index][roomName][nextTurn];
+
+                                timeType = getTimeTypeForTimeControl(rooms[index][roomName]);
+
+                                wOldElo = getEloForTimeControl(rooms[index][roomName], winner);
+                                lOldElo = getEloForTimeControl(rooms[index][roomName], loser);
+
+                                endGame(io, timeType, wOldElo, lOldElo, winner, loser, index, roomName, false);
+                            }
+                        }
+                        break;
 
                 //User is requesting to play as a certain color
                 case 'server/sit-down-board':
@@ -799,8 +887,40 @@ module.exports = function(io) {
                                     type: 'game-started',
                                     payload: {
                                         thread: roomName,
-                                        fen: rooms[index][roomName].game.pgn(),
-                                        pgn: rooms[index][roomName].game.fen()
+                                        fen: rooms[index][roomName].game.fen(),
+                                        pgn: rooms[index][roomName].game.pgn()
+                                    }
+                                })
+
+                                //start first players timer
+                                initTimerSync(io, roomName, index);
+                            }
+                        }
+
+                        else if(rooms[index][roomName].gameType === "four-player") {
+                            //Check to see if the game is ready to start
+                            if(rooms[index][roomName].white && rooms[index][roomName].black
+                               && rooms[index][roomName].gold && rooms[index][roomName].red) {
+
+                                //Notify all players that the game is ready to be played
+                                const notificationOpts = {
+                                    title: 'The game has begun',
+                                    message: '',
+                                    position: 'tr',
+                                    autoDismiss: 3,
+                                };
+
+                                io.to(roomName).emit('action', Notifications.warning(notificationOpts));
+                                rooms[index][roomName].lastMove = Date.now();
+                                rooms[index][roomName].turn = 'white';
+                                rooms[index][roomName].game = new FourChess();
+
+                                io.to(roomName).emit('action', {
+                                    type: 'four-game-started',
+                                    payload: {
+                                        thread: roomName,
+                                        fen: rooms[index][roomName].game.fen(),
+                                        pgn: rooms[index][roomName].game.pgn()
                                     }
                                 })
 
@@ -808,7 +928,6 @@ module.exports = function(io) {
                                 initTimerSync(io, roomName, index);
 
                                 //initialize state on both server and client
-
                             }
                         }
                     }

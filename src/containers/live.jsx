@@ -147,7 +147,7 @@ class Live extends Component {
                 <div id="main-panel">
                     <div className="row flex-items-xs-right">
                         <div className="col-xs-10 col-md-6 col-lg-4">
-                            <SearchBar/>
+                            
                         </div>
                         <div className="col-xs-2 col-md-4 col-lg-4">
                             <div className="dropdown float-xs-right">

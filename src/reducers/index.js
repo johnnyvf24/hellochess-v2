@@ -3,6 +3,7 @@ import {reducer as notifications} from 'react-notification-system-redux';
 import { reducer as formReducer } from 'redux-form';
 import Chess from 'chess.js';
 
+import FourChess from '../game/fourchess';
 import rooms from './rooms_reducer';
 import AuthReducer from './auth_reducer';
 import newGameOptions from './new_game_reducer';
@@ -52,6 +53,14 @@ function openThreads(state = {}, action) {
         case 'new-move':
             newState = Object.assign({}, state);
             newState[action.payload.thread].game = new Chess(action.payload.fen);
+            newState[action.payload.thread].fen = action.payload.fen;
+            newState[action.payload.thread][action.payload.lastTurn].time = action.payload.time;
+            return newState;
+        case 'four-new-move':
+            newState = Object.assign({}, state);
+            newState[action.payload.thread].game = new FourChess();
+            newState[action.payload.thread].game.position(action.payload.fen);
+            newState[action.payload.thread].game.set_turn(action.payload.currentTurn);
             newState[action.payload.thread].fen = action.payload.fen;
             newState[action.payload.thread][action.payload.lastTurn].time = action.payload.time;
             return newState;
@@ -107,6 +116,11 @@ function openThreads(state = {}, action) {
         case 'game-started':
             newState = Object.assign({}, state);
             newState[action.payload.thread].game = new Chess();
+            newState[action.payload.thread].fen = action.payload.fen;
+            return newState;
+        case 'four-game-started':
+            newState = Object.assign({}, state);
+            newState[action.payload.thread].game = new FourChess();
             newState[action.payload.thread].fen = action.payload.fen;
             return newState;
         case 'pause':

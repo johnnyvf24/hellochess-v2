@@ -5,6 +5,16 @@ export function sitDownBoard(details) {
     }
 }
 
+export function fourNewMove(move, roomName) {
+    return {
+        type: 'server/four-new-move',
+        payload: {
+            thread: roomName,
+            move: move
+        }
+    }
+}
+
 export function newMove(move, roomName) {
     return {
         type: 'server/new-move',
