@@ -58,11 +58,11 @@ class PlayerTimes extends Component {
                     </div>
 
                     <div className="col-xs-12">
-                        {this.renderBlack(activeThread)}
+                        {this.renderGold(activeThread)}
                     </div>
 
                     <div className="col-xs-12">
-                        {this.renderGold(activeThread)}
+                        {this.renderBlack(activeThread)}
                     </div>
 
                     <div className="col-xs-12">

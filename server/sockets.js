@@ -248,6 +248,193 @@ function userSittingAndGameOngoing(userObj, roomObj) {
     return false;
 }
 
+function endFourPlayerGame(io, roomName, index) {
+    //pause the game
+    io.to(roomName).emit('action', {
+        type: 'pause',
+        payload: {
+            thread: roomName
+        }
+    });
+
+    let elo = new Elo();
+
+    let winnerColor = formatTurn(rooms[index][roomName].game.turn());
+    let winner = rooms[index][roomName][winnerColor];
+
+    let loserOrder = rooms[index][roomName].game.getLoserOrder();
+
+    delete loserOrder[winnerColor];
+
+    let firstOut, secondOut, thirdOut;
+    mapObject(loserOrder, (key, player) => {
+        if(player === 1) {
+            firstOut = rooms[index][roomName][key];
+        } else if(player === 2) {
+            secondOut = rooms[index][roomName][key];
+        } else if(player === 3) {
+            thirdOut = rooms[index][roomName][key];
+        }
+    });
+
+    let firstOutElo, secondOutElo, thirdOutElo, fourthOutElo;
+    let timeType = getTimeTypeForTimeControl(rooms[index][roomName]);
+
+    //get appropriate elos
+    firstOutElo = getEloForTimeControl(rooms[index][roomName], firstOut);
+    secondOutElo = getEloForTimeControl(rooms[index][roomName], secondOut);
+    thirdOutElo = getEloForTimeControl(rooms[index][roomName], thirdOut);
+    fourthOutElo = getEloForTimeControl(rooms[index][roomName], winner);
+
+    //calculate average elo of the 3rd and 4th place
+    let bottomAvgElo = (firstOutElo + secondOutElo) / 2;
+    //calculate average elo of 1st and 2nd place
+    let topAvgElo = (thirdOutElo + fourthOutElo) / 2;
+
+    let wElo = elo.ifWins(topAvgElo, bottomAvgElo);
+    let lElo = elo.ifLoses(bottomAvgElo, topAvgElo);
+
+    let newFirstOutElo = (2 * (lElo-bottomAvgElo)) + firstOutElo;
+    let newSecondOutElo = (lElo- bottomAvgElo) + secondOutElo;
+    let newThirdOutElo = (wElo - topAvgElo) + thirdOutElo;
+    let newWinnerElo = ((wElo - topAvgElo) * 2) + fourthOutElo;
+
+    //console.log(`new ELos: winner: ${newWinnerElo} second: ${newThirdOutElo} third: ${newSecondOutElo} fourth: ${newFirstOutElo}`);
+
+    //save the winner's elo
+    User.findById({ _id: winner._id })
+    .then((user) => {
+        user.four_elos[timeType] = newWinnerElo;
+        user.save(function(err, updatedUser) {
+            let eloNotif = {
+                title: `${winner.username}'s elo is now ${newWinnerElo} +${newWinnerElo - fourthOutElo}`,
+                position: 'tr',
+                autoDismiss: 5,
+            };
+
+            io.to(roomName).emit('action', Notifications.success(eloNotif));
+
+            delete updatedUser.tokens;
+            io.to(updatedUser.socket_id).emit('action', {
+                type: 'user-update',
+                payload: updatedUser
+            });
+        });
+    }).catch((e) => {
+        console.log(e);
+    });
+
+    setTimeout(() => {
+        //Save 2nd place elo
+        User.findById({ _id: thirdOut._id })
+        .then((user) => {
+            user.four_elos[timeType] = newThirdOutElo;
+            user.save(function(err, updatedUser) {
+                let eloNotif = {
+                    title: `${thirdOut.username}'s elo is now ${newThirdOutElo} ${newThirdOutElo - thirdOutElo}`,
+                    position: 'tr',
+                    autoDismiss: 5,
+                };
+
+                io.to(roomName).emit('action', Notifications.success(eloNotif));
+
+                delete updatedUser.tokens;
+                io.to(updatedUser.socket_id).emit('action', {
+                    type: 'user-update',
+                    payload: updatedUser
+                });
+            });
+        }).catch((e) => {
+            console.log(e);
+        });
+    }, 250);
+
+    setTimeout(() => {
+        //Save 3rd place elo
+        User.findById({ _id: secondOut._id })
+        .then((user) => {
+            user.four_elos[timeType] = newSecondOutElo;
+            user.save(function(err, updatedUser) {
+                let eloNotif = {
+                    title: `${secondOut.username}'s elo is now ${newSecondOutElo} ${newSecondOutElo - secondOutElo}`,
+                    position: 'tr',
+                    autoDismiss: 5,
+                };
+
+                io.to(roomName).emit('action', Notifications.error(eloNotif));
+
+                delete updatedUser.tokens;
+                io.to(updatedUser.socket_id).emit('action', {
+                    type: 'user-update',
+                    payload: updatedUser
+                });
+            });
+        }).catch((e) => {
+            console.log(e);
+        });
+    }, 250);
+
+    setTimeout(() => {
+        //Save 4th place elo
+        User.findById({ _id: firstOut._id })
+        .then((user) => {
+            user.four_elos[timeType] = newFirstOutElo;
+            user.save(function(err, updatedUser) {
+                let eloNotif = {
+                    title: `${firstOut.username}'s elo is now ${newFirstOutElo} ${newFirstOutElo - firstOutElo}`,
+                    position: 'tr',
+                    autoDismiss: 5,
+                };
+
+                io.to(roomName).emit('action', Notifications.error(eloNotif));
+
+                delete updatedUser.tokens;
+                io.to(updatedUser.socket_id).emit('action', {
+                    type: 'user-update',
+                    payload: updatedUser
+                });
+            });
+        }).catch((e) => {
+            console.log(e);
+        });
+    }, 250);
+
+    //Stop the clocks
+    delete rooms[index][roomName].game;
+
+    //kick players from board and restart game
+    setTimeout(() => {
+        delete rooms[index][roomName].white;
+        delete rooms[index][roomName].black;
+        delete rooms[index][roomName].gold;
+        delete rooms[index][roomName].red;
+        let boardNotif = {
+            title: 'Board ready',
+            position: 'tr',
+            autoDismiss: 5,
+        };
+        io.to(roomName).emit('action', Notifications.warning(boardNotif));
+
+        io.to(roomName).emit('action', {
+            type: 'game-over',
+            payload: roomName
+        });
+
+        //Update the information about that room
+        io.emit('action', {
+            type: 'all-rooms',
+            payload: rooms
+        });
+
+        io.to(roomName).emit('action', {
+            type: 'resume',
+            payload: {
+                thread: roomName
+            }
+        });
+    }, 4500);
+}
+
 function endGame(io, timeType, wOldElo, lOldElo, winner, loser, roomIndex, roomName, draw) {
 
     //pause the game
@@ -692,9 +879,37 @@ module.exports = function(io) {
 
                         //make the move
                         move = rooms[index][roomName].game.move(move);
+                        if(move.color) {
+                            let loser = formatTurn(move.color);
+                            let lostPlayer = rooms[index][roomName][loser].username;
+                            const notificationOpts = {
+                                title: 'Player Elimination',
+                                message: `${lostPlayer} (${loser}) has been eliminated!`,
+                                position: 'tr',
+                                autoDismiss: 5,
+                            };
+
+                            io.to(roomName).emit('action', Notifications.info(notificationOpts));
+
+                        }
                         if(move === null) {
                             //handle cheating scenario
                         } else {
+                            let currentTurn;
+                            if(rooms[index][roomName].game.inCheckMate()) {
+
+                                currentTurn = formatTurn(rooms[index][roomName].game.turn());
+                                currentPlayer = rooms[index][roomName][currentTurn].username;
+                                const notificationOpts = {
+                                    title: 'Checkmate',
+                                    message: `${currentTurn} is in checkmate! ${currentPlayer}'s turn has been skipped.`,
+                                    position: 'tr',
+                                    autoDismiss: 5,
+                                };
+
+                                io.to(roomName).emit('action', Notifications.warning(notificationOpts));
+                                rooms[index][roomName].game.nextTurn(); //move to next player
+                            }
                             //calculate the time difference
                             let timeElapsed = Date.now() - rooms[index][roomName].lastMove;
                             rooms[index][roomName].lastMove = Date.now();
@@ -717,54 +932,10 @@ module.exports = function(io) {
                         //check to see if the game is over
                         if(rooms[index][roomName].game.game_over()) {
 
-                            //get the loser
-                            let nextTurn = rooms[index][roomName].game.turn();
-
-                            nextTurn = formatTurn(nextTurn);
-
-                            winner = rooms[index][roomName][turn].username;
-                            loser = rooms[index][roomName][nextTurn].username;
-
                             if(rooms[index][roomName].game.in_draw()) {
-                                //Notify all players that the game is ready to be played
-                                const notificationOpts = {
-                                    title: 'Game Over',
-                                    message: `The game ended in a draw!`,
-                                    position: 'tr',
-                                    autoDismiss: 5,
-                                };
 
-                                io.to(roomName).emit('action', Notifications.warning(notificationOpts));
-
-                                winner = rooms[index][roomName][turn];
-                                loser = rooms[index][roomName][nextTurn];
-
-                                timeType = getTimeTypeForTimeControl(rooms[index][roomName]);
-
-                                wOldElo = getEloForTimeControl(rooms[index][roomName], winner);
-                                lOldElo = getEloForTimeControl(rooms[index][roomName], loser);
-
-                                endGame(io, timeType, wOldElo, lOldElo, winner, loser, index, roomName, true);
                             } else {
-                                //Notify all players that the game is ready to be played
-                                const notificationOpts = {
-                                    title: 'Game Over',
-                                    message: `${winner} is the winner`,
-                                    position: 'tr',
-                                    autoDismiss: 5,
-                                };
-
-                                io.to(roomName).emit('action', Notifications.warning(notificationOpts));
-
-                                winner = rooms[index][roomName][turn];
-                                loser = rooms[index][roomName][nextTurn];
-
-                                timeType = getTimeTypeForTimeControl(rooms[index][roomName]);
-
-                                wOldElo = getEloForTimeControl(rooms[index][roomName], winner);
-                                lOldElo = getEloForTimeControl(rooms[index][roomName], loser);
-
-                                endGame(io, timeType, wOldElo, lOldElo, winner, loser, index, roomName, false);
+                                endFourPlayerGame(io, roomName, index);
                             }
                         }
                         break;

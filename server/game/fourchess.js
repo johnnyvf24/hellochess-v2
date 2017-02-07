@@ -15,6 +15,12 @@ var FourChess = function (fen) {
     var goldOut = false;
     var redOut = false;
 
+    var numOut = 0;
+    var nWhiteOut = 0;
+    var nBlackOut = 0;
+    var nGoldOut = 0;
+    var nRedOut = 0;
+
     var TURN = WHITE;
 
     var EMPTY = -1;
@@ -1589,25 +1595,33 @@ var FourChess = function (fen) {
                         case SQUARE_STATUS['wK']:
                             BOARD[SQUARES[move.to]] = piece;
                             // status.opponentOut = kickWhiteOutOfGame();
+                            numOut++;
                             whiteOut = true;
+                            nWhiteOut = numOut;
                             status.color = 'w';
                             break;
                         case SQUARE_STATUS['bK']:
                             BOARD[SQUARES[move.to]] = piece;
                             // status.opponentOut = kickBlackOutOfGame();
+                            numOut++;
                             blackOut = true;
+                            nBlackOut = numOut;
                             status.color = 'b';
                             break;
                         case SQUARE_STATUS['gK']:
                             BOARD[SQUARES[move.to]] = piece;
                             // status.opponentOut = kickGoldOutOfGame();
+                            numOut++;
                             goldOut = true;
+                            nGoldOut = numOut;
                             status.color = 'g';
                             break;
                         case SQUARE_STATUS['rK']:
                             BOARD[SQUARES[move.to]] = piece;
                             // status.opponentOut = kickRedOutOfGame();
+                            numOut++;
                             redOut = true;
+                            nRedOut = numOut;
                             status.color = 'r';
                             break;
                         default:
@@ -1622,6 +1636,9 @@ var FourChess = function (fen) {
                 }
             }
             return null;
+        },
+        in_draw: function() {
+            return false;
         },
         turn: function() {
             return TURN;
@@ -1660,16 +1677,24 @@ var FourChess = function (fen) {
             return kickRedOutOfGame();
         },
         setWhiteOut: function() {
+            numOut++;
             whiteOut = true;
+            nWhiteOut = numOut;
         },
         setGoldOut: function() {
+            numOut++;
             goldOut = true;
+            nGoldOut = numOut;
         },
         setBlackOut: function() {
+            numOut++;
             blackOut = true;
+            nBlackOut = numOut;
         },
         setRedOut: function() {
+            numOut++;
             redOut = true;
+            nRedOut = numOut;
         },
         isWhiteOut: function() {
             return whiteOut;
@@ -1688,6 +1713,14 @@ var FourChess = function (fen) {
         },
         printBoard: function() {
             boardToStringRep();
+        },
+        getLoserOrder: function() {
+            return {
+                white: nWhiteOut,
+                black: nBlackOut,
+                gold: nGoldOut,
+                red: nRedOut
+            }
         },
         getWinnerColor: function() {
             if(goldOut && blackOut && redOut) {
