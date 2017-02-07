@@ -5,6 +5,7 @@ import {createStore, applyMiddleware} from 'redux';
 import {Router, browserHistory} from 'react-router';
 import ReduxPromise from 'redux-promise';
 import thunkMiddleware from 'redux-thunk'
+import Notifications from 'react-notification-system-redux';
 
 import socketIoMiddleware from './middleware/socketio';
 import {socket} from './middleware/socketio';
@@ -31,6 +32,26 @@ if(token && profile) {
 // socket.on('connect_error', () => store.dispatch({ type: 'disconnect' }));
 // socket.on('reconnect_error', () => store.dispatch({ type: 'disconnect' }));
 // socket.on('reconnect', () => store.dispatch({ type: 'reconnect' }));
+
+socket.on('draw-request', (data) => {
+    let notif = {
+        title: 'Your opponent has offered a draw',
+        position: 'br',
+        autoDismiss: 6,
+        action: {
+            label: 'Accept',
+            callback: () => {
+                socket.emit('action', {
+                    type: 'server/accept-draw',
+                    payload: {
+                        roomName: data.thread
+                    }
+                });
+            }
+        }
+    };
+    store.dispatch(Notifications.info(notif));
+});
 
 ReactDOM.render(
     <Provider store={store}>

@@ -117,6 +117,8 @@ function openThreads(state = {}, action) {
             newState = Object.assign({}, state);
             newState[action.payload.thread].paused = false;
             return newState;
+        case 'draw-request':
+            return state;
         default:
             return state;
     }

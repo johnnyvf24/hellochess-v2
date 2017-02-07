@@ -34,3 +34,12 @@ export function resign(playerId, roomName) {
         }
     }
 }
+
+export function acceptDraw(roomName) {
+    return {
+        type: 'server/accept-draw',
+        payload: {
+            roomName
+        }
+    }
+}

@@ -280,7 +280,11 @@ function endGame(io, timeType, wOldElo, lOldElo, winner, loser, roomIndex, roomN
                 position: 'tr',
                 autoDismiss: 5,
             };
-            io.to(roomName).emit('action', Notifications.success(eloNotif));
+            if(draw) {
+                io.to(roomName).emit('action', Notifications.info(eloNotif));
+            } else {
+                io.to(roomName).emit('action', Notifications.success(eloNotif));
+            }
             delete updatedUser.tokens;
             io.to(updatedUser.socket_id).emit('action', {
                 type: 'user-update',
@@ -302,7 +306,11 @@ function endGame(io, timeType, wOldElo, lOldElo, winner, loser, roomIndex, roomN
                     position: 'tr',
                     autoDismiss: 5,
                 };
-                io.to(roomName).emit('action', Notifications.error(eloNotif));
+                if(draw) {
+                    io.to(roomName).emit('action', Notifications.info(eloNotif));
+                } else {
+                    io.to(roomName).emit('action', Notifications.error(eloNotif));
+                }
                 delete updatedUser.tokens;
                 io.to(updatedUser.socket_id).emit('action', {
                     type: 'user-update',
@@ -373,9 +381,35 @@ function initTimerSync(io, roomName, index) {
         let timeElapsed = Date.now() - lastMove;
         let timeLeft = rooms[index][roomName][turn].time;
         let time = timeLeft - timeElapsed;
-        if(time <= 100) {
+        if(time <= 200) { //200ms is the cutoff time
             time = 1;
-            clearInterval(synchronizer);
+
+            let loser, winner;
+            if(turn === 'white') {
+                winner = rooms[index][roomName].black;
+                loser = rooms[index][roomName].white;
+            } else if(turn === 'black'){
+                winner = rooms[index][roomName].white;
+                loser = rooms[index][roomName].black;
+            }
+
+            //Notify all players that the game has ended in a draw
+            notificationOpts = {
+                title: 'Game Over',
+                message: `${winner.username} has defeated ${loser.username}`,
+                position: 'tr',
+                autoDismiss: 5,
+            };
+
+            io.to(roomName).emit('action', Notifications.info(notificationOpts));
+
+            //get elos and calculate new elos
+            timeType = getTimeTypeForTimeControl(rooms[index][roomName]);
+
+            wOldElo = getEloForTimeControl(rooms[index][roomName], winner);
+            lOldElo = getEloForTimeControl(rooms[index][roomName], loser);
+
+            endGame(io, timeType, wOldElo, lOldElo, winner, loser, index, roomName, false)
         }
         io.to(roomName).emit('action', {
             type: 'timer-sync',
@@ -403,6 +437,7 @@ module.exports = function(io) {
         socket.on('action', (action) => {
             let roomName, roomObj, userObj, roomIndex, color, index, turn;
             let loser, winner, timeType, wOldElo, lOldElo, userObj2;
+            let notificationOpts;
             switch(action.type) {
                 //Client emiits message this after loading page
                 case 'server/connected-user':
@@ -470,18 +505,55 @@ module.exports = function(io) {
                         userObj = rooms[roomIndex][roomName].black;
                     }
 
-                    User.findById({ _id: userObj2._id })
+                    User.findById(userObj2._id)
                     .then((user) => {
-                        user.two_elos[timeType] = lElo;
-                        io.to(user.socket_id).emit('action', {
-                            type: 'draw-request',
-                            payload: {
-                                thread: roomName
-                            }
+                        io.to(user.socket_id).emit('draw-request', {
+                            thread: roomName
                         });
+
+                        let notif = {
+                            title: 'Draw request sent!',
+                            position: 'tr',
+                            autoDismiss: 2,
+                        };
+                        io.to(socket.id).emit('action', Notifications.info(notif));
                     }).catch((e) => {
+                        console.log(e);
                     });
 
+                    break;
+
+                case 'server/accept-draw':
+                    roomName = action.payload.roomName;
+                    userObj = clients[socket.id].user;
+
+                    roomIndex = findRoomIndexByName(roomName);
+
+                    if(rooms[roomIndex][roomName].white._id === userObj._id) {
+                        userObj2 = rooms[roomIndex][roomName].black;
+                        userObj = rooms[roomIndex][roomName].white;
+                    } else {
+                        userObj2 = rooms[roomIndex][roomName].white;
+                        userObj = rooms[roomIndex][roomName].black;
+                    }
+
+                    //Notify all players that the game has ended in a draw
+                    notificationOpts = {
+                        title: 'Game Over',
+                        message: 'The game ended in a draw!',
+                        position: 'tr',
+                        autoDismiss: 5,
+                    };
+
+                    io.to(roomName).emit('action', Notifications.warning(notificationOpts));
+
+                    //get elos and calculate new elos
+                    timeType = getTimeTypeForTimeControl(rooms[roomIndex][roomName]);
+
+                    wOldElo = getEloForTimeControl(rooms[roomIndex][roomName], userObj);
+                    lOldElo = getEloForTimeControl(rooms[roomIndex][roomName], userObj2);
+
+                    endGame(io, timeType, wOldElo, lOldElo, userObj, userObj2, roomIndex, roomName, true);
                     break;
 
                 //a user is resigning
@@ -502,7 +574,7 @@ module.exports = function(io) {
                     }
 
                     //Notify all players that a player has resigned
-                    let notificationOpts = {
+                    notificationOpts = {
                         title: 'Game Over',
                         message: `${loser.username} has resigned. ${winner.username} has won!`,
                         position: 'tr',

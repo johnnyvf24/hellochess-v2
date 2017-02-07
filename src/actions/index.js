@@ -213,12 +213,12 @@ let initGameOptions = {
     gameType: 'two-player',
     room: {
         private: false,
-        voiceChat: false,
+        voiceChat: true,
         maxPlayers: 10000,
     },
     time: {
         increment: 0,
-        value: 10
+        value: 1
     }
 };
 
