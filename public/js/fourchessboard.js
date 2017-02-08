@@ -88,6 +88,7 @@ function fenToObj(fen) {
 
   // cut off any move, castling, etc info from the end
   // we're only interested in position information
+  fen = fen.split('-')[0];  //throw away other positin info
   fen = fen.replace(/ .+$/, '');
 
   var rows = fen.split('/');
@@ -591,19 +592,19 @@ function buildBoardSide(orientation) {
 		row = 1;
 	}
 
-	var squareColor = 'white';
+	var squareColor = 'black';
 
 	var j1, j2, i1, i2;
   if(orientation == 'red') {
-    j1 = 7;
-    j2 = 6;
-    i1 = 7;
-    i2 = 6;
+    j1 = 3;
+    j2 = 10;
+    i1 = 3;
+    i2 = 10;
   } else {
-    j1 = 6;
-    j2 = 7;
-    i1 = 6;
-    i2 = 7;
+    j1 = 10;
+    j2 = 3;
+    i1 = 10;
+    i2 = 3;
   }
 
 	for (var i = 0; i < 14; i++) {	//go through every row
@@ -680,16 +681,16 @@ function buildBoard(orientation) {
   var squareColor = 'white';
 
   var j1, j2, i1, i2;
-  if(orientation == 'white') {
-    j1 = 7;
-    j2 = 6;
-    i1 = 7;
-    i2 = 6;
+  if(orientation == 'red') {
+    j1 = 3;
+    j2 = 10;
+    i1 = 3;
+    i2 = 10;
   } else {
-    j1 = 6;
-    j2 = 7;
-    i1 = 6;
-    i2 = 7;
+    j1 = 10;
+    j2 = 3;
+    i1 = 10;
+    i2 = 3;
   }
   for (var i = 0; i < 14; i++) {
     html += '<div class="' + CSS.row + '">';

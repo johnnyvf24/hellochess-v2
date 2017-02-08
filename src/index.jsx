@@ -36,7 +36,7 @@ if(token && profile) {
 socket.on('draw-request', (data) => {
     let notif = {
         title: 'Your opponent has offered a draw',
-        position: 'br',
+        position: 'tc',
         autoDismiss: 6,
         action: {
             label: 'Accept',

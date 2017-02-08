@@ -38,8 +38,11 @@ function openThreads(state = {}, action) {
             return newState;
         case 'joined-room':
             if(action.payload.fen) {
-                action.payload.game = new Chess(action.payload.fen);
-                delete action.payload.fen;
+                if(action.payload.gameType == 'four-player') {
+                    action.payload.game = new FourChess(action.payload.fen);
+                } else {
+                    action.payload.game = new Chess(action.payload.fen);
+                }
             }
             return {...state, [action.payload.room.name]: action.payload };
         case 'left-room':
@@ -60,7 +63,6 @@ function openThreads(state = {}, action) {
             newState = Object.assign({}, state);
             newState[action.payload.thread].game = new FourChess();
             newState[action.payload.thread].game.position(action.payload.fen);
-            newState[action.payload.thread].game.set_turn(action.payload.currentTurn);
             newState[action.payload.thread].fen = action.payload.fen;
             newState[action.payload.thread][action.payload.lastTurn].time = action.payload.time;
             return newState;

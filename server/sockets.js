@@ -879,22 +879,22 @@ module.exports = function(io) {
 
                         //make the move
                         move = rooms[index][roomName].game.move(move);
-                        if(move.color) {
-                            let loser = formatTurn(move.color);
-                            let lostPlayer = rooms[index][roomName][loser].username;
-                            const notificationOpts = {
-                                title: 'Player Elimination',
-                                message: `${lostPlayer} (${loser}) has been eliminated!`,
-                                position: 'tr',
-                                autoDismiss: 5,
-                            };
-
-                            io.to(roomName).emit('action', Notifications.info(notificationOpts));
-
-                        }
                         if(move === null) {
                             //handle cheating scenario
                         } else {
+                            if(move.color) {
+                                let loser = formatTurn(move.color);
+                                let lostPlayer = rooms[index][roomName][loser].username;
+                                const notificationOpts = {
+                                    title: 'Player Elimination',
+                                    message: `${lostPlayer} (${loser}) has been eliminated!`,
+                                    position: 'tr',
+                                    autoDismiss: 5,
+                                };
+
+                                io.to(roomName).emit('action', Notifications.info(notificationOpts));
+
+                            }
                             let currentTurn;
                             if(rooms[index][roomName].game.inCheckMate()) {
 
@@ -922,7 +922,6 @@ module.exports = function(io) {
                                 payload: {
                                     thread: roomName,
                                     fen: rooms[index][roomName].game.fen(),
-                                    currentTurn: rooms[index][roomName].game.turn(),
                                     lastTurn: turn,
                                     time: rooms[index][roomName][turn].time
                                 }

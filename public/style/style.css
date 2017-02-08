@@ -383,3 +383,20 @@ tr:hover {
 #board {
     max-width: 76vh;
 }
+
+/*.promotion-red-4e6d3 {
+    filter: contrast(1.2);
+}
+
+.promotion-gold-436de {
+    filter: contrast(1.2);
+}
+
+.promotion-white-416de {
+    filter: contrast(1.2);
+    filter: brightness(.9);
+}
+
+.promotion-black-1363e {
+    filter: contrast(1.2);
+}*/

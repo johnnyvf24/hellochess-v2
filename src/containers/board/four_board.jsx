@@ -18,7 +18,7 @@ class FourBoard extends Component {
     componentWillReceiveProps(nextProps) {
 
         if(nextProps.game) {
-            this.board.position(nextProps.game.fen(), false);
+            this.board.position(nextProps.fen);
 
             if(nextProps.room.white._id === nextProps.profile._id) {
                 this.board.orientation('white');
@@ -137,6 +137,10 @@ class FourBoard extends Component {
 
         this.board = new FourChessBoard('board', cfg);
 
+        window.addEventListener('resize', (event) => {
+            this.board.resize();
+        });
+
         if(this.props.game) {
             this.board.position(this.props.game.fen());
             if(this.props.room.black._id === this.props.profile._id) {
@@ -149,10 +153,6 @@ class FourBoard extends Component {
                 this.board.orientation('red');
             }
         }
-
-        window.addEventListener('resize', (event) => {
-            this.board.resize();
-        });
     }
 
     render() {
@@ -169,6 +169,7 @@ function mapStateToProps(state) {
         game: state.openThreads[state.activeThread].game,
         room: state.openThreads[state.activeThread],
         name: state.activeThread,
+        fen: state.openThreads[state.activeThread].fen
     }
 }
 
