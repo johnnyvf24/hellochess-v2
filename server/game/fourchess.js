@@ -173,6 +173,24 @@ var FourChess = function (fen) {
                 otherInfo += ' gl';
             }
         }
+        //black castling permissions
+        if(!black_moved_king) {
+            if(!black_moved_rt) {
+                otherInfo += ' br';
+            }
+            if(!black_moved_lt) {
+                otherInfo += ' bl';
+            }
+        }
+
+        if(!red_moved_king) {
+            if(!red_moved_rt) {
+                otherInfo += ' rr';
+            }
+            if(!red_moved_lt) {
+                otherInfo += ' rl';
+            }
+        }
 
         fen = fen + '-' + otherInfo;
         return fen;
@@ -262,7 +280,7 @@ var FourChess = function (fen) {
             black_moved_lt = false;
             black_moved_king = false;
         } else {
-            black_moved_rt = true;
+            black_moved_lt = true;
         }
 
         //red
@@ -457,6 +475,46 @@ var FourChess = function (fen) {
                         toSquare.push( {'to': square2Left, 'castlelg': true});
                 }
 
+                break;
+            case 'b':
+                if(black_moved_king) {
+                    return;
+                }
+
+                var square1Right = String.fromCharCode(alpha.charCodeAt(0) - 1) + rank;
+                var square2Right = String.fromCharCode(alpha.charCodeAt(0) - 2) + rank;
+
+                var square1Left = String.fromCharCode(alpha.charCodeAt(0) + 1) + rank;
+                var square2Left = String.fromCharCode(alpha.charCodeAt(0) + 2) + rank;
+                var square3Left = String.fromCharCode(alpha.charCodeAt(0) + 3) + rank;
+
+                if(isSquareEmpty(square1Right) && isSquareEmpty(square2Right)
+                    && !black_moved_rt) {
+                        toSquare.push( {'to': square2Right, 'castlerb': true});
+                } else if(isSquareEmpty(square1Left) && isSquareEmpty(square2Left)
+                    && isSquareEmpty(square3Left) && !black_moved_lt) {
+                        toSquare.push( {'to': square2Left, 'castlelb': true});
+                }
+                break;
+
+            case 'r':
+                if(red_moved_king) {
+                    return;
+                }
+                var square1Right = alpha + (rank+1);
+                var square2Right = alpha + (rank+2);
+                var square3Right = alpha + (rank+3);
+
+                var square1Left = alpha + (rank-1);
+                var square2Left = alpha + (rank-2);
+
+                if(isSquareEmpty(square1Right) && isSquareEmpty(square2Right)
+                    && isSquareEmpty(square3Right) && !red_moved_rt) {
+                        toSquare.push( {'to': square2Right, 'castlerr': true});
+                } else if(isSquareEmpty(square1Left) && isSquareEmpty(square2Left)
+                    && !red_moved_lt) {
+                        toSquare.push( {'to': square2Left, 'castlelr': true});
+                }
                 break;
         }
     }
@@ -764,6 +822,7 @@ var FourChess = function (fen) {
                 generateRankMoves(toSquare, rank, alpha, true);
                 generateFileMoves(toSquare, rank, alpha, true);
                 generateDiagnolMoves(toSquare, rank, alpha, true);
+                generateCastleMoves(toSquare, rank, alpha, 'b');
                 break;
             case SQUARE_STATUS['gR']:
                 generateRankMoves(toSquare, rank, alpha, false);
@@ -835,6 +894,7 @@ var FourChess = function (fen) {
                 generateRankMoves(toSquare, rank, alpha, true);
                 generateFileMoves(toSquare, rank, alpha, true);
                 generateDiagnolMoves(toSquare, rank, alpha, true);
+                generateCastleMoves(toSquare, rank, alpha, 'r');
                 break;
         }
         if(toSquare.length == 0) {
@@ -1720,6 +1780,18 @@ var FourChess = function (fen) {
                     } else if(options[i].castlelg) {
                         BOARD[SQUARES.a11] = EMPTY;
                         BOARD[SQUARES.a9] = SQUARE_STATUS.gR;
+                    } else if(options[i].castlerb) {
+                        BOARD[SQUARES.d14] = EMPTY;
+                        BOARD[SQUARES.f14] = SQUARE_STATUS.bR;
+                    } else if(options[i].castlelb) {
+                        BOARD[SQUARES.k14] = EMPTY;
+                        BOARD[SQUARES.h14] = SQUARE_STATUS.bR;
+                    } else if(options[i].castlerr) {
+                        BOARD[SQUARES.n11] = EMPTY;
+                        BOARD[SQUARES.n8] = SQUARE_STATUS.rR;
+                    } else if(options[i].castlelr) {
+                        BOARD[SQUARES.n4] = EMPTY;
+                        BOARD[SQUARES.n6] = SQUARE_STATUS.rR;
                     }
 
                     //Keep track of moved rooks
@@ -1731,7 +1803,15 @@ var FourChess = function (fen) {
                         gold_moved_rt = true;
                     } else if(move.from == 'a11') {
                         gold_moved_lt = true;
-                     }
+                    } else if(move.from == 'd14') {
+                        black_moved_rt = true;
+                    } else if(move.from == 'k14') {
+                        black_moved_lt = true;
+                    } else if(move.from == 'n4') {
+                        red_moved_lt = true;
+                    } else if(move.from == 'n11') {
+                        red_moved_rt = true;
+                    }
 
                     //Pawn Promotions
                     switch(piece) {
@@ -1742,6 +1822,9 @@ var FourChess = function (fen) {
                             break;
                         case SQUARE_STATUS['wK']:
                             white_moved_king = true;
+                            break;
+                        case SQUARE_STATUS['bK']:
+                            black_moved_king = true;
                             break;
                         case SQUARE_STATUS['gK']:
                             gold_moved_king = true;
