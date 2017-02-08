@@ -192,6 +192,22 @@ var FourChess = function (fen) {
             }
         }
 
+        if(whiteOut) {
+            otherInfo += ' wo';
+        }
+
+        if(goldOut) {
+            otherInfo += ' go';
+        }
+
+        if(blackOut) {
+            otherInfo += ' bo';
+        }
+
+        if(redOut) {
+            otherInfo += ' ro';
+        }
+
         fen = fen + '-' + otherInfo;
         return fen;
     }
@@ -295,6 +311,23 @@ var FourChess = function (fen) {
             red_moved_king = false;
         } else {
             red_moved_lt = true;
+        }
+
+        //keep track of who is out
+        if(stringInStringArray('wo', turnInfo)) {
+            whiteOut = true;
+        }
+
+        if(stringInStringArray('go', turnInfo)) {
+            goldOut = true;
+        }
+
+        if(stringInStringArray('bo', turnInfo)) {
+            blackOut = true;
+        }
+
+        if(stringInStringArray('ro', turnInfo)) {
+            redOut = true;
         }
 
         return board;

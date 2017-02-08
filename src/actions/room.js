@@ -45,6 +45,15 @@ export function resign(playerId, roomName) {
     }
 }
 
+export function fourResign(roomName) {
+    return {
+        type: 'server/four-resign',
+        payload: {
+            roomName
+        }
+    }
+}
+
 export function acceptDraw(roomName) {
     return {
         type: 'server/accept-draw',
