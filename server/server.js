@@ -1,11 +1,22 @@
+const fs = require('fs');
 const express = require('express');
 const app = express();
-const http = require('http').Server(app);
+const httpapp = express();
+
+const credentials = require('../config/config').credentials;
+
+const http = require('http').createServer(httpapp);
+
+httpapp.get('*', (req, res) => {
+    res.redirect('https://hellochess.com'+req.url);
+});
+
+const https = require('https').createServer(credentials, app);
 const path = require('path');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const _ = require('lodash');
-const io = require('socket.io')(http);
+const io = require('socket.io')(https);
 const cors = require('cors');
 
 const router = require('./router');
@@ -24,17 +35,22 @@ var allowCrossDomain = function(req, res, next) {
 }
 
 //set port variable
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || 8443);
+httpapp.set('httpport', 8080);
 
-//use middleware
-// app.use(morgan('combined'));
+//middleware
+app.use(morgan('combined'));
 app.use(allowCrossDomain);
 app.use(bodyParser.json());
 //serve up static public folder
 app.use(express.static(path.join(__dirname, '../public')));
 
+httpapp.listen(httpapp.get('httpport'), function() {
+    console.log(`http redirecting from port ${httpapp.get('httpport')}`);
+});
+
 //listen to the required port
-http.listen(app.get('port'), function() {
+https.listen(app.get('port'), function() {
   console.log(`Express server listening on port ${app.get('port')}`);
 });
 
