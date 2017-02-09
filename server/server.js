@@ -9,7 +9,8 @@ let http, https, httpapp;
 
 if(env == "production") {
 
-    const httpapp = express();
+    httpapp = express();
+    httpapp.set('httpport', 8080);
     const creds = require('../config/config').credentials;
     const credentials = {
         key: fs.readFileSync(creds.key),
@@ -75,7 +76,6 @@ if(env == "production") {
 if(env == "production") {
     //set port variable
     app.set('port', process.env.PORT || 8443);
-    httpapp.set('httpport', 8080);
 } else {
     app.set('port', process.env.PORT || 3000);
 }
