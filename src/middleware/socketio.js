@@ -1,7 +1,7 @@
 import createSocketIoMiddleware from 'redux-socket.io';
 import io from 'socket.io-client';
 
-export const socket = io('http://localhost');
+export const socket = io('https://www.hellochess.com');
 
 let socketIoMiddleware = createSocketIoMiddleware(socket, ['server/']);
 

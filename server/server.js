@@ -3,7 +3,13 @@ const express = require('express');
 const app = express();
 const httpapp = express();
 
-const credentials = require('../config/config').credentials;
+const creds = require('../config/config').credentials;
+const credentials = {
+    key: fs.readFileSync(creds.key),
+    cert: fs.readFileSync(creds.cert),
+    requestCert: true
+};
+
 
 const http = require('http').createServer(httpapp);
 
@@ -27,7 +33,7 @@ const {authenticate} = require('./middleware/authenticate');
 
 //CORS middleware for testing purposes
 var allowCrossDomain = function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', ['http://localhost:8080']);
+    res.header('Access-Control-Allow-Origin', ['https://www.hellochess.com']);
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH');
     res.header('Access-Control-Allow-Headers', 'Content-Type,x-auth');
     res.header('Access-Control-Expose-Headers', 'x-auth');
@@ -39,7 +45,7 @@ app.set('port', process.env.PORT || 8443);
 httpapp.set('httpport', 8080);
 
 //middleware
-app.use(morgan('combined'));
+//app.use(morgan('combined'));
 app.use(allowCrossDomain);
 app.use(bodyParser.json());
 //serve up static public folder

@@ -11,7 +11,7 @@ import {
 
 import Notifications from 'react-notification-system-redux';
 
-const ROOT_URL = 'http://localhost:3000';
+const ROOT_URL = 'https://hellochess.com';
 
 export function googleLoginUser(token) {
     return (dispatch) => {

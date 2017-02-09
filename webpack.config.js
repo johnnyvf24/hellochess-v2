@@ -10,7 +10,7 @@ module.exports = {
     },
     module: {
         loaders: [{
-            exclude: /(node_modules|bower_components)/,
+            exclude: /(node_modules|bower_components|config)/,
             loader: 'babel',
             query: {
                 presets: ['react', 'es2015', 'stage-1']
