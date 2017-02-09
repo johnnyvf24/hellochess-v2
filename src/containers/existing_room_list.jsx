@@ -33,10 +33,6 @@ class ExistingRoomList extends Component {
                     <td>{value.room.name}</td>
                     <td>{value.gameType}</td>
                     <td>{`${value.time.value}mins/${value.time.increment}secs` }</td>
-                    <td>1245</td>
-                    <td>{value.users.length}</td>
-                    <td>{value.room.private ? "yes" : "no"}</td>
-                    <td>{value.room.voiceChat ? "yes": "no"}</td>
                 </tr>
             );
         });
@@ -44,6 +40,14 @@ class ExistingRoomList extends Component {
 
     render() {
         const { rooms } = this.props;
+
+        //TODO add to filter-game-type
+        // <Select
+        //     name="game-type"
+        //     value={"all"}
+        //     options={gameTypeOptions}
+        //     onChange={(event) => {}}
+        // />
         return (
             <div
                 id="chat-list"
@@ -55,12 +59,7 @@ class ExistingRoomList extends Component {
                             <div className="col-xs-4"></div>
                             <div className="col-xs-4">
                                 <div id="filter-game-type" className="col-xs-12">
-                                    <Select
-                                        name="game-type"
-                                        value={"all"}
-                                        options={gameTypeOptions}
-                                        onChange={(event) => {}}
-                                    />
+
                                 </div>
                             </div>
                             <div className="col-xs-4">
@@ -78,10 +77,6 @@ class ExistingRoomList extends Component {
                                 <th>Title</th>
                                 <th>Game Type</th>
                                 <th>Time Control</th>
-                                <th>Average Elo</th>
-                                <th># of players</th>
-                                <th>{"Private?"}</th>
-                                <th>{"Voice?"}</th>
                             </tr>
                         </thead>
                         <tbody>

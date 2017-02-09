@@ -126,11 +126,6 @@ class NewGameModalContent extends Component {
                     <div className="pull-left">
                         {this.props.newGame.time.value} min {this.renderTimeType()}
                     </div>
-                    <button
-                        type="button"
-                        className="btn btn-secondary">
-                        Search
-                    </button>
                     <button type="button"
                         onClick={this.onCreateGame}
                         className="btn btn-warning">
