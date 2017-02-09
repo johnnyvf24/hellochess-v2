@@ -1317,6 +1317,54 @@ module.exports = function(io) {
                         payload: rooms
                     });
                     break;
+
+                case 'server/logout':
+                    if(clients[socket.id]) {
+                        //Get all the rooms that user is connected to and the user info
+                        const userObj = clients[socket.id]
+                        const joinedRooms = userObj.rooms;
+                        // console.log(rooms)
+                        mapObject(joinedRooms, (key, val) => {
+                            let roomIndex;
+                            //Check to see if users are still in the room
+                            if(io.sockets.adapter.rooms[val]) {
+                                //Tell everyone that a user left
+                                io.to(val).emit('action', {
+                                    type: 'user-room-left',
+                                    payload: {
+                                        name: val,
+                                        user: userObj
+                                    }
+                                });
+
+                                //update this specific room
+                                roomIndex = findRoomIndexByName(val);
+                                rooms[roomIndex][val].users = getAllRoomMembers(val);
+                                if(!userSittingAndGameOngoing(userObj, rooms[roomIndex][val])) {
+                                    deleteUserFromBoardSeats(io, roomIndex, val, userObj.user._id);
+                                }
+
+                            } else {
+                                //there are no users in this room
+                                if(val) {
+                                    deleteRoomByName(val);
+                                }
+
+                            }
+                        })
+
+                    }
+
+                    //Tell all clients about potential room(s) changes
+                    io.emit('action', {
+                        type: 'all-rooms',
+                        payload: rooms
+                    });
+
+                    delete clients[socket.id];
+
+                    socket.emit('action', {type: 'LOGOUT_SUCCESS'})
+                break;
             }
         });
 
@@ -1364,6 +1412,6 @@ module.exports = function(io) {
             });
 
             delete clients[socket.id];
-        })
+        });
     });
 };

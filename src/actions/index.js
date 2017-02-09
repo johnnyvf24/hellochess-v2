@@ -145,12 +145,14 @@ export function loginUser({loginEmail, loginPassword}) {
     }
 }
 
-export function logout() {
+export function logout(profile) {
+
     localStorage.removeItem('token');
     localStorage.removeItem('profile');
     return {
-        type: LOGOUT_SUCCESS
-    }
+        type: 'server/logout',
+        payload: profile
+    };
 }
 
 function generateTokenHeader() {

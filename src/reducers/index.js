@@ -8,12 +8,14 @@ import rooms from './rooms_reducer';
 import AuthReducer from './auth_reducer';
 import newGameOptions from './new_game_reducer';
 
-import {SELECTED_ROOM} from '../actions/types';
+import {SELECTED_ROOM,LOGOUT_SUCCESS} from '../actions/types';
 
 function activeThread (state = 'Global', action) {
     switch(action.type) {
         case SELECTED_ROOM:
             return action.payload;
+        case LOGOUT_SUCCESS:
+            return 'Global';
         default:
             return state;
     }
@@ -135,6 +137,8 @@ function openThreads(state = {}, action) {
             return newState;
         case 'draw-request':
             return state;
+        case LOGOUT_SUCCESS:
+            return {};
         default:
             return state;
     }

@@ -5,7 +5,7 @@ const app = express();
 
 const env = process.env.NODE_ENV || "development";
 
-let http, https;
+let http, https, httpapp;
 
 if(env == "production") {
 
@@ -21,7 +21,7 @@ if(env == "production") {
     http = require('http').createServer(httpapp);
 
     httpapp.get('*', (req, res) => {
-        res.redirect('https://hellochess.com'+req.url);
+        res.redirect('https://hellochess.com');
     });
     https = require('https').createServer(credentials, app);
 } else {

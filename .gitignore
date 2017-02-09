@@ -5,6 +5,8 @@ config.js
 /playground
 .env
 
+.webpack.config.js
+
 # IntelliJ
 *.iml
 /.idea
