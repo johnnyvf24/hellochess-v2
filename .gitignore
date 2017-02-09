@@ -3,6 +3,7 @@ bundle.js
 npm-debug.log
 config.js
 /playground
+.env
 
 # IntelliJ
 *.iml

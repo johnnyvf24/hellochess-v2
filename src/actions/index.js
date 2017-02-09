@@ -11,7 +11,10 @@ import {
 
 import Notifications from 'react-notification-system-redux';
 
-const ROOT_URL = 'https://hellochess.com';
+let ROOT_URL = 'http://localhost:3000';
+if (process.env.NODE_ENV === "production") {
+    ROOT_URL = 'https://hellochess.com';
+}
 
 export function googleLoginUser(token) {
     return (dispatch) => {
@@ -217,8 +220,8 @@ let initGameOptions = {
         maxPlayers: 10000,
     },
     time: {
-        increment: 0,
-        value: 1
+        increment: 3,
+        value: 10
     }
 };
 

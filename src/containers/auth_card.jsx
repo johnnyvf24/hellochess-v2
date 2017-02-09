@@ -89,14 +89,6 @@ class AuthCard extends Component {
                             <LoginForm onSubmit={this.onLoginSubmit.bind(this)} />
                         </div>
                     </div>
-
-
-                    <div className="input-group">
-                        <input type="text" className="form-control" placeholder="Enter a temporary username" />
-                        <span className="input-group-btn">
-                            <button className="btn btn-secondary" type="submit">Play as Guest</button>
-                        </span>
-                    </div>
                 </div>
                 <div className="hidden-sm-down col-md-4 col-lg-4">
                     <div id="two-player-demo">

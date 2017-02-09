@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
     entry: [
@@ -25,5 +26,12 @@ module.exports = {
         historyApiFallback: true,
         contentBase: './public',
         inline: true
-    }
+    },
+    plugins: [
+        new webpack.DefinePlugin({
+            "process.env": {
+                NODE_ENV: JSON.stringify("development")
+            }
+        })
+    ]
 };

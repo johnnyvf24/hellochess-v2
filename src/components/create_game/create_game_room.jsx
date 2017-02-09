@@ -117,7 +117,7 @@ class CreateGameRoom extends Component {
                             onChange={this.onInputChange.bind(this)}
                         />
                     </div>
-                    <div className="form-group">
+                    <div hidden className="form-group">
                         <div className="row">
                             <div className="col-xs-6">
                                 <label>

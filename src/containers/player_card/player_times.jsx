@@ -47,7 +47,7 @@ class PlayerTimes extends Component {
         let {activeThread, openThreads, profile} = this.props;
         activeThread = openThreads[activeThread];
         if(!openThreads || !activeThread) {
-            return <div>Ad HERE!</div>
+            return <div></div>  //TODO AD here
         }
 
         if(activeThread.gameType === "four-player") {

@@ -8,7 +8,7 @@ class BoardWrapper extends Component {
     render() {
         const {activeThread, openThreads} = this.props;
         if(!activeThread || !openThreads[activeThread]) {
-            return <div>Loading...</div>
+            return <div></div>
         }
 
         const {gameType} = openThreads[activeThread];

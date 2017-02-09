@@ -45,7 +45,7 @@ class GameButtons extends Component {
         const {activeThread, openThreads, profile} = this.props;
 
         if(!activeThread || !openThreads[activeThread]) {
-            return <div>Loading...</div>
+            return <div></div>
         }
 
         const {game} = openThreads[activeThread];

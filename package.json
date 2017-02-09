@@ -39,6 +39,7 @@
     "chessboardjs": "0.0.1",
     "cors": "^2.8.1",
     "crypto-js": "^3.1.9-1",
+    "dotenv": "^4.0.0",
     "elo-js": "^1.0.1",
     "events": "^1.1.1",
     "express": "^4.14.0",
@@ -81,6 +82,7 @@
     "redux-thunk": "^2.1.0",
     "socket.io": "^1.7.2",
     "socket.io-client": "^1.7.2",
-    "validator": "^6.2.0"
+    "validator": "^6.2.0",
+    "webpack": "^1.14.0"
   }
 }
