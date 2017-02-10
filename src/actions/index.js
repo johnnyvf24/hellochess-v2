@@ -11,9 +11,11 @@ import {
 
 import Notifications from 'react-notification-system-redux';
 
-let ROOT_URL = 'http://localhost:3000';
+let ROOT_URL;
 if (process.env.NODE_ENV === "production") {
     ROOT_URL = 'https://hellochess.com';
+} else {
+    ROOT_URL = 'http://localhost:3000';
 }
 
 export function googleLoginUser(token) {
