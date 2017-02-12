@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import Select from 'react-select';
-import ReactBootstrapSlider from 'react-bootstrap-slider';
+import ReactBootstrapSlider  from 'react-bootstrap-slider';
 
 import {
     selectedGameType,

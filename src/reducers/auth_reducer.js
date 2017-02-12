@@ -2,16 +2,26 @@ import {isTokenExpired} from '../utils/jwtHelper';
 import * as ActionTypes from '../actions/types'
 
 function getProfile() {
-  return JSON.parse(localStorage.getItem('profile'));
+    if(typeof(Storage) === "undefined") {
+        return {};
+    }
+    return JSON.parse(localStorage.getItem('profile'));
 }
 
 function setProfile(profile) {
+    if(typeof(Storage) === "undefined") {
+        return {};
+    }
     return localStorage.setItem('profile', JSON.stringify(profile));
 }
 
 //SETUP initial app state
 let authenticated = false;
-const token = localStorage.getItem('id_token');
+let token = null;
+if(typeof(Storage) !== "undefined") { 
+    token = localStorage.getItem('id_token');
+}
+
 if (token && !isTokenExpired(token)) {
     authenticated = true;
 }
@@ -44,8 +54,10 @@ function auth(state = INITIAL_STATE, action) {
             newState.profile = getProfile();
             return newState;
         case 'reconnect':
-            localStorage.removeItem('token');
-            localStorage.removeItem('profile');
+            if(typeof(Storage) !== "undefined") {
+                localStorage.removeItem('token');
+                localStorage.removeItem('profile');
+            }
             return INITIAL_STATE;
         default:
             return state
