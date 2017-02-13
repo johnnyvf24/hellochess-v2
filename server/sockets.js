@@ -705,17 +705,25 @@ module.exports = function(io) {
                         .then((user) => {
                             user.socket_id = socket.id;
                             user.save(function(err, updatedUser) {
-                                let notif = {
-                                    title: `Welcome ${updatedUser.username}!`,
-                                    position: 'tc',
-                                    autoDismiss: 3,
-                                };
-                                io.to(socket.id).emit('action', Notifications.success(notif));
+                                if(action.payload.user.username) {
+                                    let notif = {
+                                        title: `Welcome ${updatedUser.username}!`,
+                                        position: 'tc',
+                                        autoDismiss: 3,
+                                    };
+                                    io.to(socket.id).emit('action', Notifications.success(notif));
+                                }
                             });
                         }).catch((e) => {
                         });
+
                     }
 
+                    break;
+                case 'server/update-user':
+                    clients[socket.id] = action.payload;
+                    clients[socket.id].rooms = [];
+                    socket.username = action.payload.user.username;
                     break;
                 //client is sending new message
                 case 'server/new-message':

@@ -49,7 +49,7 @@ class Live extends Component {
 
     saveUsername(event) {
         const username = this.state.usernameInput;
-        if(username.length > 3) {
+        if(username.length > 1) {
             this.props.saveUsername(this.props.profile._id, username);
         }
         event.preventDefault();

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import ExistingRoomList from './existing_room_list';
 import Room from '../components/room/room';
 import {mapObject} from '../utils/';
-import { selectedRoom, joinRoom, leaveRoom } from '../actions';
+import { selectedRoom, joinRoom, leaveRoom, updateLiveUser } from '../actions';
 
 
 class RoomViewer extends Component {
@@ -13,6 +13,7 @@ class RoomViewer extends Component {
     }
 
     componentWillMount() {
+        this.props.updateLiveUser(this.props.profile);
         this.props.joinRoom('Global');                  //join the default chatroom
     }
 
@@ -105,4 +106,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, {selectedRoom, joinRoom, leaveRoom}) (RoomViewer);
+export default connect(mapStateToProps, {selectedRoom, joinRoom, leaveRoom, updateLiveUser}) (RoomViewer);
