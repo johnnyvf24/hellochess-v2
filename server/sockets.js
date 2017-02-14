@@ -1363,10 +1363,8 @@ module.exports = function(io) {
                                 if(val) {
                                     deleteRoomByName(val);
                                 }
-
                             }
                         })
-
                     }
 
                     delete clients[socket.id];
