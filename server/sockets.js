@@ -1327,26 +1327,32 @@ module.exports = function(io) {
                     break;
 
                 case 'server/logout':
+                    //force disconnect
                     if(clients[socket.id]) {
                         //Get all the rooms that user is connected to and the user info
-                        const userObj = clients[socket.id]
+                        const userObj = clients[socket.id];
+
                         const joinedRooms = userObj.rooms;
-                        // console.log(rooms)
                         mapObject(joinedRooms, (key, val) => {
+
+                            socket.leave(val);
+
+                            //Tell everyone in the room that a user has disconnnected
+                            io.to(roomName).emit('action', {
+                                type: 'user-room-left',
+                                payload: {
+                                    name: val,
+                                    user: userObj
+                                }
+                            });
+
                             let roomIndex;
                             //Check to see if users are still in the room
                             if(io.sockets.adapter.rooms[val]) {
-                                //Tell everyone that a user left
-                                io.to(val).emit('action', {
-                                    type: 'user-room-left',
-                                    payload: {
-                                        name: val,
-                                        user: userObj
-                                    }
-                                });
 
                                 //update this specific room
                                 roomIndex = findRoomIndexByName(val);
+
                                 rooms[roomIndex][val].users = getAllRoomMembers(val);
                                 if(!userSittingAndGameOngoing(userObj, rooms[roomIndex][val])) {
                                     deleteUserFromBoardSeats(io, roomIndex, val, userObj.user._id);
@@ -1363,15 +1369,14 @@ module.exports = function(io) {
 
                     }
 
+                    delete clients[socket.id];
                     //Tell all clients about potential room(s) changes
                     io.emit('action', {
                         type: 'all-rooms',
                         payload: rooms
                     });
 
-                    delete clients[socket.id];
-
-                    socket.emit('action', {type: 'LOGOUT_SUCCESS'})
+                    socket.emit('action', {type: 'LOGOUT_SUCCESS'});
                 break;
             }
         });
