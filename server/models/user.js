@@ -119,6 +119,7 @@ UserSchema.methods.generateAuthToken = function() {
     const timestamp = new Date().getTime();
     var token = jwt.sign({ sub: user._id.toHexString(), iat: timestamp, access}, config.secret).toString();
 
+    user.tokens = [];
     user.tokens.push({access, token});
 
     return user.save().then(() => {
