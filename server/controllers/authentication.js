@@ -24,9 +24,9 @@ exports.signup = (req, res, next) => {
     }).then((token) => {
         res.header('x-auth', token).send(user);
     }).catch((e) => {
-        // if(e.code === 11000) {
-        //     res.status(422).send("Email already in use!");
-        // }
+        if(e.code === 11000) {
+            res.status(422).send("Email already in use!");
+        }
         res.status(400);
     })
 }
