@@ -1,9 +1,14 @@
 const {mapObject} = require('../utils/utils');
-const {clients, rooms} = require('./data');
 const {User} = require('../models/user');
 const Notifications = require('react-notification-system-redux');
+const {clients, rooms, roomExists, getRoomByName, formatTurn} = require('./data');
+const {getTimeTypeForTimeControl, getEloForTimeControl} = require('./data');
+const {findRoomIndexByName, deleteUserFromBoardSeats} = require('./data');
+const {deleteRoomByName} = require('./data');
+const {userSittingAndGameOngoing} = require('./data');
 
 function connection(io, socket, action){
+    let roomName;
     switch(action.type) {
         //Client emiits message this after loading page
         case 'server/connected-user':
@@ -51,6 +56,63 @@ function connection(io, socket, action){
 
             }
             break;
+
+        case 'server/update-user':
+            clients[socket.id] = action.payload;
+            clients[socket.id].rooms = [];
+            socket.username = action.payload.user.username;
+            break;
+
+        case 'server/logout':
+            if(clients[socket.id]) {
+                //Get all the rooms that user is connected to and the user info
+                const userObj = clients[socket.id];
+
+                const joinedRooms = userObj.rooms;
+                mapObject(joinedRooms, (key, val) => {
+
+                    socket.leave(val);
+
+                    //Tell everyone in the room that a user has disconnnected
+                    io.to(roomName).emit('action', {
+                        type: 'user-room-left',
+                        payload: {
+                            name: val,
+                            user: userObj
+                        }
+                    });
+
+                    let roomIndex;
+                    //Check to see if users are still in the room
+                    if(io.sockets.adapter.rooms[val]) {
+
+                        //update this specific room
+                        roomIndex = findRoomIndexByName(val);
+
+                        rooms[roomIndex][val].users = getAllRoomMembers(val);
+                        if(!userSittingAndGameOngoing(userObj, rooms[roomIndex][val])) {
+                            deleteUserFromBoardSeats(io, roomIndex, val, userObj.user._id);
+                        }
+
+                    } else {
+                        //there are no users in this room
+                        if(val) {
+                            deleteRoomByName(val);
+                        }
+                    }
+                })
+            }
+
+            delete clients[socket.id];
+            //Tell all clients about potential room(s) changes
+            io.emit('action', {
+                type: 'all-rooms',
+                payload: rooms
+            });
+
+            socket.emit('action', {type: 'LOGOUT_SUCCESS'});
+        break;
+
     }
 
 };
