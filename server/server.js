@@ -109,5 +109,5 @@ if(env == "production") {
     });
 }
 
-require('./sockets')(io);
+require('./sockets/sockets').socketServer(io);
 router(app);

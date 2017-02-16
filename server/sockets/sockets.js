@@ -1,12 +1,11 @@
-const {mapObject} = require('./utils/utils');
 const Notifications = require('react-notification-system-redux');
+const {mapObject} = require('../utils/utils');
 const {Chess} = require('chess.js');
 const Elo = require('elo-js');
-const {User} = require('./models/user');
-const {FourChess} = require('./game/fourchess');
-
-let rooms = [];     //all the chat rooms
-let clients = {};
+const {User} = require('../models/user');
+const {FourChess} = require('../../common/fourchess');
+const {connection} = require('./connection');
+const {clients, rooms} = require('./data');
 
 function roomExists(name) {
     let foundMatch = false;
@@ -656,7 +655,7 @@ function initTimerSync(io, roomName, index) {
     }, 500);
 }
 
-module.exports = function(io) {
+module.exports.socketServer = function(io) {
 
     //retrieve all the players in a particular room
     function getAllRoomMembers(room) {
@@ -672,54 +671,8 @@ module.exports = function(io) {
             let roomName, roomObj, userObj, roomIndex, color, index, turn;
             let loser, winner, timeType, wOldElo, lOldElo, userObj2;
             let notificationOpts;
+            connection(io, socket, action);
             switch(action.type) {
-                //Client emiits message this after loading page
-                case 'server/connected-user':
-
-                    //Determine if this use is only logged in once
-                    let foundDuplicate = false;
-                    mapObject(clients, (key, val) => {
-                        if(val.user._id === action.payload.user._id) {
-                            //same user
-                            foundDuplicate = true;
-                        }
-                    });
-                    if(foundDuplicate) {
-                        return socket.emit('action', {
-                            type: 'duplicate-login'
-                        });
-                    } else {
-                        //set the clients obj with the user's info
-                        clients[socket.id] = action.payload;
-
-                        //maintain a list of all the rooms this user is in.
-                        clients[socket.id].rooms = [];
-                        socket.username = action.payload.user.username;
-
-                        socket.emit('action', {
-                            type: 'connected'
-                        });
-
-                        //update the database, keep track of the socketid for that user
-                        User.findById({ _id: action.payload.user._id })
-                        .then((user) => {
-                            user.socket_id = socket.id;
-                            user.save(function(err, updatedUser) {
-                                if(action.payload.user.username) {
-                                    let notif = {
-                                        title: `Welcome ${updatedUser.username}!`,
-                                        position: 'tc',
-                                        autoDismiss: 3,
-                                    };
-                                    io.to(socket.id).emit('action', Notifications.success(notif));
-                                }
-                            });
-                        }).catch((e) => {
-                        });
-
-                    }
-
-                    break;
                 case 'server/update-user':
                     clients[socket.id] = action.payload;
                     clients[socket.id].rooms = [];
@@ -1327,7 +1280,6 @@ module.exports = function(io) {
                     break;
 
                 case 'server/logout':
-                    //force disconnect
                     if(clients[socket.id]) {
                         //Get all the rooms that user is connected to and the user info
                         const userObj = clients[socket.id];

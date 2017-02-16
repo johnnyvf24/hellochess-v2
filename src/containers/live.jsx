@@ -12,7 +12,7 @@ import RoomViewer from '../containers/room_viewer';
 import NewGame from './new_game';
 import PlayerTimes from './player_card/player_times';
 import GameButtons from './game_btns';
-import { logout, saveUsername, clearError, userConnect} from '../actions'
+import { logout, saveUsername, clearError, userConnect} from '../actions';
 
 class Live extends Component {
 

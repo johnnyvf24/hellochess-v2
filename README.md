@@ -5,7 +5,6 @@ Place similar content as below inside config.js:
 
 module.exports = {
     secret: 'placeRandomStringHere',
-
     facebookAuth: {
         clientID: '',
         clientSecret: '',
@@ -13,7 +12,6 @@ module.exports = {
         profileFields: ['id', 'email', 'name', 'picture', 'friends'],
         fields: "id, email, name, picture"
     },
-
     googleAuth: {
         GoogleClientID: '',
         GoogleClientSecret: ''
@@ -23,7 +21,7 @@ module.exports = {
 npm install
 
 
-//Make sure you have mongodb installed and run
+Make sure you have mongodb installed and run
 mongod
 
 For development purposes I run the webpack dev server on localhost:8080

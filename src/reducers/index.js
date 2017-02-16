@@ -3,7 +3,7 @@ import {reducer as notifications} from 'react-notification-system-redux';
 import { reducer as formReducer } from 'redux-form';
 import Chess from 'chess.js';
 
-import FourChess from '../game/fourchess';
+import FourChess from '../../common/fourchess';
 import rooms from './rooms_reducer';
 import AuthReducer from './auth_reducer';
 import newGameOptions from './new_game_reducer';
@@ -41,8 +41,9 @@ function openThreads(state = {}, action) {
         case 'joined-room':
             if(action.payload.fen) {
                 if(action.payload.gameType == 'four-player') {
-                    action.payload.game = new FourChess(action.payload.fen);
-                } else {
+                    action.payload.game = new FourChess();
+                    action.payload.game.position(action.payload.fen);
+                } else if(action.payload.gameType == 'two-player'){
                     action.payload.game = new Chess(action.payload.fen);
                 }
             }

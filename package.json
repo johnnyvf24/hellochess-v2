@@ -58,6 +58,7 @@
     "passport-local": "^1.0.0",
     "path": "^0.12.7",
     "react": "^15.4.2",
+    "react-bootstrap": "^0.30.7",
     "react-bootstrap-slider": "^1.1.3",
     "react-bootstrap-sweetalert": "^3.0.0",
     "react-bootstrap-tabs": "0.0.1",
