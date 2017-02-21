@@ -1,22 +1,24 @@
+#hellochess
+
 Setup:
 Create a config directory inside of the project root. Inside that folder create a config.js file.
 
 Place similar content as below inside config.js:
 
-module.exports = {
-    secret: 'placeRandomStringHere',
-    facebookAuth: {
-        clientID: '',
-        clientSecret: '',
-        callbackURL: '',
-        profileFields: ['id', 'email', 'name', 'picture', 'friends'],
-        fields: "id, email, name, picture"
-    },
-    googleAuth: {
-        GoogleClientID: '',
-        GoogleClientSecret: ''
+    module.exports = {
+        secret: 'placeRandomStringHere',
+        facebookAuth: {
+            clientID: '',
+            clientSecret: '',
+            callbackURL: '',
+            profileFields: ['id', 'email', 'name', 'picture', 'friends'],
+            fields: "id, email, name, picture"
+        },
+        googleAuth: {
+            GoogleClientID: '',
+            GoogleClientSecret: ''
+        }
     }
-}
 
 npm install
 
