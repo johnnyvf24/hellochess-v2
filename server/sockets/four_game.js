@@ -10,6 +10,7 @@ const {deleteRoomByName} = require('./data');
 const {userSittingAndGameOngoing} = require('./data');
 
 function fourGame(io, socket, action) {
+    let turn;
     switch (action.type) {
         case 'server/four-resign':
             roomName = action.payload.roomName;
@@ -80,6 +81,10 @@ function fourGame(io, socket, action) {
             //get who's turn it is
             turn = rooms[index][roomName].game.turn()
             turn = formatTurn(turn);
+
+            console.log("in game ", roomName)
+            console.log("\n");
+            console.log(move)
 
             //make the move
             move = rooms[index][roomName].game.move(move);

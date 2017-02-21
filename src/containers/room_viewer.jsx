@@ -29,7 +29,6 @@ class RoomViewer extends Component {
     }
 
     renderNavTab(chats, active) {
-
         return mapObject(chats, (key, value) => {
             return (
                 <li key={key} className={key === active ? "nav-item active" : "nav-item"}

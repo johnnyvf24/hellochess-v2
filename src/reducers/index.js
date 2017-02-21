@@ -64,9 +64,9 @@ function openThreads(state = {}, action) {
             return newState;
         case 'four-new-move':
             newState = Object.assign({}, state);
-            newState[action.payload.thread].game = new FourChess();
-            newState[action.payload.thread].game.position(action.payload.fen);
             newState[action.payload.thread].fen = action.payload.fen;
+            newState[action.payload.thread].game = new FourChess(action.payload.fen);
+            newState[action.payload.thread].game.position(action.payload.fen);
             newState[action.payload.thread][action.payload.lastTurn].time = action.payload.time;
             return newState;
         case 'game-over':

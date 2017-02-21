@@ -5,7 +5,7 @@ const {clients, rooms, roomExists, getRoomByName, formatTurn} = require('./data'
 const {getTimeTypeForTimeControl, getEloForTimeControl} = require('./data');
 const {findRoomIndexByName, deleteUserFromBoardSeats} = require('./data');
 const {deleteRoomByName} = require('./data');
-const {userSittingAndGameOngoing} = require('./data');
+const {userSittingAndGameOngoing, getAllRoomMembers} = require('./data');
 
 function connection(io, socket, action){
     let roomName;
@@ -73,8 +73,8 @@ function connection(io, socket, action){
 
                     socket.leave(val);
 
-                    //Tell everyone in the room that a user has disconnnected
-                    io.to(roomName).emit('action', {
+                    //Tell everyone in that room that a user has disconnnected
+                    io.to(val).emit('action', {
                         type: 'user-room-left',
                         payload: {
                             name: val,
@@ -89,7 +89,7 @@ function connection(io, socket, action){
                         //update this specific room
                         roomIndex = findRoomIndexByName(val);
 
-                        rooms[roomIndex][val].users = getAllRoomMembers(val);
+                        rooms[roomIndex][val].users = getAllRoomMembers(io, val);
                         if(!userSittingAndGameOngoing(userObj, rooms[roomIndex][val])) {
                             deleteUserFromBoardSeats(io, roomIndex, val, userObj.user._id);
                         }

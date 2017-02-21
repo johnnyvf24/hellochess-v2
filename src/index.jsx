@@ -28,10 +28,10 @@ if(token && profile) {
     });
 }
 
-// socket.on('connect_timeout', () => store.dispatch({ type: 'disconnect' }));
-// socket.on('connect_error', () => store.dispatch({ type: 'disconnect' }));
-// socket.on('reconnect_error', () => store.dispatch({ type: 'disconnect' }));
-// socket.on('reconnect', () => store.dispatch({ type: 'reconnect' }));
+socket.on('connect_timeout', () => store.dispatch({ type: 'disconnect' }));
+socket.on('connect_error', () => store.dispatch({ type: 'disconnect' }));
+socket.on('reconnect_error', () => store.dispatch({ type: 'disconnect' }));
+socket.on('reconnect', () => store.dispatch({ type: 'reconnect' }));
 
 socket.on('draw-request', (data) => {
     let notif = {

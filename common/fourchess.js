@@ -432,12 +432,12 @@ var FourChess = function (fen) {
                 'n1', 'n2', 'n3', 'm1', 'm2', 'm3', 'l1', 'l2', 'l3'];      //bottom right
 
         for(var i = 0; i < invalid_squares.length; i++) {
-            if(square == invalid_squares) {
+            if(square == invalid_squares[i]) {
                 return false;
             }
         }
 
-        return false;
+        return true;
     }
 
     function removeInvalidSquares(squares) {
@@ -617,7 +617,10 @@ var FourChess = function (fen) {
         var posSquaresInDiagnol = (king) ? 1 : 'n'.charCodeAt(0) - alpha.charCodeAt(0);
         for(var i = 1; i < posSquaresInDiagnol + 1; i++) {
             var square = String.fromCharCode(alpha.charCodeAt(0) + i) + (rank + i);
-            if(isSquareEmpty(square)) {
+            if(!isSquareValid(square)) {
+                break;
+            }
+            else if(isSquareEmpty(square)) {
                 toSquare.push({'to': square});
             } else {
                 var startSquare = alpha + rank;
@@ -631,7 +634,10 @@ var FourChess = function (fen) {
         var negSquaresInDiagnol = (king) ? 1 : alpha.charCodeAt(0) - 'a'.charCodeAt(0);
         for(var i = 1; i < negSquaresInDiagnol + 1; i++) {
             var square = String.fromCharCode(alpha.charCodeAt(0) - i) + (rank + i);
-            if(isSquareEmpty(square)) {
+            if(!isSquareValid(square)) {
+                break;
+            }
+            else if(isSquareEmpty(square)) {
                 toSquare.push({'to': square});
             } else {
                 var startSquare = alpha + rank;
@@ -645,7 +651,10 @@ var FourChess = function (fen) {
         posSquaresInDiagnol = (king) ? 1 : 'n'.charCodeAt(0) - alpha.charCodeAt(0);
         for(var i = 1; i < posSquaresInDiagnol + 1; i++) {
             var square = String.fromCharCode(alpha.charCodeAt(0) + i) + (rank - i);
-            if(isSquareEmpty(square)) {
+            if(!isSquareValid(square)) {
+                break;
+            }
+            else if(isSquareEmpty(square)) {
                 toSquare.push({'to': square});
             } else {
                 var startSquare = alpha + rank;
@@ -659,7 +668,10 @@ var FourChess = function (fen) {
         negSquaresInDiagnol = (king) ? 1 : alpha.charCodeAt(0) - 'a'.charCodeAt(0);
         for(var i = 1; i < negSquaresInDiagnol + 1; i++) {
             var square = String.fromCharCode(alpha.charCodeAt(0) - i) + (rank - i);
-            if(isSquareEmpty(square)) {
+            if(!isSquareValid(square)) {
+                break;
+            }
+            else if(isSquareEmpty(square)) {
                 toSquare.push({'to': square});
             } else {
                 var startSquare = alpha + rank;
@@ -835,7 +847,7 @@ var FourChess = function (fen) {
                 squaresToCheck.push(String.fromCharCode(alpha.charCodeAt(0) - 1) + (rank - 2));
                 for(var i = 0; i < squaresToCheck.length; i++) {
                     var square = squaresToCheck[i];
-                    if (isSquareEmpty(square) && isSquareValid(square)) {
+                    if(isSquareEmpty(square) && isSquareValid(square)) {
                         toSquare.push({'to': square});
                     }
                     else if(isSquareEnemy(alpha + rank, square)) {

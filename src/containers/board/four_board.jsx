@@ -141,8 +141,8 @@ class FourBoard extends Component {
             this.board.resize();
         });
 
-        if(this.props.game) {
-            this.board.position(this.props.game.fen());
+        if(this.props.game && this.props.fen) {
+            this.board.position(this.props.fen);
             if(this.props.room.black._id === this.props.profile._id) {
                 this.board.orientation('black');
             }

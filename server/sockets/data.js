@@ -77,7 +77,9 @@ module.exports.formatTurn = function(turn) {
 module.exports.getAllRoomMembers = function(io, room) {
     var roomMembers = [];
     mapObject(io.sockets.adapter.rooms[room].sockets, (key, val) => {
-        roomMembers.push(clients[key].user);
+        if(clients[key].user) {
+            roomMembers.push(clients[key].user);
+        }
     });
     return roomMembers;
 }
@@ -132,6 +134,9 @@ module.exports.getTimeTypeForTimeControl = function(game) {
 }
 
 module.exports.getEloForTimeControl = function(game, player) {
+    if(!player || !game) {
+        return;
+    }
     let eloIndex, tcIndex;
     //this time estimate is based on an estimated game length of 35 moves
     let totalTimeMs = (game.time.value * 60 * 1000) + (35 * game.time.increment * 1000);
