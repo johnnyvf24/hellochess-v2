@@ -215,8 +215,6 @@ function endFourPlayerGame(io, roomName, index) {
             };
 
             io.to(roomName).emit('action', Notifications.success(eloNotif));
-
-            delete updatedUser.tokens;
             io.to(updatedUser.socket_id).emit('action', {
                 type: 'user-update',
                 payload: updatedUser

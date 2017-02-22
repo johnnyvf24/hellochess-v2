@@ -8,6 +8,7 @@ const {getTimeTypeForTimeControl, getEloForTimeControl} = require('./data');
 const {findRoomIndexByName, deleteUserFromBoardSeats} = require('./data');
 const {deleteRoomByName, getAllRoomMembers} = require('./data');
 const {userSittingAndGameOngoing} = require('./data');
+const {endGame} = require('./two_game');
 
 //Synchronize clocks every half second
 function initTimerSync(io, roomName, index) {
@@ -105,8 +106,8 @@ function initTimerSync(io, roomName, index) {
 
                 endGame(io, timeType, wOldElo, lOldElo, winner, loser, index, roomName, false);
             }
-
         }
+
         //synchronize everyone's times
         io.to(roomName).emit('action', {
             type: 'timer-sync',

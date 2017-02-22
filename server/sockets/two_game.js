@@ -122,6 +122,8 @@ function endGame(io, timeType, wOldElo, lOldElo, winner, loser, roomIndex, roomN
     }, 4000);
 }
 
+module.exports.endGame = endGame;
+
 function twoGame(io, socket, action) {
     let roomName;
     switch (action.type) {
