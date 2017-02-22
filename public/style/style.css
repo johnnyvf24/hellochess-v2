@@ -331,9 +331,20 @@ tr:hover {
     padding-left: 0px;
 }
 
+.player-card-border {
+    background-color: transparent;
+    padding: 5px;
+    margin-bottom: 5px;
+}
+
+.player-card-border.active {
+    background-color: green;
+}
+
 .player-card {
     border: none;
     border-radius: 5px;
+    margin-bottom: 0px;
 }
 
 .player-card .card-block {
@@ -344,7 +355,6 @@ tr:hover {
     margin: 0px;
     margin-left: 0px;
     margin-right: 0px;
-    border-radius: 5px;
 }
 
 .player-card .card-block .row {

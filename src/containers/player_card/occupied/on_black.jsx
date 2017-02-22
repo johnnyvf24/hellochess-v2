@@ -62,22 +62,25 @@ class OnBlack extends Component {
     }
 
     render() {
-        const {player, time} = this.props;
+        const {player, time, game} = this.props;
         if(!player || !time) {
             return <div></div>
         }
+        let isMyTurn = game.game && game.game.turn() === "b";
         return (
-            <div className="card player-card">
-                <div className="card-block black-player">
+            <div className={isMyTurn ? "player-card-border active" : "player-card-border"}>
+                <div className="card player-card">
+                    <div className="card-block black-player">
 
-                    <div className="row">
-                        <img className="player-img rounded-circle" src={player.picture} />
-                        <div className="card-text"><h5>{player.username}</h5>{this.showElo()}</div>
+                        <div className="row">
+                            <img className="player-img rounded-circle" src={player.picture} />
+                            <div className="card-text"><h5>{player.username}</h5>{this.showElo()}</div>
+                        </div>
+
+                        <h4 className="card-title pull-right">
+                            {`${this.millisToMinutesAndSeconds(time)}`}
+                        </h4>
                     </div>
-
-                    <h4 className="card-title pull-right">
-                        {`${this.millisToMinutesAndSeconds(time)}`}
-                    </h4>
                 </div>
             </div>
         );
