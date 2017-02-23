@@ -69,7 +69,7 @@ function openThreads(state = {}, action) {
             newState[action.payload.thread].game = new FourChess();
             newState[action.payload.thread].game.position(action.payload.fen);
             newState[action.payload.thread].turn = newState[action.payload.thread].game.turn();
-            //newState[action.payload.thread][action.payload.lastTurn].time = action.payload.time;
+            newState[action.payload.thread][action.payload.lastTurn].time = action.payload.time;
             return newState;
         case 'four-resign':
             newState = Object.assign({}, state);

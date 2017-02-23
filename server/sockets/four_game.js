@@ -13,7 +13,7 @@ function fourGame(io, socket, action) {
     let turn;
     let color, roomName, loser, roomIndex, winner, index, move, loserColor;
     switch (action.type) {
-        
+
         case 'server/four-resign':
             roomName = action.payload.roomName;
             loser = clients[socket.id].user;
@@ -60,17 +60,12 @@ function fourGame(io, socket, action) {
 
                 endFourPlayerGame(io, roomName, roomIndex);
             } else {
-                io.to(roomName).emit('action', {
-                    type: 'four-resign',
-                    payload: {
-                        thread: roomName,
-                        color: loserColor
-                    }
-                });
                 currentTurn = formatTurn(rooms[roomIndex][roomName].game.turn());
-                
-                console.log('fen ', rooms[roomIndex][roomName].game.fen());
-                
+
+                //calculate the time difference
+                let timeElapsed = Date.now() - rooms[roomIndex][roomName].lastMove;
+                rooms[roomIndex][roomName].lastMove = Date.now();
+
                 io.to(roomName).emit('action', {
                     type: 'four-new-move',
                     payload: {
@@ -78,6 +73,14 @@ function fourGame(io, socket, action) {
                         fen: rooms[roomIndex][roomName].game.fen(),
                         lastTurn: turn,
                         time: rooms[roomIndex][roomName][currentTurn].time
+                    }
+                });
+
+                io.to(roomName).emit('action', {
+                    type: 'four-resign',
+                    payload: {
+                        thread: roomName,
+                        color: loserColor
                     }
                 });
 
@@ -98,7 +101,7 @@ function fourGame(io, socket, action) {
             //get who's turn it is
             turn = rooms[index][roomName].game.turn()
             turn = formatTurn(turn);
-            
+
             //make the move
             move = rooms[index][roomName].game.move(move);
             if (move === null) {
