@@ -14,6 +14,8 @@ import Notifications from 'react-notification-system-redux';
 let ROOT_URL;
 if (process.env.NODE_ENV === "production") {
     ROOT_URL = 'https://hellochess.com';
+} else if (process.env.NODE_ENV === "staging") {
+    ROOT_URL = 'https://hellochess-dev-johnnyvf24.c9users.io';
 } else {
     ROOT_URL = 'http://localhost:3000';
 }

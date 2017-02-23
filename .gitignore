@@ -4,7 +4,7 @@ npm-debug.log
 config.js
 /playground
 .env
-.webpack.config.js
+webpack.config.js
 
 # IntelliJ
 *.iml

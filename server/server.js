@@ -60,6 +60,17 @@ if(env == "production") {
         next();
     }
 
+} else if(env == "staging") {
+    
+    //CORS middleware for testing purposes
+    var allowCrossDomain = function(req, res, next) {
+        res.header('Access-Control-Allow-Origin', ['https://hellochess-dev-johnnyvf24.c9users.io']);
+        res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH');
+        res.header('Access-Control-Allow-Headers', 'Content-Type,x-auth');
+        res.header('Access-Control-Expose-Headers', 'x-auth');
+        next();
+    }
+    
 } else {
 
     //CORS middleware for testing purposes

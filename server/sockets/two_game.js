@@ -236,7 +236,10 @@ function twoGame(io, socket, action) {
             move = action.payload.move;
             index = findRoomIndexByName(roomName);
 
-            //get who's turn it is
+            //get whose turn it is
+            if(!rooms[index][roomName].game) {
+                break;
+            }
             turn = rooms[index][roomName].game.turn()
             turn = formatTurn(turn);
 
