@@ -234,15 +234,15 @@ export function newRoom(name, profile) {
 }
 
 let initGameOptions = {
-    gameType: 'two-player',
+    gameType: 'four-player',
     room: {
         private: false,
         voiceChat: true,
         maxPlayers: 10000,
     },
     time: {
-        increment: 3,
-        value: 1
+        increment: 0,
+        value: 10
     }
 };
 
