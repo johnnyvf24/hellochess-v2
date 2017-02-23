@@ -69,6 +69,25 @@ function openThreads(state = {}, action) {
             newState[action.payload.thread].game.position(action.payload.fen);
             newState[action.payload.thread][action.payload.lastTurn].time = action.payload.time;
             return newState;
+        case 'four-resign':
+            console.log("four-resign action");
+            console.log(action);
+            newState = Object.assign({}, state);
+            switch(action.payload.color) {
+                case 'w':
+                    newState[action.payload.thread].white.resigned = true;
+                    break;
+                case 'b':
+                    newState[action.payload.thread].black.resigned = true;
+                    break;
+                case 'g':
+                    newState[action.payload.thread].gold.resigned = true;
+                    break;
+                case 'r':
+                    newState[action.payload.thread].red.resigned = true;
+                    break;
+            }
+            return newState;
         case 'game-over':
             newState = Object.assign({}, state);
             delete newState[action.payload].game;

@@ -16,6 +16,7 @@ function fourGame(io, socket, action) {
             roomName = action.payload.roomName;
             loser = clients[socket.id].user;
             roomIndex = findRoomIndexByName(roomName);
+            let loserColor;
 
             //Notify all players that a player has resigned
             notificationOpts = {
@@ -27,21 +28,25 @@ function fourGame(io, socket, action) {
 
             if (rooms[roomIndex][roomName].white._id == loser._id) {
                 rooms[roomIndex][roomName].game.setWhiteOut();
+                loserColor = 'w';
                 if (rooms[roomIndex][roomName].game.turn() == 'w') {
                     rooms[roomIndex][roomName].game.nextTurn();
                 }
             } else if (rooms[roomIndex][roomName].black._id == loser._id) {
                 rooms[roomIndex][roomName].game.setBlackOut();
+                loserColor = 'b';
                 if (rooms[roomIndex][roomName].game.turn() == 'b') {
                     rooms[roomIndex][roomName].game.nextTurn();
                 }
             } else if (rooms[roomIndex][roomName].gold._id == loser._id) {
                 rooms[roomIndex][roomName].game.setGoldOut();
+                loserColor = 'g';
                 if (rooms[roomIndex][roomName].game.turn() == 'g') {
                     rooms[roomIndex][roomName].game.nextTurn();
                 }
             } else if (rooms[roomIndex][roomName].red._id == loser._id) {
                 rooms[roomIndex][roomName].game.setRedOut();
+                loserColor = 'r';
                 if (rooms[roomIndex][roomName].game.turn() == 'r') {
                     rooms[roomIndex][roomName].game.nextTurn();
                 }
@@ -54,6 +59,13 @@ function fourGame(io, socket, action) {
 
                 endFourPlayerGame(io, roomName, roomIndex);
             } else {
+                io.to(roomName).emit('action', {
+                    type: 'four-resign',
+                    payload: {
+                        thread: roomName,
+                        color: loserColor
+                    }
+                });
                 currentTurn = formatTurn(rooms[roomIndex][roomName].game.turn());
                 io.to(roomName).emit('action', {
                     type: 'four-new-move',
@@ -70,6 +82,7 @@ function fourGame(io, socket, action) {
                     type: 'all-rooms',
                     payload: rooms
                 });
+
             }
             break;
 

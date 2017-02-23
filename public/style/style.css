@@ -344,6 +344,9 @@ tr:hover {
 .player-card {
     border: none;
     border-radius: 5px;
+}
+
+.player-card.occupied {
     margin-bottom: 0px;
 }
 
