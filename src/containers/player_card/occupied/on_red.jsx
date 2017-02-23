@@ -60,15 +60,24 @@ class OnRed extends Component {
                 return player[eloIndex][tcIndex];
         }
     }
+    
+    renderActiveBorder() {
+        const {player, game, resigned, turn} = this.props;
+        if (!player || !game.game)
+            return "";
+        let isMyTurn = turn == player.color;
+        let isResigned = resigned;
+        let doDrawBorder = isMyTurn && !isResigned;
+        return doDrawBorder ? " active" : "";
+    }
 
     render() {
         const {player, time, game} = this.props;
         if(!player || !time) {
             return <div></div>
         }
-        let isMyTurn = game.game && game.game.turn() === "r";
         return (
-            <div className={isMyTurn ? "player-card-border active" : "player-card-border"}>
+            <div className={"player-card-border" + this.renderActiveBorder()}>
                 <div className="card player-card occupied">
                     <div className="card-block red-player">
 
@@ -91,7 +100,9 @@ function mapStateToProps(state) {
     return {
         player: state.openThreads[state.activeThread].red,
         time: state.openThreads[state.activeThread].red.time,
-        game: state.openThreads[state.activeThread]
+        game: state.openThreads[state.activeThread],
+        resigned: state.openThreads[state.activeThread].red.resigned,
+        turn: state.openThreads[state.activeThread].turn
     }
 }
 

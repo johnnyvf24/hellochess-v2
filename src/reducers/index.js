@@ -65,13 +65,12 @@ function openThreads(state = {}, action) {
         case 'four-new-move':
             newState = Object.assign({}, state);
             newState[action.payload.thread].fen = action.payload.fen;
-            newState[action.payload.thread].game = new FourChess(action.payload.fen);
+            newState[action.payload.thread].game = new FourChess();
             newState[action.payload.thread].game.position(action.payload.fen);
-            newState[action.payload.thread][action.payload.lastTurn].time = action.payload.time;
+            newState[action.payload.thread].turn = newState[action.payload.thread].game.turn();
+            //newState[action.payload.thread][action.payload.lastTurn].time = action.payload.time;
             return newState;
         case 'four-resign':
-            console.log("four-resign action");
-            console.log(action);
             newState = Object.assign({}, state);
             switch(action.payload.color) {
                 case 'w':
@@ -146,6 +145,7 @@ function openThreads(state = {}, action) {
             newState = Object.assign({}, state);
             newState[action.payload.thread].game = new FourChess();
             newState[action.payload.thread].fen = action.payload.fen;
+            newState[action.payload.thread].turn = newState[action.payload.thread].game.turn();
             return newState;
         case 'pause':
             newState = Object.assign({}, state);

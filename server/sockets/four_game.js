@@ -11,12 +11,13 @@ const {userSittingAndGameOngoing} = require('./data');
 
 function fourGame(io, socket, action) {
     let turn;
+    let color, roomName, loser, roomIndex, winner, index, move, loserColor;
     switch (action.type) {
+        
         case 'server/four-resign':
             roomName = action.payload.roomName;
             loser = clients[socket.id].user;
             roomIndex = findRoomIndexByName(roomName);
-            let loserColor;
 
             //Notify all players that a player has resigned
             notificationOpts = {
@@ -67,6 +68,9 @@ function fourGame(io, socket, action) {
                     }
                 });
                 currentTurn = formatTurn(rooms[roomIndex][roomName].game.turn());
+                
+                console.log('fen ', rooms[roomIndex][roomName].game.fen());
+                
                 io.to(roomName).emit('action', {
                     type: 'four-new-move',
                     payload: {
@@ -94,11 +98,7 @@ function fourGame(io, socket, action) {
             //get who's turn it is
             turn = rooms[index][roomName].game.turn()
             turn = formatTurn(turn);
-
-            console.log("in game ", roomName)
-            console.log("\n");
-            console.log(move)
-
+            
             //make the move
             move = rooms[index][roomName].game.move(move);
             if (move === null) {
@@ -350,3 +350,4 @@ function endFourPlayerGame(io, roomName, index) {
 
 
 module.exports.fourGame = fourGame;
+module.exports.endFourPlayerGame = endFourPlayerGame;

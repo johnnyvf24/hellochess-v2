@@ -9,6 +9,7 @@ const {findRoomIndexByName, deleteUserFromBoardSeats} = require('./data');
 const {deleteRoomByName, getAllRoomMembers} = require('./data');
 const {userSittingAndGameOngoing} = require('./data');
 const {endGame} = require('./two_game');
+const {endFourPlayerGame} = require('./four_game');
 
 //Synchronize clocks every half second
 function initTimerSync(io, roomName, index) {
