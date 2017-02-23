@@ -69,7 +69,7 @@ class OnBlack extends Component {
         let isMyTurn = game.game && game.game.turn() === "b";
         return (
             <div className={isMyTurn ? "player-card-border active" : "player-card-border"}>
-                <div className="card player-card">
+                <div className="card player-card occupied">
                     <div className="card-block black-player">
 
                         <div className="row">

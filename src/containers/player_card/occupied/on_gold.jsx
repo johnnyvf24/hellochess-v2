@@ -69,7 +69,7 @@ class OnGold extends Component {
         let isMyTurn = game.game && game.game.turn() === "g";
         return (
             <div className={isMyTurn ? "player-card-border active" : "player-card-border"}>
-                <div className="card player-card">
+                <div className="card player-card occupied">
                     <div className="card-block gold-player">
 
                         <div className="row">
