@@ -61,14 +61,26 @@ class OnWhite extends Component {
         }
     }
 
+    renderActiveBorder() {
+        const {player, game} = this.props;
+        if (!player || !game.game)
+            return "";
+        console.log("player obj:", player);
+        let isMyTurn = game.game.turn() === player.color;
+        let isResigned = player.resigned;
+        let doDrawBorder = isMyTurn && !isResigned;
+        console.log("drawBorder:", doDrawBorder);
+        return doDrawBorder ? " active" : "";
+    }
+
     render() {
+        console.log("rendering white card");
         const {player, time, game} = this.props;
         if(!player || !time) {
             return <div></div>
         }
-        let isMyTurn = game.game && game.game.turn() === "w";
         return (
-            <div className={isMyTurn ? "player-card-border active" : "player-card-border"}>
+            <div className={"player-card-border" + this.renderActiveBorder()}>
                 <div className="card player-card occupied">
                     <div className="card-block">
 
@@ -88,6 +100,8 @@ class OnWhite extends Component {
 }
 
 function mapStateToProps(state) {
+    console.log("state obj:", state);
+    console.log("player.resigned:", state.openThreads[state.activeThread].white.resigned);
     return {
         player: state.openThreads[state.activeThread].white,
         time: state.openThreads[state.activeThread].white.time,
