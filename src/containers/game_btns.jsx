@@ -48,13 +48,13 @@ class GameButtons extends Component {
             return <div></div>
         }
 
-        const {game} = openThreads[activeThread];
+        const {fen} = openThreads[activeThread];
 
         if(openThreads[activeThread].paused) {
             return <div></div>
         }
 
-        if(!game) {
+        if(!fen) {
             return <div></div>
         }
 
@@ -85,19 +85,19 @@ class GameButtons extends Component {
             );
         } else if(openThreads[activeThread].gameType == 'four-player') {
             if(openThreads[activeThread].white && openThreads[activeThread].white._id == profile._id) {
-                if(openThreads[activeThread].game && openThreads[activeThread].game.isWhiteOut()) {
+                if(openThreads[activeThread].fen && openThreads[activeThread].white.resigned) {
                     return <div></div>
                 }
             } else if( openThreads[activeThread].black && openThreads[activeThread].black._id == profile._id) {
-                if(openThreads[activeThread].game && openThreads[activeThread].game.isBlackOut()) {
+                if(openThreads[activeThread].fen && openThreads[activeThread].black.resigned) {
                     return <div></div>
                 }
             } else if( openThreads[activeThread].gold && openThreads[activeThread].gold._id == profile._id) {
-                if(openThreads[activeThread].game && openThreads[activeThread].game.isGoldOut()) {
+                if(openThreads[activeThread].fen && openThreads[activeThread].gold.resigned) {
                     return <div></div>
                 }
             } else if( openThreads[activeThread].red && openThreads[activeThread].red._id == profile._id) {
-                if(openThreads[activeThread].game && openThreads[activeThread].game.isRedOut()) {
+                if(openThreads[activeThread].fen && openThreads[activeThread].red.resigned) {
                     return <div></div>
                 }
             }

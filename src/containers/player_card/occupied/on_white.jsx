@@ -65,6 +65,8 @@ class OnWhite extends Component {
         const {player, game, resigned, turn} = this.props;
         if (!player || !game.game)
             return "";
+        console.log("turn ", turn);
+        console.log("player color", player.color);
         let isMyTurn = turn == player.color;
         let isResigned = resigned;
         let doDrawBorder = isMyTurn && !isResigned;

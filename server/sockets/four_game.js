@@ -10,7 +10,7 @@ const {deleteRoomByName} = require('./data');
 const {userSittingAndGameOngoing} = require('./data');
 
 function fourGame(io, socket, action) {
-    let turn;
+    let turn, currentTurn;
     let color, roomName, loser, roomIndex, winner, index, move, loserColor;
     switch (action.type) {
 
@@ -71,8 +71,9 @@ function fourGame(io, socket, action) {
                     payload: {
                         thread: roomName,
                         fen: rooms[roomIndex][roomName].game.fen(),
+                        turn: rooms[roomIndex][roomName].game.turn(),
                         lastTurn: turn,
-                        time: rooms[roomIndex][roomName][currentTurn].time
+                        time: rooms[roomIndex][roomName][currentTurn].time,
                     }
                 });
 
@@ -96,6 +97,7 @@ function fourGame(io, socket, action) {
         case 'server/four-new-move':
             roomName = action.payload.thread;
             move = action.payload.move;
+            let lastMove = action.payload.move;
             index = findRoomIndexByName(roomName);
 
             //get who's turn it is
@@ -148,7 +150,9 @@ function fourGame(io, socket, action) {
                         thread: roomName,
                         fen: rooms[index][roomName].game.fen(),
                         lastTurn: turn,
-                        time: rooms[index][roomName][turn].time
+                        turn: rooms[index][roomName].game.turn(),
+                        time: rooms[index][roomName][turn].time,
+                        move: lastMove
                     }
                 });
             }
@@ -231,10 +235,13 @@ function endFourPlayerGame(io, roomName, index) {
             };
 
             io.to(roomName).emit('action', Notifications.success(eloNotif));
-            io.to(updatedUser.socket_id).emit('action', {
-                type: 'user-update',
-                payload: updatedUser
-            });
+            if(updatedUser.socket_id) {
+                io.to(updatedUser.socket_id).emit('action', {
+                    type: 'user-update',
+                    payload: updatedUser
+                });
+            }
+            
         });
     }).catch((e) => {
         console.log(e);

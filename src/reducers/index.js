@@ -67,10 +67,9 @@ function openThreads(state = {}, action) {
         case 'four-new-move':
             newState = Object.assign({}, state);
             newState[action.payload.thread].fen = action.payload.fen;
-            newState[action.payload.thread].game = new FourChess();
-            newState[action.payload.thread].game.position(action.payload.fen);
-            newState[action.payload.thread].turn = newState[action.payload.thread].game.turn();
-            newState[action.payload.thread][action.payload.lastTurn].time = action.payload.time;
+            newState[action.payload.thread].turn = action.payload.turn;
+            newState[action.payload.thread].move = action.payload.move;
+            //newState[action.payload.thread][action.payload.lastTurn].time = action.payload.time;
             return newState;
         case 'four-resign':
             newState = Object.assign({}, state);
@@ -88,11 +87,11 @@ function openThreads(state = {}, action) {
                     newState[action.payload.thread].red.resigned = true;
                     break;
             }
+            
             return newState;
         case 'game-over':
             newState = Object.assign({}, state);
-            delete newState[action.payload].game;
-            delete newState[action.payload].fen;
+            newState[action.payload].fen = '';
             delete newState[action.payload].pgn;
             delete newState[action.payload].white;
             delete newState[action.payload].black;
@@ -144,9 +143,7 @@ function openThreads(state = {}, action) {
             return newState;
         case 'four-game-started':
             newState = Object.assign({}, state);
-            newState[action.payload.thread].game = new FourChess();
             newState[action.payload.thread].fen = action.payload.fen;
-            newState[action.payload.thread].turn = newState[action.payload.thread].game.turn();
             return newState;
         case 'pause':
             newState = Object.assign({}, state);
