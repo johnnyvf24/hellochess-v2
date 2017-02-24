@@ -22,7 +22,6 @@ class TwoBoard extends Component {
 
     componentWillReceiveProps(nextProps) {
         if(nextProps.fen) {
-            this.game.load(nextProps.fen);
             this.board.position(nextProps.fen, false);
 
             if(nextProps.room.black._id === nextProps.profile._id) {
@@ -30,13 +29,20 @@ class TwoBoard extends Component {
             } else {
                 this.board.orientation('white');
             }
+
+            if(nextProps.move) {
+                this.game.move(nextProps.move);
+                this.shadeSquare(nextProps.move.from);
+                this.shadeSquare(nextProps.move.to);
+            }
+            if(nextProps.pgn) {
+                this.game.load_pgn(nextProps.pgn);
+            }
         } else {
             this.board.clear();
         }
-        this.shadeSquare(this.shadeSquareSource);
-        this.shadeSquare(this.shadeSquareDest);
     }
-    
+
 
     onDragStart(source, piece, position, orientation) {
 
@@ -61,11 +67,11 @@ class TwoBoard extends Component {
             return false;
         }
     }
-    
+
     removeHighlights() {
         this.boardEl.find('.square-55d63').css('background', '')
     }
-    
+
     shadeSquare(square) {
         if (!square) {
             return;
@@ -92,7 +98,7 @@ class TwoBoard extends Component {
 
         // illegal move
         if (move === null) return 'snapback';
-        
+        this.game.undo();
 
         this.props.newMove(action, this.props.name);
         this.shadeSquareSource = source;
@@ -100,11 +106,11 @@ class TwoBoard extends Component {
         this.shadeSquare(this.shadeSquareSource);
         this.shadeSquare(this.shadeSquareDest);
     }
-    
+
     onMoveEnd() {
         this.shadeSquare(this.shadeSquareSource);
         this.shadeSquare(this.shadeSquareDest);
-        
+
     }
 
     onMouseoutSquare() {
@@ -127,20 +133,25 @@ class TwoBoard extends Component {
         };
 
         this.board = new ChessBoard('board', cfg);
-        this.game = new Chess(); 
+        this.game = new Chess();
 
         //User has switched tabs and board just remounted
         if(this.props.fen) {
             this.board.position(this.props.fen);
             this.game.load(this.props.fen);
-            
+
             //there is a pgn to get the prior moves
             if(this.props.pgn) {
                 this.game.load_pgn(this.props.fen);
             }
-            
+
             if(this.props.room.black._id === this.props.profile._id) {
                 this.board.orientation('black');
+            }
+
+            if(this.props.move) {
+                this.shadeSquare(this.props.move.from);
+                this.shadeSquare(this.props.move.to);
             }
         }
 
@@ -165,6 +176,7 @@ function mapStateToProps(state) {
         profile: state.auth.profile,
         fen: state.openThreads[state.activeThread].fen,
         pgn: state.openThreads[state.activeThread].pgn,
+        move: state.openThreads[state.activeThread].move,
         room: state.openThreads[state.activeThread],
         name: state.activeThread,
     }

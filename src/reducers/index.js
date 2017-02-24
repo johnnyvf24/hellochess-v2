@@ -58,9 +58,10 @@ function openThreads(state = {}, action) {
             return {...state, [action.payload.thread]: obj };
         case 'new-move':
             newState = Object.assign({}, state);
-            newState[action.payload.thread].game = new Chess(action.payload.fen);
             newState[action.payload.thread].fen = action.payload.fen;
-            newState[action.payload.thread].turn = newState[action.payload.thread].game.turn();
+            newState[action.payload.thread].turn = action.payload.turn;
+            newState[action.payload.thread].pgn = action.payload.pgn;
+            newState[action.payload.thread].move = action.payload.move;
             newState[action.payload.thread][action.payload.lastTurn].time = action.payload.time;
             return newState;
         case 'four-new-move':
@@ -139,9 +140,7 @@ function openThreads(state = {}, action) {
             return newState;
         case 'game-started':
             newState = Object.assign({}, state);
-            newState[action.payload.thread].game = new Chess();
             newState[action.payload.thread].fen = action.payload.fen;
-            newState[action.payload.thread].turn = newState[action.payload.thread].game.turn();
             return newState;
         case 'four-game-started':
             newState = Object.assign({}, state);

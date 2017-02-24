@@ -234,6 +234,7 @@ function twoGame(io, socket, action) {
         case 'server/new-move':
             roomName = action.payload.thread;
             move = action.payload.move;
+            let cmove = action.payload.move;
             index = findRoomIndexByName(roomName);
 
             //get whose turn it is
@@ -260,7 +261,10 @@ function twoGame(io, socket, action) {
                     payload: {
                         thread: roomName,
                         fen: rooms[index][roomName].game.fen(),
+                        turn: rooms[index][roomName].game.turn(),
+                        pgn: rooms[index][roomName].game.pgn(),
                         lastTurn: turn,
+                        move: cmove,
                         time: rooms[index][roomName][turn].time
                     }
                 })
