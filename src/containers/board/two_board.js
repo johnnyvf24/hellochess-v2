@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+
+import Chess from 'chess.js'; //game rules
+
 import {newMove} from '../../actions/room';
 
 class TwoBoard extends Component {
@@ -8,6 +11,9 @@ class TwoBoard extends Component {
         super(props);
         this.onDrop = this.onDrop.bind(this);
         this.onDragStart = this.onDragStart.bind(this);
+        this.board, this.boardEl = $('#board');
+        this.shadeSquareSource = null;
+        this.shadeSquareDest = null;
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -15,8 +21,9 @@ class TwoBoard extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if(nextProps.game) {
-            this.board.position(nextProps.game.fen(), false);
+        if(nextProps.fen) {
+            this.game.load(nextProps.fen);
+            this.board.position(nextProps.fen, false);
 
             if(nextProps.room.black._id === nextProps.profile._id) {
                 this.board.orientation('black');
@@ -26,7 +33,10 @@ class TwoBoard extends Component {
         } else {
             this.board.clear();
         }
+        this.shadeSquare(this.shadeSquareSource);
+        this.shadeSquare(this.shadeSquareDest);
     }
+    
 
     onDragStart(source, piece, position, orientation) {
 
@@ -51,6 +61,24 @@ class TwoBoard extends Component {
             return false;
         }
     }
+    
+    removeHighlights() {
+        this.boardEl.find('.square-55d63').css('background', '')
+    }
+    
+    shadeSquare(square) {
+        if (!square) {
+            return;
+        }
+        var squareEl = $('#board .square-' + square);
+
+        var background = '#f2ffb2';
+        if (squareEl.hasClass('black-3c85d') === true) {
+            background = '#d2dd9b';
+        }
+
+        squareEl.css('background', background);
+    }
 
     onDrop(source, target) {
         let action = {
@@ -60,12 +88,23 @@ class TwoBoard extends Component {
         };
 
         // see if the move is legal
-        let move = this.props.game.move(action);
+        let move = this.game.move(action);
 
         // illegal move
         if (move === null) return 'snapback';
+        
 
         this.props.newMove(action, this.props.name);
+        this.shadeSquareSource = source;
+        this.shadeSquareDest = target;
+        this.shadeSquare(this.shadeSquareSource);
+        this.shadeSquare(this.shadeSquareDest);
+    }
+    
+    onMoveEnd() {
+        this.shadeSquare(this.shadeSquareSource);
+        this.shadeSquare(this.shadeSquareDest);
+        
     }
 
     onMouseoutSquare() {
@@ -84,12 +123,22 @@ class TwoBoard extends Component {
             moveSpeed: 'fast',
             onMouseoutSquare: this.onMouseoutSquare,
             onMouseoverSquare: this.onMouseoverSquare,
+            onMoveEnd: this.onMoveEnd
         };
 
         this.board = new ChessBoard('board', cfg);
+        this.game = new Chess(); 
 
-        if(this.props.game) {
-            this.board.position(this.props.game.fen());
+        //User has switched tabs and board just remounted
+        if(this.props.fen) {
+            this.board.position(this.props.fen);
+            this.game.load(this.props.fen);
+            
+            //there is a pgn to get the prior moves
+            if(this.props.pgn) {
+                this.game.load_pgn(this.props.fen);
+            }
+            
             if(this.props.room.black._id === this.props.profile._id) {
                 this.board.orientation('black');
             }
@@ -101,6 +150,10 @@ class TwoBoard extends Component {
     }
 
     render() {
+        console.log("rendering two-board");
+        console.log("shading "+this.shadeSquareSource+" and "+this.shadeSquareDest);
+        this.shadeSquare(this.shadeSquareSource);
+        this.shadeSquare(this.shadeSquareDest);
         return (
             <div id="board"></div>
         );
@@ -110,7 +163,8 @@ class TwoBoard extends Component {
 function mapStateToProps(state) {
     return {
         profile: state.auth.profile,
-        game: state.openThreads[state.activeThread].game,
+        fen: state.openThreads[state.activeThread].fen,
+        pgn: state.openThreads[state.activeThread].pgn,
         room: state.openThreads[state.activeThread],
         name: state.activeThread,
     }
