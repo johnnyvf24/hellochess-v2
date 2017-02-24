@@ -13,19 +13,14 @@ class FourBoard extends Component {
         this.shadeSquareSource = null;
         this.shadeSquareDest = null;
         this.prevMoveResizeListener = null;
-        this.onMoveEnd = this.onMoveEnd.bind(this);
         this.boardEl = $('#board');
     }
 
     shouldComponentUpdate() {
         return false;
     }
-    removeHighlights() {
-        this.boardEl.find('.square-55d63').css('background', ''); // clears all shadings
-    }
 
     componentWillReceiveProps(nextProps) {
-        this.removeHighlights();
         if(nextProps.fen) {
             this.board.position(nextProps.fen);
             this.game.position(nextProps.fen);
@@ -67,6 +62,7 @@ class FourBoard extends Component {
                 window.removeEventListener('resize', this.prevMoveResizeListener);
             }
             this.prevMoveResizeListener = null;
+            this.board.resize(); // redraw the board to remove square shading
         }
     }
 
@@ -173,12 +169,6 @@ class FourBoard extends Component {
         this.shadeSquare(this.shadeSquareDest);
     }
 
-    onMoveEnd() {
-        console.log("onMoveEnd shading:", this.shadeSquareSource, "-", this.shadeSquareDest);
-        this.shadeSquare(this.shadeSquareSource);
-        this.shadeSquare(this.shadeSquareDest);
-    }
-
     onMouseoutSquare() {
 
     }
@@ -195,7 +185,6 @@ class FourBoard extends Component {
             moveSpeed: 'fast',
             onMouseoutSquare: this.onMouseoutSquare,
             onMouseoverSquare: this.onMouseoverSquare
-            //onMoveEnd: this.onMoveEnd
         };
 
         this.board = new FourChessBoard('board', cfg);

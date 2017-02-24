@@ -12,7 +12,6 @@ class TwoBoard extends Component {
         super(props);
         this.onDrop = this.onDrop.bind(this);
         this.onDragStart = this.onDragStart.bind(this);
-        this.onMoveEnd = this.onMoveEnd.bind(this);
         this.board, this.boardEl = $('#board');
         this.shadeSquareSource = null;
         this.shadeSquareDest = null;
@@ -35,12 +34,10 @@ class TwoBoard extends Component {
             }
 
             if(nextProps.move) {
-                console.log("shading move: ", nextProps.move.from, "-", nextProps.move.to);
                 this.game.move(nextProps.move);
                 this.shadeSquare(nextProps.move.from);
                 this.shadeSquare(nextProps.move.to);
                 let shadeOnResize = function(event) {
-                    console.log("resize, shading move: ", nextProps.move.from, "-", nextProps.move.to);
                     this.shadeSquare(nextProps.move.from);
                     this.shadeSquare(nextProps.move.to);
                 }.bind(this);
@@ -61,6 +58,7 @@ class TwoBoard extends Component {
                 window.removeEventListener('resize', this.prevMoveResizeListener);
             }
             this.prevMoveResizeListener = null;
+            this.board.resize(); // redraw the board to remove square shading
         }
     }
 
@@ -124,11 +122,6 @@ class TwoBoard extends Component {
         this.shadeSquare(this.shadeSquareDest);
     }
 
-    onMoveEnd() {
-        this.shadeSquare(this.shadeSquareSource);
-        this.shadeSquare(this.shadeSquareDest);
-    }
-
     onMouseoutSquare() {
 
     }
@@ -144,8 +137,7 @@ class TwoBoard extends Component {
             onDrop: this.onDrop,
             moveSpeed: 'fast',
             onMouseoutSquare: this.onMouseoutSquare,
-            onMouseoverSquare: this.onMouseoverSquare,
-            onMoveEnd: this.onMoveEnd
+            onMouseoverSquare: this.onMouseoverSquare
         };
 
         this.board = new ChessBoard('board', cfg);
@@ -177,8 +169,6 @@ class TwoBoard extends Component {
     }
 
     render() {
-        console.log("rendering two-board");
-        console.log("shading "+this.shadeSquareSource+" and "+this.shadeSquareDest);
         this.shadeSquare(this.shadeSquareSource);
         this.shadeSquare(this.shadeSquareDest);
         return (
