@@ -39,14 +39,6 @@ function openThreads(state = {}, action) {
             });
             return newState;
         case 'joined-room':
-            if(action.payload.fen) {
-                if(action.payload.gameType == 'four-player') {
-                    action.payload.game = new FourChess();
-                    action.payload.game.position(action.payload.fen);
-                } else if(action.payload.gameType == 'two-player'){
-                    action.payload.game = new Chess(action.payload.fen);
-                }
-            }
             return {...state, [action.payload.room.name]: action.payload };
         case 'left-room':
             newState = Object.assign({}, state);
@@ -87,7 +79,7 @@ function openThreads(state = {}, action) {
                     newState[action.payload.thread].red.resigned = true;
                     break;
             }
-            
+
             return newState;
         case 'game-over':
             newState = Object.assign({}, state);
@@ -97,6 +89,7 @@ function openThreads(state = {}, action) {
             delete newState[action.payload].black;
             delete newState[action.payload].gold;
             delete newState[action.payload].red;
+            delete newState[action.payload].move;
             return newState;
         case 'timer-sync':
             if(state[action.payload.thread][action.payload.turn]) {

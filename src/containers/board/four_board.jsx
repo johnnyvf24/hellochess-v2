@@ -39,9 +39,8 @@ class FourBoard extends Component {
             } else if(nextProps.room.red._id === nextProps.profile._id) {
                 this.board.orientation('red');
             }
-            
+
             if(nextProps.move) {
-                this.game.move(nextProps.move);
                 console.log("shading:", nextProps.move.from, "-", nextProps.move.to);
                 this.shadeSquare(nextProps.move.from);
                 this.shadeSquare(nextProps.move.to);
@@ -56,13 +55,14 @@ class FourBoard extends Component {
                 window.addEventListener('resize', shadeOnResize);
                 this.prevMoveResizeListener = shadeOnResize;
             }
-            
+
             if(nextProps.pgn) {
                 //TODO fourchess still doesn't have a load pgn feature
             }
-            
+
         } else {
             this.board.clear();
+            this.game = new FourChess();
             if (this.prevMoveResizeListener) {
                 window.removeEventListener('resize', this.prevMoveResizeListener);
             }
@@ -76,7 +76,7 @@ class FourBoard extends Component {
         if(this.props.room.paused) {
             return false;
         }
-        
+
         if(!this.game) {
             return false;
         }
@@ -131,7 +131,7 @@ class FourBoard extends Component {
                 return 'red';
         }
     }
-    
+
     shadeSquare(square) {
         if (!square) {
             return;
@@ -158,16 +158,12 @@ class FourBoard extends Component {
             to: target,
             promotion: 'q' // NOTE: always promote to a queen for example simplicity
         };
-        
-        let oldGame = new FourChess();
-        oldGame.position(this.game.fen());
 
         // see if the move is legal
-        let move = this.game.move(action); 
+        let move = this.game.move(action);
 
         // illegal move
         if (move === null) return 'snapback';
-        this.game = oldGame;
 
         this.props.fourNewMove(action, this.props.name);
         console.log("onDrop shading:", source, "-", target);
@@ -176,7 +172,7 @@ class FourBoard extends Component {
         this.shadeSquare(this.shadeSquareSource);
         this.shadeSquare(this.shadeSquareDest);
     }
-    
+
     onMoveEnd() {
         console.log("onMoveEnd shading:", this.shadeSquareSource, "-", this.shadeSquareDest);
         this.shadeSquare(this.shadeSquareSource);
@@ -204,7 +200,7 @@ class FourBoard extends Component {
 
         this.board = new FourChessBoard('board', cfg);
         this.game = new FourChess();
-        
+
         window.addEventListener('resize', (event) => {
             this.board.resize();
         });
@@ -224,7 +220,7 @@ class FourBoard extends Component {
             else if(this.props.room.red._id === this.props.profile._id) {
                 this.board.orientation('red');
             }
-            
+
             if(this.props.move) {
                 this.shadeSquare(this.props.move.from);
                 this.shadeSquare(this.props.move.to);

@@ -60,10 +60,10 @@ class OnBlack extends Component {
                 return player[eloIndex][tcIndex];
         }
     }
-    
+
     renderActiveBorder() {
         const {player, game, resigned, turn} = this.props;
-        if (!player || !game.game)
+        if (!player || !game)
             return "";
         let isMyTurn = turn == player.color;
         let isResigned = resigned;

@@ -12,6 +12,7 @@ class TwoBoard extends Component {
         super(props);
         this.onDrop = this.onDrop.bind(this);
         this.onDragStart = this.onDragStart.bind(this);
+        this.onMoveEnd = this.onMoveEnd.bind(this);
         this.board, this.boardEl = $('#board');
         this.shadeSquareSource = null;
         this.shadeSquareDest = null;
@@ -19,13 +20,13 @@ class TwoBoard extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        return false;   
+        return false;
     }
-    
+
     componentWillReceiveProps(nextProps) {
-        
+
         if(nextProps.fen) {
-            
+
             this.board.position(nextProps.fen, false);
             if(nextProps.room.black._id === nextProps.profile._id) {
                 this.board.orientation('black');
