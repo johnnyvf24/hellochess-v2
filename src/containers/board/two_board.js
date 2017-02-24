@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import Chess from 'chess.js'; //game rules
 
 import {newMove} from '../../actions/room';
+import {DARK_SQUARE_HIGHLIGHT_COLOR, LIGHT_SQUARE_HIGHLIGHT_COLOR} from './board_wrapper.jsx'
 
 class TwoBoard extends Component {
 
@@ -14,16 +15,18 @@ class TwoBoard extends Component {
         this.board, this.boardEl = $('#board');
         this.shadeSquareSource = null;
         this.shadeSquareDest = null;
+        this.prevMoveResizeListener = null;
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        return false;
+        return false;   
     }
-
+    
     componentWillReceiveProps(nextProps) {
+        
         if(nextProps.fen) {
+            
             this.board.position(nextProps.fen, false);
-
             if(nextProps.room.black._id === nextProps.profile._id) {
                 this.board.orientation('black');
             } else {
@@ -31,15 +34,32 @@ class TwoBoard extends Component {
             }
 
             if(nextProps.move) {
+                console.log("shading move: ", nextProps.move.from, "-", nextProps.move.to);
                 this.game.move(nextProps.move);
                 this.shadeSquare(nextProps.move.from);
                 this.shadeSquare(nextProps.move.to);
+                let shadeOnResize = function(event) {
+                    console.log("resize, shading move: ", nextProps.move.from, "-", nextProps.move.to);
+                    this.shadeSquare(nextProps.move.from);
+                    this.shadeSquare(nextProps.move.to);
+                }.bind(this);
+                if (this.prevMoveResizeListener) {
+                    // remove listener for previous move
+                    window.removeEventListener('resize', this.prevMoveResizeListener);
+                }
+                window.addEventListener('resize', shadeOnResize);
+                this.prevMoveResizeListener = shadeOnResize;
             }
             if(nextProps.pgn) {
                 this.game.load_pgn(nextProps.pgn);
             }
         } else {
             this.board.clear();
+            this.game = new Chess();
+            if (this.prevMoveResizeListener) {
+                window.removeEventListener('resize', this.prevMoveResizeListener);
+            }
+            this.prevMoveResizeListener = null;
         }
     }
 
@@ -68,19 +88,15 @@ class TwoBoard extends Component {
         }
     }
 
-    removeHighlights() {
-        this.boardEl.find('.square-55d63').css('background', '')
-    }
-
     shadeSquare(square) {
         if (!square) {
             return;
         }
         var squareEl = $('#board .square-' + square);
 
-        var background = '#f2ffb2';
+        var background = LIGHT_SQUARE_HIGHLIGHT_COLOR;
         if (squareEl.hasClass('black-3c85d') === true) {
-            background = '#d2dd9b';
+            background = DARK_SQUARE_HIGHLIGHT_COLOR;
         }
 
         squareEl.css('background', background);
@@ -110,7 +126,6 @@ class TwoBoard extends Component {
     onMoveEnd() {
         this.shadeSquare(this.shadeSquareSource);
         this.shadeSquare(this.shadeSquareDest);
-
     }
 
     onMouseoutSquare() {
