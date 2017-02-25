@@ -32,7 +32,8 @@ class MessageSend extends Component {
                 user: this.props.profile.username,
                 msg: msg,
                 thread: this.props.activeThread,
-                picture: this.props.profile.picture
+                picture: this.props.profile.picture,
+                event_type: 'chat-message'
             }
         });
         this.setState({msg: ''});

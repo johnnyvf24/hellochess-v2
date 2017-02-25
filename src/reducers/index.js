@@ -24,11 +24,22 @@ function activeThread (state = 'Global', action) {
 function openThreads(state = {}, action) {
     let obj = null, newState = null;
     let roomName = null;
+    let messages = null, msg_obj = null;
     switch(action.type) {
         case 'user-room-joined':
             const users = action.payload.users;
+            const joined_user = action.payload.users[action.payload.users.length-1].username;
+            let joined_msg = joined_user + " has joined the room.";
+            msg_obj = {
+                user: joined_user,
+                msg: joined_msg,
+                thread: action.payload,
+                picture: null,
+                event_type: 'user-joined'
+            };
             roomName = action.payload.room.name;
-            obj = {...state[roomName], users};
+            messages = [...state[roomName].messages, msg_obj];
+            obj = {...state[roomName], users, messages};
             return {...state, [roomName]: obj};
         case 'user-room-left':
             roomName = action.payload.name;
@@ -37,7 +48,17 @@ function openThreads(state = {}, action) {
             newState[roomName].users = newState[roomName].users.filter((member) => {
                 return user.user._id !== member._id;
             });
-            return newState;
+            let left_msg = user.user.username + " has left the room.";
+            msg_obj = {
+                user: user.user.username,
+                msg: left_msg,
+                thread: action.payload,
+                picture: null,
+                event_type: 'user-left'
+            };
+            messages = [...newState[roomName].messages, msg_obj];
+            obj = {...newState[roomName], messages};
+            return {...newState, [roomName]: obj};
         case 'joined-room':
             return {...state, [action.payload.room.name]: action.payload };
         case 'left-room':
@@ -45,7 +66,7 @@ function openThreads(state = {}, action) {
             delete newState[action.payload];
             return newState;
         case 'receive-message':
-            const messages = [...state[action.payload.thread].messages, action.payload];
+            messages = [...state[action.payload.thread].messages, action.payload];
             obj = {...state[action.payload.thread], messages};
             return {...state, [action.payload.thread]: obj };
         case 'new-move':
