@@ -57,17 +57,17 @@ class PlayerTimes extends Component {
             case "four-player":
                 switch(profile._id) {
                     case room.black && room.black._id:
-                        renderOrder = [this.renderGold, this.renderWhite, this.renderRed, this.renderBlack];
+                        renderOrder = [this.renderRed, this.renderWhite, this.renderGold, this.renderBlack];
                         break;
                     case room.gold && room.gold._id:
-                        renderOrder = [this.renderWhite, this.renderRed, this.renderBlack, this.renderGold];
+                        renderOrder = [this.renderBlack, this.renderRed, this.renderWhite, this.renderGold];
                         break;
                     case room.red && room.red._id:
-                        renderOrder = [this.renderBlack, this.renderGold, this.renderWhite, this.renderRed];
+                        renderOrder = [this.renderWhite, this.renderGold, this.renderBlack, this.renderRed];
                         break;
                     case room.white && room.white._id:
                     default:
-                        renderOrder = [this.renderRed, this.renderBlack, this.renderGold, this.renderWhite];
+                        renderOrder = [this.renderGold, this.renderBlack, this.renderRed, this.renderWhite];
                         break;
                 }
                 break;
