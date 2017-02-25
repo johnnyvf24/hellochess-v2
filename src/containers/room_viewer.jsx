@@ -25,7 +25,6 @@ class RoomViewer extends Component {
     onCloseChatTab(chatName, event) {
         this.props.leaveRoom(chatName);
         event.preventDefault();
-        event.stopImmediatePropagation();
         this.refs.mainTab.click();
     }
 

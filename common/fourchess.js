@@ -1,8 +1,9 @@
 'use strict';
 
-var BOARD;
+
 
 var FourChess = function (fen) {
+    var BOARD;
 
     /* jshint indent: false */
     var WHITE = 'w';

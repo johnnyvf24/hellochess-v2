@@ -228,20 +228,22 @@ function endFourPlayerGame(io, roomName, index) {
     .then((user) => {
         user.four_elos[timeType] = newWinnerElo;
         user.save(function(err, updatedUser) {
-            let eloNotif = {
-                title: `${winner.username}'s elo is now ${newWinnerElo} +${newWinnerElo - fourthOutElo}`,
-                position: 'tr',
-                autoDismiss: 6,
-            };
 
-            io.to(roomName).emit('action', Notifications.success(eloNotif));
-            if(updatedUser.socket_id) {
+            if(updatedUser) {
+                let eloNotif = {
+                    title: `${winner.username}'s elo is now ${newWinnerElo} +${newWinnerElo - fourthOutElo}`,
+                    position: 'tr',
+                    autoDismiss: 6,
+                };
+
+                io.to(roomName).emit('action', Notifications.success(eloNotif));
+
                 io.to(updatedUser.socket_id).emit('action', {
                     type: 'user-update',
                     payload: updatedUser
                 });
             }
-            
+
         });
     }).catch((e) => {
         console.log(e);
@@ -253,19 +255,20 @@ function endFourPlayerGame(io, roomName, index) {
         .then((user) => {
             user.four_elos[timeType] = newThirdOutElo;
             user.save(function(err, updatedUser) {
-                let eloNotif = {
-                    title: `${thirdOut.username}'s elo is now ${newThirdOutElo} ${newThirdOutElo - thirdOutElo}`,
-                    position: 'tr',
-                    autoDismiss: 6,
-                };
+                if(updatedUser) {
+                    let eloNotif = {
+                        title: `${thirdOut.username}'s elo is now ${newThirdOutElo} ${newThirdOutElo - thirdOutElo}`,
+                        position: 'tr',
+                        autoDismiss: 6,
+                    };
 
-                io.to(roomName).emit('action', Notifications.success(eloNotif));
+                    io.to(roomName).emit('action', Notifications.success(eloNotif));
 
-                delete updatedUser.tokens;
-                io.to(updatedUser.socket_id).emit('action', {
-                    type: 'user-update',
-                    payload: updatedUser
-                });
+                    io.to(updatedUser.socket_id).emit('action', {
+                        type: 'user-update',
+                        payload: updatedUser
+                    });
+                }
             });
         }).catch((e) => {
             console.log(e);
@@ -278,19 +281,20 @@ function endFourPlayerGame(io, roomName, index) {
         .then((user) => {
             user.four_elos[timeType] = newSecondOutElo;
             user.save(function(err, updatedUser) {
-                let eloNotif = {
-                    title: `${secondOut.username}'s elo is now ${newSecondOutElo} ${newSecondOutElo - secondOutElo}`,
-                    position: 'tr',
-                    autoDismiss: 6,
-                };
+                if(updatedUser) {
+                    let eloNotif = {
+                        title: `${secondOut.username}'s elo is now ${newSecondOutElo} ${newSecondOutElo - secondOutElo}`,
+                        position: 'tr',
+                        autoDismiss: 6,
+                    };
 
-                io.to(roomName).emit('action', Notifications.error(eloNotif));
+                    io.to(roomName).emit('action', Notifications.error(eloNotif));
 
-                delete updatedUser.tokens;
-                io.to(updatedUser.socket_id).emit('action', {
-                    type: 'user-update',
-                    payload: updatedUser
-                });
+                    io.to(updatedUser.socket_id).emit('action', {
+                        type: 'user-update',
+                        payload: updatedUser
+                    });
+                }
             });
         }).catch((e) => {
             console.log(e);
@@ -303,19 +307,20 @@ function endFourPlayerGame(io, roomName, index) {
         .then((user) => {
             user.four_elos[timeType] = newFirstOutElo;
             user.save(function(err, updatedUser) {
-                let eloNotif = {
-                    title: `${firstOut.username}'s elo is now ${newFirstOutElo} ${newFirstOutElo - firstOutElo}`,
-                    position: 'tr',
-                    autoDismiss: 6,
-                };
+                if(updatedUser) {
+                    let eloNotif = {
+                        title: `${firstOut.username}'s elo is now ${newFirstOutElo} ${newFirstOutElo - firstOutElo}`,
+                        position: 'tr',
+                        autoDismiss: 6,
+                    };
 
-                io.to(roomName).emit('action', Notifications.error(eloNotif));
+                    io.to(roomName).emit('action', Notifications.error(eloNotif));
 
-                delete updatedUser.tokens;
-                io.to(updatedUser.socket_id).emit('action', {
-                    type: 'user-update',
-                    payload: updatedUser
-                });
+                    io.to(updatedUser.socket_id).emit('action', {
+                        type: 'user-update',
+                        payload: updatedUser
+                    });
+                }
             });
         }).catch((e) => {
             console.log(e);

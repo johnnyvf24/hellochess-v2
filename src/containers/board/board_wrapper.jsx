@@ -17,7 +17,7 @@ class BoardWrapper extends Component {
         const {gameType} = openThreads[activeThread];
 
         if(!gameType) {
-            return <div>Ad</div>
+            return <div></div>
         }
 
         switch(gameType) {

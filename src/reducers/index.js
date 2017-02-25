@@ -82,7 +82,7 @@ function openThreads(state = {}, action) {
             newState[action.payload.thread].fen = action.payload.fen;
             newState[action.payload.thread].turn = action.payload.turn;
             newState[action.payload.thread].move = action.payload.move;
-            //newState[action.payload.thread][action.payload.lastTurn].time = action.payload.time;
+            newState[action.payload.thread][action.payload.lastTurn].time = action.payload.time;
             return newState;
         case 'four-resign':
             newState = Object.assign({}, state);
@@ -189,12 +189,6 @@ function connection(state = {status: false, error: false}, action) {
     }
 }
 
-function activeGame(state=false, action) {
-    switch(action.type) {
-        default:
-            return state;
-    }
-}
 
 const rootReducer = combineReducers({
     connection,

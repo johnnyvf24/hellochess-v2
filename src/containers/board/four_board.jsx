@@ -16,12 +16,15 @@ class FourBoard extends Component {
         this.boardEl = $('#board');
     }
 
-    shouldComponentUpdate() {
+    shouldComponentUpdate(nextProps, nextState) {
+        if(nextProps.name != this.props.name) {
+            return true;
+        }
         return false;
     }
 
     componentWillReceiveProps(nextProps) {
-        if(nextProps.fen) {
+        if (nextProps.fen) {
             this.board.position(nextProps.fen);
             this.game.position(nextProps.fen);
 
@@ -53,7 +56,6 @@ class FourBoard extends Component {
             if(nextProps.pgn) {
                 //TODO fourchess still doesn't have a load pgn feature
             }
-
         } else {
             this.board.clear();
             this.game = new FourChess();
@@ -162,6 +164,11 @@ class FourBoard extends Component {
         this.props.fourNewMove(action, this.props.name);
         this.shadeSquareSource = source;
         this.shadeSquareDest = target;
+        this.shadeSquare(this.shadeSquareSource);
+        this.shadeSquare(this.shadeSquareDest);
+    }
+
+    onMoveEnd() {
         this.shadeSquare(this.shadeSquareSource);
         this.shadeSquare(this.shadeSquareDest);
     }

@@ -259,6 +259,7 @@ export function joinRoom(name, gameOptions = initGameOptions) {
     }
 }
 
+
 export function leaveRoom(name) {
     return (dispatch) => {
         return dispatch({
