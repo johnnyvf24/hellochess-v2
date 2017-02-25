@@ -13,33 +13,33 @@ class PlayerTimes extends Component {
 
     renderWhite(thread) {
         if(thread.white) {
-            return <OnWhite />
+            return <OnWhite key="OnWhite" />
         } else {
-            return <SitWhite />
+            return <SitWhite key="SitWhite" />
         }
     }
 
     renderBlack(thread) {
         if(thread.black) {
-            return <OnBlack />
+            return <OnBlack key="OnBlack" />
         } else {
-            return <SitBlack />
+            return <SitBlack key="SitBlack" />
         }
     }
 
     renderGold(thread) {
         if(thread.gold) {
-            return <OnGold />
+            return <OnGold key="OnGold" />
         } else {
-            return <SitGold />
+            return <SitGold key="SitGold" />
         }
     }
 
     renderRed(thread) {
         if(thread.red) {
-            return <OnRed />
+            return <OnRed key="OnRed" />
         } else {
-            return <SitRed />
+            return <SitRed key="SitRed" />
         }
     }
     
@@ -119,9 +119,9 @@ class PlayerTimes extends Component {
             return <div></div>  //TODO AD here
         }
         let renderers = this.determineCardOrder();
-        let renderedCards = renderers.map((renderer) => {
-            renderer(activeThread);
-        });
+        let renderedCards = renderers.map((renderer) =>
+            renderer(activeThread)
+        );
         return (
             <div>
             {renderedCards}

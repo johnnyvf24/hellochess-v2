@@ -36,7 +36,6 @@ class FourBoard extends Component {
             }
 
             if(nextProps.move) {
-                console.log("shading:", nextProps.move.from, "-", nextProps.move.to);
                 this.shadeSquare(nextProps.move.from);
                 this.shadeSquare(nextProps.move.to);
                 let shadeOnResize = function(event) {
@@ -68,7 +67,6 @@ class FourBoard extends Component {
 
     onDragStart(source, piece, position, orientation) {
 
-        console.log("onDragStart");
         if(this.props.room.paused) {
             return false;
         }
@@ -162,7 +160,6 @@ class FourBoard extends Component {
         if (move === null) return 'snapback';
 
         this.props.fourNewMove(action, this.props.name);
-        console.log("onDrop shading:", source, "-", target);
         this.shadeSquareSource = source;
         this.shadeSquareDest = target;
         this.shadeSquare(this.shadeSquareSource);
