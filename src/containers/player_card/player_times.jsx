@@ -43,17 +43,24 @@ class PlayerTimes extends Component {
         }
     }
     
-    determineRenderOrder() {
-        let {activeThread, openThreads, profile} = this.props;
-        activeThread = openThreads[activeThread];
-        if(!openThreads || !activeThread) {
-            return null;
-        }
-        let room = activeThread;
-        // determine the vertical ordering of the cards.
-        // current player goes on the bottom.
+    // returns the order of the player cards when the game hasn't started
+    determineSitOrder(room, profile) {
         let renderOrder = [];
-        switch (activeThread.gameType) {
+        switch(room.gameType) {
+            case "four-player":
+                renderOrder = [this.renderGold, this.renderBlack, this.renderRed, this.renderWhite];
+                break;
+            case "two-player":
+            default:
+                renderOrder = [this.renderBlack, this.renderWhite];
+        }
+        return renderOrder;
+    }
+    
+    // returns the order of the player cards when the game has started
+    determinePlayingOrder(room, profile) {
+        let renderOrder = [];
+        switch (room.gameType) {
             case "four-player":
                 switch(profile._id) {
                     case room.black && room.black._id:
@@ -86,6 +93,24 @@ class PlayerTimes extends Component {
         }
         return renderOrder;
     }
+    
+    determineCardOrder() {
+        let {activeThread, openThreads, profile} = this.props;
+        activeThread = openThreads[activeThread];
+        if(!openThreads || !activeThread) {
+            return null;
+        }
+        let room = activeThread;
+        // determine the vertical ordering of the cards.
+        // current player goes on the bottom.
+        let renderOrder = [];
+        if (activeThread.fen) {
+            renderOrder = this.determinePlayingOrder(room, profile);
+        } else {
+            renderOrder = this.determineSitOrder(room, profile);
+        }
+        return renderOrder;
+    }
 
     render() {
         let {activeThread, openThreads, profile} = this.props;
@@ -93,10 +118,9 @@ class PlayerTimes extends Component {
         if(!openThreads || !activeThread) {
             return <div></div>  //TODO AD here
         }
-        let renderers = this.determineRenderOrder();
-        let renderedCards = [];
-        renderers.forEach((renderer) => {
-            renderedCards.push(renderer(activeThread));
+        let renderers = this.determineCardOrder();
+        let renderedCards = renderers.map((renderer) => {
+            renderer(activeThread);
         });
         return (
             <div>
