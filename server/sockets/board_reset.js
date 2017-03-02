@@ -6,7 +6,7 @@ const Notifications = require('react-notification-system-redux');
 const {clients, rooms, roomExists, getRoomByName, formatTurn} = require('./data');
 const {getTimeTypeForTimeControl, getEloForTimeControl} = require('./data');
 const {findRoomIndexByName, deleteUserFromBoardSeats} = require('./data');
-const {deleteRoomByName} = require('./data');
+const {deleteRoomByName, timers} = require('./data');
 const {userSittingAndGameOngoing} = require('./data');
 
 function startTimerCountDown(io, roomName, index) {
@@ -23,8 +23,8 @@ function startTimerCountDown(io, roomName, index) {
         return;
     }
 
-    if(rooms[index][roomName].countDownTimer) {
-        clearTimeout(rooms[index][roomName].countDownTimer);
+    if(timers && timers[roomName]) {
+        clearTimeout(timers[roomName]);
     }
 
     //get whos turn it is
@@ -37,7 +37,8 @@ function startTimerCountDown(io, roomName, index) {
     let timeLeft = rooms[index][roomName][turn].time;
     let time = timeLeft - timeElapsed;
 
-    rooms[index][roomName].countDownTimer = setTimeout(() => {
+    //start server timers
+    timers[roomName] = setTimeout( function () {
 
         //synchronize everyone's times at the end
         io.to(roomName).emit('action', {

@@ -28,6 +28,7 @@ function openThreads(state = {}, action) {
     switch(action.type) {
         case 'user-room-joined':
             const users = action.payload.users;
+            console.log(action.payload);
             const joined_user = action.payload.users[action.payload.users.length-1].username;
             let joined_msg = joined_user + " has joined the room.";
             msg_obj = {
@@ -75,6 +76,7 @@ function openThreads(state = {}, action) {
             newState[action.payload.thread].turn = action.payload.turn;
             newState[action.payload.thread].pgn = action.payload.pgn;
             newState[action.payload.thread].move = action.payload.move;
+            newState[action.payload.thread].lastMove = action.payload.lastMove;
             newState[action.payload.thread][action.payload.lastTurn].time = action.payload.time;
             return newState;
         case 'four-new-move':
@@ -82,6 +84,7 @@ function openThreads(state = {}, action) {
             newState[action.payload.thread].fen = action.payload.fen;
             newState[action.payload.thread].turn = action.payload.turn;
             newState[action.payload.thread].move = action.payload.move;
+            newState[action.payload.thread].lastMove = action.payload.lastMove;
             newState[action.payload.thread][action.payload.lastTurn].time = action.payload.time;
             return newState;
         case 'four-resign':
@@ -120,6 +123,9 @@ function openThreads(state = {}, action) {
                 return newState;
             }
             return state;
+        case SELECTED_ROOM:
+            newState = Object.assign({}, state);
+            return newState;
         case 'sit-down-white':
             newState = Object.assign({}, state);
             newState[action.payload.thread].white = action.payload.room;
@@ -159,13 +165,26 @@ function openThreads(state = {}, action) {
         case 'game-started':
             newState = Object.assign({}, state);
             newState[action.payload.thread].fen = action.payload.fen;
+            newState[action.payload.thread].lastMove = action.payload.lastMove;
             newState[action.payload.thread].turn = 'w';
             newState[action.payload.thread].paused = false;
             return newState;
         case 'four-game-started':
             newState = Object.assign({}, state);
             newState[action.payload.thread].fen = action.payload.fen;
+            newState[action.payload.thread].lastMove = action.payload.lastMove;
+            newState[action.payload.thread].turn = 'w';
             newState[action.payload.thread].paused = false;
+            return newState;
+        case 'clear-timer':
+            newState = Object.assign({}, state);
+            newState[action.payload.thread].clearTimer = true;
+            return newState;
+        case 'start-timer':
+            newState = Object.assign({}, state);
+            newState[action.payload.thread].turn = action.payload.turn;
+            newState[action.payload.thread].timeLeft = action.payload.timeLeft;
+            newState[action.payload.thread].clearTimer = false;
             return newState;
         case 'pause':
             newState = Object.assign({}, state);

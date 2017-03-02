@@ -10,55 +10,13 @@ class OnWhite extends Component {
         this.countDown = null;
     };
 
-    shouldComponentUpdate(nextProps, nextState) {
-        if(nextProps.name != this.props.name) {
-            return true;
-        }
-        if(nextProps.time != this.props.time) {
-            return true;
-        }
-        if(nextProps.player != this.props.player) {
-            return true;
-        }
-        return false;
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if(this.countDown) {
-            clearInterval(this.countDown);
-        }
-
-        if(nextProps.turn == 'w' && !nextProps.paused) {
-            $("#white-timer").text(this.millisToMinutesAndSeconds(nextProps.time));
-            this.time = nextProps.time;
-
-            this.countDown = setInterval(() => {
-                this.time -= 1000;
-                $("#white-timer").text(this.millisToMinutesAndSeconds(this.time));
-            }, 1000)
-
-        }
-    }
-
-    componentDidMount() {
-        if(this.countDown) {
-            clearInterval(this.countDown);
-        }
-
-        if(!this.props.paused && this.props.turn == 'w') {
-            $("#white-timer").text(this.millisToMinutesAndSeconds(this.props.time));
-            this.time = this.props.time;
-
-            this.countDown = setInterval(() => {
-                this.time -= 1000;
-                $("#white-timer").text(this.millisToMinutesAndSeconds(this.time));
-            }, 1000)
-        }
-    }
-
     millisToMinutesAndSeconds(millis) {
         let minutes = Math.floor(millis / 60000);
         let seconds = ((millis % 60000) / 1000).toFixed(0);
+        if(seconds == 60) {
+            minutes++;
+            seconds = 0;
+        }
         return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
     }
 
@@ -126,7 +84,7 @@ class OnWhite extends Component {
     }
 
     render() {
-        const {player, time, game} = this.props;
+        const {player, time} = this.props;
         if(!player || !time) {
             return <div></div>
         }
@@ -140,7 +98,8 @@ class OnWhite extends Component {
                             <div className="card-text"><h5>{player.username}</h5>{this.showElo()}</div>
                         </div>
 
-                        <h4 className="card-title pull-right" id="white-timer">
+                        <h4 className="card-title pull-right">
+                            {`${this.millisToMinutesAndSeconds(time)}`}
                         </h4>
                     </div>
                 </div>
@@ -157,6 +116,7 @@ function mapStateToProps(state) {
         resigned: state.openThreads[state.activeThread].white.resigned,
         turn: state.openThreads[state.activeThread].turn,
         paused: state.openThreads[state.activeThread].paused,
+        lastMove: state.openThreads[state.activeThread].lastMove,
         name: state.activeThread
     }
 }

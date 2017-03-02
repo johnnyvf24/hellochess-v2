@@ -1,8 +1,10 @@
 const {mapObject} = require('../utils/utils');
 let rooms = [];
+let timers = {};
 let clients = {};
 
 module.exports.rooms = rooms; //all the chat rooms
+module.exports.timers = timers; //all the timers
 module.exports.clients = clients; //all connected users
 
 module.exports.roomExists = function(name) {
@@ -28,6 +30,21 @@ module.exports.getRoomByName = function(name) {
     }
 
     return obj;
+}
+
+module.exports.removeTimersFromRooms = function(rooms) {
+    let roomsc = [];
+    for (let i = 0; i < rooms.length; i++) {
+        let room = rooms[i]
+        mapObject(rooms[i], (key, val) => {
+            if (key != "time") {
+                room[key] = val;
+            }
+        });
+        roomsc.push(room);
+    }
+
+    return roomsc;
 }
 
 module.exports.deleteRoomByName = function(name) {

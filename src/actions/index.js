@@ -181,7 +181,7 @@ export function saveUsername(id, username) {
 export function selectedRoom(name) {
     return (dispatch) =>{
         return dispatch({
-            type: SELECTED_ROOM,
+            type: 'server/selected-room',
             payload: name
         });
     }
