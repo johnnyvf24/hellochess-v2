@@ -33,7 +33,7 @@ function openThreads(state = {}, action) {
             msg_obj = {
                 user: joined_user,
                 msg: joined_msg,
-                thread: action.payload,
+                thread: action.payload.room.name,
                 picture: null,
                 event_type: 'user-joined'
             };
