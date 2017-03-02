@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {Provider} from 'react-redux';
-import {createStore, applyMiddleware} from 'redux';
+import {createStore, applyMiddleware, compose} from 'redux';
 import {Router, browserHistory} from 'react-router';
 import ReduxPromise from 'redux-promise';
 import thunkMiddleware from 'redux-thunk'
@@ -14,8 +14,11 @@ import reducers from './reducers';
 import routes from './routes';
 import {LOGIN_SUCCESS} from './actions/types';
 
-let createStoreWithMiddleware = applyMiddleware(ReduxPromise, thunkMiddleware, api, socketIoMiddleware)(createStore);
-let store = createStoreWithMiddleware(reducers);
+const middleware = [ReduxPromise, thunkMiddleware, api, socketIoMiddleware];
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const store = createStore(reducers, composeEnhancers(
+    applyMiddleware(...middleware)
+    ));
 
 //Get the authentication token and user profile if available
 const token = localStorage.getItem('token');
