@@ -3,6 +3,48 @@ import {connect} from 'react-redux';
 
 class OnBlack extends Component {
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            time: 0
+        };
+        this.countDown = null;
+    }
+
+    componentWillReceiveProps(nextProps) {
+        clearInterval(this.countDown);
+        $("#black-timer").text(this.millisToMinutesAndSeconds(nextProps.time));
+
+        if(nextProps.turn == 'b' && !nextProps.paused) {
+            this.setState({
+                time: nextProps.time
+            });
+
+            this.countDown = setInterval(() => {
+                this.setState({time: this.state.time - 1000});
+                $("#black-timer").text(this.millisToMinutesAndSeconds(this.state.time));
+            }, 1000)
+
+        }
+    }
+
+    componentDidMount() {
+        $("#black-timer").text(this.millisToMinutesAndSeconds(this.props.time));
+        clearInterval(this.countDown);
+        if(!this.props.paused && this.props.turn == 'b') {
+
+            this.setState({
+                time: this.props.time
+            });
+
+            this.countDown = setInterval(() => {
+                this.setState({time: this.state.time - 1000});
+                $("#black-timer").text(this.millisToMinutesAndSeconds(this.state.time));
+            }, 1000)
+        }
+    }
+
     millisToMinutesAndSeconds(millis) {
         let minutes = Math.floor(millis / 60000);
         let seconds = ((millis % 60000) / 1000).toFixed(0);
@@ -86,8 +128,7 @@ class OnBlack extends Component {
                             <div className="card-text"><h5>{player.username}</h5>{this.showElo()}</div>
                         </div>
 
-                        <h4 className="card-title pull-right">
-                            {`${this.millisToMinutesAndSeconds(time)}`}
+                        <h4 className="card-title pull-right" id="black-timer">
                         </h4>
                     </div>
                 </div>

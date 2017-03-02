@@ -116,24 +116,29 @@ function openThreads(state = {}, action) {
             if(state[action.payload.thread][action.payload.turn]) {
                 newState = Object.assign({}, state);
                 newState[action.payload.thread][action.payload.turn].time = action.payload.timeLeft;
+                newState[action.payload.thread].turn = action.payload.turn.charAt(0);
                 return newState;
             }
             return state;
         case 'sit-down-white':
             newState = Object.assign({}, state);
             newState[action.payload.thread].white = action.payload.room;
+            newState[action.payload.thread].paused = true;
             return newState;
         case 'sit-down-black':
             newState = Object.assign({}, state);
             newState[action.payload.thread].black = action.payload.room;
+            newState[action.payload.thread].paused = true;
             return newState;
         case 'sit-down-gold':
             newState = Object.assign({}, state);
             newState[action.payload.thread].gold = action.payload.room;
+            newState[action.payload.thread].paused = true;
             return newState;
         case 'sit-down-red':
             newState = Object.assign({}, state);
             newState[action.payload.thread].red = action.payload.room;
+            newState[action.payload.thread].paused = true;
             return newState;
         case 'up-white':
             newState = Object.assign({}, state);
@@ -154,10 +159,13 @@ function openThreads(state = {}, action) {
         case 'game-started':
             newState = Object.assign({}, state);
             newState[action.payload.thread].fen = action.payload.fen;
+            newState[action.payload.thread].turn = 'w';
+            newState[action.payload.thread].paused = false;
             return newState;
         case 'four-game-started':
             newState = Object.assign({}, state);
             newState[action.payload.thread].fen = action.payload.fen;
+            newState[action.payload.thread].paused = false;
             return newState;
         case 'pause':
             newState = Object.assign({}, state);

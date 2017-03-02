@@ -242,7 +242,7 @@ let initGameOptions = {
     },
     time: {
         increment: 0,
-        value: 8
+        value: 1
     }
 };
 
