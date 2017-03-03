@@ -58,7 +58,6 @@ module.exports.socketServer = function(io) {
                 });
             }
 
-            //Tell all clients about potential room(s) changes
             io.emit('action', {
                 type: 'all-rooms',
                 payload: rooms

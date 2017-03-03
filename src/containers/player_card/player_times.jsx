@@ -12,41 +12,41 @@ import SitRed from './empty/sit_red';
 class PlayerTimes extends Component {
 
     renderWhite(thread) {
-        if(thread.white) {
-            return <OnWhite key="OnWhite" />
+        if (thread.white) {
+            return <OnWhite key="OnWhite"/>
         } else {
-            return <SitWhite key="SitWhite" />
+            return <SitWhite key="SitWhite"/>
         }
     }
 
     renderBlack(thread) {
-        if(thread.black) {
-            return <OnBlack key="OnBlack" />
+        if (thread.black) {
+            return <OnBlack key="OnBlack"/>
         } else {
-            return <SitBlack key="SitBlack" />
+            return <SitBlack key="SitBlack"/>
         }
     }
 
     renderGold(thread) {
-        if(thread.gold) {
-            return <OnGold key="OnGold" />
+        if (thread.gold) {
+            return <OnGold key="OnGold"/>
         } else {
-            return <SitGold key="SitGold" />
+            return <SitGold key="SitGold"/>
         }
     }
 
     renderRed(thread) {
-        if(thread.red) {
-            return <OnRed key="OnRed" />
+        if (thread.red) {
+            return <OnRed key="OnRed"/>
         } else {
-            return <SitRed key="SitRed" />
+            return <SitRed key="SitRed"/>
         }
     }
-    
+
     // returns the order of the player cards when the game hasn't started
     determineSitOrder(room, profile) {
         let renderOrder = [];
-        switch(room.gameType) {
+        switch (room.gameType) {
             case "four-player":
                 renderOrder = [this.renderGold, this.renderBlack, this.renderRed, this.renderWhite];
                 break;
@@ -56,13 +56,13 @@ class PlayerTimes extends Component {
         }
         return renderOrder;
     }
-    
+
     // returns the order of the player cards when the game has started
     determinePlayingOrder(room, profile) {
         let renderOrder = [];
         switch (room.gameType) {
             case "four-player":
-                switch(profile._id) {
+                switch (profile._id) {
                     case room.black && room.black._id:
                         renderOrder = [this.renderRed, this.renderWhite, this.renderGold, this.renderBlack];
                         break;
@@ -80,7 +80,7 @@ class PlayerTimes extends Component {
                 break;
             case "two-player":
             default:
-                switch(profile._id) {
+                switch (profile._id) {
                     case room.black && room.black._id:
                         renderOrder = [this.renderWhite, this.renderBlack];
                         break;
@@ -93,11 +93,11 @@ class PlayerTimes extends Component {
         }
         return renderOrder;
     }
-    
+
     determineCardOrder() {
         let {activeThread, openThreads, profile} = this.props;
         activeThread = openThreads[activeThread];
-        if(!openThreads || !activeThread) {
+        if (!openThreads || !activeThread) {
             return null;
         }
         let room = activeThread;
@@ -115,27 +115,47 @@ class PlayerTimes extends Component {
     render() {
         let {activeThread, openThreads, profile} = this.props;
         activeThread = openThreads[activeThread];
-        if(!openThreads || !activeThread) {
-            return <div></div>  //TODO AD here
+        if (!openThreads || !activeThread) {
+            return <div></div>
         }
-        let renderers = this.determineCardOrder();
-        let renderedCards = renderers.map((renderer) =>
-            renderer(activeThread)
-        );
-        return (
-            <div>
-            {renderedCards}
-            </div>
-        );
+        if (activeThread.gameType === "four-player") {
+            return (
+                <div>
+                    <div className="col-xs-12">
+                        {this.renderWhite(activeThread)}
+                    </div>
+
+                    <div className="col-xs-12">
+                        {this.renderGold(activeThread)}
+                    </div>
+
+                    <div className="col-xs-12">
+                        {this.renderBlack(activeThread)}
+                    </div>
+
+                    <div className="col-xs-12">
+                        {this.renderRed(activeThread)}
+                    </div>
+                </div>
+            );
+        } else if (activeThread.gameType === "two-player") {
+            return (
+                <div>
+                    <div className="col-xs-12">
+                        {this.renderWhite(activeThread)}
+                    </div>
+
+                    <div className="col-xs-12">
+                        {this.renderBlack(activeThread)}
+                    </div>
+                </div>
+            );
+        }
     }
 }
 
 function mapStateToProps(state) {
-    return {
-        profile: state.auth.profile,
-        activeThread: state.activeThread,
-        openThreads: state.openThreads
-    }
+    return {profile: state.auth.profile, activeThread: state.activeThread, openThreads: state.openThreads}
 }
 
-export default connect(mapStateToProps) (PlayerTimes)
+export default connect(mapStateToProps)(PlayerTimes)

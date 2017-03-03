@@ -8,122 +8,11 @@ const {getTimeTypeForTimeControl, getEloForTimeControl} = require('./data');
 const {findRoomIndexByName, deleteUserFromBoardSeats} = require('./data');
 const {deleteRoomByName, getAllRoomMembers} = require('./data');
 const {userSittingAndGameOngoing} = require('./data');
-const {endGame} = require('./two_game');
-const {endFourPlayerGame} = require('./four_game');
-
-//Synchronize clocks every half second
-function initTimerSync(io, roomName, index) {
-    let synchronizer = setInterval(() =>{
-        if(!rooms[index]) {
-            clearInterval(synchronizer);
-            return;
-        }
-
-        if(!rooms[index][roomName]) {
-            clearInterval(synchronizer);
-            return;
-        }
-
-        if(!rooms[index][roomName].game) {
-            clearInterval(synchronizer);
-            return;
-        }
-        let turn = rooms[index][roomName].game.turn();
-        let lastMove = rooms[index][roomName].lastMove
-        turn = formatTurn(turn);
-        let timeElapsed = Date.now() - lastMove;
-        let timeLeft = rooms[index][roomName][turn].time;
-        let time = timeLeft - timeElapsed;
-        if(time <= 200) { //200ms is the cutoff time
-
-            let loser, winner;
-            if(rooms[index][roomName].gameType == 'four-player') {
-                rooms[index][roomName].lastMove = Date.now();
-                loser = rooms[index][roomName][turn];
-                //Notify all players that a player has lost on time
-                notificationOpts = {
-                    title: `${loser.username} has lost on time!`,
-                    position: 'tr',
-                    autoDismiss: 5,
-                };
-                io.to(roomName).emit('action', Notifications.info(notificationOpts));
-                rooms[index][roomName].game.nextTurn();
-                if(turn == 'white') {
-                    rooms[index][roomName].game.setWhiteOut();
-                }
-                else if(turn == 'black') {
-                    rooms[index][roomName].game.setBlackOut();
-                }
-                else if(turn == 'gold') {
-                    rooms[index][roomName].game.setGoldOut();
-                }
-                else if(turn == 'red') {
-                    rooms[index][roomName].game.setRedOut();
-                }
-
-                if(rooms[index][roomName].game.game_over()) {
-                    //game over
-                    color = rooms[index][roomName].game.getWinnerColor();
-                    rooms[index][roomName].game.set_turn(color);
-
-                    endFourPlayerGame(io, roomName, index);
-                } else {
-                    currentTurn = formatTurn(rooms[index][roomName].game.turn());
-                    io.to(roomName).emit('action', {
-                        type: 'four-new-move',
-                        payload: {
-                            thread: roomName,
-                            fen: rooms[index][roomName].game.fen(),
-                            lastTurn: turn,
-                            time: rooms[index][roomName][currentTurn].time
-                        }
-                    });
-                }
-            } else if(rooms[index][roomName].gameType == 'two-player'){
-                time = 1;
-                if(turn === 'white') {
-                    winner = rooms[index][roomName].black;
-                    loser = rooms[index][roomName].white;
-                } else if(turn === 'black'){
-                    winner = rooms[index][roomName].white;
-                    loser = rooms[index][roomName].black;
-                }
-
-                //Notify all players that the game has ended
-                notificationOpts = {
-                    title: 'Game Over',
-                    message: `${winner.username} has defeated ${loser.username}`,
-                    position: 'tr',
-                    autoDismiss: 5,
-                };
-
-                io.to(roomName).emit('action', Notifications.info(notificationOpts));
-
-                //get elos and calculate new elos
-                timeType = getTimeTypeForTimeControl(rooms[index][roomName]);
-
-                wOldElo = getEloForTimeControl(rooms[index][roomName], winner);
-                lOldElo = getEloForTimeControl(rooms[index][roomName], loser);
-
-                endGame(io, timeType, wOldElo, lOldElo, winner, loser, index, roomName, false);
-            }
-        }
-
-        //synchronize everyone's times
-        io.to(roomName).emit('action', {
-            type: 'timer-sync',
-            payload: {
-                thread: roomName,
-                turn: turn,
-                timeLeft: time
-            }
-        });
-    }, 500);
-}
+const {startTimerCountDown} = require('./board_reset');
 
 function room(io, socket, action) {
 
-    let roomName;
+    let roomName, turn, roomIndex;
     switch (action.type) {
 
         //client is sending new message
@@ -194,6 +83,39 @@ function room(io, socket, action) {
             });
             break;
 
+        case 'server/selected-room':
+            roomName = action.payload;  //the room that info is being requested about
+            roomIndex = findRoomIndexByName(roomName);
+            if(rooms[roomIndex] && rooms[roomIndex][roomName]) {
+                if(rooms[roomIndex][roomName].game) {
+                    //get whos turn it is
+                    turn = rooms[roomIndex][roomName].game.turn();
+                    turn = formatTurn(turn);
+
+                    //calculate the time difference between the last move
+                    let timeElapsed = Date.now() - rooms[roomIndex][roomName].lastMove;
+                    rooms[roomIndex][roomName][turn].time - timeElapsed;
+
+                    //synchronize everyone's times at the end
+                    socket.emit('action', {
+                        type: 'timer-sync',
+                        payload: {
+                            thread: roomName,
+                            turn: turn,
+                            timeLeft: rooms[roomIndex][roomName][turn].time - timeElapsed,
+                            fen: rooms[roomIndex][roomName].game.fen()
+                        }
+                    });
+                }
+            }
+
+            socket.emit('action', {
+                type: 'SELECTED_ROOM',
+                payload: roomName
+            });
+
+            break;
+
             //client is leaving a game room
         case 'server/leave-room':
             roomName = action.payload;
@@ -218,12 +140,11 @@ function room(io, socket, action) {
                 type: 'user-room-left',
                 payload: {
                     name: roomName,
-                    user: userObj
+                    user: userObj,
                 }
             });
 
             if (io.sockets.adapter.rooms[roomName]) { //there are still users in the room
-
                 rooms[roomIndex][roomName].users = getAllRoomMembers(io, roomName);
                 if (!userSittingAndGameOngoing(userObj, rooms[roomIndex][roomName])) {
                     deleteUserFromBoardSeats(io, roomIndex, roomName, userObj.user._id);
@@ -359,12 +280,14 @@ function room(io, socket, action) {
                             payload: {
                                 thread: roomName,
                                 fen: rooms[index][roomName].game.fen(),
-                                pgn: rooms[index][roomName].game.pgn()
+                                pgn: rooms[index][roomName].game.pgn(),
+                                lastMove: rooms[index][roomName].lastmove
                             }
                         })
 
                         //start first players timer
-                        initTimerSync(io, roomName, index);
+                        // initTimerSync(io, roomName, index);
+                        startTimerCountDown(io, roomName, index);
                     }
                 } else if (rooms[index][roomName].gameType === "four-player") {
                     //Check to see if the game is ready to start
@@ -389,14 +312,13 @@ function room(io, socket, action) {
                             payload: {
                                 thread: roomName,
                                 fen: rooms[index][roomName].game.fen(),
-                                pgn: rooms[index][roomName].game.pgn()
+                                pgn: rooms[index][roomName].game.pgn(),
+                                lastMove: rooms[index][roomName].lastmove
                             }
                         })
 
                         //start first players timer
-                        initTimerSync(io, roomName, index);
-
-                        //initialize state on both server and client
+                        startTimerCountDown(io, roomName, index);
                     }
                 }
             }
