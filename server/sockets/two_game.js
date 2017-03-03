@@ -151,6 +151,7 @@ function twoGame(io, socket, action) {
                         turn: rooms[index][roomName].game.turn(),
                         pgn: rooms[index][roomName].game.pgn(),
                         lastTurn: turn,
+                        lastMove: rooms[index][roomName].lastMove,
                         move: cmove,
                         time: rooms[index][roomName][turn].time
                     }

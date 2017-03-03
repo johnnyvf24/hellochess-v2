@@ -94,7 +94,7 @@ function room(io, socket, action) {
 
                     //calculate the time difference between the last move
                     let timeElapsed = Date.now() - rooms[roomIndex][roomName].lastMove;
-                    rooms[roomIndex][roomName][turn].time = rooms[roomIndex][roomName][turn].time - timeElapsed;
+                    rooms[roomIndex][roomName][turn].time - timeElapsed;
 
                     //synchronize everyone's times at the end
                     socket.emit('action', {
@@ -102,7 +102,8 @@ function room(io, socket, action) {
                         payload: {
                             thread: roomName,
                             turn: turn,
-                            timeLeft: rooms[roomIndex][roomName][turn].time
+                            timeLeft: rooms[roomIndex][roomName][turn].time - timeElapsed,
+                            fen: rooms[roomIndex][roomName].game.fen()
                         }
                     });
                 }
@@ -139,12 +140,11 @@ function room(io, socket, action) {
                 type: 'user-room-left',
                 payload: {
                     name: roomName,
-                    user: userObj
+                    user: userObj,
                 }
             });
 
             if (io.sockets.adapter.rooms[roomName]) { //there are still users in the room
-
                 rooms[roomIndex][roomName].users = getAllRoomMembers(io, roomName);
                 if (!userSittingAndGameOngoing(userObj, rooms[roomIndex][roomName])) {
                     deleteUserFromBoardSeats(io, roomIndex, roomName, userObj.user._id);
@@ -281,6 +281,7 @@ function room(io, socket, action) {
                                 thread: roomName,
                                 fen: rooms[index][roomName].game.fen(),
                                 pgn: rooms[index][roomName].game.pgn(),
+                                lastMove: rooms[index][roomName].lastmove
                             }
                         })
 
@@ -311,15 +312,13 @@ function room(io, socket, action) {
                             payload: {
                                 thread: roomName,
                                 fen: rooms[index][roomName].game.fen(),
-                                pgn: rooms[index][roomName].game.pgn()
+                                pgn: rooms[index][roomName].game.pgn(),
+                                lastMove: rooms[index][roomName].lastmove
                             }
                         })
 
                         //start first players timer
-                        // initTimerSync(io, roomName, index);
                         startTimerCountDown(io, roomName, index);
-
-                        //initialize state on both server and client
                     }
                 }
             }

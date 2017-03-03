@@ -75,6 +75,7 @@ function openThreads(state = {}, action) {
             newState[action.payload.thread].turn = action.payload.turn;
             newState[action.payload.thread].pgn = action.payload.pgn;
             newState[action.payload.thread].move = action.payload.move;
+            newState[action.payload.thread].lastMove = action.payload.lastMove;
             newState[action.payload.thread][action.payload.lastTurn].time = action.payload.time;
             return newState;
         case 'four-new-move':
@@ -82,6 +83,7 @@ function openThreads(state = {}, action) {
             newState[action.payload.thread].fen = action.payload.fen;
             newState[action.payload.thread].turn = action.payload.turn;
             newState[action.payload.thread].move = action.payload.move;
+            newState[action.payload.thread].lastMove = action.payload.lastMove;
             newState[action.payload.thread][action.payload.lastTurn].time = action.payload.time;
             return newState;
         case 'four-resign':
@@ -111,13 +113,22 @@ function openThreads(state = {}, action) {
             delete newState[action.payload].gold;
             delete newState[action.payload].red;
             delete newState[action.payload].move;
+            delete newState[action.payload].fen;
             return newState;
         case 'timer-sync':
-            if(state[action.payload.thread][action.payload.turn]) {
-                newState = Object.assign({}, state);
+            newState = Object.assign({}, state);
+            if(newState[action.payload.thread][action.payload.turn]) {
                 newState[action.payload.thread][action.payload.turn].time = action.payload.timeLeft;
                 newState[action.payload.thread].turn = action.payload.turn.charAt(0);
+                newState[action.payload.thread].fen = action.payload.fen;
                 return newState;
+            }
+            return state;
+        case 'TICK':
+            if(state[action.payload.thread][action.payload.turn].time) {
+                newState = Object.assign({}, state);
+                newState[action.payload.thread][action.payload.turn].time -= 1000;
+                return newState
             }
             return state;
         case 'sit-down-white':
@@ -159,13 +170,26 @@ function openThreads(state = {}, action) {
         case 'game-started':
             newState = Object.assign({}, state);
             newState[action.payload.thread].fen = action.payload.fen;
+            newState[action.payload.thread].lastMove = action.payload.lastMove;
             newState[action.payload.thread].turn = 'w';
             newState[action.payload.thread].paused = false;
             return newState;
         case 'four-game-started':
             newState = Object.assign({}, state);
             newState[action.payload.thread].fen = action.payload.fen;
+            newState[action.payload.thread].lastMove = action.payload.lastMove;
+            newState[action.payload.thread].turn = 'w';
             newState[action.payload.thread].paused = false;
+            return newState;
+        case 'clear-timer':
+            newState = Object.assign({}, state);
+            newState[action.payload.thread].clearTimer = true;
+            return newState;
+        case 'start-timer':
+            newState = Object.assign({}, state);
+            newState[action.payload.thread].turn = action.payload.turn;
+            newState[action.payload.thread].timeLeft = action.payload.timeLeft;
+            newState[action.payload.thread].clearTimer = false;
             return newState;
         case 'pause':
             newState = Object.assign({}, state);

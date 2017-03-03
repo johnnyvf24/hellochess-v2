@@ -75,6 +75,7 @@ function fourGame(io, socket, action) {
                         fen: rooms[roomIndex][roomName].game.fen(),
                         turn: rooms[roomIndex][roomName].game.turn(),
                         lastTurn: turn,
+                        lastMove: rooms[roomIndex][roomName].lastMove,
                         time: rooms[roomIndex][roomName][currentTurn].time,
                     }
                 });
