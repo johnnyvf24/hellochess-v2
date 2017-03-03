@@ -46,7 +46,8 @@ function startTimerCountDown(io, roomName, index) {
             payload: {
                 thread: roomName,
                 turn: turn,
-                timeLeft: time
+                timeLeft: time,
+                fen: ''
             }
         });
 
@@ -83,6 +84,7 @@ function startTimerCountDown(io, roomName, index) {
                 endFourPlayerGame(io, roomName, index);
             } else {
                 currentTurn = formatTurn(rooms[index][roomName].game.turn());
+                startTimerCountDown(io, roomName, index);
                 io.to(roomName).emit('action', {
                     type: 'four-new-move',
                     payload: {
@@ -207,7 +209,7 @@ function endGame(io, timeType, wOldElo, lOldElo, winner, loser, roomIndex, roomN
 
     //Stop the clocks
     delete rooms[roomIndex][roomName].game;
-    clearTimeout(rooms[roomIndex][roomName].countDownTimer);
+    clearTimeout(timers[roomName]);
 
     //kick both players from board and restart game
     setTimeout(() => {
@@ -399,7 +401,7 @@ function endFourPlayerGame(io, roomName, index) {
     }, 250);
 
     //Stop the clocks
-    clearTimeout(rooms[roomIndex][roomName].countDownTimer);
+    clearTimeout(timers[roomName]);
     delete rooms[index][roomName].game;
 
     //kick players from board and restart game

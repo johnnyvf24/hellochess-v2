@@ -102,7 +102,8 @@ function room(io, socket, action) {
                         payload: {
                             thread: roomName,
                             turn: turn,
-                            timeLeft: rooms[roomIndex][roomName][turn].time - timeElapsed
+                            timeLeft: rooms[roomIndex][roomName][turn].time - timeElapsed,
+                            fen: rooms[roomIndex][roomName].game.fen()
                         }
                     });
                 }

@@ -28,7 +28,6 @@ function openThreads(state = {}, action) {
     switch(action.type) {
         case 'user-room-joined':
             const users = action.payload.users;
-            console.log(action.payload);
             const joined_user = action.payload.users[action.payload.users.length-1].username;
             let joined_msg = joined_user + " has joined the room.";
             msg_obj = {
@@ -114,18 +113,24 @@ function openThreads(state = {}, action) {
             delete newState[action.payload].gold;
             delete newState[action.payload].red;
             delete newState[action.payload].move;
+            delete newState[action.payload].fen;
             return newState;
         case 'timer-sync':
-            if(state[action.payload.thread][action.payload.turn]) {
-                newState = Object.assign({}, state);
+            newState = Object.assign({}, state);
+            if(newState[action.payload.thread][action.payload.turn]) {
                 newState[action.payload.thread][action.payload.turn].time = action.payload.timeLeft;
                 newState[action.payload.thread].turn = action.payload.turn.charAt(0);
+                newState[action.payload.thread].fen = action.payload.fen;
                 return newState;
             }
             return state;
-        case SELECTED_ROOM:
-            newState = Object.assign({}, state);
-            return newState;
+        case 'TICK':
+            if(state[action.payload.thread][action.payload.turn].time) {
+                newState = Object.assign({}, state);
+                newState[action.payload.thread][action.payload.turn].time -= 1000;
+                return newState
+            }
+            return state;
         case 'sit-down-white':
             newState = Object.assign({}, state);
             newState[action.payload.thread].white = action.payload.room;

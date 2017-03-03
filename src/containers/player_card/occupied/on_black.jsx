@@ -1,85 +1,58 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import {tick} from '../../../actions/room';
+import {millisToMinutesAndSeconds, formatTurn, showElo} from '../../../utils/index';
 
 class OnBlack extends Component {
 
     constructor(props) {
         super(props);
 
-        this.time = null;
         this.countDown = null;
     };
 
-    millisToMinutesAndSeconds(millis) {
-        let minutes = Math.floor(millis / 60000);
-        let seconds = ((millis % 60000) / 1000).toFixed(0);
-        if(seconds == 60) {
-            minutes++;
-            seconds = 0;
+    componentWillReceiveProps(nextProps) {
+        if(nextProps.turn != this.props.turn
+            && !nextProps.paused) {
+            if(nextProps.turn == 'b') {
+                this.countDown = setInterval( () => {
+                    this.props.tick(nextProps.name, formatTurn(nextProps.turn))
+                }, 1000);
+            } else {
+                clearInterval(this.countDown);
+            }
         }
-        return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
     }
 
-    showElo() {
-        const {game, player} = this.props;
-        let eloIndex, tcIndex;
-        //this time estimate is based on an estimated game length of 35 moves
-        let totalTimeMs = (game.time.value * 60 * 1000) + (35 * game.time.increment * 1000);
-
-        //Two player cutoff times
-        let twoMins = 120000;   //two minutes in ms
-        let eightMins = 480000;
-        let fifteenMins = 900000;
-
-        //four player cutoff times
-        let fourMins = 240000;
-        let twelveMins = 720000;
-        let twentyMins = 12000000;
-
-        switch(game.gameType) {
-            case 'two-player':
-                eloIndex = 'two_elos';
-                if( totalTimeMs <= twoMins) {
-                    //bullet
-                    tcIndex = 'bullet';
-                } else if(totalTimeMs <= eightMins) {
-                    //blitz
-                    tcIndex = 'blitz';
-                } else if(totalTimeMs <= fifteenMins) {
-                    //rapid
-                    tcIndex = 'rapid';
-                } else {
-                    //classical
-                    tcIndex = 'classic';
-                }
-                return player[eloIndex][tcIndex];
-            case 'four-player':
-                eloIndex = 'four_elos';
-                if( totalTimeMs <= fourMins) {
-                    //bullet
-                    tcIndex = 'bullet';
-                } else if(totalTimeMs <= twelveMins) {
-                    //blitz
-                    tcIndex = 'blitz';
-                } else if(totalTimeMs <= twentyMins) {
-                    //rapid
-                    tcIndex = 'rapid';
-                } else {
-                    //classical
-                    tcIndex = 'classic';
-                }
-                return player[eloIndex][tcIndex];
+    componentWillMount() {
+        if(this.props.turn == 'b'
+            && !this.props.paused) {
+            this.countDown = setInterval( () => {
+                this.props.tick(this.props.name, formatTurn(this.props.turn))
+            }, 1000);
+        } else {
+            clearInterval(this.countDown);
         }
+    }
+
+
+    componentWillUnmount() {
+        clearInterval(this.countDown);
     }
 
     renderActiveBorder() {
         const {player, game, resigned, turn} = this.props;
+
         if (!player || !game)
             return "";
         let isMyTurn = turn == player.color;
         let isResigned = resigned;
         let doDrawBorder = isMyTurn && !isResigned;
         return doDrawBorder ? " active" : "";
+    }
+
+    renderTime(time) {
+        return millisToMinutesAndSeconds(time);
     }
 
     render() {
@@ -94,11 +67,11 @@ class OnBlack extends Component {
 
                         <div className="row">
                             <img className="player-img rounded-circle" src={player.picture} />
-                            <div className="card-text"><h5>{player.username}</h5>{this.showElo()}</div>
+                            <div className="card-text"><h5>{player.username}</h5>{showElo(game, player)}</div>
                         </div>
 
                         <h4 className="card-title pull-right">
-                            {`${this.millisToMinutesAndSeconds(time)}`}
+                            {this.renderTime(time)}
                         </h4>
                     </div>
                 </div>
@@ -113,8 +86,11 @@ function mapStateToProps(state) {
         time: state.openThreads[state.activeThread].black.time,
         game: state.openThreads[state.activeThread],
         resigned: state.openThreads[state.activeThread].black.resigned,
-        turn: state.openThreads[state.activeThread].turn
+        turn: state.openThreads[state.activeThread].turn,
+        paused: state.openThreads[state.activeThread].paused,
+        lastMove: state.openThreads[state.activeThread].lastMove,
+        name: state.activeThread
     }
 }
 
-export default connect(mapStateToProps)(OnBlack);
+export default connect(mapStateToProps, {tick})(OnBlack);
