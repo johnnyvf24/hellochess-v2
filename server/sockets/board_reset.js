@@ -41,6 +41,12 @@ function startTimerCountDown(io, roomName, index) {
     timers[roomName] = setTimeout( function () {
 
         let loser, winner;
+        
+        if(!rooms[index][roomName]) {
+            // log rooms value
+            console.log("board_reset setTimeout", JSON.stringify(rooms, null, 2));
+            return;
+        }
         if(rooms[index][roomName].gameType == 'four-player') {
             rooms[index][roomName].lastMove = Date.now();
             loser = rooms[index][roomName][turn];
@@ -300,108 +306,116 @@ function endFourPlayerGame(io, roomName, index) {
     //console.log(`new ELos: winner: ${newWinnerElo} second: ${newThirdOutElo} third: ${newSecondOutElo} fourth: ${newFirstOutElo}`);
 
     //save the winner's elo
-    User.findById({ _id: winner._id })
-    .then((user) => {
-        user.four_elos[timeType] = newWinnerElo;
-        user.save(function(err, updatedUser) {
-
-            if(updatedUser) {
-                let eloNotif = {
-                    title: `${winner.username}'s elo is now ${newWinnerElo} +${newWinnerElo - fourthOutElo}`,
-                    position: 'tr',
-                    autoDismiss: 6,
-                };
-
-                io.to(roomName).emit('action', Notifications.success(eloNotif));
-
-                io.to(updatedUser.socket_id).emit('action', {
-                    type: 'user-update',
-                    payload: updatedUser
-                });
-            }
-
-        });
-    }).catch((e) => {
-        console.log(e);
-    });
-
-    setTimeout(() => {
-        //Save 2nd place elo
-        User.findById({ _id: thirdOut._id })
+    if(winner) {
+        User.findById({ _id: winner._id })
         .then((user) => {
-            user.four_elos[timeType] = newThirdOutElo;
+            user.four_elos[timeType] = newWinnerElo;
             user.save(function(err, updatedUser) {
+    
                 if(updatedUser) {
                     let eloNotif = {
-                        title: `${thirdOut.username}'s elo is now ${newThirdOutElo} ${newThirdOutElo - thirdOutElo}`,
+                        title: `${winner.username}'s elo is now ${newWinnerElo} +${newWinnerElo - fourthOutElo}`,
                         position: 'tr',
                         autoDismiss: 6,
                     };
-
+    
                     io.to(roomName).emit('action', Notifications.success(eloNotif));
-
+    
                     io.to(updatedUser.socket_id).emit('action', {
                         type: 'user-update',
                         payload: updatedUser
                     });
                 }
+    
             });
         }).catch((e) => {
             console.log(e);
         });
-    }, 250);
+    }
 
-    setTimeout(() => {
-        //Save 3rd place elo
-        User.findById({ _id: secondOut._id })
-        .then((user) => {
-            user.four_elos[timeType] = newSecondOutElo;
-            user.save(function(err, updatedUser) {
-                if(updatedUser) {
-                    let eloNotif = {
-                        title: `${secondOut.username}'s elo is now ${newSecondOutElo} ${newSecondOutElo - secondOutElo}`,
-                        position: 'tr',
-                        autoDismiss: 6,
-                    };
-
-                    io.to(roomName).emit('action', Notifications.error(eloNotif));
-
-                    io.to(updatedUser.socket_id).emit('action', {
-                        type: 'user-update',
-                        payload: updatedUser
-                    });
-                }
+    if(thirdOut) {
+        setTimeout(() => {
+            //Save 2nd place elo
+            User.findById({ _id: thirdOut._id })
+            .then((user) => {
+                user.four_elos[timeType] = newThirdOutElo;
+                user.save(function(err, updatedUser) {
+                    if(updatedUser) {
+                        let eloNotif = {
+                            title: `${thirdOut.username}'s elo is now ${newThirdOutElo} ${newThirdOutElo - thirdOutElo}`,
+                            position: 'tr',
+                            autoDismiss: 6,
+                        };
+    
+                        io.to(roomName).emit('action', Notifications.success(eloNotif));
+    
+                        io.to(updatedUser.socket_id).emit('action', {
+                            type: 'user-update',
+                            payload: updatedUser
+                        });
+                    }
+                });
+            }).catch((e) => {
+                console.log(e);
             });
-        }).catch((e) => {
-            console.log(e);
-        });
-    }, 250);
+        }, 250);
+    }
 
-    setTimeout(() => {
-        //Save 4th place elo
-        User.findById({ _id: firstOut._id })
-        .then((user) => {
-            user.four_elos[timeType] = newFirstOutElo;
-            user.save(function(err, updatedUser) {
-                if(updatedUser) {
-                    let eloNotif = {
-                        title: `${firstOut.username}'s elo is now ${newFirstOutElo} ${newFirstOutElo - firstOutElo}`,
-                        position: 'tr',
-                        autoDismiss: 6,
-                    };
-
-                    io.to(roomName).emit('action', Notifications.error(eloNotif));
-
-                    io.to(updatedUser.socket_id).emit('action', {
-                        type: 'user-update',
-                        payload: updatedUser
-                    });
-                }
+    if(secondOut) {
+        setTimeout(() => {
+            //Save 3rd place elo
+            User.findById({ _id: secondOut._id })
+            .then((user) => {
+                user.four_elos[timeType] = newSecondOutElo;
+                user.save(function(err, updatedUser) {
+                    if(updatedUser) {
+                        let eloNotif = {
+                            title: `${secondOut.username}'s elo is now ${newSecondOutElo} ${newSecondOutElo - secondOutElo}`,
+                            position: 'tr',
+                            autoDismiss: 6,
+                        };
+    
+                        io.to(roomName).emit('action', Notifications.error(eloNotif));
+    
+                        io.to(updatedUser.socket_id).emit('action', {
+                            type: 'user-update',
+                            payload: updatedUser
+                        });
+                    }
+                });
+            }).catch((e) => {
+                console.log(e);
             });
-        }).catch((e) => {
-            console.log(e);
-        });
-    }, 250);
+        }, 250);
+    }
+    
+    if(firstOut) {
+        setTimeout(() => {
+            //Save 4th place elo
+            User.findById({ _id: firstOut._id })
+            .then((user) => {
+                user.four_elos[timeType] = newFirstOutElo;
+                user.save(function(err, updatedUser) {
+                    if(updatedUser) {
+                        let eloNotif = {
+                            title: `${firstOut.username}'s elo is now ${newFirstOutElo} ${newFirstOutElo - firstOutElo}`,
+                            position: 'tr',
+                            autoDismiss: 6,
+                        };
+    
+                        io.to(roomName).emit('action', Notifications.error(eloNotif));
+    
+                        io.to(updatedUser.socket_id).emit('action', {
+                            type: 'user-update',
+                            payload: updatedUser
+                        });
+                    }
+                });
+            }).catch((e) => {
+                console.log(e);
+            });
+        }, 250);
+    }
 
     //Stop the clocks
     clearTimeout(timers[roomName]);
