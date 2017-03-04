@@ -20,6 +20,19 @@ if (process.env.NODE_ENV === "production") {
     ROOT_URL = 'http://localhost:3000';
 }
 
+let initGameOptions = {
+    gameType: 'four-player',
+    room: {
+        private: false,
+        voiceChat: true,
+        maxPlayers: 10000,
+    },
+    time: {
+        increment: 3,
+        value: 8
+    }
+};
+
 export function googleLoginUser(token) {
     return (dispatch) => {
         axios.get(`${ROOT_URL}/api/auth/google/token?access_token=${token}`, {
@@ -181,7 +194,7 @@ export function saveUsername(id, username) {
 export function selectedRoom(name) {
     return (dispatch) =>{
         return dispatch({
-            type: SELECTED_ROOM,
+            type: 'server/selected-room',
             payload: name
         });
     }
@@ -232,19 +245,6 @@ export function newRoom(name, profile) {
         });
     }
 }
-
-let initGameOptions = {
-    gameType: 'four-player',
-    room: {
-        private: false,
-        voiceChat: true,
-        maxPlayers: 10000,
-    },
-    time: {
-        increment: 0,
-        value: 8
-    }
-};
 
 export function joinRoom(name, gameOptions = initGameOptions) {
     return (dispatch) => {

@@ -5,6 +5,8 @@ config.js
 /playground
 .env
 webpack.config.js
+current_errors
+.forever
 
 # IntelliJ
 *.iml

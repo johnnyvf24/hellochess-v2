@@ -25,8 +25,8 @@ class TwoBoard extends Component {
     componentWillReceiveProps(nextProps) {
 
         if(nextProps.fen) {
-
             this.board.position(nextProps.fen, false);
+            this.game.load(nextProps.fen);
             if(nextProps.room.black._id === nextProps.profile._id) {
                 this.board.orientation('black');
             } else {
@@ -34,7 +34,6 @@ class TwoBoard extends Component {
             }
 
             if(nextProps.move) {
-                this.game.move(nextProps.move);
                 this.shadeSquare(nextProps.move.from);
                 this.shadeSquare(nextProps.move.to);
                 let shadeOnResize = function(event) {
@@ -158,6 +157,7 @@ class TwoBoard extends Component {
             }
 
             if(this.props.move) {
+                this.game.move(this.props.move);
                 this.shadeSquare(this.props.move.from);
                 this.shadeSquare(this.props.move.to);
             }

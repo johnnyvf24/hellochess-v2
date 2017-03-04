@@ -7,122 +7,7 @@ const {getTimeTypeForTimeControl, getEloForTimeControl} = require('./data');
 const {findRoomIndexByName, deleteUserFromBoardSeats} = require('./data');
 const {deleteRoomByName} = require('./data');
 const {userSittingAndGameOngoing} = require('./data');
-
-function endGame(io, timeType, wOldElo, lOldElo, winner, loser, roomIndex, roomName, draw) {
-
-    //pause the game
-    io.to(roomName).emit('action', {
-        type: 'pause',
-        payload: {
-            thread: roomName
-        }
-    });
-
-    let elo = new Elo();
-
-    let wElo = elo.ifWins(wOldElo, lOldElo);
-    let lElo = elo.ifLoses(lOldElo, wOldElo);
-
-    if (draw) {
-        wElo = elo.ifTies(wOldElo, lOldElo);
-        lElo = elo.ifTies(lOldElo, wOldElo);
-    }
-
-    let updateObj = {};
-    updateObj[timeType] = wElo;
-
-    //save the winner's elo
-    User.findById({
-            _id: winner._id
-        })
-        .then((user) => {
-            user.two_elos[timeType] = wElo;
-            user.save(function(err, updatedUser) {
-                let eloNotif = {
-                    title: `${winner.username}'s elo is now ${wElo} +${wElo - wOldElo}`,
-                    position: 'tr',
-                    autoDismiss: 5,
-                };
-                if (draw) {
-                    io.to(roomName).emit('action', Notifications.info(eloNotif));
-                } else {
-                    io.to(roomName).emit('action', Notifications.success(eloNotif));
-                }
-                delete updatedUser.tokens;
-                io.to(updatedUser.socket_id).emit('action', {
-                    type: 'user-update',
-                    payload: updatedUser
-                });
-            });
-        }).catch((e) => {
-
-        });
-
-    setTimeout(() => {
-        //Save the loser's elo
-        User.findById({
-                _id: loser._id
-            })
-            .then((user) => {
-                user.two_elos[timeType] = lElo;
-                user.save(function(err, updatedUser) {
-                    let eloNotif = {
-                        title: `${loser.username}'s elo is now ${lElo} ${lElo - lOldElo}`,
-                        position: 'tr',
-                        autoDismiss: 5,
-                    };
-                    if (draw) {
-                        io.to(roomName).emit('action', Notifications.info(eloNotif));
-                    } else {
-                        io.to(roomName).emit('action', Notifications.error(eloNotif));
-                    }
-                    delete updatedUser.tokens;
-                    io.to(updatedUser.socket_id).emit('action', {
-                        type: 'user-update',
-                        payload: updatedUser
-                    });
-                });
-            }).catch((e) => {});
-    }, 250);
-
-
-    //TODO save game
-
-    //Stop the clocks
-    delete rooms[roomIndex][roomName].game;
-
-    //kick both players from board and restart game
-    setTimeout(() => {
-        delete rooms[roomIndex][roomName].white;
-        delete rooms[roomIndex][roomName].black;
-        let boardNotif = {
-            title: 'Board ready',
-            position: 'tr',
-            autoDismiss: 5,
-        };
-        io.to(roomName).emit('action', Notifications.warning(boardNotif));
-
-        io.to(roomName).emit('action', {
-            type: 'game-over',
-            payload: roomName
-        });
-
-        //Update the information about that room
-        io.emit('action', {
-            type: 'all-rooms',
-            payload: rooms
-        });
-
-        io.to(roomName).emit('action', {
-            type: 'resume',
-            payload: {
-                thread: roomName
-            }
-        });
-    }, 4000);
-}
-
-module.exports.endGame = endGame;
+const {endGame, startTimerCountDown} = require('./board_reset');
 
 function twoGame(io, socket, action) {
     let roomName;
@@ -256,6 +141,8 @@ function twoGame(io, socket, action) {
                 //Add the time increment
                 rooms[index][roomName][turn].time += rooms[index][roomName].time.increment * 1000;
 
+                startTimerCountDown(io, roomName, index);
+
                 io.to(roomName).emit('action', {
                     type: 'new-move',
                     payload: {
@@ -264,6 +151,7 @@ function twoGame(io, socket, action) {
                         turn: rooms[index][roomName].game.turn(),
                         pgn: rooms[index][roomName].game.pgn(),
                         lastTurn: turn,
+                        lastMove: rooms[index][roomName].lastMove,
                         move: cmove,
                         time: rooms[index][roomName][turn].time
                     }

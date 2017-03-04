@@ -28,15 +28,7 @@ function openThreads(state = {}, action) {
     switch(action.type) {
         case 'user-room-joined':
             const users = action.payload.users;
-            const joined_user = action.payload.users[action.payload.users.length-1].username;
-            let joined_msg = joined_user + " has joined the room.";
-            msg_obj = {
-                user: joined_user,
-                msg: joined_msg,
-                thread: action.payload,
-                picture: null,
-                event_type: 'user-joined'
-            };
+            msg_obj = action.message;
             roomName = action.payload.room.name;
             messages = [...state[roomName].messages, msg_obj];
             obj = {...state[roomName], users, messages};
@@ -48,14 +40,7 @@ function openThreads(state = {}, action) {
             newState[roomName].users = newState[roomName].users.filter((member) => {
                 return user.user._id !== member._id;
             });
-            let left_msg = user.user.username + " has left the room.";
-            msg_obj = {
-                user: user.user.username,
-                msg: left_msg,
-                thread: action.payload,
-                picture: null,
-                event_type: 'user-left'
-            };
+            msg_obj = action.payload.message;
             messages = [...newState[roomName].messages, msg_obj];
             obj = {...newState[roomName], messages};
             return {...newState, [roomName]: obj};
@@ -75,6 +60,7 @@ function openThreads(state = {}, action) {
             newState[action.payload.thread].turn = action.payload.turn;
             newState[action.payload.thread].pgn = action.payload.pgn;
             newState[action.payload.thread].move = action.payload.move;
+            newState[action.payload.thread].lastMove = action.payload.lastMove;
             newState[action.payload.thread][action.payload.lastTurn].time = action.payload.time;
             return newState;
         case 'four-new-move':
@@ -82,6 +68,7 @@ function openThreads(state = {}, action) {
             newState[action.payload.thread].fen = action.payload.fen;
             newState[action.payload.thread].turn = action.payload.turn;
             newState[action.payload.thread].move = action.payload.move;
+            newState[action.payload.thread].lastMove = action.payload.lastMove;
             newState[action.payload.thread][action.payload.lastTurn].time = action.payload.time;
             return newState;
         case 'four-resign':
@@ -111,29 +98,43 @@ function openThreads(state = {}, action) {
             delete newState[action.payload].gold;
             delete newState[action.payload].red;
             delete newState[action.payload].move;
+            delete newState[action.payload].fen;
             return newState;
         case 'timer-sync':
-            if(state[action.payload.thread][action.payload.turn]) {
-                newState = Object.assign({}, state);
+            newState = Object.assign({}, state);
+            if(newState[action.payload.thread][action.payload.turn]) {
                 newState[action.payload.thread][action.payload.turn].time = action.payload.timeLeft;
+                newState[action.payload.thread].turn = action.payload.turn.charAt(0);
+                newState[action.payload.thread].fen = action.payload.fen;
                 return newState;
+            }
+            return state;
+        case 'TICK':
+            if(state[action.payload.thread][action.payload.turn].time) {
+                newState = Object.assign({}, state);
+                newState[action.payload.thread][action.payload.turn].time -= 1000;
+                return newState
             }
             return state;
         case 'sit-down-white':
             newState = Object.assign({}, state);
             newState[action.payload.thread].white = action.payload.room;
+            newState[action.payload.thread].paused = true;
             return newState;
         case 'sit-down-black':
             newState = Object.assign({}, state);
             newState[action.payload.thread].black = action.payload.room;
+            newState[action.payload.thread].paused = true;
             return newState;
         case 'sit-down-gold':
             newState = Object.assign({}, state);
             newState[action.payload.thread].gold = action.payload.room;
+            newState[action.payload.thread].paused = true;
             return newState;
         case 'sit-down-red':
             newState = Object.assign({}, state);
             newState[action.payload.thread].red = action.payload.room;
+            newState[action.payload.thread].paused = true;
             return newState;
         case 'up-white':
             newState = Object.assign({}, state);
@@ -154,10 +155,26 @@ function openThreads(state = {}, action) {
         case 'game-started':
             newState = Object.assign({}, state);
             newState[action.payload.thread].fen = action.payload.fen;
+            newState[action.payload.thread].lastMove = action.payload.lastMove;
+            newState[action.payload.thread].turn = 'w';
+            newState[action.payload.thread].paused = false;
             return newState;
         case 'four-game-started':
             newState = Object.assign({}, state);
             newState[action.payload.thread].fen = action.payload.fen;
+            newState[action.payload.thread].lastMove = action.payload.lastMove;
+            newState[action.payload.thread].turn = 'w';
+            newState[action.payload.thread].paused = false;
+            return newState;
+        case 'clear-timer':
+            newState = Object.assign({}, state);
+            newState[action.payload.thread].clearTimer = true;
+            return newState;
+        case 'start-timer':
+            newState = Object.assign({}, state);
+            newState[action.payload.thread].turn = action.payload.turn;
+            newState[action.payload.thread].timeLeft = action.payload.timeLeft;
+            newState[action.payload.thread].clearTimer = false;
             return newState;
         case 'pause':
             newState = Object.assign({}, state);

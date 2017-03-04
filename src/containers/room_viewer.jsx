@@ -18,16 +18,18 @@ class RoomViewer extends Component {
     }
 
     onTabClick(chatName, event) {
-        this.props.selectedRoom(chatName);
+
         event.preventDefault();
         event.stopPropagation();
+        this.props.selectedRoom(chatName);
     }
 
     onCloseChatTab(chatName, event) {
-        this.props.leaveRoom(chatName);
         event.preventDefault();
         event.stopPropagation();
-        this.refs.mainTab.click();
+        this.props.leaveRoom(chatName);
+        this.props.selectedRoom("Games");
+        $(this.mainTab).tab('show');
     }
 
     renderNavTab(chats, active) {
@@ -82,7 +84,7 @@ class RoomViewer extends Component {
                             data-toggle="tab"
                             href="#chat-list"
                             role="tab"
-                            ref="mainTab"
+                            ref={a => this.mainTab = a}
                             onClick={(event) => this.onTabClick("Games", event)}>
                             Games
                         </a>
