@@ -21,7 +21,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 let initGameOptions = {
-    gameType: 'two-player',
+    gameType: 'four-player',
     room: {
         private: false,
         voiceChat: true,
@@ -29,7 +29,7 @@ let initGameOptions = {
     },
     time: {
         increment: 3,
-        value: 1
+        value: 8
     }
 };
 

@@ -40,17 +40,6 @@ function startTimerCountDown(io, roomName, index) {
     //start server timers
     timers[roomName] = setTimeout( function () {
 
-        //synchronize everyone's times at the end
-        io.to(roomName).emit('action', {
-            type: 'timer-sync',
-            payload: {
-                thread: roomName,
-                turn: turn,
-                timeLeft: time,
-                fen: ''
-            }
-        });
-
         let loser, winner;
         if(rooms[index][roomName].gameType == 'four-player') {
             rooms[index][roomName].lastMove = Date.now();
@@ -84,16 +73,30 @@ function startTimerCountDown(io, roomName, index) {
                 endFourPlayerGame(io, roomName, index);
             } else {
                 currentTurn = formatTurn(rooms[index][roomName].game.turn());
-                startTimerCountDown(io, roomName, index);
                 io.to(roomName).emit('action', {
                     type: 'four-new-move',
                     payload: {
                         thread: roomName,
                         fen: rooms[index][roomName].game.fen(),
                         lastTurn: turn,
-                        time: rooms[index][roomName][currentTurn].time
+                        time: 1
                     }
                 });
+
+                //synchronize everyone's times again
+                io.to(roomName).emit('action', {
+                    type: 'timer-sync',
+                    payload: {
+                        thread: roomName,
+                        turn: currentTurn,
+                        timeLeft: rooms[index][roomName][currentTurn].time,
+                        fen: rooms[index][roomName].game.fen()
+                    }
+                });
+
+                //call this method again to begin next players clock
+                startTimerCountDown(io, roomName, index);
+
             }
         } else if(rooms[index][roomName].gameType == 'two-player'){
             time = 1;
