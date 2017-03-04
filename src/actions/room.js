@@ -5,6 +5,23 @@ export function sitDownBoard(details) {
     }
 }
 
+export function sitDownComputer(details) {
+    return {
+        type: 'server/sit-down-board',
+        payload: details
+    }
+}
+
+export function removeComputer(player, thread) {
+    return {
+        type: 'server/remove-ai-player',
+        payload: {
+            player,
+            thread
+        }
+    }
+}
+
 export function tick(roomName, turn) {
     return {
         type: 'TICK',

@@ -1,4 +1,6 @@
-const {mapObject} = require('../utils/utils');
+var spawn = require('child_process').spawn;
+
+const {mapObject, ab2str} = require('../utils/utils');
 const {FourChess} = require('../../common/fourchess');
 const {Chess} = require('chess.js');
 const {User} = require('../models/user');
@@ -8,12 +10,13 @@ const {getTimeTypeForTimeControl, getEloForTimeControl} = require('./data');
 const {findRoomIndexByName, deleteUserFromBoardSeats} = require('./data');
 const {deleteRoomByName, getAllRoomMembers} = require('./data');
 const {addMessageToRoom, getRecentMessages} = require('./data');
-const {userSittingAndGameOngoing} = require('./data');
+const {userSittingAndGameOngoing, fourComputers} = require('./data');
 const {startTimerCountDown} = require('./board_reset');
+
 
 function room(io, socket, action) {
 
-    let roomName, turn, roomIndex, roomObj, userObj, msgObj;
+    let roomName, turn, roomIndex, roomObj, userObj, msgObj, aiObj;
     switch (action.type) {
 
         //client is sending new message
@@ -41,7 +44,7 @@ function room(io, socket, action) {
                     payload: rooms
                 });
             }
-            
+
 
             //connect this user to this react-notification-system-redux
             socket.join(roomName);
@@ -56,7 +59,7 @@ function room(io, socket, action) {
 
             //get the list of all room members
             roomObj.users = getAllRoomMembers(io, roomName);
-            
+
             //add a list of messages for client side purposes
             roomObj.messages = getRecentMessages(roomName);
 
@@ -65,7 +68,7 @@ function room(io, socket, action) {
                 type: 'joined-room',
                 payload: roomObj
             });
-            
+
             let joined_user = roomObj.users[roomObj.users.length-1].username;
             let joined_msg = joined_user + " has joined the room.";
             let msgObj = {
@@ -82,7 +85,7 @@ function room(io, socket, action) {
                 payload: roomObj,
                 message: msgObj
             });
-            
+
             addMessageToRoom(roomName, msgObj);
 
             //Update the information about that room
@@ -150,8 +153,8 @@ function room(io, socket, action) {
                 type: 'left-room',
                 payload: roomName
             });
-            
-            
+
+
             let left_msg = userObj.user.username + " has left the room.";
             let message_obj = {
                 user: userObj.user.username,
@@ -170,7 +173,7 @@ function room(io, socket, action) {
                     message: message_obj
                 }
             });
-            
+
             addMessageToRoom(roomName, message_obj);
 
             if (io.sockets.adapter.rooms[roomName]) { //there are still users in the room
@@ -190,7 +193,53 @@ function room(io, socket, action) {
             });
             break;
 
-            //User is requesting to play as a certain color
+        case 'server/remove-ai-player':
+            roomName = action.payload.thread,
+            aiObj = action.payload.player;
+            index = findRoomIndexByName(roomName);
+            if(rooms[index][roomName]) {
+                switch(aiObj.color) {
+                    case 'w':
+                        delete rooms[index][roomName].white;
+                        io.to(roomName).emit('action', {
+                            type: 'up-white',
+                            payload: {
+                                name: roomName
+                            }
+                        });
+                        break;
+                    case 'b':
+                        delete rooms[index][roomName].black;
+                        io.to(roomName).emit('action', {
+                            type: 'up-black',
+                            payload: {
+                                name: roomName
+                            }
+                        });
+                        break;
+                    case 'g':
+                        delete rooms[index][roomName].gold;
+                        io.to(roomName).emit('action', {
+                            type: 'up-gold',
+                            payload: {
+                                name: roomName
+                            }
+                        });
+                        break;
+                    case 'r':
+                        delete rooms[index][roomName].red;
+                        io.to(roomName).emit('action', {
+                            type: 'up-red',
+                            payload: {
+                                name: roomName
+                            }
+                        });
+                        break;
+                }
+            }
+            break;
+
+        //User is requesting to play as a certain color
         case 'server/sit-down-board':
             roomName = action.payload.roomName;
             userObj = action.payload.profile;
@@ -199,7 +248,10 @@ function room(io, socket, action) {
                 delete userObj.email; //delete sensitive info
                 index = findRoomIndexByName(roomName);
                 roomObj = rooms[index];
-                deleteUserFromBoardSeats(io, index, roomName, userObj._id);
+                if(!userObj.type) {
+                    deleteUserFromBoardSeats(io, index, roomName, userObj._id);
+                }
+
                 if (roomObj) {
                     switch (color) {
                         case 'w':
@@ -344,10 +396,53 @@ function room(io, socket, action) {
                                 pgn: rooms[index][roomName].game.pgn(),
                                 lastMove: rooms[index][roomName].lastmove
                             }
-                        })
+                        });
 
-                        //start first players timer
-                        startTimerCountDown(io, roomName, index);
+                        //First player to move is the AI
+                        if(rooms[index][roomName].white.type == "computer"
+                           || rooms[index][roomName].black.type == "computer"
+                           || rooms[index][roomName].gold.type == "computer"
+                           || rooms[index][roomName].red.type == "computer") {
+                            fourComputers[roomName] = spawn("./engine/fourengine");
+                            fourComputers[roomName].stdout.on('data', function(data) {
+                                var str = ab2str(data);
+                                console.log(str, "\n");
+                                if(str.indexOf("bestmove") !== -1) {
+
+                                    console.log(str.substr(str.indexOf("bestmove") + 9, str.length))
+
+                                    let compMove = {
+                                        to: str.substr(str.indexOf("bestmove") + 9, str.length).split('-')[1].replace('\r\n', ''),
+                                        from: str.substr(str.indexOf("bestmove") + 9, str.length).split('-')[0],
+                                        promotion: 'q'
+                                    };
+
+                                    console.log(compMove);
+
+                                    socket.emit('action', {
+                                        type: 'server/four-new-move',
+                                        payload: {
+                                            thread: roomName,
+                                            move: compMove
+                                        }
+                                    });
+                                }
+                            });
+
+                            //start first players timer
+                            startTimerCountDown(io, roomName, index);
+
+                            if(rooms[index][roomName].white.type == "computer") {
+                                fourComputers[roomName].stdin.write("position fen " + rooms[index][roomName].game.fen().split('-')[0] + "\n");
+
+                                //tell the computer it's white's turn
+                                fourComputers[roomName].stdin.write("turn 0\n");
+
+                                //search for a move
+                                fourComputers[roomName].stdin.write("go depth 4\n");
+                            }
+
+                        }
                     }
                 }
             }

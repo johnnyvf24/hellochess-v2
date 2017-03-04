@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {tick} from '../../../actions/room';
+import {tick, removeComputer} from '../../../actions/room';
 import {millisToMinutesAndSeconds, formatTurn, showElo} from '../../../utils/index';
 
 class OnGold extends Component {
@@ -51,12 +51,29 @@ class OnGold extends Component {
         return doDrawBorder ? " active" : "";
     }
 
+    removeAi(player, roomName) {
+        this.props.removeComputer(player, roomName);
+    }
+
+    renderLeaveSeat(player, roomName) {
+        if(player.type) {
+            return (
+                <div className="pull-right">
+                    <a href="#"
+                        onClick={(event) => this.removeAi(player, roomName)}>
+                        <i className="fa fa-times" aria-hidden="true"></i>
+                    </a>
+                </div>
+            );
+        }
+    }
+
     renderTime(time) {
         return millisToMinutesAndSeconds(time);
     }
 
     render() {
-        const {player, time, game} = this.props;
+        const {player, time, game, name} = this.props;
         if(!player || !time) {
             return <div></div>
         }
@@ -64,6 +81,7 @@ class OnGold extends Component {
             <div className={"player-card-border" + this.renderActiveBorder()}>
                 <div className="card player-card occupied">
                     <div className="card-block gold-player">
+                        { !game.fen && this.renderLeaveSeat(player, name)}
 
                         <div className="row">
                             <img className="player-img rounded-circle" src={player.picture} />
@@ -93,4 +111,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps, {tick})(OnGold);
+export default connect(mapStateToProps, {tick, removeComputer})(OnGold);
