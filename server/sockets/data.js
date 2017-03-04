@@ -288,7 +288,7 @@ module.exports.getRecentMessages = function(roomName) {
     const NUM_MESSAGE_HISTORY = 50;
     let messages;
     if (room.messages) {
-        messages = room.messages.slice(-NUM_MESSAGE_HISTORY);
+        messages = room.messages.filter(m => m !== null).slice(-NUM_MESSAGE_HISTORY);
     } else {
         messages = [];
     }

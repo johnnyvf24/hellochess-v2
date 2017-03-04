@@ -8,6 +8,7 @@ const {fourGame} = require('./four_game');
 const {room} = require('./room');
 const {clients, rooms, deleteRoomByName, findRoomIndexByName} = require('./data');
 const {getAllRoomMembers, userSittingAndGameOngoing} = require('./data');
+const {addMessageToRoom} = require('./data');
 const {deleteUserFromBoardSeats} = require('./data');
 
 module.exports.socketServer = function(io) {
@@ -31,27 +32,38 @@ module.exports.socketServer = function(io) {
                 // console.log(rooms)
                 mapObject(joinedRooms, (key, val) => {
                     let roomIndex;
+                    let roomName = val;
                     //Check to see if users are still in the room
-                    if(io.sockets.adapter.rooms[val]) {
+                    if(io.sockets.adapter.rooms[roomName]) {
+                        let left_msg = userObj.user.username + " has left the room.";
+                        let message_obj = {
+                            user: userObj.user.username,
+                            msg: left_msg,
+                            thread: roomName,
+                            picture: null,
+                            event_type: 'user-left'
+                        };
                         //Tell everyone that a user left
-                        io.to(val).emit('action', {
+                        io.to(roomName).emit('action', {
                             type: 'user-room-left',
                             payload: {
-                                name: val,
-                                user: userObj
+                                name: roomName,
+                                user: userObj,
+                                message: message_obj
                             }
                         });
+                        addMessageToRoom(roomName, message_obj);
                         //update this specific room
-                        roomIndex = findRoomIndexByName(val);
-                        rooms[roomIndex][val].users = getAllRoomMembers(io, val);
-                        if(!userSittingAndGameOngoing(userObj, rooms[roomIndex][val])) {
-                            deleteUserFromBoardSeats(io, roomIndex, val, userObj.user._id);
+                        roomIndex = findRoomIndexByName(roomName);
+                        rooms[roomIndex][roomName].users = getAllRoomMembers(io, roomName);
+                        if(!userSittingAndGameOngoing(userObj, rooms[roomIndex][roomName])) {
+                            deleteUserFromBoardSeats(io, roomIndex, roomName, userObj.user._id);
                         }
 
                     } else {
                         //there are no users in this room
-                        if(val) {
-                            deleteRoomByName(val);
+                        if(roomName) {
+                            deleteRoomByName(roomName);
                         }
 
                     }
