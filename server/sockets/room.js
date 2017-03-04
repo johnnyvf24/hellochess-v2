@@ -7,16 +7,18 @@ const {clients, rooms, roomExists, getRoomByName, formatTurn} = require('./data'
 const {getTimeTypeForTimeControl, getEloForTimeControl} = require('./data');
 const {findRoomIndexByName, deleteUserFromBoardSeats} = require('./data');
 const {deleteRoomByName, getAllRoomMembers} = require('./data');
+const {addMessageToRoom, getRecentMessages} = require('./data');
 const {userSittingAndGameOngoing} = require('./data');
 const {startTimerCountDown} = require('./board_reset');
 
 function room(io, socket, action) {
 
-    let roomName, turn, roomIndex;
+    let roomName, turn, roomIndex, roomObj, userObj, msgObj;
     switch (action.type) {
 
         //client is sending new message
         case 'server/new-message':
+            addMessageToRoom(action.payload.thread, action.payload);
             io.to(action.payload.thread).emit('action', {
                 type: 'receive-message',
                 payload: action.payload
@@ -39,6 +41,7 @@ function room(io, socket, action) {
                     payload: rooms
                 });
             }
+            
 
             //connect this user to this react-notification-system-redux
             socket.join(roomName);
@@ -53,21 +56,34 @@ function room(io, socket, action) {
 
             //get the list of all room members
             roomObj.users = getAllRoomMembers(io, roomName);
+            
             //add a list of messages for client side purposes
-            //TODO display last 10 messages
-            roomObj.messages = [];
+            roomObj.messages = getRecentMessages(roomName);
 
             //Tell the current user that they have joined the room
             socket.emit('action', {
                 type: 'joined-room',
                 payload: roomObj
             });
+            
+            let joined_user = roomObj.users[roomObj.users.length-1].username;
+            let joined_msg = joined_user + " has joined the room.";
+            let msgObj = {
+                user: joined_user,
+                msg: joined_msg,
+                thread: roomName,
+                picture: null,
+                event_type: 'user-joined'
+            };
 
             //Tell everyone in the room that a new user has connnected
             io.to(roomName).emit('action', {
                 type: 'user-room-joined',
-                payload: roomObj
+                payload: roomObj,
+                message: msgObj
             });
+            
+            addMessageToRoom(roomName, msgObj);
 
             //Update the information about that room
             io.emit('action', {
@@ -134,6 +150,16 @@ function room(io, socket, action) {
                 type: 'left-room',
                 payload: roomName
             });
+            
+            
+            let left_msg = userObj.user.username + " has left the room.";
+            let message_obj = {
+                user: userObj.user.username,
+                msg: left_msg,
+                thread: roomName,
+                picture: null,
+                event_type: 'user-left'
+            };
 
             //Tell everyone in the room that a user has disconnnected
             io.to(roomName).emit('action', {
@@ -141,8 +167,11 @@ function room(io, socket, action) {
                 payload: {
                     name: roomName,
                     user: userObj,
+                    message: message_obj
                 }
             });
+            
+            addMessageToRoom(roomName, message_obj);
 
             if (io.sockets.adapter.rooms[roomName]) { //there are still users in the room
                 rooms[roomIndex][roomName].users = getAllRoomMembers(io, roomName);

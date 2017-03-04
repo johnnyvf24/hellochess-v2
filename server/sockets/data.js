@@ -273,3 +273,24 @@ module.exports.userSittingAndGameOngoing = function(userObj, roomObj) {
 
     return false;
 }
+
+module.exports.addMessageToRoom = function(roomName, message) {
+    let room = module.exports.getRoomByName(roomName);
+    if (room.messages) {
+        room.messages.push(message);
+    } else {
+        room.messages = [];
+    }
+}
+
+module.exports.getRecentMessages = function(roomName) {
+    let room = module.exports.getRoomByName(roomName);
+    const NUM_MESSAGE_HISTORY = 50;
+    let messages;
+    if (room.messages) {
+        messages = room.messages.slice(-NUM_MESSAGE_HISTORY);
+    } else {
+        messages = [];
+    }
+    return messages;
+}
