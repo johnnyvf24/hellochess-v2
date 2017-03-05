@@ -412,7 +412,7 @@ function room(io, socket, action) {
                                     console.log(str.substr(str.indexOf("bestmove") + 9, str.length))
 
                                     let compMove = {
-                                        to: str.substr(str.indexOf("bestmove") + 9, str.length).split('-')[1].replace('\r\n', ''),
+                                        to: str.substr(str.indexOf("bestmove") + 9, str.length).split('-')[1].replace('\n', ''),
                                         from: str.substr(str.indexOf("bestmove") + 9, str.length).split('-')[0],
                                         promotion: 'q'
                                     };

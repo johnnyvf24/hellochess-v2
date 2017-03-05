@@ -159,6 +159,16 @@ function fourGame(io, socket, action) {
                         move: lastMove
                     }
                 });
+                
+                //check to see if the game is over
+                if (rooms[index][roomName].game.game_over()) {
+    
+                    if (rooms[index][roomName].game.in_draw()) {
+    
+                    } else {
+                        return endFourPlayerGame(io, roomName, index);
+                    }
+                }
 
                 let newTurn = rooms[index][roomName].game.turn();
                 let newTurnFormatted = formatTurn(newTurn);
@@ -202,15 +212,6 @@ function fourGame(io, socket, action) {
                 }
             }
 
-            //check to see if the game is over
-            if (rooms[index][roomName].game.game_over()) {
-
-                if (rooms[index][roomName].game.in_draw()) {
-
-                } else {
-                    endFourPlayerGame(io, roomName, index);
-                }
-            }
             break;
     }
 }
