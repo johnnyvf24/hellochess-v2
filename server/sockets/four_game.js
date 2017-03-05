@@ -94,7 +94,7 @@ function fourGame(io, socket, action) {
                     type: 'all-rooms',
                     payload: rooms
                 });
-                
+
                 newTurn = rooms[roomIndex][roomName].game.turn();
                 newTurnFormatted = formatTurn(newTurn);
 
@@ -135,7 +135,7 @@ function fourGame(io, socket, action) {
                     //search for a move
                     fourComputers[roomName].stdin.write("go depth 4\n");
                 }
-                
+
 
             }
             break;
@@ -205,12 +205,12 @@ function fourGame(io, socket, action) {
                         move: lastMove
                     }
                 });
-                
+
                 //check to see if the game is over
                 if (rooms[index][roomName].game.game_over()) {
-    
+
                     if (rooms[index][roomName].game.in_draw()) {
-    
+
                     } else {
                         return endFourPlayerGame(io, roomName, index);
                     }
