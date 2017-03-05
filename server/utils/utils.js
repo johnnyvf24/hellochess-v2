@@ -4,4 +4,8 @@ function mapObject(object, callback) {
     });
 }
 
+module.exports.ab2str = function(buf) {
+	return String.fromCharCode.apply(null, new Uint16Array(buf));
+};
+
 module.exports.mapObject = mapObject;

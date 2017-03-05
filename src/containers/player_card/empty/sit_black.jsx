@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {sitDownBoard} from '../../../actions/room';
+import {sitDownBoard, sitDownComputer} from '../../../actions/room';
 
 class SitBlack extends Component {
     constructor(props) {
@@ -15,6 +15,23 @@ class SitBlack extends Component {
         this.props.sitDownBoard(obj);
     }
 
+    aiSit(event) {
+        let obj = {};
+        obj.roomName = this.props.activeThread;
+        obj.profile = {
+            type: 'computer',
+            username: 'AI',
+            four_elos: {
+                classic: 1100,
+                rapid: 1100,
+                blitz: 1100,
+                bullet: 1100
+            }
+        }
+        obj.color = 'b';
+        this.props.sitDownComputer(obj);
+    }
+
     render() {
         const {game} = this.props;
         let time = game.time;
@@ -22,11 +39,18 @@ class SitBlack extends Component {
             <div className="card player-card">
                 <div className="card-block black-player">
                     <div className="row">
-                        <button
-                            className="btn btn-default"
-                            onClick={this.onSit.bind(this)}>
-                            Play Black
-                        </button>
+                        <div className="btn-group">
+                            <button
+                                className="btn btn-info"
+                                onClick={this.onSit.bind(this)}>
+                                Play
+                            </button>
+                            <button type="button"
+                                className="btn btn-default"
+                                onClick={this.aiSit.bind(this)}>
+                                <i className="fa fa-laptop" aria-hidden="true"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <h4 className="card-title pull-right">{`${time.value}:00`}</h4>
@@ -45,4 +69,4 @@ function mapStateToProps(state) {
 }
 
 
-export default connect(mapStateToProps,  {sitDownBoard}) (SitBlack)
+export default connect(mapStateToProps,  {sitDownBoard, sitDownComputer}) (SitBlack)

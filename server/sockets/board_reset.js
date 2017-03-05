@@ -41,7 +41,7 @@ function startTimerCountDown(io, roomName, index) {
     timers[roomName] = setTimeout( function () {
 
         let loser, winner;
-        
+
         if(!rooms[index][roomName]) {
             // log rooms value
             console.log("board_reset setTimeout", JSON.stringify(rooms, null, 2));
@@ -311,22 +311,22 @@ function endFourPlayerGame(io, roomName, index) {
         .then((user) => {
             user.four_elos[timeType] = newWinnerElo;
             user.save(function(err, updatedUser) {
-    
+
                 if(updatedUser) {
                     let eloNotif = {
                         title: `${winner.username}'s elo is now ${newWinnerElo} +${newWinnerElo - fourthOutElo}`,
                         position: 'tr',
                         autoDismiss: 6,
                     };
-    
+
                     io.to(roomName).emit('action', Notifications.success(eloNotif));
-    
+
                     io.to(updatedUser.socket_id).emit('action', {
                         type: 'user-update',
                         payload: updatedUser
                     });
                 }
-    
+
             });
         }).catch((e) => {
             console.log(e);
@@ -346,9 +346,9 @@ function endFourPlayerGame(io, roomName, index) {
                             position: 'tr',
                             autoDismiss: 6,
                         };
-    
+
                         io.to(roomName).emit('action', Notifications.success(eloNotif));
-    
+
                         io.to(updatedUser.socket_id).emit('action', {
                             type: 'user-update',
                             payload: updatedUser
@@ -374,9 +374,9 @@ function endFourPlayerGame(io, roomName, index) {
                             position: 'tr',
                             autoDismiss: 6,
                         };
-    
+
                         io.to(roomName).emit('action', Notifications.error(eloNotif));
-    
+
                         io.to(updatedUser.socket_id).emit('action', {
                             type: 'user-update',
                             payload: updatedUser
@@ -388,7 +388,7 @@ function endFourPlayerGame(io, roomName, index) {
             });
         }, 250);
     }
-    
+
     if(firstOut) {
         setTimeout(() => {
             //Save 4th place elo
@@ -402,9 +402,9 @@ function endFourPlayerGame(io, roomName, index) {
                             position: 'tr',
                             autoDismiss: 6,
                         };
-    
+
                         io.to(roomName).emit('action', Notifications.error(eloNotif));
-    
+
                         io.to(updatedUser.socket_id).emit('action', {
                             type: 'user-update',
                             payload: updatedUser
