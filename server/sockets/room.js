@@ -406,6 +406,7 @@ function room(io, socket, action) {
                             fourComputers[roomName] = spawn("./engine/fourengine");
                             fourComputers[roomName].stdout.on('data', function(data) {
                                 var str = ab2str(data);
+                                console.log(str);
                                 if(str.indexOf("bestmove") !== -1) {
 
                                     let compMove = {
