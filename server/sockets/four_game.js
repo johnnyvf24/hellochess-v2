@@ -139,14 +139,10 @@ function fourGame(io, socket, action) {
             		if(numOut == 0) {
                         fourComputers[roomName].stdin.write("go depth 4\n");
                     } else if(numOut == 1) {
-                        fourComputers[roomName].stdin.write("go depth 6\n");
+                        fourComputers[roomName].stdin.write("go depth 4\n");
                     } else if(numOut == 2) {
                         fourComputers[roomName].stdin.write("go depth 6\n");
                     }
-
-
-                    //search for a move
-                    fourComputers[roomName].stdin.write("go depth 4\n");
                 }
 
 
@@ -275,7 +271,7 @@ function fourGame(io, socket, action) {
                     if(numOut == 0) {
                         fourComputers[roomName].stdin.write("go depth 4\n");
                     } else if(numOut == 1) {
-                        fourComputers[roomName].stdin.write("go depth 6\n");
+                        fourComputers[roomName].stdin.write("go depth 4\n");
                     } else if(numOut == 2) {
                         fourComputers[roomName].stdin.write("go depth 6\n");
                     }

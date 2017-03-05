@@ -143,7 +143,7 @@ function startTimerCountDown(io, roomName, index) {
                     if(numOut == 0) {
                         fourComputers[roomName].stdin.write("go depth 4\n");
                     } else if(numOut == 1) {
-                        fourComputers[roomName].stdin.write("go depth 6\n");
+                        fourComputers[roomName].stdin.write("go depth 4\n");
                     } else if(numOut == 2) {
                         fourComputers[roomName].stdin.write("go depth 6\n");
                     }
