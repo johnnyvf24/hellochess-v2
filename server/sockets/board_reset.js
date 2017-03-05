@@ -6,7 +6,7 @@ const Notifications = require('react-notification-system-redux');
 const {clients, rooms, roomExists, getRoomByName, formatTurn} = require('./data');
 const {getTimeTypeForTimeControl, getEloForTimeControl} = require('./data');
 const {findRoomIndexByName, deleteUserFromBoardSeats} = require('./data');
-const {deleteRoomByName, timers} = require('./data');
+const {deleteRoomByName, timers, fourComputers} = require('./data');
 const {userSittingAndGameOngoing} = require('./data');
 
 function startTimerCountDown(io, roomName, index) {
@@ -41,10 +41,9 @@ function startTimerCountDown(io, roomName, index) {
     timers[roomName] = setTimeout( function () {
 
         let loser, winner;
-        
+
         if(!rooms[index][roomName]) {
             // log rooms value
-            console.log("board_reset setTimeout", JSON.stringify(rooms, null, 2));
             return;
         }
         if(rooms[index][roomName].gameType == 'four-player') {
@@ -99,6 +98,45 @@ function startTimerCountDown(io, roomName, index) {
                         fen: rooms[index][roomName].game.fen()
                     }
                 });
+
+                let newTurn = rooms[index][roomName].game.turn();
+                let newTurnFormatted = formatTurn(newTurn);
+
+                if(rooms[index][roomName][newTurnFormatted].type == "computer") {
+                    fourComputers[roomName].stdin.write("position fen " + rooms[index][roomName].game.fen().split('-')[0] + "\n");
+
+                    //tell the computer whose turn it is
+                    switch(newTurn) {
+                        case 'w':
+                            fourComputers[roomName].stdin.write("turn 0\n");
+                            break;
+                        case 'b':
+                            fourComputers[roomName].stdin.write("turn 1\n");
+                            break;
+                        case 'g':
+                            fourComputers[roomName].stdin.write("turn 2\n");
+                            break;
+                        case 'r':
+                            fourComputers[roomName].stdin.write("turn 3\n");
+                            break;
+                    }
+
+                    if(rooms[roomIndex][roomName].game.isWhiteOut()) {
+                        fourComputers[roomName].stdin.write("out 0\n");
+                    }
+                    if(rooms[roomIndex][roomName].game.isBlackOut()) {
+                        fourComputers[roomName].stdin.write("out 1\n");
+                    }
+                    if(rooms[roomIndex][roomName].game.isGoldOut()) {
+                        fourComputers[roomName].stdin.write("out 2\n");
+                    }
+                    if(rooms[roomIndex][roomName].game.isRedOut()) {
+                        fourComputers[roomName].stdin.write("out 3\n");
+                    }
+
+                    //search for a move
+                    fourComputers[roomName].stdin.write("go depth 4\n");
+                }
 
                 //call this method again to begin next players clock
                 startTimerCountDown(io, roomName, index);
@@ -311,22 +349,22 @@ function endFourPlayerGame(io, roomName, index) {
         .then((user) => {
             user.four_elos[timeType] = newWinnerElo;
             user.save(function(err, updatedUser) {
-    
+
                 if(updatedUser) {
                     let eloNotif = {
                         title: `${winner.username}'s elo is now ${newWinnerElo} +${newWinnerElo - fourthOutElo}`,
                         position: 'tr',
                         autoDismiss: 6,
                     };
-    
+
                     io.to(roomName).emit('action', Notifications.success(eloNotif));
-    
+
                     io.to(updatedUser.socket_id).emit('action', {
                         type: 'user-update',
                         payload: updatedUser
                     });
                 }
-    
+
             });
         }).catch((e) => {
             console.log(e);
@@ -346,9 +384,9 @@ function endFourPlayerGame(io, roomName, index) {
                             position: 'tr',
                             autoDismiss: 6,
                         };
-    
+
                         io.to(roomName).emit('action', Notifications.success(eloNotif));
-    
+
                         io.to(updatedUser.socket_id).emit('action', {
                             type: 'user-update',
                             payload: updatedUser
@@ -374,9 +412,9 @@ function endFourPlayerGame(io, roomName, index) {
                             position: 'tr',
                             autoDismiss: 6,
                         };
-    
+
                         io.to(roomName).emit('action', Notifications.error(eloNotif));
-    
+
                         io.to(updatedUser.socket_id).emit('action', {
                             type: 'user-update',
                             payload: updatedUser
@@ -388,7 +426,7 @@ function endFourPlayerGame(io, roomName, index) {
             });
         }, 250);
     }
-    
+
     if(firstOut) {
         setTimeout(() => {
             //Save 4th place elo
@@ -402,9 +440,9 @@ function endFourPlayerGame(io, roomName, index) {
                             position: 'tr',
                             autoDismiss: 6,
                         };
-    
+
                         io.to(roomName).emit('action', Notifications.error(eloNotif));
-    
+
                         io.to(updatedUser.socket_id).emit('action', {
                             type: 'user-update',
                             payload: updatedUser
@@ -420,6 +458,12 @@ function endFourPlayerGame(io, roomName, index) {
     //Stop the clocks
     clearTimeout(timers[roomName]);
     delete rooms[index][roomName].game;
+
+    if(fourComputers[roomName]) {
+        fourComputers[roomName].stdin.pause();
+        fourComputers[roomName].kill();
+        delete fourComputers[roomName];
+    }
 
     //kick players from board and restart game
     setTimeout(() => {

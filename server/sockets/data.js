@@ -2,10 +2,12 @@ const {mapObject} = require('../utils/utils');
 let rooms = [];
 let timers = {};
 let clients = {};
+let fourComputers = [];
 
 module.exports.rooms = rooms; //all the chat rooms
 module.exports.timers = timers; //all the timers
 module.exports.clients = clients; //all connected users
+module.exports.fourComputers = fourComputers;
 
 module.exports.roomExists = function(name) {
     let foundMatch = false;
