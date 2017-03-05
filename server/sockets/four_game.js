@@ -147,6 +147,9 @@ function fourGame(io, socket, action) {
             index = findRoomIndexByName(roomName);
 
             //get who's turn it is
+            if(!rooms[index]) {
+                return;
+            }
             turn = rooms[index][roomName].game.turn()
             turn = formatTurn(turn);
 
