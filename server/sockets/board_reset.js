@@ -99,14 +99,11 @@ function startTimerCountDown(io, roomName, index) {
                     }
                 });
 
-                let newTurn = rooms[index][roomName].game.turn();
-                let newTurnFormatted = formatTurn(newTurn);
-
-                if(rooms[index][roomName][newTurnFormatted].type == "computer") {
+                if(rooms[index][roomName][currentTurn].type == "computer") {
                     fourComputers[roomName].stdin.write("position fen " + rooms[index][roomName].game.fen().split('-')[0] + "\n");
 
                     //tell the computer whose turn it is
-                    switch(newTurn) {
+                    switch(currentTurn.charAt(0)) {
                         case 'w':
                             fourComputers[roomName].stdin.write("turn 0\n");
                             break;
