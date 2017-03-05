@@ -32,9 +32,25 @@ class SitRed extends Component {
         this.props.sitDownComputer(obj);
     }
 
+    renderAIButton() {
+        const {game} = this.props;
+        if (game.gameType === "two-player") {
+            return (<div></div>);
+        } else {
+            return (
+                <button type="button"
+                    className="btn btn-default"
+                    onClick={this.aiSit.bind(this)}>
+                    <i className="fa fa-laptop" aria-hidden="true"></i>
+                </button>
+            );
+        }
+    }
+    
     render() {
         const {game} = this.props;
         let time = game.time;
+        let aiButton = this.renderAIButton();
         return (
             <div className="card player-card">
                 <div className="card-block red-player">
@@ -45,11 +61,7 @@ class SitRed extends Component {
                                 onClick={this.onSit.bind(this)}>
                                 Play
                             </button>
-                            <button type="button"
-                                className="btn btn-default"
-                                onClick={this.aiSit.bind(this)}>
-                                <i className="fa fa-laptop" aria-hidden="true"></i>
-                            </button>
+                            {aiButton}
                         </div>
                     </div>
 
