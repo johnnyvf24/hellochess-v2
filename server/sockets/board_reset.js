@@ -120,22 +120,33 @@ function startTimerCountDown(io, roomName, index) {
                             fourComputers[roomName].stdin.write("turn 3\n");
                             break;
                     }
+                    
+                    let numOut = 0;
 
-                    if(rooms[roomIndex][roomName].game.isWhiteOut()) {
+                    if(rooms[index][roomName].game.isWhiteOut()) {
                         fourComputers[roomName].stdin.write("out 0\n");
+                        numOut++;
                     }
-                    if(rooms[roomIndex][roomName].game.isBlackOut()) {
+                    if(rooms[index][roomName].game.isBlackOut()) {
                         fourComputers[roomName].stdin.write("out 1\n");
+                        numOut++;
                     }
-                    if(rooms[roomIndex][roomName].game.isGoldOut()) {
+                    if(rooms[index][roomName].game.isGoldOut()) {
                         fourComputers[roomName].stdin.write("out 2\n");
+                        numOut++;
                     }
-                    if(rooms[roomIndex][roomName].game.isRedOut()) {
+                    if(rooms[index][roomName].game.isRedOut()) {
                         fourComputers[roomName].stdin.write("out 3\n");
+                        numOut++;
                     }
-
-                    //search for a move
-                    fourComputers[roomName].stdin.write("go depth 4\n");
+                    
+                    if(numOut == 0) {
+                        fourComputers[roomName].stdin.write("go depth 4\n");
+                    } else if(numOut == 1) {
+                        fourComputers[roomName].stdin.write("go depth 6\n");
+                    } else if(numOut == 2) {
+                        fourComputers[roomName].stdin.write("go depth 6\n");
+                    }
                 }
 
                 //call this method again to begin next players clock

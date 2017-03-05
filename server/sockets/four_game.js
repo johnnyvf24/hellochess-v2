@@ -238,23 +238,32 @@ function fourGame(io, socket, action) {
                             fourComputers[roomName].stdin.write("turn 3\n");
                             break;
                     }
+                    let numOut = 0;
 
                     if(rooms[index][roomName].game.isWhiteOut()) {
             			fourComputers[roomName].stdin.write("out 0\n");
+            			numOut++;
             		}
             		if(rooms[index][roomName].game.isBlackOut()) {
             			fourComputers[roomName].stdin.write("out 1\n");
+            			numOut++;
             		}
             		if(rooms[index][roomName].game.isGoldOut()) {
             			fourComputers[roomName].stdin.write("out 2\n");
+            			numOut++;
             		}
             		if(rooms[index][roomName].game.isRedOut()) {
             			fourComputers[roomName].stdin.write("out 3\n");
+            			numOut++;
             		}
-
-
-                    //search for a move
-                    fourComputers[roomName].stdin.write("go depth 4\n");
+                    
+                    if(numOut == 0) {
+                        fourComputers[roomName].stdin.write("go depth 4\n");
+                    } else if(numOut == 1) {
+                        fourComputers[roomName].stdin.write("go depth 6\n");
+                    } else if(numOut == 2) {
+                        fourComputers[roomName].stdin.write("go depth 6\n");
+                    }
                 }
             }
 
