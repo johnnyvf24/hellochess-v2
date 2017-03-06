@@ -13,7 +13,7 @@ const {endFourPlayerGame, startTimerCountDown} = require('./board_reset');
 function fourGame(io, socket, action) {
     let turn, currentTurn;
     let color, roomName, loser, roomIndex, winner, index, move, loserColor;
-    let newTurnFormatted, newTurn;
+    let newTurnFormatted, newTurn, numOut;
     switch (action.type) {
 
         case 'server/four-resign':
@@ -94,12 +94,8 @@ function fourGame(io, socket, action) {
                     type: 'all-rooms',
                     payload: rooms
                 });
-                
-                newTurn = rooms[roomIndex][roomName].game.turn();
-                newTurnFormatted = formatTurn(newTurn);
 
-                if(rooms[roomIndex][roomName][newTurnFormatted].type == "computer") {
-                    console.log(rooms[roomIndex][roomName].game.fen().split('-')[0]);
+                if(rooms[roomIndex][roomName][currentTurn].type == "computer") {
                     fourComputers[roomName].stdin.write("position fen " + rooms[roomIndex][roomName].game.fen().split('-')[0] + "\n");
 
                     //tell the computer whose turn it is
@@ -118,25 +114,33 @@ function fourGame(io, socket, action) {
                             break;
                     }
 
+                    numOut = 0;
+
                     if(rooms[roomIndex][roomName].game.isWhiteOut()) {
             			fourComputers[roomName].stdin.write("out 0\n");
+            			numOut++;
             		}
             		if(rooms[roomIndex][roomName].game.isBlackOut()) {
             			fourComputers[roomName].stdin.write("out 1\n");
+            			numOut++;
             		}
             		if(rooms[roomIndex][roomName].game.isGoldOut()) {
             			fourComputers[roomName].stdin.write("out 2\n");
+            			numOut++;
             		}
             		if(rooms[roomIndex][roomName].game.isRedOut()) {
             			fourComputers[roomName].stdin.write("out 3\n");
+            			numOut++;
             		}
 
-
-                    //search for a move
-                    fourComputers[roomName].stdin.write("go depth 4\n");
+            		if(numOut == 0) {
+                        fourComputers[roomName].stdin.write("go depth 4\n");
+                    } else if(numOut == 1) {
+                        fourComputers[roomName].stdin.write("go depth 4\n");
+                    } else if(numOut == 2) {
+                        fourComputers[roomName].stdin.write("go depth 6\n");
+                    }
                 }
-                
-
             }
             break;
 
@@ -205,12 +209,12 @@ function fourGame(io, socket, action) {
                         move: lastMove
                     }
                 });
-                
+
                 //check to see if the game is over
                 if (rooms[index][roomName].game.game_over()) {
-    
+
                     if (rooms[index][roomName].game.in_draw()) {
-    
+
                     } else {
                         return endFourPlayerGame(io, roomName, index);
                     }
@@ -220,7 +224,8 @@ function fourGame(io, socket, action) {
                 newTurnFormatted = formatTurn(newTurn);
 
                 if(rooms[index][roomName][newTurnFormatted].type == "computer") {
-                    console.log(rooms[index][roomName].game.fen().split('-')[0]);
+                    //console.log(rooms[index][roomName].game.fen().split('-')[0]);
+                    console.log("computer moving:", newTurn);
                     fourComputers[roomName].stdin.write("position fen " + rooms[index][roomName].game.fen().split('-')[0] + "\n");
 
                     //tell the computer whose turn it is
@@ -238,23 +243,32 @@ function fourGame(io, socket, action) {
                             fourComputers[roomName].stdin.write("turn 3\n");
                             break;
                     }
+                    numOut = 0;
 
                     if(rooms[index][roomName].game.isWhiteOut()) {
             			fourComputers[roomName].stdin.write("out 0\n");
+            			numOut++;
             		}
             		if(rooms[index][roomName].game.isBlackOut()) {
             			fourComputers[roomName].stdin.write("out 1\n");
+            			numOut++;
             		}
             		if(rooms[index][roomName].game.isGoldOut()) {
             			fourComputers[roomName].stdin.write("out 2\n");
+            			numOut++;
             		}
             		if(rooms[index][roomName].game.isRedOut()) {
             			fourComputers[roomName].stdin.write("out 3\n");
+            			numOut++;
             		}
 
-
-                    //search for a move
-                    fourComputers[roomName].stdin.write("go depth 4\n");
+                    if(numOut == 0) {
+                        fourComputers[roomName].stdin.write("go depth 4\n");
+                    } else if(numOut == 1) {
+                        fourComputers[roomName].stdin.write("go depth 4\n");
+                    } else if(numOut == 2) {
+                        fourComputers[roomName].stdin.write("go depth 6\n");
+                    }
                 }
             }
 

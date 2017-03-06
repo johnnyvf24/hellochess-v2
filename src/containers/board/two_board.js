@@ -34,6 +34,7 @@ class TwoBoard extends Component {
             }
 
             if(nextProps.move) {
+                this.board.resize(); // clear square shadings
                 this.shadeSquare(nextProps.move.from);
                 this.shadeSquare(nextProps.move.to);
                 let shadeOnResize = function(event) {

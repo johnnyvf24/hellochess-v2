@@ -6,7 +6,7 @@ const Notifications = require('react-notification-system-redux');
 const {clients, rooms, roomExists, getRoomByName, formatTurn} = require('./data');
 const {getTimeTypeForTimeControl, getEloForTimeControl} = require('./data');
 const {findRoomIndexByName, deleteUserFromBoardSeats} = require('./data');
-const {deleteRoomByName, timers} = require('./data');
+const {deleteRoomByName, timers, fourComputers} = require('./data');
 const {userSittingAndGameOngoing} = require('./data');
 
 function startTimerCountDown(io, roomName, index) {
@@ -42,9 +42,8 @@ function startTimerCountDown(io, roomName, index) {
 
         let loser, winner;
 
-        if(!rooms[index][roomName]) {
+        if(!rooms[index]) {
             // log rooms value
-            console.log("board_reset setTimeout", JSON.stringify(rooms, null, 2));
             return;
         }
         if(rooms[index][roomName].gameType == 'four-player') {
@@ -99,6 +98,53 @@ function startTimerCountDown(io, roomName, index) {
                         fen: rooms[index][roomName].game.fen()
                     }
                 });
+
+                if(rooms[index][roomName][currentTurn].type == "computer") {
+                    fourComputers[roomName].stdin.write("position fen " + rooms[index][roomName].game.fen().split('-')[0] + "\n");
+
+                    //tell the computer whose turn it is
+                    switch(currentTurn.charAt(0)) {
+                        case 'w':
+                            fourComputers[roomName].stdin.write("turn 0\n");
+                            break;
+                        case 'b':
+                            fourComputers[roomName].stdin.write("turn 1\n");
+                            break;
+                        case 'g':
+                            fourComputers[roomName].stdin.write("turn 2\n");
+                            break;
+                        case 'r':
+                            fourComputers[roomName].stdin.write("turn 3\n");
+                            break;
+                    }
+
+                    let numOut = 0;
+
+                    if(rooms[index][roomName].game.isWhiteOut()) {
+                        fourComputers[roomName].stdin.write("out 0\n");
+                        numOut++;
+                    }
+                    if(rooms[index][roomName].game.isBlackOut()) {
+                        fourComputers[roomName].stdin.write("out 1\n");
+                        numOut++;
+                    }
+                    if(rooms[index][roomName].game.isGoldOut()) {
+                        fourComputers[roomName].stdin.write("out 2\n");
+                        numOut++;
+                    }
+                    if(rooms[index][roomName].game.isRedOut()) {
+                        fourComputers[roomName].stdin.write("out 3\n");
+                        numOut++;
+                    }
+
+                    if(numOut == 0) {
+                        fourComputers[roomName].stdin.write("go depth 4\n");
+                    } else if(numOut == 1) {
+                        fourComputers[roomName].stdin.write("go depth 4\n");
+                    } else if(numOut == 2) {
+                        fourComputers[roomName].stdin.write("go depth 6\n");
+                    }
+                }
 
                 //call this method again to begin next players clock
                 startTimerCountDown(io, roomName, index);
@@ -420,6 +466,12 @@ function endFourPlayerGame(io, roomName, index) {
     //Stop the clocks
     clearTimeout(timers[roomName]);
     delete rooms[index][roomName].game;
+
+    if(fourComputers[roomName]) {
+        fourComputers[roomName].stdin.pause();
+        fourComputers[roomName].kill();
+        delete fourComputers[roomName];
+    }
 
     //kick players from board and restart game
     setTimeout(() => {
