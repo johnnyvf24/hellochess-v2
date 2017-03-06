@@ -142,6 +142,9 @@ function twoGame(io, socket, action) {
                 rooms[index][roomName][turn].time += rooms[index][roomName].time.increment * 1000;
 
                 startTimerCountDown(io, roomName, index);
+                
+                // store the move on the server
+                rooms[index][roomName].move = move;
 
                 io.to(roomName).emit('action', {
                     type: 'new-move',

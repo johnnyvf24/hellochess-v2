@@ -161,10 +161,13 @@ function fourGame(io, socket, action) {
             }
             turn = rooms[index][roomName].game.turn()
             turn = formatTurn(turn);
-            console.log(turn, "just moved");
 
             //make the move
             move = rooms[index][roomName].game.move(move);
+            // store the move on the server
+            rooms[index][roomName].move = lastMove;
+            rooms[index][roomName].turn = rooms[index][roomName].game.turn();
+            
             if (move === null) {
                 //handle cheating scenario
             } else {
