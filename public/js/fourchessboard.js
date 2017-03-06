@@ -626,16 +626,23 @@ function buildBoardSide(orientation) {
 			} else {
 			  html += '<div class="' + CSS.square + ' ' + CSS[squareColor] + ' ' + 'square-' + square + '" ' + 'style="width: ' + SQUARE_SIZE + 'px; height: ' + SQUARE_SIZE + 'px" ' + 'id="' + SQUARE_ELS_IDS[square] + '" ' + 'data-square="' + square + '">';
 			}
-
+      
 			if (cfg.showNotation === true) {
+        var alpha_outer = "", numeric_outer = "";
+        if (['a', 'b', 'c', 'l', 'm', 'n'].includes(beta[i])) {
+          alpha_outer = " outer-notation";
+        }
+        if(['1', '2', '3', '12', '13', '14'].includes(alpha[j])) {
+          numeric_outer = " outer-notation";
+        }
 				// alpha notation
 				if ((orientation === 'red' && beta[i] === 'n') || (orientation === 'gold' && beta[i] === 'a')) {
-					html += '<div class="' + CSS.notation + ' ' + CSS.alpha + '">' + alpha[j] + '</div>';
+					html += '<div class="' + CSS.notation + ' ' + CSS.alpha + alpha_outer + '">' + alpha[j] + '</div>';
 				}
 
 				// numeric notation
 				if (j === 0) {
-					html += '<div class="' + CSS.notation + ' ' + CSS.numeric + '">' + beta[i] + '</div>';
+					html += '<div class="' + CSS.notation + ' ' + CSS.numeric + numeric_outer + '">' + beta[i] + '</div>';
 				}
 			}
 
@@ -727,16 +734,23 @@ function buildBoard(orientation) {
       //   'data-square="' + square + '">';
 
       if (cfg.showNotation === true) {
+        var alpha_outer = "", numeric_outer = "";
+        if (['a', 'b', 'c', 'l', 'm', 'n'].includes(alpha[j])) {
+          alpha_outer = " outer-notation";
+        }
+        if (['1', '2', '3', '12', '13', '14'].includes(row.toString())) {
+          numeric_outer = " outer-notation";
+        }
         // alpha notation
         if ((orientation === 'white' && row === 1) ||
             (orientation === 'black' && row === 14)) {
-          html += '<div class="' + CSS.notation + ' ' + CSS.alpha + '">' +
+          html += '<div class="' + CSS.notation + ' ' + CSS.alpha + alpha_outer + '">' +
             alpha[j] + '</div>';
         }
 
         // numeric notation
         if (j === 0) {
-          html += '<div class="' + CSS.notation + ' ' + CSS.numeric + '">' +
+          html += '<div class="' + CSS.notation + ' ' + CSS.numeric + numeric_outer + '">' +
             row + '</div>';
         }
       }

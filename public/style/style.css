@@ -410,6 +410,10 @@ tr:hover {
     max-width: 76vh;
 }
 
+.outer-notation {
+    color: #AAAAAA;
+}
+
 /*.promotion-red-4e6d3 {
     filter: contrast(1.2);
 }
