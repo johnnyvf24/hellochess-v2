@@ -154,7 +154,7 @@ function fourGame(io, socket, action) {
             if(!rooms[index]) {
                 return;
             }
-            turn = rooms[index][roomName].game.turn()
+            turn = rooms[index][roomName].game.turn();
             turn = formatTurn(turn);
 
             //make the move
@@ -224,8 +224,6 @@ function fourGame(io, socket, action) {
                 newTurnFormatted = formatTurn(newTurn);
 
                 if(rooms[index][roomName][newTurnFormatted].type == "computer") {
-                    //console.log(rooms[index][roomName].game.fen().split('-')[0]);
-                    console.log("computer moving:", newTurn);
                     fourComputers[roomName].stdin.write("position fen " + rooms[index][roomName].game.fen().split('-')[0] + "\n");
 
                     //tell the computer whose turn it is

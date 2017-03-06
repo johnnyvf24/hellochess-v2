@@ -50,6 +50,11 @@ module.exports.removeTimersFromRooms = function(rooms) {
 }
 
 module.exports.deleteRoomByName = function(name) {
+    if(fourComputers[roomName]) {
+        fourComputers[roomName].stdin.pause();
+        fourComputers[roomName].kill();
+        delete fourComputers[roomName];
+    }
     for (let i = 0; i < rooms.length; i++) {
         if (rooms[i] !== undefined) {
             mapObject(rooms[i], (key, val) => {
