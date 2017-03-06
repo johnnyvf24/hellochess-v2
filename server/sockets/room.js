@@ -406,7 +406,6 @@ function room(io, socket, action) {
                             fourComputers[roomName] = spawn("./engine/fourengine");
                             fourComputers[roomName].stdout.on('data', function(data) {
                                 var str = ab2str(data);
-                                console.log(str);
                                 if(str.indexOf("bestmove") !== -1) {
 
                                     let compMove = {
@@ -414,8 +413,6 @@ function room(io, socket, action) {
                                         from: str.substr(str.indexOf("bestmove") + 9, str.length).split('-')[0],
                                         promotion: 'q'
                                     };
-
-                                    console.log(compMove);
 
                                     socket.emit('action', {
                                         type: 'server/four-new-move',

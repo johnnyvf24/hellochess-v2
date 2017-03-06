@@ -42,7 +42,7 @@ function startTimerCountDown(io, roomName, index) {
 
         let loser, winner;
 
-        if(!rooms[index][roomName]) {
+        if(!rooms[index]) {
             // log rooms value
             return;
         }
@@ -117,7 +117,7 @@ function startTimerCountDown(io, roomName, index) {
                             fourComputers[roomName].stdin.write("turn 3\n");
                             break;
                     }
-                    
+
                     let numOut = 0;
 
                     if(rooms[index][roomName].game.isWhiteOut()) {
@@ -136,7 +136,7 @@ function startTimerCountDown(io, roomName, index) {
                         fourComputers[roomName].stdin.write("out 3\n");
                         numOut++;
                     }
-                    
+
                     if(numOut == 0) {
                         fourComputers[roomName].stdin.write("go depth 4\n");
                     } else if(numOut == 1) {
