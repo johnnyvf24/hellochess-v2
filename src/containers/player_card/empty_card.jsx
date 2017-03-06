@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {sitDownBoard, sitDownComputer} from '../../../actions/room';
+import {sitDownBoard, sitDownComputer} from '../../actions/room';
 
-class SitWhite extends Component {
+class EmptyCard extends Component {
     constructor(props) {
         super(props);
     }
@@ -11,7 +11,7 @@ class SitWhite extends Component {
         let obj = {};
         obj.profile = this.props.profile;
         obj.roomName = this.props.activeThread;
-        obj.color = 'w';
+        obj.color = this.props.color;
         this.props.sitDownBoard(obj);
     }
 
@@ -28,7 +28,7 @@ class SitWhite extends Component {
                 bullet: 1100
             }
         }
-        obj.color = 'w';
+        obj.color = this.props.color;
         this.props.sitDownComputer(obj);
     }
     
@@ -53,7 +53,7 @@ class SitWhite extends Component {
         let aiButton = this.renderAIButton();
         return (
             <div className="card player-card">
-                <div className="card-block">
+                <div className={"card-block " + this.props.colorClass}>
                     <div className="row">
                         <div className="btn-group">
                             <button
@@ -81,4 +81,4 @@ function mapStateToProps(state) {
 }
 
 
-export default connect(mapStateToProps,  {sitDownBoard, sitDownComputer}) (SitWhite)
+export default connect(mapStateToProps,  {sitDownBoard, sitDownComputer}) (EmptyCard)

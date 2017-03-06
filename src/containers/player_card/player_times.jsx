@@ -1,45 +1,39 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import OnWhite from './occupied/on_white';
-import OnBlack from './occupied/on_black';
-import OnGold from './occupied/on_gold';
-import OnRed from './occupied/on_red';
-import SitWhite from './empty/sit_white';
-import SitBlack from './empty/sit_black';
-import SitGold from './empty/sit_gold';
-import SitRed from './empty/sit_red';
+import OccupiedCard from './occupied_card';
+import EmptyCard from './empty_card';
 
 class PlayerTimes extends Component {
 
     renderWhite(thread) {
         if (thread.white) {
-            return <OnWhite key="OnWhite"/>
+            return <OccupiedCard color="w" longColor="white" colorClass=""/>
         } else {
-            return <SitWhite key="SitWhite"/>
+            return <EmptyCard color="w" colorClass=""/>
         }
     }
 
     renderBlack(thread) {
         if (thread.black) {
-            return <OnBlack key="OnBlack"/>
+            return <OccupiedCard color="b" longColor="black" colorClass="black-player"/>
         } else {
-            return <SitBlack key="SitBlack"/>
+            return <EmptyCard color="b" colorClass="black-player"/>
         }
     }
 
     renderGold(thread) {
         if (thread.gold) {
-            return <OnGold key="OnGold"/>
+            return <OccupiedCard color="g" longColor="gold" colorClass="gold-player"/>
         } else {
-            return <SitGold key="SitGold"/>
+            return <EmptyCard color="g" colorClass="gold-player"/>
         }
     }
 
     renderRed(thread) {
         if (thread.red) {
-            return <OnRed key="OnRed"/>
+            return <OccupiedCard color="r" longColor="red" colorClass="red-player"/>
         } else {
-            return <SitRed key="SitRed"/>
+            return <EmptyCard color="r" colorClass="red-player"/>
         }
     }
 
