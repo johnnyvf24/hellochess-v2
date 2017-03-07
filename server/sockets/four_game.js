@@ -140,10 +140,10 @@ function fourGame(io, socket, action) {
             		}
 
             		if( numOut == 1 &&
-                        rooms[roomIndex][roomName][currentTurn].time > 60000) {
+                        rooms[roomIndex][roomName][currentTurn].time > 120000) {
             		    fourComputers[roomName].stdin.write("go depth 6\n");
             		} else if(numOut == 2 &&
-                             rooms[roomIndex][roomName][currentTurn].time > 60000)
+                             rooms[roomIndex][roomName][currentTurn].time > 120000)
                     {
             		    fourComputers[roomName].stdin.write("go depth 6\n");
             		} else {
@@ -280,10 +280,10 @@ function fourGame(io, socket, action) {
             		}
 
                     if( numOut == 1 &&
-                        rooms[index][roomName][newTurnFormatted].time > 60000) {
+                        rooms[index][roomName][newTurnFormatted].time > 120000) {
             		    fourComputers[roomName].stdin.write("go depth 6\n");
             		} else if(numOut == 2 &&
-                         rooms[index][roomName][newTurnFormatted].time > 60000) 
+                         rooms[index][roomName][newTurnFormatted].time > 120000)
                     {
             		    fourComputers[roomName].stdin.write("go depth 6\n");
             		} else {
