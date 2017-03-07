@@ -223,8 +223,12 @@ class FourBoard extends Component {
     }
 
     render() {
-        this.shadeSquare(this.shadeSquareSource);
-        this.shadeSquare(this.shadeSquareDest);
+        if (this.props.fen
+            && this.props.move.from == this.shadeSquareSource
+            && this.props.move.to == this.shadeSquareDest) {
+            this.shadeSquare(this.shadeSquareSource);
+            this.shadeSquare(this.shadeSquareDest);
+        }
         return (
             <div id="board"></div>
         );
