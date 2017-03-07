@@ -21,11 +21,12 @@ class EmptyCard extends Component {
         obj.profile = {
             type: 'computer',
             username: 'AI',
+            picture: 'https://openclipart.org/image/75px/svg_to_png/168755/cartoon-robot.png&disposition=attachment',
             four_elos: {
-                classic: 1100,
-                rapid: 1100,
-                blitz: 1100,
-                bullet: 1100
+                classic: 1200,
+                rapid: 1200,
+                blitz: 1200,
+                bullet: 1200
             }
         }
         obj.color = this.props.color;

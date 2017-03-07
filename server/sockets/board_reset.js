@@ -59,15 +59,19 @@ function startTimerCountDown(io, roomName, index) {
             rooms[index][roomName].game.nextTurn();
             if(turn == 'white') {
                 rooms[index][roomName].game.setWhiteOut();
+                rooms[index][roomName].white.alive = false;
             }
             else if(turn == 'black') {
                 rooms[index][roomName].game.setBlackOut();
+                rooms[index][roomName].black.alive = false;
             }
             else if(turn == 'gold') {
                 rooms[index][roomName].game.setGoldOut();
+                rooms[index][roomName].gold.alive = false;
             }
             else if(turn == 'red') {
                 rooms[index][roomName].game.setRedOut();
+                rooms[index][roomName].red.alive = false;
             }
 
             if(rooms[index][roomName].game.game_over()) {
@@ -84,6 +88,7 @@ function startTimerCountDown(io, roomName, index) {
                         thread: roomName,
                         fen: rooms[index][roomName].game.fen(),
                         lastTurn: turn,
+                        outColor: turn,
                         time: 1
                     }
                 });

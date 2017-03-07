@@ -1,6 +1,8 @@
+var spawn = require('child_process').spawn;
+
 const Elo = require('elo-js');
 const {FourChess} = require('../../common/fourchess');
-const {mapObject} = require('../utils/utils');
+const {mapObject, ab2str} = require('../utils/utils');
 const {User} = require('../models/user');
 const Notifications = require('react-notification-system-redux');
 const {clients, rooms, roomExists, getRoomByName, formatTurn} = require('./data');
@@ -31,24 +33,28 @@ function fourGame(io, socket, action) {
 
             if (rooms[roomIndex][roomName].white._id == loser._id) {
                 rooms[roomIndex][roomName].game.setWhiteOut();
+                rooms[roomIndex][roomName].white.alive = false;
                 loserColor = 'w';
                 if (rooms[roomIndex][roomName].game.turn() == 'w') {
                     rooms[roomIndex][roomName].game.nextTurn();
                 }
             } else if (rooms[roomIndex][roomName].black._id == loser._id) {
                 rooms[roomIndex][roomName].game.setBlackOut();
+                rooms[roomIndex][roomName].black.alive = false;
                 loserColor = 'b';
                 if (rooms[roomIndex][roomName].game.turn() == 'b') {
                     rooms[roomIndex][roomName].game.nextTurn();
                 }
             } else if (rooms[roomIndex][roomName].gold._id == loser._id) {
                 rooms[roomIndex][roomName].game.setGoldOut();
+                rooms[roomIndex][roomName].gold.alive = false;
                 loserColor = 'g';
                 if (rooms[roomIndex][roomName].game.turn() == 'g') {
                     rooms[roomIndex][roomName].game.nextTurn();
                 }
             } else if (rooms[roomIndex][roomName].red._id == loser._id) {
                 rooms[roomIndex][roomName].game.setRedOut();
+                rooms[roomIndex][roomName].red.alive = false;
                 loserColor = 'r';
                 if (rooms[roomIndex][roomName].game.turn() == 'r') {
                     rooms[roomIndex][roomName].game.nextTurn();
@@ -132,14 +138,15 @@ function fourGame(io, socket, action) {
             			fourComputers[roomName].stdin.write("out 3\n");
             			numOut++;
             		}
-
-            		if(numOut == 0) {
-                        fourComputers[roomName].stdin.write("go depth 4\n");
-                    } else if(numOut == 1) {
-                        fourComputers[roomName].stdin.write("go depth 4\n");
-                    } else if(numOut == 2) {
-                        fourComputers[roomName].stdin.write("go depth 6\n");
-                    }
+            		
+            		if(numOut == 1) {
+            		    fourComputers[roomName].stdin.write("go depth 6\n");
+            		} else if(numOut == 2) {
+            		    fourComputers[roomName].stdin.write("go depth 6\n");
+            		}else {
+            		    fourComputers[roomName].stdin.write("go depth 6\n");
+            		}
+            		
                 }
             }
             break;
@@ -149,6 +156,7 @@ function fourGame(io, socket, action) {
             move = action.payload.move;
             let lastMove = action.payload.move;
             index = findRoomIndexByName(roomName);
+            let outColor;
 
             //get who's turn it is
             if(!rooms[index]) {
@@ -168,7 +176,9 @@ function fourGame(io, socket, action) {
             } else {
                 if (move.color) {
                     let loser = formatTurn(move.color);
+                    outColor = loser;
                     let lostPlayer = rooms[index][roomName][loser].username;
+                    rooms[index][roomName][loser].alive = false;
                     const notificationOpts = {
                         title: 'Player Elimination',
                         message: `${lostPlayer} (${loser}) has been eliminated!`,
@@ -181,7 +191,6 @@ function fourGame(io, socket, action) {
                 }
                 let currentTurn;
                 if (rooms[index][roomName].game.inCheckMate()) {
-
                     currentTurn = formatTurn(rooms[index][roomName].game.turn());
                     currentPlayer = rooms[index][roomName][currentTurn].username;
                     const notificationOpts = {
@@ -210,7 +219,8 @@ function fourGame(io, socket, action) {
                         lastTurn: turn,
                         turn: rooms[index][roomName].game.turn(),
                         time: rooms[index][roomName][turn].time,
-                        move: lastMove
+                        move: lastMove,
+                        outColor: outColor
                     }
                 });
 
@@ -265,14 +275,15 @@ function fourGame(io, socket, action) {
             			fourComputers[roomName].stdin.write("out 3\n");
             			numOut++;
             		}
-
-                    if(numOut == 0) {
-                        fourComputers[roomName].stdin.write("go depth 4\n");
-                    } else if(numOut == 1) {
-                        fourComputers[roomName].stdin.write("go depth 4\n");
-                    } else if(numOut == 2) {
-                        fourComputers[roomName].stdin.write("go depth 6\n");
-                    }
+            		
+            		if(numOut == 1) {
+            		    fourComputers[roomName].stdin.write("go depth 6\n");
+            		} else if(numOut == 2) {
+            		    fourComputers[roomName].stdin.write("go depth 6\n");
+            		}else {
+            		    fourComputers[roomName].stdin.write("go depth 6\n");
+            		    
+            		}
                 }
             }
 

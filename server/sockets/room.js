@@ -113,7 +113,6 @@ function room(io, socket, action) {
 
                     //calculate the time difference between the last move
                     let timeElapsed = Date.now() - rooms[roomIndex][roomName].lastMove;
-                    rooms[roomIndex][roomName][turn].time - timeElapsed;
 
                     //synchronize everyone's times at the end
                     socket.emit('action', {

@@ -71,21 +71,27 @@ function openThreads(state = {}, action) {
             newState[action.payload.thread].move = action.payload.move;
             newState[action.payload.thread].lastMove = action.payload.lastMove;
             newState[action.payload.thread][action.payload.lastTurn].time = action.payload.time;
+            if (action.payload.outColor)
+                newState[action.payload.thread][action.payload.outColor].alive = false;
             return newState;
         case 'four-resign':
             newState = Object.assign({}, state);
             switch(action.payload.color) {
                 case 'w':
                     newState[action.payload.thread].white.resigned = true;
+                    newState[action.payload.thread].white.alive = false;
                     break;
                 case 'b':
                     newState[action.payload.thread].black.resigned = true;
+                    newState[action.payload.thread].black.alive = false;
                     break;
                 case 'g':
                     newState[action.payload.thread].gold.resigned = true;
+                    newState[action.payload.thread].gold.alive = false;
                     break;
                 case 'r':
                     newState[action.payload.thread].red.resigned = true;
+                    newState[action.payload.thread].red.alive = false;
                     break;
             }
 
@@ -121,21 +127,25 @@ function openThreads(state = {}, action) {
             newState = Object.assign({}, state);
             newState[action.payload.thread].white = action.payload.room;
             newState[action.payload.thread].paused = true;
+            newState[action.payload.thread].white.alive = true;
             return newState;
         case 'sit-down-black':
             newState = Object.assign({}, state);
             newState[action.payload.thread].black = action.payload.room;
             newState[action.payload.thread].paused = true;
+            newState[action.payload.thread].black.alive = true;
             return newState;
         case 'sit-down-gold':
             newState = Object.assign({}, state);
             newState[action.payload.thread].gold = action.payload.room;
             newState[action.payload.thread].paused = true;
+            newState[action.payload.thread].gold.alive = true;
             return newState;
         case 'sit-down-red':
             newState = Object.assign({}, state);
             newState[action.payload.thread].red = action.payload.room;
             newState[action.payload.thread].paused = true;
+            newState[action.payload.thread].red.alive = true;
             return newState;
         case 'up-white':
             newState = Object.assign({}, state);
