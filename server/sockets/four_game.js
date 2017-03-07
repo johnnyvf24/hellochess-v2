@@ -138,15 +138,18 @@ function fourGame(io, socket, action) {
             			fourComputers[roomName].stdin.write("out 3\n");
             			numOut++;
             		}
-            		
-            		if(numOut == 1) {
+
+            		if( numOut == 1 &&
+                        rooms[roomIndex][roomName][currentTurn].time > 60000) {
             		    fourComputers[roomName].stdin.write("go depth 6\n");
-            		} else if(numOut == 2) {
+            		} else if(numOut == 2 &&
+                             rooms[roomIndex][roomName][currentTurn].time > 60000)
+                    {
             		    fourComputers[roomName].stdin.write("go depth 6\n");
-            		}else {
-            		    fourComputers[roomName].stdin.write("go depth 6\n");
+            		} else {
+            		    fourComputers[roomName].stdin.write("go depth 4\n");
             		}
-            		
+
                 }
             }
             break;
@@ -170,7 +173,7 @@ function fourGame(io, socket, action) {
             // store the move on the server
             rooms[index][roomName].move = lastMove;
             rooms[index][roomName].turn = rooms[index][roomName].game.turn();
-            
+
             if (move === null) {
                 //handle cheating scenario
             } else {
@@ -275,14 +278,16 @@ function fourGame(io, socket, action) {
             			fourComputers[roomName].stdin.write("out 3\n");
             			numOut++;
             		}
-            		
-            		if(numOut == 1) {
+
+                    if( numOut == 1 &&
+                        rooms[index][roomName][newTurnFormatted].time > 60000) {
             		    fourComputers[roomName].stdin.write("go depth 6\n");
-            		} else if(numOut == 2) {
+            		} else if(numOut == 2 &&
+                         rooms[index][roomName][newTurnFormatted].time > 60000) 
+                    {
             		    fourComputers[roomName].stdin.write("go depth 6\n");
-            		}else {
-            		    fourComputers[roomName].stdin.write("go depth 6\n");
-            		    
+            		} else {
+            		    fourComputers[roomName].stdin.write("go depth 4\n");
             		}
                 }
             }
