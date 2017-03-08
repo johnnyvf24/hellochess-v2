@@ -65,7 +65,6 @@ function openThreads(state = {}, action) {
             return newState;
         case 'four-new-move':
             newState = Object.assign({}, state);
-            console.log(action.payload.fen);
             newState[action.payload.thread].fen = action.payload.fen;
             newState[action.payload.thread].turn = action.payload.turn;
             newState[action.payload.thread].move = action.payload.move;

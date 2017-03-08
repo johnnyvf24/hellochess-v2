@@ -5,6 +5,7 @@ import Chess from 'chess.js'; //game rules
 
 import {newMove} from '../../actions/room';
 import {DARK_SQUARE_HIGHLIGHT_COLOR, LIGHT_SQUARE_HIGHLIGHT_COLOR} from './board_wrapper.jsx'
+import {DARK_SQUARE_PREMOVE_COLOR, LIGHT_SQUARE_PREMOVE_COLOR} from './board_wrapper.jsx'
 
 class TwoBoard extends Component {
 
@@ -16,6 +17,7 @@ class TwoBoard extends Component {
         this.shadeSquareSource = null;
         this.shadeSquareDest = null;
         this.prevMoveResizeListener = null;
+        this.premove = null;
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -27,19 +29,21 @@ class TwoBoard extends Component {
         if(nextProps.fen) {
             this.board.position(nextProps.fen, false);
             this.game.load(nextProps.fen);
+            let usColor = 'w';
             if(nextProps.room.black._id === nextProps.profile._id) {
                 this.board.orientation('black');
+                usColor = 'b';
             } else {
                 this.board.orientation('white');
+                usColor = 'w';
             }
 
             if(nextProps.move) {
-                this.board.resize(); // clear square shadings
-                this.shadeSquare(nextProps.move.from);
-                this.shadeSquare(nextProps.move.to);
+                this.shadeSquareSource = nextProps.move.from;
+                this.shadeSquareDest = nextProps.move.to;
+                this.boardRedraw();
                 let shadeOnResize = function(event) {
-                    this.shadeSquare(nextProps.move.from);
-                    this.shadeSquare(nextProps.move.to);
+                    this.boardRedraw();
                 }.bind(this);
                 if (this.prevMoveResizeListener) {
                     // remove listener for previous move
@@ -47,6 +51,10 @@ class TwoBoard extends Component {
                 }
                 window.addEventListener('resize', shadeOnResize);
                 this.prevMoveResizeListener = shadeOnResize;
+                // execute premove if it's our turn
+                if (nextProps.room.turn === usColor) {
+                    this.executePremove();
+                }
             }
             if(nextProps.pgn) {
                 this.game.load_pgn(nextProps.pgn);
@@ -58,7 +66,7 @@ class TwoBoard extends Component {
                 window.removeEventListener('resize', this.prevMoveResizeListener);
             }
             this.prevMoveResizeListener = null;
-            this.board.resize(); // redraw the board to remove square shading
+            this.boardRedraw(); // redraw the board to remove square shading
         }
     }
 
@@ -86,6 +94,21 @@ class TwoBoard extends Component {
             return false;
         }
     }
+    
+    formatTurn(turn) {
+        switch(turn) {
+            case 'w':
+                return 'white';
+            case 'b':
+                return 'black';
+        }
+    }
+    
+    boardRedraw() {
+        this.board.resize();
+        this.shadeLastMove();
+        this.renderPremove();
+    }
 
     shadeSquare(square) {
         if (!square) {
@@ -100,13 +123,83 @@ class TwoBoard extends Component {
 
         squareEl.css('background', background);
     }
+    
+    shadeLastMove() {
+        if (this.shadeSquareSource)
+            this.shadeSquare(this.shadeSquareSource);
+        if (this.shadeSquareDest)
+            this.shadeSquare(this.shadeSquareDest);
+    }
+    
+    shadeSquarePremove(square) {
+        if (!square)
+            return;
+        var squareEl = $('#board .square-' + square);
+        
+        var background = LIGHT_SQUARE_PREMOVE_COLOR;
+        if (squareEl.hasClass('black-3c85d') === true) {
+            background = DARK_SQUARE_PREMOVE_COLOR;
+        }
+
+        squareEl.css('background', background);
+    }
+    
+    renderPremove() {
+        if (this.premove) {
+            this.shadeSquarePremove(this.premove.source);
+            this.shadeSquarePremove(this.premove.target);
+        }
+    }
+    
+    setPremove(source, target) {
+        this.resetPremove();
+        let clickListener = (event) => {
+            this.resetPremove();
+        };
+        $("#board").on('click', clickListener);
+        this.premove = {
+            source: source,
+            target: target,
+            clickListener: clickListener
+        }
+        // draw the premove
+        this.renderPremove();
+    }
+    
+    executePremove() {
+        if (!this.premove)
+            return;
+        let action = {
+            from: this.premove.source,
+            to: this.premove.target,
+            promotion: 'q'
+        };
+        //this.game.move(action);
+        //this.board.position(this.game.fen(), false);
+        this.resetPremove();
+        this.props.newMove(action, this.props.name);
+    }
+    
+    resetPremove() {
+        if (this.premove) {
+            this.boardEl.off('click', this.premove.clickListener);
+        }
+        this.premove = null;
+        this.boardRedraw();
+    }
 
     onDrop(source, target) {
+        let turn = this.formatTurn(this.game.turn());
         let action = {
             from: source,
             to: target,
             promotion: 'q' // NOTE: always promote to a queen for example simplicity
         };
+        if(this.props.room[turn]._id !== this.props.profile._id) {
+            // set as premove
+            this.setPremove(source, target);
+            return 'snapback';
+        }
 
         // see if the move is legal
         let move = this.game.move(action);
@@ -118,8 +211,7 @@ class TwoBoard extends Component {
         this.props.newMove(action, this.props.name);
         this.shadeSquareSource = source;
         this.shadeSquareDest = target;
-        this.shadeSquare(this.shadeSquareSource);
-        this.shadeSquare(this.shadeSquareDest);
+        this.shadeLastMove();
     }
 
     onMouseoutSquare() {
@@ -165,13 +257,16 @@ class TwoBoard extends Component {
         }
 
         window.addEventListener('resize', (event) => {
-            this.board.resize();
+            this.boardRedraw();
         });
     }
 
     render() {
-        this.shadeSquare(this.shadeSquareSource);
-        this.shadeSquare(this.shadeSquareDest);
+        if (this.props.fen
+            && this.props.move.from == this.shadeSquareSource
+            && this.props.move.to == this.shadeSquareDest) {
+                this.shadeLastMove();
+        }
         return (
             <div id="board"></div>
         );
