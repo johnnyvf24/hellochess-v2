@@ -23,3 +23,19 @@ exports.updateUser = (req, res, next) => {
         return res.status(400).send();
     }
 }
+
+exports.getUserProfile = (req, res, next) => {
+    const id = req.params.id;
+
+    if(!ObjectID.isValid(id)) {
+        return res.status(404).send();
+    }
+
+    User.findById(id)
+        .then((user) => {
+            res.send(user);
+        })
+        .catch((e) => {
+            res.status(400).send();
+        });
+}

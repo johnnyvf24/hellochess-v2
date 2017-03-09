@@ -61,7 +61,7 @@ if(env == "production") {
     }
 
 } else if(env == "staging") {
-    
+
     //CORS middleware for testing purposes
     var allowCrossDomain = function(req, res, next) {
         res.header('Access-Control-Allow-Origin', ['https://hellochess-dev-johnnyvf24.c9users.io']);
@@ -70,14 +70,14 @@ if(env == "production") {
         res.header('Access-Control-Expose-Headers', 'x-auth');
         next();
     }
-    
+
 } else {
 
     //CORS middleware for testing purposes
     var allowCrossDomain = function(req, res, next) {
         res.header('Access-Control-Allow-Origin', ['http://localhost:8080']);
         res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH');
-        res.header('Access-Control-Allow-Headers', 'Content-Type,x-auth');
+        res.header('Access-Control-Allow-Headers', 'Content-Type, x-auth');
         res.header('Access-Control-Expose-Headers', 'x-auth');
         next();
     }
@@ -98,6 +98,10 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, '../public')));
 
 app.get("/live", (req, res) => {
+    res.sendFile(path.join(__dirname, "../public/index.html"));
+});
+
+app.get('/profile/:id', (req, res) => {
     res.sendFile(path.join(__dirname, "../public/index.html"));
 });
 

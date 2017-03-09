@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {tick, removeComputer} from '../../actions/room';
 import {millisToMinutesAndSeconds, formatTurn, showElo} from '../../utils/index';
+import { browserHistory } from 'react-router';
 
 class OccupiedCard extends Component {
 
@@ -72,7 +73,7 @@ class OccupiedCard extends Component {
     renderTime(time) {
         return millisToMinutesAndSeconds(time);
     }
-    
+
     // Alive = still playing
     // Dead = resigned or flagged
     // if dead, returns the className that will
@@ -98,7 +99,10 @@ class OccupiedCard extends Component {
                         { !game.fen && this.renderLeaveSeat(player, name)}
 
                         <div className="row">
-                            <img className="player-img rounded-circle" src={player.picture} />
+                            <a href="#"
+                                onClick={(e) => browserHistory.push(`/profile/${player._id}`)}>
+                                <img className="player-img rounded-circle" src={player.picture} />
+                            </a>
                             <div className="card-text"><h5>{player.username}</h5>{showElo(game, player)}</div>
                         </div>
 
