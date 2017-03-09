@@ -17,6 +17,8 @@ module.exports = class Engine {
     }
     
     colorToTurnNumber(color) {
+        if (!color)
+            return '0';
         color = color.charAt(0);
         let turn;
         switch(color) {

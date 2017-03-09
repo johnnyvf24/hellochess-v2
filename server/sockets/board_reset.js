@@ -247,6 +247,11 @@ function endGame(io, timeType, wOldElo, lOldElo, winner, loser, roomIndex, roomN
     delete rooms[roomIndex][roomName].game;
     clearTimeout(timers[roomName]);
 
+    if(twoComputers[roomName]) {
+        twoComputers[roomName].kill();
+        delete twoComputers[roomName];
+    }
+    
     //kick both players from board and restart game
     setTimeout(() => {
         delete rooms[roomIndex][roomName].white;
@@ -448,10 +453,6 @@ function endFourPlayerGame(io, roomName, index) {
     clearTimeout(timers[roomName]);
     delete rooms[index][roomName].game;
 
-    if(twoComputers[roomName]) {
-        twoComputers.kill();
-        delete twoComputers[roomName];
-    }
 
     if(fourComputers[roomName]) {
         fourComputers[roomName].kill();

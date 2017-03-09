@@ -242,7 +242,7 @@ class TwoBoard extends Component {
 
             //there is a pgn to get the prior moves
             if(this.props.pgn) {
-                this.game.load_pgn(this.props.fen);
+                this.game.load_pgn(this.props.pgn);
             }
 
             if(this.props.room.black._id === this.props.profile._id) {
