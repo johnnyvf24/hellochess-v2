@@ -8,8 +8,9 @@ const {getTimeTypeForTimeControl, getEloForTimeControl} = require('./data');
 const {findRoomIndexByName, deleteUserFromBoardSeats} = require('./data');
 const {deleteRoomByName, getAllRoomMembers} = require('./data');
 const {addMessageToRoom, getRecentMessages} = require('./data');
-const {userSittingAndGameOngoing, fourComputers} = require('./data');
+const {userSittingAndGameOngoing, fourComputers, twoComputers} = require('./data');
 const {startTimerCountDown} = require('./board_reset');
+const TwoEngine = require('../../engine/TwoEngine');
 const FourEngine = require('../../engine/FourEngine');
 
 
@@ -363,10 +364,23 @@ function room(io, socket, action) {
                                 lastMove: rooms[index][roomName].lastmove
                             }
                         })
+                        //First player to move is the AI
+                        if(rooms[index][roomName].white.type == "computer"
+                           || rooms[index][roomName].black.type == "computer") {
+                            twoComputers[roomName] =
+                                new TwoEngine("./engine/bin/stockfish_8_x64", roomName, socket);
+                           }
 
                         //start first players timer
-                        // initTimerSync(io, roomName, index);
                         startTimerCountDown(io, roomName, index);
+                        
+                        if(rooms[index][roomName].white.type == "computer") {
+                            twoComputers[roomName].setPosition(rooms[index][roomName].game.fen());
+
+
+                            //search for a move
+                            twoComputers[roomName].go();
+                        }
                     }
                 } else if (rooms[index][roomName].gameType === "four-player") {
                     //Check to see if the game is ready to start
@@ -401,7 +415,8 @@ function room(io, socket, action) {
                            || rooms[index][roomName].black.type == "computer"
                            || rooms[index][roomName].gold.type == "computer"
                            || rooms[index][roomName].red.type == "computer") {
-                            fourComputers[roomName] = new FourEngine("./engine/fourengine", roomName, socket);
+                            fourComputers[roomName] =
+                                new FourEngine("./engine/bin/fourengine", roomName, socket);
 
                             //start first players timer
                             startTimerCountDown(io, roomName, index);

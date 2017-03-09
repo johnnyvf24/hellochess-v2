@@ -18,34 +18,34 @@ class EmptyCard extends Component {
     aiSit(event) {
         let obj = {};
         obj.roomName = this.props.activeThread;
+        let elos;
+        if (this.props.game.gameType === "two-player")
+            elos = "two_elos";
+        else if (this.props.game.gameType === "four-player")
+            elos = "four_elos";
         obj.profile = {
             type: 'computer',
             username: 'AI',
             picture: 'https://openclipart.org/image/75px/svg_to_png/168755/cartoon-robot.png&disposition=attachment',
-            four_elos: {
-                classic: 1200,
-                rapid: 1200,
-                blitz: 1200,
-                bullet: 1200
-            }
-        }
+        };
+        obj.profile[elos] = {
+            classic: 1200,
+            rapid: 1200,
+            blitz: 1200,
+            bullet: 1200
+        };
         obj.color = this.props.color;
         this.props.sitDownComputer(obj);
     }
     
     renderAIButton() {
-        const {game} = this.props;
-        if (game.gameType === "two-player") {
-            return (<div></div>);
-        } else {
-            return (
-                <button type="button"
-                    className="btn btn-default"
-                    onClick={this.aiSit.bind(this)}>
-                    <i className="fa fa-laptop" aria-hidden="true"></i>
-                </button>
-            );
-        }
+        return (
+            <button type="button"
+                className="btn btn-default"
+                onClick={this.aiSit.bind(this)}>
+                <i className="fa fa-laptop" aria-hidden="true"></i>
+            </button>
+        );
     }
 
     render() {

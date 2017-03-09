@@ -6,7 +6,7 @@ const Notifications = require('react-notification-system-redux');
 const {clients, rooms, roomExists, getRoomByName, formatTurn} = require('./data');
 const {getTimeTypeForTimeControl, getEloForTimeControl} = require('./data');
 const {findRoomIndexByName, deleteUserFromBoardSeats} = require('./data');
-const {deleteRoomByName, timers, fourComputers} = require('./data');
+const {deleteRoomByName, timers, fourComputers, twoComputers} = require('./data');
 const {userSittingAndGameOngoing} = require('./data');
 
 function startTimerCountDown(io, roomName, index) {
@@ -447,6 +447,11 @@ function endFourPlayerGame(io, roomName, index) {
     //Stop the clocks
     clearTimeout(timers[roomName]);
     delete rooms[index][roomName].game;
+
+    if(twoComputers[roomName]) {
+        twoComputers.kill();
+        delete twoComputers[roomName];
+    }
 
     if(fourComputers[roomName]) {
         fourComputers[roomName].kill();
