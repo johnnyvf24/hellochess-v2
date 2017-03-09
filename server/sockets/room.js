@@ -1,5 +1,3 @@
-var spawn = require('child_process').spawn;
-
 const {mapObject, ab2str} = require('../utils/utils');
 const {FourChess} = require('../../common/fourchess');
 const {Chess} = require('chess.js');
@@ -10,8 +8,10 @@ const {getTimeTypeForTimeControl, getEloForTimeControl} = require('./data');
 const {findRoomIndexByName, deleteUserFromBoardSeats} = require('./data');
 const {deleteRoomByName, getAllRoomMembers} = require('./data');
 const {addMessageToRoom, getRecentMessages} = require('./data');
-const {userSittingAndGameOngoing, fourComputers} = require('./data');
+const {userSittingAndGameOngoing, fourComputers, twoComputers} = require('./data');
 const {startTimerCountDown} = require('./board_reset');
+const TwoEngine = require('../../engine/TwoEngine');
+const FourEngine = require('../../engine/FourEngine');
 
 
 function room(io, socket, action) {
@@ -113,7 +113,6 @@ function room(io, socket, action) {
 
                     //calculate the time difference between the last move
                     let timeElapsed = Date.now() - rooms[roomIndex][roomName].lastMove;
-                    rooms[roomIndex][roomName][turn].time - timeElapsed;
 
                     //synchronize everyone's times at the end
                     socket.emit('action', {
@@ -365,10 +364,23 @@ function room(io, socket, action) {
                                 lastMove: rooms[index][roomName].lastmove
                             }
                         })
+                        //First player to move is the AI
+                        if(rooms[index][roomName].white.type == "computer"
+                           || rooms[index][roomName].black.type == "computer") {
+                            twoComputers[roomName] =
+                                new TwoEngine("./engine/bin/stockfish_8_x64", roomName, socket);
+                           }
 
                         //start first players timer
-                        // initTimerSync(io, roomName, index);
                         startTimerCountDown(io, roomName, index);
+                        
+                        if(rooms[index][roomName].white.type == "computer") {
+                            twoComputers[roomName].setPosition(rooms[index][roomName].game.fen());
+
+
+                            //search for a move
+                            twoComputers[roomName].go();
+                        }
                     }
                 } else if (rooms[index][roomName].gameType === "four-player") {
                     //Check to see if the game is ready to start
@@ -403,38 +415,20 @@ function room(io, socket, action) {
                            || rooms[index][roomName].black.type == "computer"
                            || rooms[index][roomName].gold.type == "computer"
                            || rooms[index][roomName].red.type == "computer") {
-                            fourComputers[roomName] = spawn("./engine/fourengine");
-                            fourComputers[roomName].stdout.on('data', function(data) {
-                                var str = ab2str(data);
-                                if(str.indexOf("bestmove") !== -1) {
-
-                                    let compMove = {
-                                        to: str.substr(str.indexOf("bestmove") + 9, str.length).split('-')[1].replace('\n', ''),
-                                        from: str.substr(str.indexOf("bestmove") + 9, str.length).split('-')[0],
-                                        promotion: 'q'
-                                    };
-
-                                    socket.emit('action', {
-                                        type: 'server/four-new-move',
-                                        payload: {
-                                            thread: roomName,
-                                            move: compMove
-                                        }
-                                    });
-                                }
-                            });
+                            fourComputers[roomName] =
+                                new FourEngine("./engine/bin/fourengine", roomName, socket);
 
                             //start first players timer
                             startTimerCountDown(io, roomName, index);
 
                             if(rooms[index][roomName].white.type == "computer") {
-                                fourComputers[roomName].stdin.write("position fen " + rooms[index][roomName].game.fen().split('-')[0] + "\n");
+                                fourComputers[roomName].setPosition(rooms[index][roomName].game.fen());
 
                                 //tell the computer it's white's turn
-                                fourComputers[roomName].stdin.write("turn 0\n");
+                                fourComputers[roomName].setTurn('w');
 
                                 //search for a move
-                                fourComputers[roomName].stdin.write("go depth 4\n");
+                                fourComputers[roomName].go();
                             }
 
                         }

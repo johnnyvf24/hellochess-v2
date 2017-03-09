@@ -8,6 +8,7 @@ const {findRoomIndexByName, deleteUserFromBoardSeats} = require('./data');
 const {deleteRoomByName} = require('./data');
 const {userSittingAndGameOngoing} = require('./data');
 const {endGame, startTimerCountDown} = require('./board_reset');
+const {twoComputers} = require('./data');
 
 function twoGame(io, socket, action) {
     let roomName;
@@ -26,6 +27,10 @@ function twoGame(io, socket, action) {
             } else {
                 userObj2 = rooms[roomIndex][roomName].white;
                 userObj = rooms[roomIndex][roomName].black;
+            }
+            
+            if (userObj2.type === "computer") {
+                break;
             }
 
             User.findById(userObj2._id)
@@ -123,7 +128,7 @@ function twoGame(io, socket, action) {
             index = findRoomIndexByName(roomName);
 
             //get whose turn it is
-            if(!rooms[index][roomName].game) {
+            if(!rooms[index] || !rooms[index][roomName].game) {
                 break;
             }
             turn = rooms[index][roomName].game.turn()
@@ -142,6 +147,9 @@ function twoGame(io, socket, action) {
                 rooms[index][roomName][turn].time += rooms[index][roomName].time.increment * 1000;
 
                 startTimerCountDown(io, roomName, index);
+                
+                // store the move on the server
+                rooms[index][roomName].move = move;
 
                 io.to(roomName).emit('action', {
                     type: 'new-move',
@@ -160,7 +168,7 @@ function twoGame(io, socket, action) {
 
             //check to see if the game is over
             if (rooms[index][roomName].game.game_over()) {
-
+                console.log("game is over");
                 //get the loser
                 let nextTurn = rooms[index][roomName].game.turn();
 
@@ -210,7 +218,18 @@ function twoGame(io, socket, action) {
 
                     endGame(io, timeType, wOldElo, lOldElo, winner, loser, index, roomName, false);
                 }
+            } else {
+                let newTurn = rooms[index][roomName].game.turn();
+                let newTurnFormatted = formatTurn(newTurn);
+                if(rooms[index][roomName][newTurnFormatted].type == "computer") {
+                    twoComputers[roomName].setPosition(rooms[index][roomName].game.fen());
+    
+    
+                    let timeLeft = rooms[index][roomName][newTurnFormatted].time;
+                    twoComputers[roomName].go(timeLeft);
+                }
             }
+
             break;
     }
 

@@ -7,7 +7,7 @@ config.js
 webpack.config.js
 current_errors
 .forever
-engine
+engine/bin
 
 # IntelliJ
 *.iml

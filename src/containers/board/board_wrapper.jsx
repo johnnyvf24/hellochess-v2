@@ -5,6 +5,8 @@ import FourBoard from './four_board';
 
 export const DARK_SQUARE_HIGHLIGHT_COLOR = '#d2dd9b';
 export const LIGHT_SQUARE_HIGHLIGHT_COLOR = '#f2ffb2';
+export const DARK_SQUARE_PREMOVE_COLOR = '#aa0000';
+export const LIGHT_SQUARE_PREMOVE_COLOR = '#ff0000';
 
 class BoardWrapper extends Component {
 

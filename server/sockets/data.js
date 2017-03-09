@@ -3,11 +3,13 @@ let rooms = [];
 let timers = {};
 let clients = {};
 let fourComputers = [];
+let twoComputers = [];
 
 module.exports.rooms = rooms; //all the chat rooms
 module.exports.timers = timers; //all the timers
 module.exports.clients = clients; //all connected users
 module.exports.fourComputers = fourComputers;
+module.exports.twoComputers = twoComputers;
 
 module.exports.roomExists = function(name) {
     let foundMatch = false;

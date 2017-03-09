@@ -1,20 +1,20 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {tick, removeComputer} from '../../../actions/room';
-import {millisToMinutesAndSeconds, formatTurn, showElo} from '../../../utils/index';
+import {tick, removeComputer} from '../../actions/room';
+import {millisToMinutesAndSeconds, formatTurn, showElo} from '../../utils/index';
 
-class OnGold extends Component {
+class OccupiedCard extends Component {
 
     constructor(props) {
         super(props);
-
         this.countDown = null;
     };
 
     componentWillReceiveProps(nextProps) {
         if(nextProps.turn != this.props.turn
             && !nextProps.paused) {
-            if(nextProps.turn == 'g') {
+            if(nextProps.turn == this.props.color) {
+                clearInterval(this.countDown);
                 this.countDown = setInterval( () => {
                     this.props.tick(nextProps.name, formatTurn(nextProps.turn))
                 }, 1000);
@@ -27,7 +27,8 @@ class OnGold extends Component {
     }
 
     componentWillMount() {
-        if(this.props.turn == 'g' && !this.props.paused) {
+        if(this.props.turn == this.props.color && !this.props.paused) {
+            clearInterval(this.countDown);
             this.countDown = setInterval( () => {
                 this.props.tick(this.props.name, formatTurn(this.props.turn))
             }, 1000);
@@ -71,6 +72,19 @@ class OnGold extends Component {
     renderTime(time) {
         return millisToMinutesAndSeconds(time);
     }
+    
+    // Alive = still playing
+    // Dead = resigned or flagged
+    // if dead, returns the className that will
+    // indicate a dead player
+    renderAliveIndicator() {
+        const {alive, longColor} = this.props;
+        let className = "";
+        if (alive === false) {
+            className = longColor + "-dead";
+        }
+        return className;
+    }
 
     render() {
         const {player, time, game, name} = this.props;
@@ -79,8 +93,8 @@ class OnGold extends Component {
         }
         return (
             <div className={"player-card-border" + this.renderActiveBorder()}>
-                <div className="card player-card occupied">
-                    <div className="card-block gold-player">
+                <div className={"card player-card occupied " + this.renderAliveIndicator()}>
+                    <div className={"card-block " + this.props.colorClass + " " + this.renderAliveIndicator()}>
                         { !game.fen && this.renderLeaveSeat(player, name)}
 
                         <div className="row">
@@ -98,17 +112,19 @@ class OnGold extends Component {
     }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
+    let color = ownProps.longColor;
     return {
-        player: state.openThreads[state.activeThread].gold,
-        time: state.openThreads[state.activeThread].gold.time,
+        player: state.openThreads[state.activeThread][color],
+        time: state.openThreads[state.activeThread][color].time,
         game: state.openThreads[state.activeThread],
-        resigned: state.openThreads[state.activeThread].gold.resigned,
+        resigned: state.openThreads[state.activeThread][color].resigned,
         turn: state.openThreads[state.activeThread].turn,
         paused: state.openThreads[state.activeThread].paused,
         lastMove: state.openThreads[state.activeThread].lastMove,
-        name: state.activeThread
+        name: state.activeThread,
+        alive: state.openThreads[state.activeThread][color].alive
     }
 }
 
-export default connect(mapStateToProps, {tick, removeComputer})(OnGold);
+export default connect(mapStateToProps, {tick, removeComputer})(OccupiedCard);

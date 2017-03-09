@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {sitDownBoard, sitDownComputer} from '../../../actions/room';
+import {sitDownBoard, sitDownComputer} from '../../actions/room';
 
-class SitWhite extends Component {
+class EmptyCard extends Component {
     constructor(props) {
         super(props);
     }
@@ -11,40 +11,41 @@ class SitWhite extends Component {
         let obj = {};
         obj.profile = this.props.profile;
         obj.roomName = this.props.activeThread;
-        obj.color = 'w';
+        obj.color = this.props.color;
         this.props.sitDownBoard(obj);
     }
 
     aiSit(event) {
         let obj = {};
         obj.roomName = this.props.activeThread;
+        let elos;
+        if (this.props.game.gameType === "two-player")
+            elos = "two_elos";
+        else if (this.props.game.gameType === "four-player")
+            elos = "four_elos";
         obj.profile = {
             type: 'computer',
             username: 'AI',
-            four_elos: {
-                classic: 1100,
-                rapid: 1100,
-                blitz: 1100,
-                bullet: 1100
-            }
-        }
-        obj.color = 'w';
+            picture: 'https://openclipart.org/image/75px/svg_to_png/168755/cartoon-robot.png&disposition=attachment',
+        };
+        obj.profile[elos] = {
+            classic: 1200,
+            rapid: 1200,
+            blitz: 1200,
+            bullet: 1200
+        };
+        obj.color = this.props.color;
         this.props.sitDownComputer(obj);
     }
     
     renderAIButton() {
-        const {game} = this.props;
-        if (game.gameType === "two-player") {
-            return (<div></div>);
-        } else {
-            return (
-                <button type="button"
-                    className="btn btn-default"
-                    onClick={this.aiSit.bind(this)}>
-                    <i className="fa fa-laptop" aria-hidden="true"></i>
-                </button>
-            );
-        }
+        return (
+            <button type="button"
+                className="btn btn-default"
+                onClick={this.aiSit.bind(this)}>
+                <i className="fa fa-laptop" aria-hidden="true"></i>
+            </button>
+        );
     }
 
     render() {
@@ -53,7 +54,7 @@ class SitWhite extends Component {
         let aiButton = this.renderAIButton();
         return (
             <div className="card player-card">
-                <div className="card-block">
+                <div className={"card-block " + this.props.colorClass}>
                     <div className="row">
                         <div className="btn-group">
                             <button
@@ -81,4 +82,4 @@ function mapStateToProps(state) {
 }
 
 
-export default connect(mapStateToProps,  {sitDownBoard, sitDownComputer}) (SitWhite)
+export default connect(mapStateToProps,  {sitDownBoard, sitDownComputer}) (EmptyCard)
