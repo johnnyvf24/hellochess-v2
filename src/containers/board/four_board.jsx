@@ -28,10 +28,8 @@ class FourBoard extends Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.fen) {
-            if (nextProps.fen !== this.props.fen) {
-                this.board.position(nextProps.fen);
-                this.game.position(nextProps.fen);
-            }
+            this.board.position(nextProps.fen);
+            this.game.position(nextProps.fen);
 
             let usColor = 'w';
             if(nextProps.room.white._id === nextProps.profile._id) {
@@ -234,27 +232,16 @@ class FourBoard extends Component {
             to: target,
             promotion: 'q' // NOTE: always promote to a queen for example simplicity
         };
-        let gameCopy = $.extend(true, {}, this.game);
-        let testMove = gameCopy.move(action);
         if(this.props.room[turn]._id !== this.props.profile._id) {
-            if (testMove !== null) {
-                // if it's not our turn and it's a legal move,
-                // set it as a premove
-                this.setPremove(source, target);
-                return 'snapback';
-            } else {
-                // if it's not our turn and it's an illegal move,
-                // snapback the piece
-                return 'snapback';
-            }
+            this.setPremove(source, target);
+            return 'snapback';
         }
 
+        // make the move on the board
+        let move = this.game.move(action);
 
         // illegal move
         if (move === null) return 'snapback';
-        
-        // make the move on the board
-        let move = this.game.move(action);
 
         this.props.fourNewMove(action, this.props.name);
         this.shadeSquareSource = source;

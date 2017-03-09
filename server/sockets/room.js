@@ -1,5 +1,3 @@
-var spawn = require('child_process').spawn;
-
 const {mapObject, ab2str} = require('../utils/utils');
 const {FourChess} = require('../../common/fourchess');
 const {Chess} = require('chess.js');
@@ -12,6 +10,7 @@ const {deleteRoomByName, getAllRoomMembers} = require('./data');
 const {addMessageToRoom, getRecentMessages} = require('./data');
 const {userSittingAndGameOngoing, fourComputers} = require('./data');
 const {startTimerCountDown} = require('./board_reset');
+const FourEngine = require('../../engine/FourEngine');
 
 
 function room(io, socket, action) {
@@ -402,38 +401,19 @@ function room(io, socket, action) {
                            || rooms[index][roomName].black.type == "computer"
                            || rooms[index][roomName].gold.type == "computer"
                            || rooms[index][roomName].red.type == "computer") {
-                            fourComputers[roomName] = spawn("./engine/fourengine");
-                            fourComputers[roomName].stdout.on('data', function(data) {
-                                var str = ab2str(data);
-                                if(str.indexOf("bestmove") !== -1) {
-
-                                    let compMove = {
-                                        to: str.substr(str.indexOf("bestmove") + 9, str.length).split('-')[1].replace('\n', ''),
-                                        from: str.substr(str.indexOf("bestmove") + 9, str.length).split('-')[0],
-                                        promotion: 'q'
-                                    };
-
-                                    socket.emit('action', {
-                                        type: 'server/four-new-move',
-                                        payload: {
-                                            thread: roomName,
-                                            move: compMove
-                                        }
-                                    });
-                                }
-                            });
+                            fourComputers[roomName] = new FourEngine("./engine/fourengine", roomName, socket);
 
                             //start first players timer
                             startTimerCountDown(io, roomName, index);
 
                             if(rooms[index][roomName].white.type == "computer") {
-                                fourComputers[roomName].stdin.write("position fen " + rooms[index][roomName].game.fen().split('-')[0] + "\n");
+                                fourComputers[roomName].setPosition(rooms[index][roomName].game.fen());
 
                                 //tell the computer it's white's turn
-                                fourComputers[roomName].stdin.write("turn 0\n");
+                                fourComputers[roomName].setTurn('w');
 
                                 //search for a move
-                                fourComputers[roomName].stdin.write("go depth 4\n");
+                                fourComputers[roomName].go();
                             }
 
                         }

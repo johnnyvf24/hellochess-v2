@@ -105,50 +105,26 @@ function startTimerCountDown(io, roomName, index) {
                 });
 
                 if(rooms[index][roomName][currentTurn].type == "computer") {
-                    fourComputers[roomName].stdin.write("position fen " + rooms[index][roomName].game.fen().split('-')[0] + "\n");
+                    fourComputers[roomName].setPosition(rooms[index][roomName].game.fen());
 
                     //tell the computer whose turn it is
-                    switch(currentTurn.charAt(0)) {
-                        case 'w':
-                            fourComputers[roomName].stdin.write("turn 0\n");
-                            break;
-                        case 'b':
-                            fourComputers[roomName].stdin.write("turn 1\n");
-                            break;
-                        case 'g':
-                            fourComputers[roomName].stdin.write("turn 2\n");
-                            break;
-                        case 'r':
-                            fourComputers[roomName].stdin.write("turn 3\n");
-                            break;
-                    }
-
-                    let numOut = 0;
+                    fourComputers[roomName].setTurn(currentTurn);
 
                     if(rooms[index][roomName].game.isWhiteOut()) {
-                        fourComputers[roomName].stdin.write("out 0\n");
-                        numOut++;
+                        fourComputers[roomName].setOut('w');
                     }
                     if(rooms[index][roomName].game.isBlackOut()) {
-                        fourComputers[roomName].stdin.write("out 1\n");
-                        numOut++;
+                        fourComputers[roomName].setOut('b');
                     }
                     if(rooms[index][roomName].game.isGoldOut()) {
-                        fourComputers[roomName].stdin.write("out 2\n");
-                        numOut++;
+                        fourComputers[roomName].setOut('g');
                     }
                     if(rooms[index][roomName].game.isRedOut()) {
-                        fourComputers[roomName].stdin.write("out 3\n");
-                        numOut++;
+                        fourComputers[roomName].setOut('r');
                     }
 
-                    if(numOut == 0) {
-                        fourComputers[roomName].stdin.write("go depth 4\n");
-                    } else if(numOut == 1) {
-                        fourComputers[roomName].stdin.write("go depth 4\n");
-                    } else if(numOut == 2) {
-                        fourComputers[roomName].stdin.write("go depth 6\n");
-                    }
+                    let timeLeft = rooms[index][roomName][currentTurn].time;
+                    fourComputers[roomName].go(timeLeft);
                 }
 
                 //call this method again to begin next players clock
@@ -357,7 +333,7 @@ function endFourPlayerGame(io, roomName, index) {
     //console.log(`new ELos: winner: ${newWinnerElo} second: ${newThirdOutElo} third: ${newSecondOutElo} fourth: ${newFirstOutElo}`);
 
     //save the winner's elo
-    if(winner) {
+    if(winner && winner._id) {
         User.findById({ _id: winner._id })
         .then((user) => {
             user.four_elos[timeType] = newWinnerElo;
@@ -384,7 +360,7 @@ function endFourPlayerGame(io, roomName, index) {
         });
     }
 
-    if(thirdOut) {
+    if(thirdOut && thirdOut._id) {
         setTimeout(() => {
             //Save 2nd place elo
             User.findById({ _id: thirdOut._id })
@@ -412,7 +388,7 @@ function endFourPlayerGame(io, roomName, index) {
         }, 250);
     }
 
-    if(secondOut) {
+    if(secondOut && secondOut._id) {
         setTimeout(() => {
             //Save 3rd place elo
             User.findById({ _id: secondOut._id })
@@ -440,7 +416,7 @@ function endFourPlayerGame(io, roomName, index) {
         }, 250);
     }
 
-    if(firstOut) {
+    if(firstOut && firstOut._id) {
         setTimeout(() => {
             //Save 4th place elo
             User.findById({ _id: firstOut._id })
@@ -473,7 +449,6 @@ function endFourPlayerGame(io, roomName, index) {
     delete rooms[index][roomName].game;
 
     if(fourComputers[roomName]) {
-        fourComputers[roomName].stdin.pause();
         fourComputers[roomName].kill();
         delete fourComputers[roomName];
     }

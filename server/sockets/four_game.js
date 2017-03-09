@@ -102,53 +102,28 @@ function fourGame(io, socket, action) {
                 });
 
                 if(rooms[roomIndex][roomName][currentTurn].type == "computer") {
-                    fourComputers[roomName].stdin.write("position fen " + rooms[roomIndex][roomName].game.fen().split('-')[0] + "\n");
+                    fourComputers[roomName].setPosition(rooms[roomIndex][roomName].game.fen());
 
                     //tell the computer whose turn it is
-                    switch(newTurn) {
-                        case 'w':
-                            fourComputers[roomName].stdin.write("turn 0\n");
-                            break;
-                        case 'b':
-                            fourComputers[roomName].stdin.write("turn 1\n");
-                            break;
-                        case 'g':
-                            fourComputers[roomName].stdin.write("turn 2\n");
-                            break;
-                        case 'r':
-                            fourComputers[roomName].stdin.write("turn 3\n");
-                            break;
-                    }
+                    fourComputers[roomName].setTurn(newTurn);
 
-                    numOut = 0;
 
                     if(rooms[roomIndex][roomName].game.isWhiteOut()) {
-            			fourComputers[roomName].stdin.write("out 0\n");
-            			numOut++;
+            			fourComputers[roomName].setOut('w');
             		}
             		if(rooms[roomIndex][roomName].game.isBlackOut()) {
-            			fourComputers[roomName].stdin.write("out 1\n");
-            			numOut++;
+            			fourComputers[roomName].setOut('b');
             		}
             		if(rooms[roomIndex][roomName].game.isGoldOut()) {
-            			fourComputers[roomName].stdin.write("out 2\n");
-            			numOut++;
+            			fourComputers[roomName].setOut('g');
             		}
             		if(rooms[roomIndex][roomName].game.isRedOut()) {
-            			fourComputers[roomName].stdin.write("out 3\n");
-            			numOut++;
+            			fourComputers[roomName].setOut('r');
             		}
 
-            		if( numOut == 1 &&
-                        rooms[roomIndex][roomName][currentTurn].time > 120000) {
-            		    fourComputers[roomName].stdin.write("go depth 6\n");
-            		} else if(numOut == 2 &&
-                             rooms[roomIndex][roomName][currentTurn].time > 120000)
-                    {
-            		    fourComputers[roomName].stdin.write("go depth 6\n");
-            		} else {
-            		    fourComputers[roomName].stdin.write("go depth 4\n");
-            		}
+                    let timeLeft = rooms[roomIndex][roomName][currentTurn].time;
+                    fourComputers[roomName].go(timeLeft);
+            		
 
                 }
             }
@@ -161,8 +136,8 @@ function fourGame(io, socket, action) {
             index = findRoomIndexByName(roomName);
             let outColor;
 
-            //get who's turn it is
-            if(!rooms[index]) {
+            if(!rooms[index]
+                || !rooms[index][roomName] || !rooms[index][roomName].game) {
                 return;
             }
             turn = rooms[index][roomName].game.turn()
@@ -242,54 +217,26 @@ function fourGame(io, socket, action) {
 
                 if(rooms[index][roomName][newTurnFormatted].type == "computer") {
                     //console.log(rooms[index][roomName].game.fen().split('-')[0]);
-                    console.log("computer moving:", newTurn);
-                    fourComputers[roomName].stdin.write("position fen " + rooms[index][roomName].game.fen().split('-')[0] + "\n");
+                    fourComputers[roomName].setPosition(rooms[index][roomName].game.fen());
 
                     //tell the computer whose turn it is
-                    switch(newTurn) {
-                        case 'w':
-                            fourComputers[roomName].stdin.write("turn 0\n");
-                            break;
-                        case 'b':
-                            fourComputers[roomName].stdin.write("turn 1\n");
-                            break;
-                        case 'g':
-                            fourComputers[roomName].stdin.write("turn 2\n");
-                            break;
-                        case 'r':
-                            fourComputers[roomName].stdin.write("turn 3\n");
-                            break;
-                    }
-                    numOut = 0;
+                    fourComputers[roomName].setTurn(newTurn);
 
                     if(rooms[index][roomName].game.isWhiteOut()) {
-            			fourComputers[roomName].stdin.write("out 0\n");
-            			numOut++;
+            			fourComputers[roomName].setOut('w');
             		}
             		if(rooms[index][roomName].game.isBlackOut()) {
-            			fourComputers[roomName].stdin.write("out 1\n");
-            			numOut++;
+            			fourComputers[roomName].setOut('b');
             		}
             		if(rooms[index][roomName].game.isGoldOut()) {
-            			fourComputers[roomName].stdin.write("out 2\n");
-            			numOut++;
+            			fourComputers[roomName].setOut('g');
             		}
             		if(rooms[index][roomName].game.isRedOut()) {
-            			fourComputers[roomName].stdin.write("out 3\n");
-            			numOut++;
+            			fourComputers[roomName].setOut('r');
             		}
-
-                    if( numOut == 1 &&
-                        rooms[index][roomName][newTurnFormatted].time > 120000) {
-                        console.log(rooms[index][roomName][newTurnFormatted].time);
-            		    fourComputers[roomName].stdin.write("go depth 6\n");
-            		} else if(numOut == 2 &&
-                         rooms[index][roomName][newTurnFormatted].time > 120000)
-                    {
-            		    fourComputers[roomName].stdin.write("go depth 6\n");
-            		} else {
-            		    fourComputers[roomName].stdin.write("go depth 4\n");
-            		}
+            		
+                    let timeLeft = rooms[index][roomName][newTurnFormatted].time;
+                    fourComputers[roomName].go(timeLeft);
                 }
             }
 
