@@ -34,7 +34,9 @@ class Live extends Component {
         this.props.dispatch({
             type: 'server/get-rooms'
         });
-        this.props.userConnect(this.props.profile);    //Connect the user to the server
+        if(!this.props.connection.status) {
+            this.props.userConnect(this.props.profile);    //Connect the user to the server
+        }
     }
 
     logout() {
@@ -45,6 +47,11 @@ class Live extends Component {
 
     onCloseError(event) {
         console.log(this.props);
+    }
+
+    onProfileClick(event) {
+        event.preventDefault();
+        browserHistory.push(`/profile/${this.props.profile._id}`);
     }
 
     saveUsername(event) {
@@ -157,6 +164,7 @@ class Live extends Component {
                                 </a>
 
                                 <div className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                                    <a className="dropdown-item" onClick={this.onProfileClick.bind(this)} href="#" >Profile</a>
                                     <a className="dropdown-item" onClick={this.logout.bind(this)} href="#">Logout</a>
                                 </div>
                             </div>

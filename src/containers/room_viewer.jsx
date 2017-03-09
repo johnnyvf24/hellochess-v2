@@ -14,7 +14,9 @@ class RoomViewer extends Component {
 
     componentWillMount() {
         this.props.updateLiveUser(this.props.profile);
-        this.props.joinRoom('Global');                  //join the default chatroom
+        if(this.props.connection.status) {
+            this.props.joinRoom('Global');                  //join the default chatroom
+        }
     }
 
     onTabClick(chatName, event) {
@@ -102,6 +104,7 @@ class RoomViewer extends Component {
 
 function mapStateToProps(state) {
     return {
+        connection: state.connection,
         activeThread: state.activeThread,
         openThreads: state.openThreads,
         profile: state.auth.profile

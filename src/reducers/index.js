@@ -7,6 +7,7 @@ import FourChess from '../../common/fourchess';
 import rooms from './rooms_reducer';
 import AuthReducer from './auth_reducer';
 import newGameOptions from './new_game_reducer';
+import currentProfile from './profile_reducer';
 
 import {SELECTED_ROOM,LOGOUT_SUCCESS} from '../actions/types';
 
@@ -223,6 +224,7 @@ const rootReducer = combineReducers({
     rooms,      //A list of all available Chat Rooms
     activeThread,
     openThreads,
+    currentProfile,
     newGameOptions,
     auth: AuthReducer,
     form: formReducer,

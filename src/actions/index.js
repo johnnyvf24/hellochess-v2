@@ -2,23 +2,16 @@ import axios from 'axios'
 import {browserHistory} from 'react-router'
 import {CALL_API} from '../middleware/api'
 import {
+    ROOT_URL,
     LOGIN_SUCCESS,
     LOGIN_ERROR,
     LOGOUT_SUCCESS,
     SELECTED_ROOM,
-    UPDATE_USERNAME
+    UPDATE_USERNAME,
 } from './types'
 
+import {generateTokenHeader} from '../utils/index';
 import Notifications from 'react-notification-system-redux';
-
-let ROOT_URL;
-if (process.env.NODE_ENV === "production") {
-    ROOT_URL = 'https://hellochess.com';
-} else if (process.env.NODE_ENV === "staging") {
-    ROOT_URL = 'https://hellochess-dev-johnnyvf24.c9users.io';
-} else {
-    ROOT_URL = 'http://localhost:3000';
-}
 
 let initGameOptions = {
     gameType: 'four-player',
@@ -121,7 +114,7 @@ export function signUpUser({signUpEmail, signUpPassword}) {
                 );
 
                 dispatch({type: LOGIN_ERROR});
-            })
+            });
     }
 }
 
@@ -169,14 +162,6 @@ export function logout(profile) {
     return {
         type: 'server/logout',
         payload: profile
-    };
-}
-
-function generateTokenHeader() {
-    return {
-        headers: {
-            "x-auth": localStorage.getItem('token')
-        }
     };
 }
 
