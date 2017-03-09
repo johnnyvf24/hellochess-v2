@@ -1,8 +1,10 @@
 import React from 'react';
+import { browserHistory } from 'react-router';
 
 export default (props) => {
     const text = props.text;
     const user = props.user;
+    const uid = props.uid;
     const event_type = props.event_type;
     let message_item = <li></li>;
     switch(event_type) {
@@ -11,7 +13,10 @@ export default (props) => {
             message_item =
                 <li className="list-group-item">
                     <div className="float-xs-left">
-                        <img className="rounded-circle msg-pic" title="User1" alt="40x40" src={pic} data-holder-rendered="true"  />
+                        <a href="#"
+                            onClick={(e) => browserHistory.push(`/profile/${uid}`)}>
+                            <img className="rounded-circle msg-pic" title="User1" alt="40x40" src={pic} data-holder-rendered="true"  />
+                        </a>
                     </div>
                     <div>
                         <small className="list-group-item-heading text-muted text-primary">{user}</small>

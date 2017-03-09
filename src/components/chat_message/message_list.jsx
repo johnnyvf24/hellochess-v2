@@ -25,6 +25,7 @@ export default class MessageList extends Component {
                 text={message.msg}
                 user={message.user}
                 picture={message.picture}
+                uid={message.uid}
                 event_type={message.event_type}
             />
         );
