@@ -11,6 +11,7 @@ module.exports = class Engine {
         this.engine = spawn(path);
         this.engine.stdout.on('data', this.onBestMove.bind(this));
         this.numOut = 0;
+        this.sendUci();
     }
     
     onBestMove(data) {
@@ -48,6 +49,16 @@ module.exports = class Engine {
     
     setDepth(depth) {
         this.depth = depth;
+    }
+    
+    sendUci() {
+        this.engine.stdin.write("uci\n");
+    }
+    
+    setOption(name, value) {
+        this.engine.stdin.write(
+            "setoption name " + name + " value " + value + "\n"
+        );
     }
     
     adjustDepth(timeLeft) { }
