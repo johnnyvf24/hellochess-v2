@@ -4,7 +4,7 @@ const {ab2str} = require('../server/utils/utils');
 
 
 module.exports = class Engine {
-    
+
     constructor(path, roomName, socket) {
         this.roomName = roomName;
         this.socket = socket;
@@ -12,11 +12,13 @@ module.exports = class Engine {
         this.engine.stdout.on('data', this.onBestMove.bind(this));
         this.numOut = 0;
     }
-    
+
     onBestMove(data) {
     }
-    
+
     colorToTurnNumber(color) {
+        if (!color)
+            return '0';
         color = color.charAt(0);
         let turn;
         switch(color) {
@@ -37,19 +39,19 @@ module.exports = class Engine {
         }
         return turn;
     }
-    
+
     setPosition(fen) { }
-    
+
     setTurn(turnColor) { }
-    
+
     setOut(colorOut) { }
-    
+
     setDepth(depth) {
         this.depth = depth;
     }
-    
+
     adjustDepth(timeLeft) { }
-    
+
     go(timeLeft) {
         let depth = this.depth;
         if (timeLeft) {
@@ -58,7 +60,7 @@ module.exports = class Engine {
         console.log("engine go depth", depth, "timeLeft", timeLeft);
         this.engine.stdin.write("go depth " + depth + "\n");
     }
-    
+
     kill() {
         console.log("killing engine", this.roomName);
         this.engine.stdin.pause();
