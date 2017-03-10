@@ -118,16 +118,19 @@ class OccupiedCard extends Component {
 
 function mapStateToProps(state, ownProps) {
     let color = ownProps.longColor;
+    let game = state.openThreads[state.activeThread];
+    let player = game[color];
+    let time = player ? player.time : null;
     return {
-        player: state.openThreads[state.activeThread][color],
-        time: state.openThreads[state.activeThread][color].time,
-        game: state.openThreads[state.activeThread],
-        resigned: state.openThreads[state.activeThread][color].resigned,
-        turn: state.openThreads[state.activeThread].turn,
-        paused: state.openThreads[state.activeThread].paused,
-        lastMove: state.openThreads[state.activeThread].lastMove,
+        player: player,
+        time: time,
+        game: game,
+        resigned: player.resigned,
+        turn: game.turn,
+        paused: game.paused,
+        lastMove: game.lastMove,
         name: state.activeThread,
-        alive: state.openThreads[state.activeThread][color].alive
+        alive: player.alive
     }
 }
 

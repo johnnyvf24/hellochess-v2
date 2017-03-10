@@ -65,7 +65,7 @@ class RoomViewer extends Component {
     }
 
     render() {
-        if(!this.props.profile.username) {
+        if(!this.props.profile || !this.props.profile.username) {
             return <div>
             </div>
         }
