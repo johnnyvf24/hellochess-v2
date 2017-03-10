@@ -23,13 +23,13 @@ class ExistingRoomList extends Component {
         this.props.joinRoom(key);
     }
 
-    renderRoomItems(room) {
-        return mapObject( room, (key, value) => {
+    renderRoomItems(rooms) {
+        return mapObject( rooms, (key, value) => {
             if(!value.users) {
                 return;
             }
             return (
-                <tr key={key} onClick={this.onClickRoom.bind(this, key)}>
+                <tr key={value.id} onClick={this.onClickRoom.bind(this, key)}>
                     <td>{value.room.name}</td>
                     <td>{value.gameType}</td>
                     <td>{`${value.time.value}mins/${value.time.increment}secs` }</td>

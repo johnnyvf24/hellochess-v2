@@ -4,6 +4,7 @@ let timers = {};
 let clients = {};
 let fourComputers = [];
 let twoComputers = [];
+let nextRoomId = 0;
 
 module.exports.rooms = rooms; //all the chat rooms
 module.exports.timers = timers; //all the timers
@@ -297,4 +298,10 @@ module.exports.getRecentMessages = function(roomName) {
         messages = [];
     }
     return messages;
+}
+
+module.exports.newRoomId = function() {
+    let id = nextRoomId;
+    nextRoomId += 1;
+    return id;
 }

@@ -9,6 +9,7 @@ const {findRoomIndexByName, deleteUserFromBoardSeats} = require('./data');
 const {deleteRoomByName, getAllRoomMembers} = require('./data');
 const {addMessageToRoom, getRecentMessages} = require('./data');
 const {userSittingAndGameOngoing, fourComputers, twoComputers} = require('./data');
+const {newRoomId} = require('./data');
 const {startTimerCountDown} = require('./board_reset');
 const TwoEngine = require('../../engine/TwoEngine');
 const FourEngine = require('../../engine/FourEngine');
@@ -31,13 +32,17 @@ function room(io, socket, action) {
         case 'server/join-room':
             //TODO limit the number of rooms that a user can create
             roomName = [Object.keys(action.payload)[0]];
+            
 
             //Deep copy the Chat object
             roomObj = JSON.parse(JSON.stringify(action.payload[roomName]));
 
             roomName = roomObj.room.name;
-
             if (!roomExists(roomName)) {
+                // add an id to the room
+                let new_id = newRoomId();
+                action.payload[roomName].id = new_id;
+                roomObj.id = new_id;
                 rooms.push(action.payload);
                 io.emit('action', {
                     type: 'all-rooms',

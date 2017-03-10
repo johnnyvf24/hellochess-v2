@@ -41,7 +41,7 @@ class RoomViewer extends Component {
                     <a
                         className={key === active ? "nav-link active" : "nav-link"}
                         data-toggle="tab"
-                        href={"#" +key + "-chat"}
+                        href={"#room-chat-" + value.id}
                         >
                         <button
                             className="close"
