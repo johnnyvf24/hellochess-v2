@@ -11,9 +11,14 @@ module.exports = class Engine {
         this.engine = spawn(path);
         this.engine.stdout.on('data', this.onBestMove.bind(this));
         this.numOut = 0;
+        this.mode = 0;
     }
 
     onBestMove(data) {
+    }
+    
+    setMode(mode) {
+        this.mode = mode;
     }
 
     colorToTurnNumber(color) {
@@ -59,7 +64,12 @@ module.exports = class Engine {
         }
         this.timeLeft = timeLeft;
         console.log("engine go depth", depth, "timeLeft", timeLeft);
-        this.engine.stdin.write("go depth " + depth + "\n");
+        if(this.mode == 0) {
+            this.engine.stdin.write("go depth " + depth + "\n");
+        } else {
+            this.engine.stdin.write("go depth 4\n");
+        }
+        
     }
 
     kill() {

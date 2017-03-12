@@ -5,11 +5,14 @@ let clients = {};
 let fourComputers = [];
 let twoComputers = [];
 
+let commentator = null;
+
 module.exports.rooms = rooms; //all the chat rooms
 module.exports.timers = timers; //all the timers
 module.exports.clients = clients; //all connected users
 module.exports.fourComputers = fourComputers;
 module.exports.twoComputers = twoComputers;
+module.exports.commentator = commentator;
 
 module.exports.roomExists = function(name) {
     let foundMatch = false;

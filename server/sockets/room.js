@@ -13,7 +13,6 @@ const {startTimerCountDown} = require('./board_reset');
 const TwoEngine = require('../../engine/TwoEngine');
 const FourEngine = require('../../engine/FourEngine');
 
-
 function room(io, socket, action) {
 
     let roomName, turn, roomIndex, roomObj, userObj, msgObj, aiObj;
@@ -409,15 +408,18 @@ function room(io, socket, action) {
                                 lastMove: rooms[index][roomName].lastmove
                             }
                         });
+                                
+                        fourComputers[roomName] =
+                                new FourEngine("./engine/bin/fourengine", roomName, socket);
+                        
 
                         //First player to move is the AI
                         if(rooms[index][roomName].white.type == "computer"
                            || rooms[index][roomName].black.type == "computer"
                            || rooms[index][roomName].gold.type == "computer"
                            || rooms[index][roomName].red.type == "computer") {
-                            fourComputers[roomName] =
-                                new FourEngine("./engine/bin/fourengine", roomName, socket);
-
+                            
+                            fourComputers[roomName].setMode(0);
                             //start first players timer
                             startTimerCountDown(io, roomName, index);
 
@@ -431,6 +433,8 @@ function room(io, socket, action) {
                                 fourComputers[roomName].go();
                             }
 
+                        } else {
+                            fourComputers[roomName].setMode(1);
                         }
                     }
                 }
