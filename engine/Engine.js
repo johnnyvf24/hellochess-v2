@@ -57,6 +57,7 @@ module.exports = class Engine {
         if (timeLeft) {
             depth = this.adjustDepth(timeLeft);
         }
+        this.timeLeft = timeLeft;
         console.log("engine go depth", depth, "timeLeft", timeLeft);
         this.engine.stdin.write("go depth " + depth + "\n");
     }
