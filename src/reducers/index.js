@@ -54,20 +54,20 @@ function openThreads(state = {}, action) {
         case 'receive-message':
             messages = [...state[action.payload.thread].messages, action.payload];
             obj = {...state[action.payload.thread], messages};
-            if(action.payload.computer) {
-                var text = action.payload.msg;
-                var msg = new SpeechSynthesisUtterance();
-                var voices = window.speechSynthesis.getVoices();
-                msg.text = text;
+            // if(action.payload.computer) {
+            //     var text = action.payload.msg;
+            //     var msg = new SpeechSynthesisUtterance();
+            //     var voices = window.speechSynthesis.getVoices();
+            //     msg.text = text;
                 
-                msg.onend = function(e) {
-                    console.log('Finished in ' + event.elapsedTime + ' seconds.');
-                };
+            //     msg.onend = function(e) {
+            //         console.log('Finished in ' + event.elapsedTime + ' seconds.');
+            //     };
                 
-                console.log(speechSynthesis);
+            //     console.log(speechSynthesis);
                 
-                speechSynthesis.speak(msg);
-            }
+            //     speechSynthesis.speak(msg);
+            // }
             
             return {...state, [action.payload.thread]: obj };
             

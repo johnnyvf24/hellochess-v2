@@ -122,7 +122,7 @@ module.exports = class FourEngine extends Engine {
                 console.log(str);
                 
                 if(this.timeLeft > 60 * 1000) {
-                    if(score > -40000) {
+                    if(score > 0) {
                         message.msg = `${turn} things are looking up`;
                     } else if(score > -50000) {
                         message.msg = `${turn} your keep strong and you can win`;
