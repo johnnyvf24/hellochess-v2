@@ -12,8 +12,6 @@ const {deleteRoomByName, fourComputers} = require('./data');
 const {userSittingAndGameOngoing} = require('./data');
 const {endFourPlayerGame, startTimerCountDown} = require('./board_reset');
 
-let commentator = require('./data').commentator;
-
 function fourGame(io, socket, action) {
     let turn, currentTurn;
     let color, roomName, loser, roomIndex, winner, index, move, loserColor;
@@ -128,9 +126,6 @@ function fourGame(io, socket, action) {
 
                     let timeLeft = rooms[roomIndex][roomName][currentTurn].time;
                     fourComputers[roomName].go(timeLeft);
-                } else {
-                    fourComputers[roomName].setMode(0);
-                    fourComputers[roomName].go();
                 }
             }
             break;
@@ -240,13 +235,10 @@ function fourGame(io, socket, action) {
         		}
 
                 let timeLeft = rooms[index][roomName][newTurnFormatted].time;
+                
                 if(rooms[index][roomName][newTurnFormatted].type == "computer") {
                     fourComputers[roomName].setMode(0);
-                    //console.log(rooms[index][roomName].game.fen().split('-')[0]);
                     
-                    fourComputers[roomName].go(timeLeft);
-                } else {
-                    fourComputers[roomName].setMode(1);
                     fourComputers[roomName].go(timeLeft);
                 }
             }

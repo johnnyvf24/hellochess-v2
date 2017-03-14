@@ -85,27 +85,27 @@ module.exports = class FourEngine extends Engine {
                                         ];
                 
                 
-                if(Math.floor(Math.random() * 3) == 1 && this.timeLeft > 60 * 1000) {
+                // if(Math.floor(Math.random() * 3) == 1 && this.timeLeft > 60 * 1000) {
                     
-                    if(str.indexOf("score:") !== -1) {
-                        score = str.substr(str.indexOf('score:') + 6, str.indexOf('move:') - 14).trim();
-                    }
+                //     if(str.indexOf("score:") !== -1) {
+                //         score = str.substr(str.indexOf('score:') + 6, str.indexOf('move:') - 14).trim();
+                //     }
                     
-                    if(score > -53000) {
-                        let evilSaying  = Math.floor(Math.random() * evilRobotSayings.length);
-                        message.msg = evilRobotSayings[evilSaying];
-                    } else {
-                        let goodSaying  = Math.floor(Math.random() * losingRobotSayings.length);
-                        message.msg = losingRobotSayings[goodSaying];
-                    }
+                //     if(score > -53000) {
+                //         let evilSaying  = Math.floor(Math.random() * evilRobotSayings.length);
+                //         message.msg = evilRobotSayings[evilSaying];
+                //     } else {
+                //         let goodSaying  = Math.floor(Math.random() * losingRobotSayings.length);
+                //         message.msg = losingRobotSayings[goodSaying];
+                //     }
                         
                    
-                    this.socket.emit('action', {
-                        type: 'server/new-message',
-                        payload: message
-                    });
+                //     this.socket.emit('action', {
+                //         type: 'server/new-message',
+                //         payload: message
+                //     });
                 
-                }
+                // }
                 
             } else if(this.mode == 1) {
                 
@@ -122,16 +122,17 @@ module.exports = class FourEngine extends Engine {
                 console.log(str);
                 
                 if(this.timeLeft > 60 * 1000) {
-                    if(score > 0) {
-                        message.msg = `${turn} things are looking up`;
-                    } else if(score > -50000) {
-                        message.msg = `${turn} your keep strong and you can win`;
-                    } else if(score < -56000) {
-                        message.msg = `${turn} perhaps you have underestimated your opponents?`;
-                    } else if(score > 5000) {
+                    
+                    if(score > 5000) {
                         message.msg = `You should all fear the power of ${turn}`;
+                    } else if(score > 0) {
+                        message.msg = `${turn} things are looking up`;
                     } else if(score > 20000) {
                         message.msg = `${turn}, is on the road to victory`;
+                    } else if(score > -50000) {
+                        message.msg = `${turn} keep strong and you can win`;
+                    } else if(score < -56000) {
+                        message.msg = `${turn} perhaps you have underestimated your opponents?`;
                     } else {
                         let rand = Math.floor(Math.random() * 6 + 1);
                         

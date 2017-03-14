@@ -438,8 +438,6 @@ function room(io, socket, action) {
                                 fourComputers[roomName].go();
                             }
 
-                        } else {
-                            fourComputers[roomName].setMode(1);
                         }
                     }
                 }
