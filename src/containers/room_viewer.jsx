@@ -13,9 +13,12 @@ class RoomViewer extends Component {
     }
 
     componentWillMount() {
-        this.props.updateLiveUser(this.props.profile);
+
         if(this.props.connection.status) {
-            this.props.joinRoom('Global');                  //join the default chatroom
+            if(!this.props.activeProfile._id) {
+                this.props.updateLiveUser(this.props.profile);
+                this.props.joinRoom('Global');                  //join the default chatroom
+            }
         }
     }
 
@@ -107,7 +110,8 @@ function mapStateToProps(state) {
         connection: state.connection,
         activeThread: state.activeThread,
         openThreads: state.openThreads,
-        profile: state.auth.profile
+        profile: state.auth.profile,
+        activeProfile: state.currentProfile,
     };
 }
 

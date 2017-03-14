@@ -3,6 +3,8 @@ if (process.env.NODE_ENV === "production") {
     url = 'https://hellochess.com';
 } else if (process.env.NODE_ENV === "staging") {
     url = 'https://hellochess-dev-johnnyvf24.c9users.io';
+} else if(process.env.NODE_ENV === "dev2") {
+    url = 'https://hellochess-johnnyvf24.c9users.io';
 } else {
     url = 'http://localhost:3000';
 }
