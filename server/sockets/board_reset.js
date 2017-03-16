@@ -42,7 +42,8 @@ function startTimerCountDown(io, roomName, index) {
 
         let loser, winner;
 
-        if(!rooms[index]) {
+        if(!rooms[index] || !rooms[index][roomName] 
+            || !rooms[index][roomName].gameType || !rooms[index][roomName].game) {
             // log rooms value
             return;
         }

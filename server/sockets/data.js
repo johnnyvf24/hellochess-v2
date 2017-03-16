@@ -28,6 +28,9 @@ module.exports.roomExists = function(name) {
 }
 
 module.exports.getRoomByName = function(name) {
+    if(!name) {
+        return;
+    }
     let obj = {};
     for (let i = 0; i < rooms.length; i++) {
         mapObject(rooms[i], (key, val) => {
