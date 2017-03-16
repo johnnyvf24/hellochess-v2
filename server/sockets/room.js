@@ -144,11 +144,13 @@ function room(io, socket, action) {
             userObj = clients[socket.id];
             roomIndex = findRoomIndexByName(roomName);
 
-            clients[socket.id].rooms = clients[socket.id].rooms.map((room) => {
-                if (room !== roomName) {
-                    return room;
-                }
-            });
+            if(clients[socket.id]) {
+                clients[socket.id].rooms = clients[socket.id].rooms.map((room) => {
+                    if (room !== roomName) {
+                        return room;
+                    }
+                });
+            }
 
             socket.leave(roomName);
 
@@ -372,7 +374,7 @@ function room(io, socket, action) {
                         if(rooms[index][roomName].white.type == "computer"
                            || rooms[index][roomName].black.type == "computer") {
                             twoComputers[roomName] =
-                                new TwoEngine("./engine/bin/stockfish_8_x64", roomName, socket);
+                                new TwoEngine("./engine/bin/stockfish_8_x64", roomName, io);
                            }
 
                         //start first players timer
@@ -415,7 +417,7 @@ function room(io, socket, action) {
                         });
                                 
                         fourComputers[roomName] =
-                                new FourEngine("./engine/bin/fourengine", roomName, socket);
+                                new FourEngine("./engine/bin/fourengine", roomName, io);
                         
 
                         //First player to move is the AI

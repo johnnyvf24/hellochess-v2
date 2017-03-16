@@ -131,6 +131,7 @@ function fourGame(io, socket, action) {
             break;
 
         case 'server/four-new-move':
+            console.log('in four-new-move');
             roomName = action.payload.thread;
             move = action.payload.move;
             let lastMove = action.payload.move;

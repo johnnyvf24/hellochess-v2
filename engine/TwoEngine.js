@@ -2,8 +2,8 @@ const Engine = require('./Engine.js');
 const {ab2str} = require('../server/utils/utils');
 
 module.exports = class TwoEngine extends Engine {
-    constructor(path, roomName, socket) {
-        super(path, roomName, socket);
+    constructor(path, roomName, io) {
+        super(path, roomName, io);
         this.setDepth(15);
     }
     onBestMove(data) {
@@ -21,7 +21,7 @@ module.exports = class TwoEngine extends Engine {
                 promotion: 'q'
             };
 
-            this.socket.emit('action', {
+            this.io.to(this.roomName).emit('action', {
                 type: 'server/new-move',
                 payload: {
                     thread: this.roomName,

@@ -1,27 +1,97 @@
 const Notifications = require('react-notification-system-redux');
 const {mapObject} = require('../utils/utils');
 const Elo = require('elo-js');
-const {User} = require('../models/user');
-const {connection} = require('./connection');
-const {twoGame} = require('./two_game');
-const {fourGame} = require('./four_game');
-const {room} = require('./room');
-const {clients, rooms, deleteRoomByName, findRoomIndexByName} = require('./data');
-const {getAllRoomMembers, userSittingAndGameOngoing} = require('./data');
-const {addMessageToRoom} = require('./data');
-const {deleteUserFromBoardSeats} = require('./data');
+const Connection = require('./Connection');
+const Player = require('./players/Player');
+const Room = require('./rooms/Room.js');
+
+//Game Rules
+const {FourChess} = require('../../common/fourchess');
+const {Chess} = require('chess.js');
+
+//master connection object
+let conn = new Connection();
 
 module.exports.socketServer = function(io) {
 
     io.on('connection', (socket) => {
+        
         socket.on('action', (action) => {
-            let roomName, roomObj, userObj, roomIndex, color, index, turn;
-            let loser, winner, timeType, wOldElo, lOldElo, userObj2;
-            let notificationOpts;
-            connection(io, socket, action);
-            room(io, socket, action);
-            twoGame(io, socket, action);
-            fourGame(io, socket, action);
+            let data;
+            let roomName;
+            let room;
+            let player;
+            switch(action.type) {
+                //Sent after successful log in
+                case 'server/connected-user':
+                    data = action.payload.user;
+                    player = new Player(socket);
+                    if(player.setPlayerAttributes(data)) {
+                       conn.addPlayer(player);
+                    } else {
+                        //TODO send error message
+                    }
+                    
+                    break;
+                    
+                //Updates user information
+                case 'server/update-user':
+                    data = action.payload.user;
+                    
+                    //update player in conn object
+                    if(!conn.updatePlayer(data)) {
+                        //TODO send error message   
+                    }
+                    break;
+                    
+                //user is joining a room
+                case 'server/join-room':
+                    roomName = [Object.keys(action.payload)[0]];    //the roomName
+                    data = JSON.parse(JSON.stringify(action.payload[roomName]));
+                    room = new Room(); //declare a new room
+                    
+                    if(!room.setRoomAttributes(data.room)) {
+                        //TODO error message on join
+                        return;
+                    }
+                    
+                    if(data.gameType) { //user has initiated a game type room
+                        switch(data.gameType) {
+                            case 'two-player':
+                                room.setGame(new Chess());
+                                break;
+                            case 'four-player':
+                                room.setGame(new FourChess());
+                                break;
+                        }
+                        
+                        if(data.time) { //user has specified a time control
+                            room.setTime(data.time);
+                        }
+                    }
+                    
+                    player = conn.findPlayerBySocket(socket);
+                    
+                    if(!player) {
+                        //TODO send error message
+                        return;
+                    }
+                    
+                    
+                    room.addPlayer(player);
+                    conn.addRoom(room);
+                    
+                    break;
+                    
+                    
+                //user is logging off
+                case 'server/logout':
+            }
+            
+            // connection(io, socket, action);
+            // room(io, socket, action);
+            // twoGame(io, socket, action);
+            // fourGame(io, socket, action);
         });
 
         socket.on('disconnect', function() {

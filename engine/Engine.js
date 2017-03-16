@@ -5,9 +5,9 @@ const {ab2str} = require('../server/utils/utils');
 
 module.exports = class Engine {
 
-    constructor(path, roomName, socket) {
+    constructor(path, roomName, io) {
         this.roomName = roomName;
-        this.socket = socket;
+        this.io = io;
         this.engine = spawn(path);
         this.engine.stdout.on('data', this.onBestMove.bind(this));
         this.numOut = 0;

@@ -2,8 +2,8 @@ const Engine = require('./Engine.js');
 const {ab2str} = require('../server/utils/utils');
 
 module.exports = class FourEngine extends Engine {
-    constructor(path, roomName, socket) {
-        super(path, roomName, socket);
+    constructor(path, roomName, io) {
+        super(path, roomName, io);
         this.setDepth(6);
         this.turn = 'w';
     }
@@ -47,7 +47,7 @@ module.exports = class FourEngine extends Engine {
             };
             
             if(this.mode == 0) {
-                this.socket.emit('action', {
+                this.io.to(this.roomName).emit('action', {
                     type: 'server/four-new-move',
                     payload: {
                         thread: this.roomName,
@@ -157,7 +157,7 @@ module.exports = class FourEngine extends Engine {
                 message.user = 'Commentator';
                 
                 if(rand == 1) {
-                    this.socket.emit('action', {
+                    this.io.to(this.roomName).emit('action', {
                         type: 'server/new-message',
                         payload: message
                     });
@@ -194,7 +194,7 @@ module.exports = class FourEngine extends Engine {
             depth = 3;
         } else if (timeLeft < 10000) { // 10 seconds
             depth = 4;
-        } else if (timeLeft < 60000) { // 1 min
+        } else if (timeLeft < (60000 * 1.5)) { // 1.5 min
             depth = 5;
         }
 		return depth;

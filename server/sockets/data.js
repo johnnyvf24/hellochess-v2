@@ -6,14 +6,11 @@ let fourComputers = [];
 let twoComputers = [];
 let nextRoomId = 0;
 
-let commentator = null;
-
 module.exports.rooms = rooms; //all the chat rooms
 module.exports.timers = timers; //all the timers
 module.exports.clients = clients; //all connected users
 module.exports.fourComputers = fourComputers;
 module.exports.twoComputers = twoComputers;
-module.exports.commentator = commentator;
 
 module.exports.roomExists = function(name) {
     let foundMatch = false;
@@ -28,16 +25,20 @@ module.exports.roomExists = function(name) {
 }
 
 module.exports.getRoomByName = function(name) {
-    let obj = {};
-    for (let i = 0; i < rooms.length; i++) {
-        mapObject(rooms[i], (key, val) => {
-            if (key.toUpperCase() === name.toUpperCase()) {
-                obj = val;
-            }
-        });
+    
+    if(name) {
+        let obj = {};
+        for (let i = 0; i < rooms.length; i++) {
+            mapObject(rooms[i], (key, val) => {
+                if (key.toUpperCase() === name.toUpperCase()) {
+                    obj = val;
+                }
+            });
+        }
+    
+        return obj;
     }
-
-    return obj;
+    
 }
 
 module.exports.removeTimersFromRooms = function(rooms) {
@@ -45,7 +46,7 @@ module.exports.removeTimersFromRooms = function(rooms) {
     for (let i = 0; i < rooms.length; i++) {
         let room = rooms[i]
         mapObject(rooms[i], (key, val) => {
-            if (key != "time") {
+            if (key != "time" && room[key]) {
                 room[key] = val;
             }
         });
@@ -213,7 +214,11 @@ module.exports.getEloForTimeControl = function(game, player) {
 }
 
 module.exports.deleteUserFromBoardSeats = function(io, index, roomName, userId) {
-    let roomObj = rooms[index][roomName];
+    
+    if(rooms[index] && rooms[index][roomName]) {
+        let roomObj = rooms[index][roomName];
+    }
+    
     if (roomObj.white) {
         if (roomObj.white._id === userId) {
             delete rooms[index][roomName].white;
