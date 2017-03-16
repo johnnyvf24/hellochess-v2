@@ -35,7 +35,6 @@ function openThreads(state = {}, action) {
             obj = {...state[roomName], users, messages};
             return {...state, [roomName]: obj};
         case 'user-room-left':
-            console.log(action);
             roomName = action.payload.name;
             const user = action.payload.user;
             newState = Object.assign({}, state);

@@ -56,6 +56,9 @@ function startTimerCountDown(io, roomName, index) {
                 autoDismiss: 5,
             };
             io.to(roomName).emit('action', Notifications.info(notificationOpts));
+            if(!rooms[index] || !rooms[index][roomName] || !rooms[index][roomName].game) {
+                return;
+            }
             rooms[index][roomName].game.nextTurn();
             if(turn == 'white') {
                 rooms[index][roomName].game.setWhiteOut();

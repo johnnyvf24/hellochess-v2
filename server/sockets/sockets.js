@@ -16,6 +16,62 @@ module.exports.socketServer = function(io) {
 
     io.on('connection', (socket) => {
         
+        function disconnectPlayerBySocket(socket) {
+            let player = conn.getPlayerBySocket(socket);
+            if(typeof player == 'object') {
+                //Get all the rooms that user is connected to and the user info
+                let roomsPlayerIsIn = conn.getPlayerRoomsByPlayerSocket(socket);
+                
+                roomsPlayerIsIn.map((room) => {
+                    let roomName = room.getName();
+                    socket.leave(roomName);
+                    
+                    if(io.sockets.adapter.rooms[roomName]) { //There are still players in the room
+                        
+                        if(room.removePlayerBySocket(player.getSocket())) { // player has been successfully removed
+                        
+                            let leftMessage = `${player.getUsername()} has left the room.`;
+                            let messageObj = {
+                                user: player.getPlayerAttributes(),
+                                msg: leftMessage,
+                                thread: roomName,
+                                picture: null,
+                                event_type: 'user-left'
+                            }
+                            
+                            room.addMessage(messageObj);
+                            
+                            //Tell everyone in a room that a user has left
+                            io.to(roomName).emit('action', {
+                                type: 'user-room-left',
+                                payload: {
+                                    name: roomName,
+                                    user: player.getPlayerAttributes(),
+                                    message: messageObj
+                                }
+                            });
+                            
+                            if(!conn.removePlayerBySocket(player.getSocket())) {
+                                //TODO error message
+                            }
+                        }
+                        
+                    } else {    //this user was the last player in the room
+                        if(conn.removeRoomByName(roomName)) {
+                            //TODO not sure if anything else is needed here
+                        } else {
+                            console.log("could not delete room " + roomName);
+                        }
+                    }
+                });
+                
+                io.emit('action', {
+                    type: 'all-rooms',
+                    payload: conn.getAllRooms()
+                });
+            }
+        }
+        
         socket.on('action', (action) => {
             let data;
             let roomName;
@@ -127,67 +183,73 @@ module.exports.socketServer = function(io) {
                     });
                     break;
                     
+                //user is leaving a room (by clicking 'x')
+                case 'server/leave-room':
+                    player = conn.getPlayerBySocket(socket);
+                    roomName = action.payload;
+                    socket.leave(roomName);
                     
-                //user is logging off
-                case 'server/logout':
-                    break;
-            }
-        });
-
-        socket.on('disconnect', function() {
-            let player = conn.getPlayerBySocket(socket);
-            if(typeof player == 'object') {
-                //Get all the rooms that user is connected to and the user info
-                let roomsPlayerIsIn = conn.getPlayerRoomsByPlayerSocket(socket);
-                
-                roomsPlayerIsIn.map((room) => {
-                    let roomName = room.getName();
+                    socket.emit('action', {
+                        type: 'left-room',
+                        payload: roomName
+                    });
                     
-                    if(io.sockets.adapter.rooms[roomName]) { //There are still players in the room
+                    room = conn.getRoomByName(roomName);
+                    
+                    if (io.sockets.adapter.rooms[roomName]) { //there are still users in the room
+                    
+                        //TODO add check to see if player was playing a game
                         
-                        if(room.removePlayerBySocket(player.getSocket())) { // player has been successfully removed
-                        
-                            let leftMessage = `${player.getUsername()} has left the room.`;
-                            let messageObj = {
+                        let leftMessage = player.getUsername() + " has left the room.";
+                        let messageObj = {
+                            user: player.getPlayerAttributes(),
+                            msg: leftMessage,
+                            thread: roomName,
+                            picture: null,
+                            event_type: 'user-left'
+                        };
+            
+                        room.addMessage(messageObj);
+            
+                        //Tell everyone in the room that a user has disconnnected
+                        io.to(roomName).emit('action', {
+                            type: 'user-room-left',
+                            payload: {
+                                name: roomName,
                                 user: player.getPlayerAttributes(),
-                                msg: leftMessage,
-                                thread: roomName,
-                                picture: null,
-                                event_type: 'user-left'
+                                message: messageObj
                             }
-                            
-                            room.addMessage(messageObj);
-                            
-                            //Tell everyone in a room that a user has left
-                            io.to(roomName).emit('action', {
-                                type: 'user-room-left',
-                                payload: {
-                                    name: roomName,
-                                    user: player.getPlayerAttributes(),
-                                    message: messageObj
-                                }
-                            });
-                            
-                            if(!conn.removePlayerBySocket(player.getSocket())) {
-                                //TODO error message
-                            }
-                        }
-                        
-                    } else {    //this user was the last player in the room
+                        });
+        
+                    } else { //this was the final user
                         if(conn.removeRoomByName(roomName)) {
                             //TODO not sure if anything else is needed here
                         } else {
                             console.log("could not delete room " + roomName);
                         }
                     }
-                });
-                
-                io.emit('action', {
-                    type: 'all-rooms',
-                    payload: conn.getAllRooms()
-                });
+                    
+                    if(room.removePlayerBySocket(player.getSocket())) {
+                        //TODO error message
+                    }
+        
+                    //Update the user count for that room
+                    io.emit('action', {
+                        type: 'all-rooms',
+                        payload: conn.getAllRooms()
+                    });
+                    
+                    break;
+                    
+                //user is logging off
+                case 'server/logout':
+                    disconnectPlayerBySocket(socket);
+                    break;
             }
-                
+        });
+
+        socket.on('disconnect', function() {
+            disconnectPlayerBySocket(socket);
         });
     });
 };
