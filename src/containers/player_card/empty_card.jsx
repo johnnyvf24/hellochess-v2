@@ -51,6 +51,9 @@ class EmptyCard extends Component {
     render() {
         const {game} = this.props;
         let time = game.time;
+        if(!time) {
+            return <div></div>
+        }
         let aiButton = this.renderAIButton();
         return (
             <div className="card player-card">

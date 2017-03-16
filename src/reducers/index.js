@@ -35,11 +35,12 @@ function openThreads(state = {}, action) {
             obj = {...state[roomName], users, messages};
             return {...state, [roomName]: obj};
         case 'user-room-left':
+            console.log(action);
             roomName = action.payload.name;
             const user = action.payload.user;
             newState = Object.assign({}, state);
             newState[roomName].users = newState[roomName].users.filter((member) => {
-                return user.user._id !== member._id;
+                return user._id !== member._id;
             });
             msg_obj = action.payload.message;
             messages = [...newState[roomName].messages, msg_obj];

@@ -48,103 +48,146 @@ module.exports.socketServer = function(io) {
                 case 'server/join-room':
                     roomName = [Object.keys(action.payload)[0]];    //the roomName
                     data = JSON.parse(JSON.stringify(action.payload[roomName]));
-                    room = new Room(); //declare a new room
+                    room = conn.getRoomByName(roomName);
                     
-                    if(!room.setRoomAttributes(data.room)) {
-                        //TODO error message on join
-                        return;
-                    }
-                    
-                    if(data.gameType) { //user has initiated a game type room
-                        switch(data.gameType) {
-                            case 'two-player':
-                                room.setGame(new Chess());
-                                break;
-                            case 'four-player':
-                                room.setGame(new FourChess());
-                                break;
+                    //check to see if room previously existed
+                    if(room == false) { 
+                        room = new Room(); //declare a new room
+                        
+                        if(!room.setRoomAttributes(data.room)) {
+                            //TODO error message on join
+                            return;
                         }
                         
-                        if(data.time) { //user has specified a time control
-                            room.setTime(data.time);
+                        if(data.gameType) { //user has initiated a game type room
+                            switch(data.gameType) {
+                                case 'two-player':
+                                    room.setGame(new Chess());
+                                    break;
+                                case 'four-player':
+                                    room.setGame(new FourChess());
+                                    break;
+                            }
+                            
+                            if(data.time) { //user has specified a time control
+                                room.setTime(data.time);
+                            }
                         }
+                        
+                        //add the room to the list of rooms
+                        conn.addRoom(room);
                     }
-                    
-                    player = conn.findPlayerBySocket(socket);
+        
+                    player = conn.getPlayerBySocket(socket);
                     
                     if(!player) {
                         //TODO send error message
                         return;
                     }
                     
-                    
                     room.addPlayer(player);
-                    conn.addRoom(room);
                     
+                    let joinedMessage = `${player.getUsername()} has joined the room.`;
+                    let msgObj = {
+                        user: player.getPlayerAttributes(),
+                        msg: joinedMessage,
+                        thread: room.getName(),
+                        picture: null,
+                        event_type: 'user-joined'
+                    };
+                    
+                    //Tell the current user that they have joined the room
+                    socket.emit('action', {
+                        type: 'joined-room',
+                        payload: room.getRoom()
+                    });
+        
+                    //Tell everyone in the room that a new user has connnected
+                    io.to(room.getName()).emit('action', {
+                        type: 'user-room-joined',
+                        payload: room.getRoom(),
+                        message: msgObj
+                    });
+        
+                    room.addMessage(msgObj);
+                    
+                    //send a list of rooms to all members
+                    io.emit('action', {
+                        type: 'all-rooms',
+                        payload: conn.getAllRooms()
+                    });
+                    
+                    break;
+                    
+                //User is requesting a list of rooms
+                case 'server/get-rooms':
+                    io.emit('action', {
+                        type: 'all-rooms',
+                        payload: conn.getAllRooms()
+                    });
                     break;
                     
                     
                 //user is logging off
                 case 'server/logout':
+                    break;
             }
-            
-            // connection(io, socket, action);
-            // room(io, socket, action);
-            // twoGame(io, socket, action);
-            // fourGame(io, socket, action);
         });
 
         socket.on('disconnect', function() {
-            if(clients[socket.id]) {
+            let player = conn.getPlayerBySocket(socket);
+            if(typeof player == 'object') {
                 //Get all the rooms that user is connected to and the user info
-                const userObj = clients[socket.id]
-                const joinedRooms = userObj.rooms;
-                // console.log(rooms)
-                mapObject(joinedRooms, (key, val) => {
-                    let roomIndex;
-                    let roomName = val;
-                    //Check to see if users are still in the room
-                    if(io.sockets.adapter.rooms[roomName]) {
-                        let left_msg = userObj.user.username + " has left the room.";
-                        let message_obj = {
-                            user: userObj.user.username,
-                            msg: left_msg,
-                            thread: roomName,
-                            picture: null,
-                            event_type: 'user-left'
-                        };
-                        //Tell everyone that a user left
-                        io.to(roomName).emit('action', {
-                            type: 'user-room-left',
-                            payload: {
-                                name: roomName,
-                                user: userObj,
-                                message: message_obj
+                let roomsPlayerIsIn = conn.getPlayerRoomsByPlayerSocket(socket);
+                
+                roomsPlayerIsIn.map((room) => {
+                    let roomName = room.getName();
+                    
+                    if(io.sockets.adapter.rooms[roomName]) { //There are still players in the room
+                        
+                        if(room.removePlayerBySocket(player.getSocket())) { // player has been successfully removed
+                        
+                            let leftMessage = `${player.getUsername()} has left the room.`;
+                            let messageObj = {
+                                user: player.getPlayerAttributes(),
+                                msg: leftMessage,
+                                thread: roomName,
+                                picture: null,
+                                event_type: 'user-left'
                             }
-                        });
-                        addMessageToRoom(roomName, message_obj);
-                        //update this specific room
-                        roomIndex = findRoomIndexByName(roomName);
-                        rooms[roomIndex][roomName].users = getAllRoomMembers(io, roomName);
-                        if(!userSittingAndGameOngoing(userObj, rooms[roomIndex][roomName])) {
-                            deleteUserFromBoardSeats(io, roomIndex, roomName, userObj.user._id);
+                            
+                            room.addMessage(messageObj);
+                            
+                            //Tell everyone in a room that a user has left
+                            io.to(roomName).emit('action', {
+                                type: 'user-room-left',
+                                payload: {
+                                    name: roomName,
+                                    user: player.getPlayerAttributes(),
+                                    message: messageObj
+                                }
+                            });
+                            
+                            if(!conn.removePlayerBySocket(player.getSocket())) {
+                                //TODO error message
+                            }
                         }
-
-                    } else {
-                        //there are no users in this room
-                        if(roomName) {
-                            deleteRoomByName(roomName);
+                        
+                    } else {    //this user was the last player in the room
+                        if(conn.removeRoomByName(roomName)) {
+                            //TODO not sure if anything else is needed here
+                        } else {
+                            console.log("could not delete room " + roomName);
                         }
-
                     }
                 });
+                
+                io.emit('action', {
+                    type: 'all-rooms',
+                    payload: conn.getAllRooms()
+                });
             }
-
-            io.emit('action', {
-                type: 'all-rooms',
-                payload: rooms
-            });
-            delete clients[socket.id];
+                
         });
     });
 };
