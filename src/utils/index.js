@@ -52,6 +52,7 @@ export function showElo(game, player) {
 
     switch(game.gameType) {
         case 'two-player':
+        case 'crazyhouse':
             eloIndex = 'two_elos';
             if( totalTimeMs <= twoMins) {
                 //bullet

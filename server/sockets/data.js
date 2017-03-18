@@ -129,6 +129,7 @@ module.exports.getTimeTypeForTimeControl = function(game) {
 
     switch (game.gameType) {
         case 'two-player':
+        case 'crazyhouse':
             if (totalTimeMs <= twoMins) {
                 //bullet
                 tcIndex = 'bullet';
@@ -181,6 +182,7 @@ module.exports.getEloForTimeControl = function(game, player) {
 
     switch (game.gameType) {
         case 'two-player':
+        case 'crazyhouse':
             eloIndex = 'two_elos';
             if (totalTimeMs <= twoMins) {
                 //bullet

@@ -132,7 +132,8 @@ function startTimerCountDown(io, roomName, index) {
                 startTimerCountDown(io, roomName, index);
 
             }
-        } else if(rooms[index][roomName].gameType == 'two-player'){
+        } else if(rooms[index][roomName].gameType == 'two-player' ||
+                  rooms[index][roomName].gameType == 'crazyhouse'){
             time = 1;
             if(turn === 'white') {
                 winner = rooms[index][roomName].black;
