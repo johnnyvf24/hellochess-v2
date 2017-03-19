@@ -42,7 +42,8 @@ function startTimerCountDown(io, roomName, index) {
 
         let loser, winner;
 
-        if(!rooms[index]) {
+        if(!rooms[index] || !rooms[index][roomName] 
+            || !rooms[index][roomName].gameType || !rooms[index][roomName].game) {
             // log rooms value
             return;
         }
@@ -131,7 +132,8 @@ function startTimerCountDown(io, roomName, index) {
                 startTimerCountDown(io, roomName, index);
 
             }
-        } else if(rooms[index][roomName].gameType == 'two-player'){
+        } else if(rooms[index][roomName].gameType == 'two-player' ||
+                  rooms[index][roomName].gameType == 'crazyhouse'){
             time = 1;
             if(turn === 'white') {
                 winner = rooms[index][roomName].black;
@@ -247,6 +249,11 @@ function endGame(io, timeType, wOldElo, lOldElo, winner, loser, roomIndex, roomN
     delete rooms[roomIndex][roomName].game;
     clearTimeout(timers[roomName]);
 
+    if(twoComputers[roomName]) {
+        twoComputers[roomName].kill();
+        delete twoComputers[roomName];
+    }
+    
     //kick both players from board and restart game
     setTimeout(() => {
         delete rooms[roomIndex][roomName].white;
@@ -448,10 +455,6 @@ function endFourPlayerGame(io, roomName, index) {
     clearTimeout(timers[roomName]);
     delete rooms[index][roomName].game;
 
-    if(twoComputers[roomName]) {
-        twoComputers.kill();
-        delete twoComputers[roomName];
-    }
 
     if(fourComputers[roomName]) {
         fourComputers[roomName].kill();

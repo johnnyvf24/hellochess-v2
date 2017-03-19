@@ -18,8 +18,8 @@ module.exports = function(app) {
     app.post('/api/users/signup', Authentication.signup);
     app.post('/api/users/login', requireLogin, Authentication.login);
     app.post('/api/auth/facebook/token', requireFB, Authentication.fbLogin);
-    app.get('/api/auth/google/token', requireGoogle, Authentication.googleLogin)
-
+    app.get('/api/auth/google/token', requireGoogle, Authentication.googleLogin);
     app.patch('/api/users/:id', requireAuth, User.updateUser);
+    app.get('/api/users/:id', requireAuth, User.getUserProfile);
 
 }

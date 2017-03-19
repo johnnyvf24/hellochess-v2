@@ -4,6 +4,14 @@ export function mapObject(object, callback) {
     });
 }
 
+export function generateTokenHeader() {
+    return {
+        headers: {
+            "x-auth": localStorage.getItem('token')
+        }
+    };
+}
+
 export function millisToMinutesAndSeconds(millis) {
     let minutes = Math.floor(millis / 60000);
     let seconds = ((millis % 60000) / 1000).toFixed(0);
@@ -44,6 +52,7 @@ export function showElo(game, player) {
 
     switch(game.gameType) {
         case 'two-player':
+        case 'crazyhouse':
             eloIndex = 'two_elos';
             if( totalTimeMs <= twoMins) {
                 //bullet

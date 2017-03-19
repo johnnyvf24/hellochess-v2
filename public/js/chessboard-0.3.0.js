@@ -206,6 +206,7 @@ var CSS = {
   board: 'board-b72b1',
   chessboard: 'chessboard-63f37',
   clearfix: 'clearfix-7da63',
+  disabledPiece: 'disabled-piece-b5259',
   highlight1: 'highlight1-32417',
   highlight2: 'highlight2-9c5d2',
   notation: 'notation-322f9',
@@ -215,6 +216,9 @@ var CSS = {
   sparePieces: 'spare-pieces-7492f',
   sparePiecesBottom: 'spare-pieces-bottom-ae20f',
   sparePiecesTop: 'spare-pieces-top-4028b',
+  zhPieces: 'zh-pieces-5d8ff',
+  zhPiecesBottom: 'zh-pieces-bottom-05b85',
+  zhPiecesTop: 'zh-pieces-top-de885',
   square: 'square-55d63',
   white: 'white-1e1d7'
 };
@@ -228,7 +232,9 @@ var containerEl,
   boardEl,
   draggedPieceEl,
   sparePiecesTopEl,
-  sparePiecesBottomEl;
+  sparePiecesBottomEl,
+  zhPiecesTopEl,
+  zhPiecesBottomEl;
 
 // constructor return object
 var widget = {};
@@ -247,8 +253,13 @@ var ANIMATION_HAPPENING = false,
   DRAGGED_PIECE_SOURCE,
   DRAGGING_A_PIECE = false,
   SPARE_PIECE_ELS_IDS = {},
+  ZH_PIECE_ELS_IDS = {},
   SQUARE_ELS_IDS = {},
-  SQUARE_ELS_OFFSETS;
+  SQUARE_ELS_OFFSETS,
+  ZH_HAND_PIECES = {
+    wP: 0, wN: 0, wB: 0, wR: 0, wQ: 0,
+    bP: 0, bN: 0, bB: 0, bR: 0, bQ: 0
+  };
 
 //------------------------------------------------------------------------------
 // JS Util Functions
@@ -437,6 +448,16 @@ function expandConfig() {
   if (cfg.sparePieces === true) {
     cfg.draggable = true;
   }
+  
+  // default for crazyhouse if false
+  if (cfg.crazyhouse !== true) {
+    cfg.crazyhouse = false;
+  }
+  
+  // draggable must be true if crazyhouse is enabled
+  if (cfg.crazyhouse === true) {
+    cfg.draggable = true;
+  }
 
   // default piece theme is wikipedia
   if (cfg.hasOwnProperty('pieceTheme') !== true ||
@@ -526,13 +547,15 @@ function createElIds() {
     }
   }
 
-  // spare pieces
+  // spare pieces, crazyhouse pieces
   var pieces = 'KQRBNP'.split('');
   for (var i = 0; i < pieces.length; i++) {
     var whitePiece = 'w' + pieces[i];
     var blackPiece = 'b' + pieces[i];
     SPARE_PIECE_ELS_IDS[whitePiece] = whitePiece + '-' + createId();
     SPARE_PIECE_ELS_IDS[blackPiece] = blackPiece + '-' + createId();
+    ZH_PIECE_ELS_IDS[whitePiece] = whitePiece + '-' + createId();
+    ZH_PIECE_ELS_IDS[blackPiece] = blackPiece + '-' + createId();
   }
 }
 
@@ -547,8 +570,18 @@ function buildBoardContainer() {
     html += '<div class="' + CSS.sparePieces + ' ' +
       CSS.sparePiecesTop + '"></div>';
   }
+  
+  if (cfg.crazyhouse === true) {
+    html += '<div class="' + CSS.zhPieces + ' ' +
+      CSS.zhPiecesTop + '"></div>';
+  }
 
   html += '<div class="' + CSS.board + '"></div>';
+  
+  if (cfg.crazyhouse === true) {
+    html += '<div class="' + CSS.zhPieces + ' ' +
+      CSS.zhPiecesBottom + '"></div>';
+  }
 
   if (cfg.sparePieces === true) {
     html += '<div class="' + CSS.sparePieces + ' ' +
@@ -669,6 +702,38 @@ function buildPiece(piece, hidden, id) {
   return html;
 }
 
+function buildZhPiece(piece, hidden, id, number) {
+  var classString = CSS.piece;
+  if (number === 0) {
+    classString += ' ' + CSS.disabledPiece;
+  }
+  var numberString = '';
+  if (number > 0) {
+    numberString += number;
+  }
+  var html = '<span ';
+  html += 'class="' + classString + '" ' +
+  'data-piece="' + piece + '" ' +
+  'data-number="' + numberString + '" ' +
+  '>';
+  
+  html += '<img src="' + buildPieceImgSrc(piece) + '" ';
+  if (id && typeof id === 'string') {
+    html += 'id="' + id + '" ';
+  }
+  html += 'alt="" ' +
+  'style="width: ' + SQUARE_SIZE + 'px;' +
+  'height: ' + SQUARE_SIZE + 'px;';
+  if (hidden === true) {
+    html += 'display:none;';
+  }
+  html += '" />';
+  
+  html += '</span>';
+
+  return html;
+}
+
 function buildSparePieces(color) {
   var pieces = ['wK', 'wQ', 'wR', 'wB', 'wN', 'wP'];
   if (color === 'black') {
@@ -678,6 +743,21 @@ function buildSparePieces(color) {
   var html = '';
   for (var i = 0; i < pieces.length; i++) {
     html += buildPiece(pieces[i], false, SPARE_PIECE_ELS_IDS[pieces[i]]);
+  }
+
+  return html;
+}
+
+function buildZhPieces(color) {
+  var pieces = ['wP', 'wN', 'wB', 'wR', 'wQ'];
+  if (color === 'black') {
+    pieces = ['bP', 'bN', 'bB', 'bR', 'bQ'];
+  }
+
+  var html = '';
+  for (var i = 0; i < pieces.length; i++) {
+    html += buildZhPiece(pieces[i], false,
+      ZH_PIECE_ELS_IDS[pieces[i]], ZH_HAND_PIECES[pieces[i]]);
   }
 
   return html;
@@ -770,6 +850,45 @@ function animateSparePieceToSquare(piece, dest, completeFn) {
   animatedPieceEl.animate(destOffset, opts);
 }
 
+function animateCrazyhousePieceToSquare(piece, dest, completeFn) {
+  var srcOffset = $('#' + ZH_PIECE_ELS_IDS[piece]).offset();
+  var destSquareEl = $('#' + SQUARE_ELS_IDS[dest]);
+  var destOffset = destSquareEl.offset();
+
+  // create the animate piece
+  var pieceId = createId();
+  $('body').append(buildPiece(piece, true, pieceId));
+  var animatedPieceEl = $('#' + pieceId);
+  animatedPieceEl.css({
+    display: '',
+    position: 'absolute',
+    left: srcOffset.left,
+    top: srcOffset.top
+  });
+
+  // on complete
+  var complete = function() {
+    // add the "real" piece to the destination square
+    destSquareEl.find('.' + CSS.piece).remove();
+    destSquareEl.append(buildPiece(piece));
+
+    // remove the animated piece
+    animatedPieceEl.remove();
+
+    // run complete function
+    if (typeof completeFn === 'function') {
+      completeFn();
+    }
+  };
+
+  // animate the piece to the destination square
+  var opts = {
+    duration: cfg.moveSpeed,
+    complete: complete
+  };
+  animatedPieceEl.animate(destOffset, opts);
+}
+
 // execute an array of animations
 function doAnimations(a, oldPos, newPos) {
   ANIMATION_HAPPENING = true;
@@ -799,7 +918,7 @@ function doAnimations(a, oldPos, newPos) {
     }
 
     // add a piece (no spare pieces)
-    if (a[i].type === 'add' && cfg.sparePieces !== true) {
+    if (a[i].type === 'add' && cfg.sparePieces !== true && cfg.crazyhouse !== true) {
       $('#' + SQUARE_ELS_IDS[a[i].square])
         .append(buildPiece(a[i].piece, true))
         .find('.' + CSS.piece)
@@ -809,6 +928,10 @@ function doAnimations(a, oldPos, newPos) {
     // add a piece from a spare piece
     if (a[i].type === 'add' && cfg.sparePieces === true) {
       animateSparePieceToSquare(a[i].piece, a[i].square, onFinish);
+    }
+    
+    if (a[i].type === 'add' && cfg.crazyhouse === true) {
+      animateCrazyhousePieceToSquare(a[i].piece, a[i].square, onFinish);
     }
 
     // move a piece
@@ -989,6 +1112,19 @@ function drawBoard() {
       sparePiecesBottomEl.html(buildSparePieces('black'));
     }
   }
+  drawCrazyhouseHands();
+}
+
+function drawCrazyhouseHands() {
+  if (cfg.crazyhouse === true) {
+    if (CURRENT_ORIENTATION === 'white') {
+      zhPiecesTopEl.html(buildZhPieces('black'));
+      zhPiecesBottomEl.html(buildZhPieces('white'));
+    } else {
+      zhPiecesTopEl.html(buildZhPieces('white'));
+      zhPiecesBottomEl.html(buildZhPieces('black'));
+    }
+  }
 }
 
 // given a position and a set of moves, return a new position
@@ -1061,7 +1197,8 @@ function removeSquareHighlights() {
 
 function snapbackDraggedPiece() {
   // there is no "snapback" for spare pieces
-  if (DRAGGED_PIECE_SOURCE === 'spare') {
+  if (DRAGGED_PIECE_SOURCE === 'spare' ||
+      DRAGGED_PIECE_SOURCE === 'hand') {
     trashDraggedPiece();
     return;
   }
@@ -1164,7 +1301,7 @@ function beginDraggingPiece(source, piece, x, y) {
   DRAGGED_PIECE_SOURCE = source;
 
   // if the piece came from spare pieces, location is offboard
-  if (source === 'spare') {
+  if (source === 'spare' || source === 'hand') {
     DRAGGED_PIECE_LOCATION = 'offboard';
   }
   else {
@@ -1183,7 +1320,7 @@ function beginDraggingPiece(source, piece, x, y) {
       top: y - (SQUARE_SIZE / 2)
     });
 
-  if (source !== 'spare') {
+  if (source !== 'spare' && source !== 'hand') {
     // highlight the source square and hide the piece
     $('#' + SQUARE_ELS_IDS[source]).addClass(CSS.highlight1)
       .find('.' + CSS.piece).css('display', 'none');
@@ -1245,7 +1382,7 @@ function stopDraggedPiece(location) {
     // position has not changed; do nothing
 
     // source piece is a spare piece and position is on the board
-    if (DRAGGED_PIECE_SOURCE === 'spare' && validSquare(location) === true) {
+    if (['spare', 'hand'].includes(DRAGGED_PIECE_SOURCE) && validSquare(location) === true) {
       // add the piece to the board
       newPosition[location] = DRAGGED_PIECE;
     }
@@ -1292,6 +1429,13 @@ function stopDraggedPiece(location) {
 // clear the board
 widget.clear = function(useAnimation) {
   widget.position({}, useAnimation);
+  if (cfg.crazyhouse === true) {
+    ZH_HAND_PIECES = {
+      wP: 0, wN: 0, wB: 0, wR: 0, wQ: 0,
+      bP: 0, bN: 0, bB: 0, bR: 0, bQ: 0
+    };
+    drawCrazyhouseHands();
+  }
 };
 
 /*
@@ -1456,6 +1600,12 @@ widget.resize = function() {
     containerEl.find('.' + CSS.sparePieces)
       .css('paddingLeft', (SQUARE_SIZE + BOARD_BORDER_SIZE) + 'px');
   }
+  
+  // crazyhouse pieces
+  if (cfg.crazyhouse === true) {
+    containerEl.find('.' + CSS.zhPieces)
+      .css('paddingLeft', (SQUARE_SIZE * 1.5 + BOARD_BORDER_SIZE) + 'px');
+  }
 
   // redraw the board
   drawBoard();
@@ -1464,6 +1614,18 @@ widget.resize = function() {
 // set the starting position
 widget.start = function(useAnimation) {
   widget.position('start', useAnimation);
+};
+
+widget.setHand = function(hand) {
+  ZH_HAND_PIECES = {
+    wP: hand.wP, wN: hand.wN, wB: hand.wB, wR: hand.wR, wQ: hand.wQ,
+    bP: hand.bP, bN: hand.bN, bB: hand.bB, bR: hand.bR, bQ: hand.bQ
+  };
+  drawCrazyhouseHands();
+};
+
+widget.getHand = function() {
+  return ZH_HAND_PIECES;
 };
 
 //------------------------------------------------------------------------------
@@ -1534,6 +1696,24 @@ function touchstartSparePiece(e) {
   e = e.originalEvent;
   beginDraggingPiece('spare', piece,
     e.changedTouches[0].pageX, e.changedTouches[0].pageY);
+}
+
+function mousedownCrazyhousePiece(e) {
+  if (cfg.crazyhouse !== true) return;
+  
+  var piece = $(this).attr('data-piece');
+  
+  beginDraggingPiece('hand', piece, e.pageX, e.pageY);
+}
+
+function touchstartCrazyhousePiece(e) {
+  if (cfg.crazyhouse !== true) return;
+  
+  var piece = $(this).attr('data-piece');
+  
+  e = e.originalEvent;
+  beginDraggingPiece('hand', piece,
+  e.changedTouches[0].pageX, e.changedTouches[0].pageY);
 }
 
 function mousemoveWindow(e) {
@@ -1637,6 +1817,8 @@ function addEvents() {
   boardEl.on('mousedown', '.' + CSS.square, mousedownSquare);
   containerEl.on('mousedown', '.' + CSS.sparePieces + ' .' + CSS.piece,
     mousedownSparePiece);
+  containerEl.on('mousedown', '.' + CSS.zhPieces + ' .' + CSS.piece,
+    mousedownCrazyhousePiece);
 
   // mouse enter / leave square
   boardEl.on('mouseenter', '.' + CSS.square, mouseenterSquare);
@@ -1661,6 +1843,8 @@ function addEvents() {
     boardEl.on('touchstart', '.' + CSS.square, touchstartSquare);
     containerEl.on('touchstart', '.' + CSS.sparePieces + ' .' + CSS.piece,
       touchstartSparePiece);
+    containerEl.on('touchstart', '.' + CSS.zhPieces + ' .' + CSS.piece,
+      touchstartCrazyhousePiece);
     $(window).on('touchmove', touchmoveWindow);
     $(window).on('touchend', touchendWindow);
   }
@@ -1674,6 +1858,11 @@ function initDom() {
   if (cfg.sparePieces === true) {
     sparePiecesTopEl = containerEl.find('.' + CSS.sparePiecesTop);
     sparePiecesBottomEl = containerEl.find('.' + CSS.sparePiecesBottom);
+  }
+  
+  if (cfg.crazyhouse === true) {
+    zhPiecesTopEl = containerEl.find('.' + CSS.zhPiecesTop);
+    zhPiecesBottomEl = containerEl.find('.' + CSS.zhPiecesBottom);
   }
 
   // create the drag piece

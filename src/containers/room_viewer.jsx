@@ -13,8 +13,13 @@ class RoomViewer extends Component {
     }
 
     componentWillMount() {
-        this.props.updateLiveUser(this.props.profile);
-        this.props.joinRoom('Global');                  //join the default chatroom
+
+        if(this.props.connection.status) {
+            if(!this.props.activeProfile._id) {
+                this.props.updateLiveUser(this.props.profile);
+                this.props.joinRoom('Global');                  //join the default chatroom
+            }
+        }
     }
 
     onTabClick(chatName, event) {
@@ -40,7 +45,7 @@ class RoomViewer extends Component {
                     <a
                         className={key === active ? "nav-link active" : "nav-link"}
                         data-toggle="tab"
-                        href={"#" +key + "-chat"}
+                        href={"#room-chat-" + value.id}
                         >
                         <button
                             className="close"
@@ -64,7 +69,7 @@ class RoomViewer extends Component {
     }
 
     render() {
-        if(!this.props.profile.username) {
+        if(!this.props.profile || !this.props.profile.username) {
             return <div>
             </div>
         }
@@ -103,9 +108,11 @@ class RoomViewer extends Component {
 
 function mapStateToProps(state) {
     return {
+        connection: state.connection,
         activeThread: state.activeThread,
         openThreads: state.openThreads,
-        profile: state.auth.profile
+        profile: state.auth.profile,
+        activeProfile: state.currentProfile,
     };
 }
 

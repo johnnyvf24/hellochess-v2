@@ -4,12 +4,16 @@ let timers = {};
 let clients = {};
 let fourComputers = [];
 let twoComputers = [];
+let nextRoomId = 0;
+
+let commentator = null;
 
 module.exports.rooms = rooms; //all the chat rooms
 module.exports.timers = timers; //all the timers
 module.exports.clients = clients; //all connected users
 module.exports.fourComputers = fourComputers;
 module.exports.twoComputers = twoComputers;
+module.exports.commentator = commentator;
 
 module.exports.roomExists = function(name) {
     let foundMatch = false;
@@ -24,6 +28,9 @@ module.exports.roomExists = function(name) {
 }
 
 module.exports.getRoomByName = function(name) {
+    if(!name) {
+        return;
+    }
     let obj = {};
     for (let i = 0; i < rooms.length; i++) {
         mapObject(rooms[i], (key, val) => {
@@ -127,6 +134,7 @@ module.exports.getTimeTypeForTimeControl = function(game) {
 
     switch (game.gameType) {
         case 'two-player':
+        case 'crazyhouse':
             if (totalTimeMs <= twoMins) {
                 //bullet
                 tcIndex = 'bullet';
@@ -179,6 +187,7 @@ module.exports.getEloForTimeControl = function(game, player) {
 
     switch (game.gameType) {
         case 'two-player':
+        case 'crazyhouse':
             eloIndex = 'two_elos';
             if (totalTimeMs <= twoMins) {
                 //bullet
@@ -302,4 +311,10 @@ module.exports.getRecentMessages = function(roomName) {
         messages = [];
     }
     return messages;
+}
+
+module.exports.newRoomId = function() {
+    let id = nextRoomId;
+    nextRoomId += 1;
+    return id;
 }

@@ -7,6 +7,7 @@ import FourChess from '../../common/fourchess';
 import rooms from './rooms_reducer';
 import AuthReducer from './auth_reducer';
 import newGameOptions from './new_game_reducer';
+import currentProfile from './profile_reducer';
 
 import {SELECTED_ROOM,LOGOUT_SUCCESS} from '../actions/types';
 
@@ -53,7 +54,9 @@ function openThreads(state = {}, action) {
         case 'receive-message':
             messages = [...state[action.payload.thread].messages, action.payload];
             obj = {...state[action.payload.thread], messages};
+            
             return {...state, [action.payload.thread]: obj };
+            
         case 'new-move':
             newState = Object.assign({}, state);
             newState[action.payload.thread].fen = action.payload.fen;
@@ -223,6 +226,7 @@ const rootReducer = combineReducers({
     rooms,      //A list of all available Chat Rooms
     activeThread,
     openThreads,
+    currentProfile,
     newGameOptions,
     auth: AuthReducer,
     form: formReducer,

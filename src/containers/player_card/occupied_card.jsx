@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {tick, removeComputer} from '../../actions/room';
 import {millisToMinutesAndSeconds, formatTurn, showElo} from '../../utils/index';
+import { browserHistory } from 'react-router';
 
 class OccupiedCard extends Component {
 
@@ -72,7 +73,7 @@ class OccupiedCard extends Component {
     renderTime(time) {
         return millisToMinutesAndSeconds(time);
     }
-    
+
     // Alive = still playing
     // Dead = resigned or flagged
     // if dead, returns the className that will
@@ -98,7 +99,10 @@ class OccupiedCard extends Component {
                         { !game.fen && this.renderLeaveSeat(player, name)}
 
                         <div className="row">
-                            <img className="player-img rounded-circle" src={player.picture} />
+                            <a href="#"
+                                onClick={(e) => browserHistory.push(`/profile/${player._id}`)}>
+                                <img className="player-img rounded-circle" src={player.picture} />
+                            </a>
                             <div className="card-text"><h5>{player.username}</h5>{showElo(game, player)}</div>
                         </div>
 
@@ -114,16 +118,19 @@ class OccupiedCard extends Component {
 
 function mapStateToProps(state, ownProps) {
     let color = ownProps.longColor;
+    let game = state.openThreads[state.activeThread];
+    let player = game[color];
+    let time = player ? player.time : null;
     return {
-        player: state.openThreads[state.activeThread][color],
-        time: state.openThreads[state.activeThread][color].time,
-        game: state.openThreads[state.activeThread],
-        resigned: state.openThreads[state.activeThread][color].resigned,
-        turn: state.openThreads[state.activeThread].turn,
-        paused: state.openThreads[state.activeThread].paused,
-        lastMove: state.openThreads[state.activeThread].lastMove,
+        player: player,
+        time: time,
+        game: game,
+        resigned: player.resigned,
+        turn: game.turn,
+        paused: game.paused,
+        lastMove: game.lastMove,
         name: state.activeThread,
-        alive: state.openThreads[state.activeThread][color].alive
+        alive: player.alive
     }
 }
 

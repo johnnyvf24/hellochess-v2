@@ -100,31 +100,32 @@ function fourGame(io, socket, action) {
                     type: 'all-rooms',
                     payload: rooms
                 });
+                
+                fourComputers[roomName].setPosition(rooms[roomIndex][roomName].game.fen());
+
+                //tell the computer whose turn it is
+                fourComputers[roomName].setTurn(newTurn);
+
+
+                if(rooms[roomIndex][roomName].game.isWhiteOut()) {
+        			fourComputers[roomName].setOut('w');
+        		}
+        		if(rooms[roomIndex][roomName].game.isBlackOut()) {
+        			fourComputers[roomName].setOut('b');
+        		}
+        		if(rooms[roomIndex][roomName].game.isGoldOut()) {
+        			fourComputers[roomName].setOut('g');
+        		}
+        		if(rooms[roomIndex][roomName].game.isRedOut()) {
+        			fourComputers[roomName].setOut('r');
+        		}
 
                 if(rooms[roomIndex][roomName][currentTurn].type == "computer") {
-                    fourComputers[roomName].setPosition(rooms[roomIndex][roomName].game.fen());
-
-                    //tell the computer whose turn it is
-                    fourComputers[roomName].setTurn(newTurn);
-
-
-                    if(rooms[roomIndex][roomName].game.isWhiteOut()) {
-            			fourComputers[roomName].setOut('w');
-            		}
-            		if(rooms[roomIndex][roomName].game.isBlackOut()) {
-            			fourComputers[roomName].setOut('b');
-            		}
-            		if(rooms[roomIndex][roomName].game.isGoldOut()) {
-            			fourComputers[roomName].setOut('g');
-            		}
-            		if(rooms[roomIndex][roomName].game.isRedOut()) {
-            			fourComputers[roomName].setOut('r');
-            		}
+                    
+                    fourComputers[roomName].setMode(0);
 
                     let timeLeft = rooms[roomIndex][roomName][currentTurn].time;
                     fourComputers[roomName].go(timeLeft);
-            		
-
                 }
             }
             break;
@@ -211,31 +212,33 @@ function fourGame(io, socket, action) {
                         return endFourPlayerGame(io, roomName, index);
                     }
                 }
-
+                
                 newTurn = rooms[index][roomName].game.turn();
                 newTurnFormatted = formatTurn(newTurn);
+                
+                fourComputers[roomName].setPosition(rooms[index][roomName].game.fen());
 
+                //tell the computer whose turn it is
+                fourComputers[roomName].setTurn(newTurn);
+
+                if(rooms[index][roomName].game.isWhiteOut()) {
+        			fourComputers[roomName].setOut('w');
+        		}
+        		if(rooms[index][roomName].game.isBlackOut()) {
+        			fourComputers[roomName].setOut('b');
+        		}
+        		if(rooms[index][roomName].game.isGoldOut()) {
+        			fourComputers[roomName].setOut('g');
+        		}
+        		if(rooms[index][roomName].game.isRedOut()) {
+        			fourComputers[roomName].setOut('r');
+        		}
+
+                let timeLeft = rooms[index][roomName][newTurnFormatted].time;
+                
                 if(rooms[index][roomName][newTurnFormatted].type == "computer") {
-                    //console.log(rooms[index][roomName].game.fen().split('-')[0]);
-                    fourComputers[roomName].setPosition(rooms[index][roomName].game.fen());
-
-                    //tell the computer whose turn it is
-                    fourComputers[roomName].setTurn(newTurn);
-
-                    if(rooms[index][roomName].game.isWhiteOut()) {
-            			fourComputers[roomName].setOut('w');
-            		}
-            		if(rooms[index][roomName].game.isBlackOut()) {
-            			fourComputers[roomName].setOut('b');
-            		}
-            		if(rooms[index][roomName].game.isGoldOut()) {
-            			fourComputers[roomName].setOut('g');
-            		}
-            		if(rooms[index][roomName].game.isRedOut()) {
-            			fourComputers[roomName].setOut('r');
-            		}
-            		
-                    let timeLeft = rooms[index][roomName][newTurnFormatted].time;
+                    fourComputers[roomName].setMode(0);
+                    
                     fourComputers[roomName].go(timeLeft);
                 }
             }

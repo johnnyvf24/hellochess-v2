@@ -53,6 +53,44 @@
   box-shadow: inset 0 0 3px 3px yellow;
 }
 
+/* disabled piece in crazyhouse hand */
+.disabled-piece-b5259 {
+  opacity: 0.15;
+}
+
+/* crazyhouse pieces */
+.zh-pieces-5d8ff {
+  background-color: rgba(160,160,160,0.6);
+  border: black;
+  border-width: 6px;
+  border-style: double;
+}
+
+.zh-pieces-bottom-05b85 {
+  margin-top: 3px;
+}
+
+.zh-pieces-top-de885 {
+  margin-bottom: 3px;
+}
+
+.zh-pieces-5d8ff .piece-417db {
+  display: inline-block;
+  position: relative;
+}
+
+.zh-pieces-5d8ff .piece-417db::after {
+  content: attr(data-number);
+  position: absolute;
+  bottom: 10%;
+  right: 10%;
+  font-weight: bold;
+  font-size: 18px;
+  padding: 3px;
+  color: white;
+  background-color: #999999;
+}
+
 /* notation */
 .notation-322f9 {
   cursor: default;

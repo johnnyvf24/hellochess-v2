@@ -14,7 +14,7 @@ export default class Room extends Component {
         const {index, value, active} = this.props;
         return (
             <div
-                id={index + "-chat"}
+                id={"room-chat-" + value.id}
                 key={index} role="tabpanel"
                 className= {index === active ? "tab-pane active" : "tab-pane"}>
                 <div className="row chatbox-top-stats-wrapper">
@@ -23,12 +23,12 @@ export default class Room extends Component {
                         <a  className="float-xs-right"
                             href="#"
                             data-toggle="modal"
-                            data-target={"#" + index + "-modal"}>
+                            data-target={"#modal-room-" + value.id}>
                             {value.users.length} users
                         </a>
                     </span>
 
-                    <div className="modal fade" id={index + "-modal"}
+                    <div className="modal fade" id={"modal-room-" + value.id}
                         role="dialog"
                         aria-labelledby="chatUserModal"
                         aria-hidden="true">

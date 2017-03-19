@@ -4,7 +4,7 @@ const {ab2str} = require('../server/utils/utils');
 module.exports = class TwoEngine extends Engine {
     constructor(path, roomName, socket) {
         super(path, roomName, socket);
-        this.setDepth(15);
+        this.setDepth(12);
     }
     onBestMove(data) {
         var str = ab2str(data);
@@ -15,6 +15,9 @@ module.exports = class TwoEngine extends Engine {
             let startIndex = str.indexOf("bestmove");
             let from = str.substring(startIndex + 9, startIndex + 11);
             let to = str.substring(startIndex + 11, startIndex + 13);
+            if (from.indexOf('@') !== -1) {
+                from = '@';
+            }
             let compMove = {
                 to: to,
                 from: from,
@@ -32,9 +35,7 @@ module.exports = class TwoEngine extends Engine {
     }
     
     setupOptions() {
-        this.setOption("Skill Level", "1");
-        this.setOption("Contempt", "100");
-        this.setOption("Slow Mover", "1000");
+        this.setOption("UCI_Variant", "crazyhouse");
     }
     
     setPosition(fen) {
@@ -44,7 +45,7 @@ module.exports = class TwoEngine extends Engine {
     }
     
     setTurn(turnColor) {
-        console.log("set turn on TwoEngine");
+        console.log("set turn on CrazyEngine");
     }
     
     setOut(colorOut) {
