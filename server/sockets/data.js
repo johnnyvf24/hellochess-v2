@@ -58,7 +58,7 @@ module.exports.removeTimersFromRooms = function(rooms) {
     return roomsc;
 }
 
-module.exports.deleteRoomByName = function(name) {
+module.exports.deleteRoomByName = function(roomName) {
     if(fourComputers[roomName]) {
         fourComputers[roomName].stdin.pause();
         fourComputers[roomName].kill();
@@ -67,7 +67,7 @@ module.exports.deleteRoomByName = function(name) {
     for (let i = 0; i < rooms.length; i++) {
         if (rooms[i] !== undefined) {
             mapObject(rooms[i], (key, val) => {
-                if (key.toUpperCase() === name.toUpperCase()) {
+                if (key.toUpperCase() === roomName.toUpperCase()) {
                     rooms.splice(i, 1);
                 }
             });

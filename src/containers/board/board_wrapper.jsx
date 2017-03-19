@@ -66,13 +66,15 @@ class BoardWrapper extends Component {
                     return new Crazyhouse();
                 };
                 setBoardPosition = function(fen) {
-                    fen = fen.split(' ')[0];
-                    // remove hand from end
-                    fen = fen.split('/').slice(0, 8).join('/');
-                    // remove fake piece indicators
-                    fen = fen.replace(/~/g, '');
-                    this.board.position(fen, false);
-                    this.board.setHand(this.getBoardHand());
+                    if (fen) {
+                        fen = fen.split(' ')[0];
+                        // remove hand from end
+                        fen = fen.split('/').slice(0, 8).join('/');
+                        // remove fake piece indicators
+                        fen = fen.replace(/~/g, '');
+                        this.board.position(fen, false);
+                        this.board.setHand(this.getBoardHand());
+                    }
                 };
                 return (
                     <div id="board-wrapper">

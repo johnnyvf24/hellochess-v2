@@ -54,7 +54,9 @@ function room(io, socket, action) {
 
             //connect this user to this react-notification-system-redux
             socket.join(roomName);
-            clients[socket.id].rooms.push(roomName);
+            if (clients[socket.id]) {
+                clients[socket.id].rooms.push(roomName);
+            }
 
             //Find the existing chat room
             roomObj = getRoomByName(roomName);
