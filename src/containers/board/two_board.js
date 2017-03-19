@@ -31,8 +31,8 @@ class TwoBoard extends Component {
             onMouseoverSquare: this.onMouseoverSquare,
             onSnapbackEnd: this.onSnapbackEnd
         };
-        if (this.props.sparePieces) {
-            this.cfg.sparePieces = this.props.sparePieces;
+        if (this.props.crazyhouse) {
+            this.cfg.crazyhouse = this.props.crazyhouse;
         }
         this.dragFrom = '';
 
@@ -48,7 +48,6 @@ class TwoBoard extends Component {
     componentWillReceiveProps(nextProps) {
         if(nextProps.fen) {
             if (this.props.fen != nextProps.fen) {
-                console.log("different fen, updating the fen");
                 this.game.load(nextProps.fen);
                 this.updatePosition(nextProps.fen);
             }
@@ -80,13 +79,15 @@ class TwoBoard extends Component {
                 }
             }
         } else {
-            console.log("no nextProps.fen");
             this.board.clear();
+            this.shadeSquareSource = null
+            this.shadeSquareDest = null;
             this.game = this.newGameObject();
             if (this.prevMoveResizeListener) {
                 window.removeEventListener('resize', this.prevMoveResizeListener);
             }
             this.prevMoveResizeListener = null;
+            this.dragFrom = '';
             this.boardRedraw(); // redraw the board to remove square shading
         }
     }
@@ -97,7 +98,28 @@ class TwoBoard extends Component {
             let pos = this.board.position();
             delete pos[this.dragFrom];
             this.board.position(pos, false);
+            this.dragFrom = '';
         }
+    }
+    
+    // get the crazyhouse hand from the game object,
+    // which is in the form:
+    //   { w: [ {type: 'p', color: 'w'}, ...], b: ... }
+    // and convert it to what chessboard.js expects,
+    // which is the form:
+    //   { wP: 1, wN: 0, ... }
+    getBoardHand() {
+        let hand = this.game.get_hand({verbose: true});
+        let boardHand = {
+            wP: 0, wN: 0, wB: 0, wR: 0, wQ: 0,
+            bP: 0, bN: 0, bB: 0, bR: 0, bQ: 0
+        };
+        let handPieces = hand.w.concat(hand.b);
+        handPieces.forEach(function(piece) {
+            let key = piece.color.toLowerCase() + piece.type.toUpperCase();
+            boardHand[key] += 1;
+        });
+        return boardHand;
     }
 
     isPieceInHand(piece, color) {
@@ -113,15 +135,19 @@ class TwoBoard extends Component {
         if (!this.props.profile || !this.props.room.black || !this.props.room.white) {
             return false;
         }
-        if (source !== 'spare') {
-            this.dragFrom = source;
+        if (source !== 'hand') {
+            if (this.props.profile._id === this.props.room.white._id ||
+                this.props.profile._id === this.props.room.black._id) {
+                    // only set dragFrom if we're playing
+                    this.dragFrom = source;
+                }
         }
         else if(this.props.profile._id === this.props.room.black._id) {
             //this is the black player
             if(piece.search(/^w/) !== -1) {
                 return false;
             }
-            if (source === 'spare') {
+            if (source === 'hand') {
                 return this.isPieceInHand(pieceType, 'b');
             }
             return true;
@@ -131,7 +157,7 @@ class TwoBoard extends Component {
             if(piece.search(/^b/) !== -1) {
                 return false;
             }
-            if (source === 'spare') {
+            if (source === 'hand') {
                 return this.isPieceInHand(pieceType, 'w');
             }
             return true;
@@ -150,13 +176,17 @@ class TwoBoard extends Component {
     }
     
     boardRedraw() {
+        if (this.props.crazyhouse === true) {
+            $("#board").css("margin-left", "10%");
+            $("#board").css("margin-right", "10%");
+        }
         this.board.resize();
         this.shadeLastMove();
         this.renderPremove();
     }
 
     shadeSquare(square) {
-        if (!square || square === 'spare' || square === '@') {
+        if (!square || square === 'hand' || square === '@') {
             return;
         }
         var squareEl = $('#board .square-' + square);
@@ -234,17 +264,19 @@ class TwoBoard extends Component {
     }
     
     makeMove(action) {
-        if (action.from === 'spare') {
+        if (action.from === 'hand') {
             action.from = '@';
         }
         return this.game.move(action);
     }
     
     onSnapbackEnd(piece, square, position, orientation) {
-        let pos = this.board.position();
-        pos[this.dragFrom] = piece;
-        this.board.position(pos, false);
-        this.dragFrom = '';
+        if (this.dragFrom) {
+            let pos = this.board.position();
+            pos[this.dragFrom] = piece;
+            this.board.position(pos, false);
+            this.dragFrom = '';
+        }
     }
 
     onDrop(source, target, piece) {
@@ -313,6 +345,7 @@ class TwoBoard extends Component {
         window.addEventListener('resize', (event) => {
             this.boardRedraw();
         });
+        this.boardRedraw();
     }
 
     render() {

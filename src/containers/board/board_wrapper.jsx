@@ -14,9 +14,10 @@ export const LIGHT_SQUARE_PREMOVE_COLOR = '#ff0000';
 class BoardWrapper extends Component {
     
     shouldComponentUpdate(nextProps, nextState) {
-        return
-            (this.props.activeThread != nextProps.activeThread ||
-            Object.keys(this.props.openThreads).length != Object.keys(nextProps.openThreads).length);
+        return (
+            this.props.activeThread != nextProps.activeThread ||
+            Object.keys(this.props.openThreads).length != Object.keys(nextProps.openThreads).length
+        );
             
     }
 
@@ -70,13 +71,14 @@ class BoardWrapper extends Component {
                     // remove fake piece indicators
                     fen = fen.replace(/~/g, '');
                     this.board.position(fen, false);
+                    this.board.setHand(this.getBoardHand());
                 };
                 return (
                     <div id="board-wrapper">
                         <TwoBoard
                             newGameObject={newGameObject}
                             setBoardPosition={setBoardPosition}
-                            sparePieces={true} />
+                            crazyhouse={true} />
                     </div>
                 );
         }
