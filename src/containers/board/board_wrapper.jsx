@@ -45,7 +45,8 @@ class BoardWrapper extends Component {
                     <div id="board-wrapper">
                         <TwoBoard
                             setBoardPosition={setBoardPosition}
-                            newGameObject={newGameObject} />
+                            newGameObject={newGameObject}
+                            key={activeThread}/>
                     </div>
                 );
             case 'four-player':
@@ -78,7 +79,8 @@ class BoardWrapper extends Component {
                         <TwoBoard
                             newGameObject={newGameObject}
                             setBoardPosition={setBoardPosition}
-                            crazyhouse={true} />
+                            crazyhouse={true}
+                            key={activeThread}/>
                     </div>
                 );
         }
