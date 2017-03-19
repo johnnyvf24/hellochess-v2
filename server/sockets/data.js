@@ -25,18 +25,16 @@ module.exports.roomExists = function(name) {
 }
 
 module.exports.getRoomByName = function(name) {
-    
-    if(name) {
-        let obj = {};
-        for (let i = 0; i < rooms.length; i++) {
-            mapObject(rooms[i], (key, val) => {
-                if (key.toUpperCase() === name.toUpperCase()) {
-                    obj = val;
-                }
-            });
-        }
-    
-        return obj;
+    if(!name) {
+        return;
+    }
+    let obj = {};
+    for (let i = 0; i < rooms.length; i++) {
+        mapObject(rooms[i], (key, val) => {
+            if (key.toUpperCase() === name.toUpperCase()) {
+                obj = val;
+            }
+        });
     }
     
 }
@@ -56,11 +54,16 @@ module.exports.removeTimersFromRooms = function(rooms) {
     return roomsc;
 }
 
-module.exports.deleteRoomByName = function(name) {
+module.exports.deleteRoomByName = function(roomName) {
+    if(fourComputers[roomName]) {
+        fourComputers[roomName].stdin.pause();
+        fourComputers[roomName].kill();
+        delete fourComputers[roomName];
+    }
     for (let i = 0; i < rooms.length; i++) {
         if (rooms[i] !== undefined) {
             mapObject(rooms[i], (key, val) => {
-                if (key.toUpperCase() === name.toUpperCase()) {
+                if (key.toUpperCase() === roomName.toUpperCase()) {
                     rooms.splice(i, 1);
                 }
             });
@@ -127,6 +130,7 @@ module.exports.getTimeTypeForTimeControl = function(game) {
 
     switch (game.gameType) {
         case 'two-player':
+        case 'crazyhouse':
             if (totalTimeMs <= twoMins) {
                 //bullet
                 tcIndex = 'bullet';
@@ -179,6 +183,7 @@ module.exports.getEloForTimeControl = function(game, player) {
 
     switch (game.gameType) {
         case 'two-player':
+        case 'crazyhouse':
             eloIndex = 'two_elos';
             if (totalTimeMs <= twoMins) {
                 //bullet

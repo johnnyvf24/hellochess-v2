@@ -77,6 +77,7 @@ module.exports.socketServer = function(io) {
             let roomName;
             let room;
             let player;
+            let turn;
             switch(action.type) {
                 //Sent after successful log in
                 case 'server/connected-user':
@@ -183,6 +184,44 @@ module.exports.socketServer = function(io) {
                     });
                     break;
                     
+                //user has clicked on game room tab    
+                case 'server/selected-room':
+                    roomName = action.payload;
+                    if(roomName == 'Games') {
+                        socket.emit('action', {
+                        type: 'SELECTED_ROOM',
+                        payload: {
+                            thread: roomName,
+                            room: null
+                        }
+                    });
+                    }
+                    room = conn.getRoomByName(roomName);
+                    if(room === false) {
+                        //TODO error
+                        return; 
+                    }
+                    
+                    
+                    
+                    if(room.getGame()) {
+                        //TODO handle game stuff
+                    }
+                    
+                    socket.emit('action', {
+                        type: 'SELECTED_ROOM',
+                        payload: {
+                            thread: roomName,
+                            room: room.getRoom()
+                        }
+                    });
+                    
+                    break;
+                
+                //someone is sending a new message
+                case 'server/new-message':
+                    break;
+                    
                 //user is leaving a room (by clicking 'x')
                 case 'server/leave-room':
                     player = conn.getPlayerBySocket(socket);
@@ -243,6 +282,7 @@ module.exports.socketServer = function(io) {
                     
                 //user is logging off
                 case 'server/logout':
+                    socket.emit('action', {type: 'LOGOUT_SUCCESS'});
                     disconnectPlayerBySocket(socket);
                     break;
             }

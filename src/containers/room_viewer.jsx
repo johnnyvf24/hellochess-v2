@@ -23,6 +23,7 @@ class RoomViewer extends Component {
     }
 
     onTabClick(chatName, event) {
+
         event.preventDefault();
         event.stopPropagation();
         this.props.selectedRoom(chatName);

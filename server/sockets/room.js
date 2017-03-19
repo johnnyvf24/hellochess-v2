@@ -1,6 +1,7 @@
 const {mapObject, ab2str} = require('../utils/utils');
 const {FourChess} = require('../../common/fourchess');
 const {Chess} = require('chess.js');
+const {Crazyhouse} = require('crazyhouse.js');
 const {User} = require('../models/user');
 const Notifications = require('react-notification-system-redux');
 const {clients, rooms, roomExists, getRoomByName, formatTurn} = require('./data');
@@ -13,6 +14,7 @@ const {newRoomId} = require('./data');
 const {startTimerCountDown} = require('./board_reset');
 const TwoEngine = require('../../engine/TwoEngine');
 const FourEngine = require('../../engine/FourEngine');
+const CrazyEngine = require('../../engine/CrazyEngine');
 
 function room(io, socket, action) {
 
@@ -52,7 +54,9 @@ function room(io, socket, action) {
 
             //connect this user to this react-notification-system-redux
             socket.join(roomName);
-            clients[socket.id].rooms.push(roomName);
+            if (clients[socket.id]) {
+                clients[socket.id].rooms.push(roomName);
+            }
 
             //Find the existing chat room
             roomObj = getRoomByName(roomName);
@@ -343,8 +347,8 @@ function room(io, socket, action) {
                             console.log("NOT a valid color");
                     }
                 }
-
-                if (rooms[index][roomName].gameType === "two-player") {
+                var roomGameType = rooms[index][roomName].gameType;
+                if (roomGameType === "two-player" || roomGameType === "crazyhouse") {
                     //Check to see if the game is ready to start
                     if (rooms[index][roomName].white && rooms[index][roomName].black) {
 
@@ -359,7 +363,10 @@ function room(io, socket, action) {
                         io.to(roomName).emit('action', Notifications.warning(notificationOpts));
                         rooms[index][roomName].lastMove = Date.now();
                         rooms[index][roomName].turn = 'white';
-                        rooms[index][roomName].game = new Chess();
+                        if (roomGameType === "two-player")
+                            rooms[index][roomName].game = new Chess();
+                        else if (roomGameType === "crazyhouse")
+                            rooms[index][roomName].game = new Crazyhouse();
 
                         io.to(roomName).emit('action', {
                             type: 'game-started',
@@ -371,15 +378,20 @@ function room(io, socket, action) {
                             }
                         })
                         //First player to move is the AI
-                        if(rooms[index][roomName].white.type == "computer"
-                           || rooms[index][roomName].black.type == "computer") {
-                            twoComputers[roomName] =
-                                new TwoEngine("./engine/bin/stockfish_8_x64", roomName, io);
-                           }
-
+                        if (rooms[index][roomName].white.type == "computer" ||
+                            rooms[index][roomName].black.type == "computer") {
+                            if (roomGameType === "two-player") {
+                                twoComputers[roomName] =
+                                    new TwoEngine("./engine/bin/stockfish_8_x64", roomName, socket);
+                            }
+                            else if (roomGameType === "crazyhouse") {
+                                twoComputers[roomName] =
+                                    new CrazyEngine("./engine/bin/stockfish_variant", roomName, socket);
+                            }
+                        }
+                        
                         //start first players timer
                         startTimerCountDown(io, roomName, index);
-                        
                         if(rooms[index][roomName].white.type == "computer") {
                             twoComputers[roomName].setPosition(rooms[index][roomName].game.fen());
 

@@ -42,7 +42,8 @@ function startTimerCountDown(io, roomName, index) {
 
         let loser, winner;
 
-        if(!rooms[index]) {
+        if(!rooms[index] || !rooms[index][roomName] 
+            || !rooms[index][roomName].gameType || !rooms[index][roomName].game) {
             // log rooms value
             return;
         }
@@ -134,7 +135,8 @@ function startTimerCountDown(io, roomName, index) {
                 startTimerCountDown(io, roomName, index);
 
             }
-        } else if(rooms[index][roomName].gameType == 'two-player'){
+        } else if(rooms[index][roomName].gameType == 'two-player' ||
+                  rooms[index][roomName].gameType == 'crazyhouse'){
             time = 1;
             if(turn === 'white') {
                 winner = rooms[index][roomName].black;

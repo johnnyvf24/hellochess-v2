@@ -86,7 +86,6 @@ module.exports = class Room {
                 foundPlayer = true;
             }
         })
-        
         return foundPlayer;
     }
     
@@ -138,5 +137,9 @@ module.exports = class Room {
     
     getName() {
         return this.name;
+    }
+    
+    getGame() {
+        return this.game;
     }
 }

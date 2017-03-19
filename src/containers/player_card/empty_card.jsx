@@ -19,7 +19,8 @@ class EmptyCard extends Component {
         let obj = {};
         obj.roomName = this.props.activeThread;
         let elos;
-        if (this.props.game.gameType === "two-player")
+        if (this.props.game.gameType === "two-player" ||
+            this.props.game.gameType === "crazyhouse")
             elos = "two_elos";
         else if (this.props.game.gameType === "four-player")
             elos = "four_elos";

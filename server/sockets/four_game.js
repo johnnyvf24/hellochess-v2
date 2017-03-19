@@ -142,7 +142,7 @@ function fourGame(io, socket, action) {
                 || !rooms[index][roomName] || !rooms[index][roomName].game) {
                 return;
             }
-            turn = rooms[index][roomName].game.turn()
+            turn = rooms[index][roomName].game.turn();
             turn = formatTurn(turn);
 
             //make the move

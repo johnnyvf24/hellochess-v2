@@ -302,7 +302,7 @@ class FourBoard extends Component {
     }
 
     render() {
-        if (this.props.fen
+        if ( this.props.fen
             && this.props.move.from == this.shadeSquareSource
             && this.props.move.to == this.shadeSquareDest) {
                 this.shadeLastMove();
