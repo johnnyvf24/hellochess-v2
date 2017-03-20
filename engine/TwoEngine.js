@@ -2,9 +2,10 @@ const Engine = require('./Engine.js');
 const {ab2str} = require('../server/utils/utils');
 
 module.exports = class TwoEngine extends Engine {
-    constructor(path, roomName, socket) {
+    constructor(path, roomName, socket, increment) {
         super(path, roomName, socket);
         this.setDepth(15);
+        this.increment = increment * 1000; // s -> ms
     }
     onBestMove(data) {
         var str = ab2str(data);
@@ -54,5 +55,28 @@ module.exports = class TwoEngine extends Engine {
     adjustDepth(timeLeft) {
         let depth = this.depth;
 		return depth;
+    }
+    
+    go(timeLeft) {
+        let depth = this.depth;
+        
+        this.timeLeft = timeLeft;
+        let timeString;
+        if (timeLeft) {
+            timeString = " wtime "+timeLeft+" btime "+timeLeft+" ";
+            timeString += "winc "+this.increment+" binc "+this.increment+" ";
+        } else {
+            timeString = "";
+        }
+        let goString;
+        if(this.mode == 0) {
+            goString = "go" + timeString + "\n";
+            console.log("[engine: "+this.roomName+"]", goString);
+            this.engine.stdin.write(goString);
+        } else {
+            goString = "go " + "depth 4" + "\n";
+            this.engine.stdin.write(goString);
+        }
+        
     }
 }

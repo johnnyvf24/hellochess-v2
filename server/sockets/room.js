@@ -380,11 +380,13 @@ function room(io, socket, action) {
                             rooms[index][roomName].black.type == "computer") {
                             if (roomGameType === "two-player") {
                                 twoComputers[roomName] =
-                                    new TwoEngine("./engine/bin/stockfish_8_x64", roomName, socket);
+                                    new TwoEngine("./engine/bin/stockfish_8_x64",
+                                        roomName, socket, rooms[index][roomName].time.increment);
                             }
                             else if (roomGameType === "crazyhouse") {
                                 twoComputers[roomName] =
-                                    new CrazyEngine("./engine/bin/stockfish_variant", roomName, socket);
+                                    new CrazyEngine("./engine/bin/stockfish_variant",
+                                        roomName, socket, rooms[index][roomName].time.increment);
                             }
                         }
                         

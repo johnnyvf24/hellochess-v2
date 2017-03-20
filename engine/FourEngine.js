@@ -199,4 +199,18 @@ module.exports = class FourEngine extends Engine {
         }
 		return depth;
     }
+    
+    go(timeLeft) {
+        let depth = this.depth;
+        if (timeLeft) {
+            depth = this.adjustDepth(timeLeft);
+        }
+        if(this.mode == 0) {
+            this.engine.stdin.write("go depth " + depth + "\n");
+        } else {
+            goString = "go " + "depth 4" + "\n";
+            this.engine.stdin.write(goString);
+        }
+        
+    }
 }
