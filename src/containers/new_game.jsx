@@ -7,6 +7,8 @@ import NewGameModalContent from '../components/create_game/new_game_modal_conten
 
 import {Button, Modal} from 'react-bootstrap';
 
+import {createGameRoom, resetNewGameModal, finalizeGameRoom} from '../actions/create_game';
+
 
 class NewGame extends Component {
 
@@ -20,10 +22,15 @@ class NewGame extends Component {
     
     close() {
         this.setState({ showModal: false });
+        this.props.resetNewGameModal();
     }
     
     open() {
         this.setState({ showModal: true });
+    }
+    
+    onCreateGame() {
+        this.props.createGameRoom();
     }
 
     renderModalContent() {
@@ -33,12 +40,48 @@ class NewGame extends Component {
             return <NewGameModalContent />
         }
     }
+    
+    submitRoom() {
+        this.props.resetNewGameModal()
+        this.props.finalizeGameRoom(this.props.game, this.props.profile);
+        this.close();
+    }
+    
+    renderModalFooter() {
+
+        if(this.props.makingGameRoom) {
+            return (
+                <div>
+                    <Button onClick={this.close.bind(this)}>
+                        Cancel
+                    </Button>
+                    <Button onClick={this.submitRoom.bind(this)}>
+                        Create Game
+                    </Button>
+                </div>
+            );
+        } else {
+            return (
+                <Button bsStyle="warning" onClick={this.onCreateGame.bind(this)}>
+                    Host Game
+                </Button>
+            );
+        }
+    }
 
     renderModal() {
 
         return (
-            <Modal show={this.state.showModal} onHide={this.close} id="new-game-modal">
-                {this.renderModalContent()}
+            <Modal show={this.state.showModal} onHide={this.close.bind(this)} id="new-game-modal">
+                <Modal.Header closeButton>
+                    <Modal.Title>Modal heading</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {this.renderModalContent()}
+                </Modal.Body>
+                <Modal.Footer>
+                    {this.renderModalFooter()}
+                </Modal.Footer>
             </Modal>
         );
     }
@@ -61,8 +104,11 @@ class NewGame extends Component {
 
 function mapStateToProps(state) {
     return {
-        makingGameRoom: state.newGameOptions.isMakingGameRoom
+        makingGameRoom: state.newGameOptions.isMakingGameRoom,
+        room: state.newGameOptions.room,
+        game: state.newGameOptions,
+        profile: state.auth.profile
     }
 }
 
-export default connect(mapStateToProps) (NewGame);
+export default connect(mapStateToProps, {createGameRoom, resetNewGameModal, finalizeGameRoom}) (NewGame);
