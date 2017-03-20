@@ -71,15 +71,22 @@ module.exports = class Engine {
 
     go(timeLeft) {
         let depth = this.depth;
-        if (timeLeft) {
-            depth = this.adjustDepth(timeLeft);
-        }
+        
         this.timeLeft = timeLeft;
-        console.log("engine go depth", depth, "timeLeft", timeLeft);
-        if(this.mode == 0) {
-            this.engine.stdin.write("go depth " + depth + "\n");
+        let timeString;
+        if (timeLeft) {
+            timeString = " wtime "+timeLeft+" btime "+timeLeft+" ";
         } else {
-            this.engine.stdin.write("go depth 4\n");
+            timeString = "";
+        }
+        let goString;
+        if(this.mode == 0) {
+            goString = "go" + timeString + "\n";
+            console.log("[engine: "+this.roomName+"]", goString);
+            this.engine.stdin.write(goString);
+        } else {
+            goString = "go " + "depth 4" + "\n";
+            this.engine.stdin.write(goString);
         }
         
     }
