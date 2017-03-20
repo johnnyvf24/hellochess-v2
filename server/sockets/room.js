@@ -397,7 +397,7 @@ function room(io, socket, action) {
 
 
                             //search for a move
-                            twoComputers[roomName].go();
+                            twoComputers[roomName].go(userObj.time, userObj.level);
                         }
                     }
                 } else if (rooms[index][roomName].gameType === "four-player") {
@@ -449,7 +449,7 @@ function room(io, socket, action) {
                                 fourComputers[roomName].setTurn('w');
 
                                 //search for a move
-                                fourComputers[roomName].go();
+                                fourComputers[roomName].go(userObj.time, userObj.level);
                             }
 
                         }

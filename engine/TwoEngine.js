@@ -57,10 +57,12 @@ module.exports = class TwoEngine extends Engine {
 		return depth;
     }
     
-    go(timeLeft) {
-        let depth = this.depth;
-        
+    go(timeLeft, level) {
         this.timeLeft = timeLeft;
+        if (level) {
+            console.log("setting comp skill level to", level);
+            this.setOption("Skill Level", "" + level);
+        }
         let timeString;
         if (timeLeft) {
             timeString = " wtime "+timeLeft+" btime "+timeLeft+" ";

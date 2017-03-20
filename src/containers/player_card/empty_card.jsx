@@ -5,8 +5,17 @@ import {sitDownBoard, sitDownComputer} from '../../actions/room';
 class EmptyCard extends Component {
     constructor(props) {
         super(props);
+        this.aiSit = this.aiSit.bind(this);
+        this.onSit = this.onSit.bind(this);
+        this.difficulties = {
+            1: "Very Easy",
+            5: "Easy",
+            10: "Normal",
+            15: "Hard",
+            20: "Very Hard"
+        };
     }
-
+    
     onSit(event) {
         let obj = {};
         obj.profile = this.props.profile;
@@ -16,6 +25,8 @@ class EmptyCard extends Component {
     }
 
     aiSit(event) {
+        let level = arguments[0];
+        let difficultyText = this.difficulties[level];
         let obj = {};
         obj.roomName = this.props.activeThread;
         let elos;
@@ -26,7 +37,8 @@ class EmptyCard extends Component {
             elos = "four_elos";
         obj.profile = {
             type: 'computer',
-            username: 'AI',
+            username: difficultyText + ' AI',
+            level: level,
             picture: 'https://openclipart.org/image/75px/svg_to_png/168755/cartoon-robot.png&disposition=attachment',
         };
         obj.profile[elos] = {
@@ -41,11 +53,24 @@ class EmptyCard extends Component {
     
     renderAIButton() {
         return (
-            <button type="button"
-                className="btn btn-default"
-                onClick={this.aiSit.bind(this)}>
-                <i className="fa fa-laptop" aria-hidden="true"></i>
-            </button>
+            <div className="btn-group">
+              <button type="button"
+                className="btn btn-default btn-sm dropdown-toggle"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false">
+                    <i className="fa fa-laptop" aria-hidden="true"></i>
+                    <span className="caret"></span>
+                    <span className="sr-only">AI Difficulty</span>
+              </button>
+              <ul className="dropdown-menu">
+                <li><a className="dropdown-item" href="#" onClick={this.aiSit.bind(this, 1)}>Very Easy</a></li>
+                <li><a className="dropdown-item" href="#" onClick={this.aiSit.bind(this, 5)}>Easy</a></li>
+                <li><a className="dropdown-item" href="#" onClick={this.aiSit.bind(this, 10)}>Normal</a></li>
+                <li><a className="dropdown-item" href="#" onClick={this.aiSit.bind(this, 15)}>Hard</a></li>
+                <li><a className="dropdown-item" href="#" onClick={this.aiSit.bind(this, 20)}>Very Hard</a></li>
+              </ul>
+            </div>
         );
     }
 
@@ -60,7 +85,7 @@ class EmptyCard extends Component {
                         <div className="btn-group">
                             <button
                                 className="btn btn-info"
-                                onClick={this.onSit.bind(this)}>
+                                onClick={this.onSit}>
                                 Play
                             </button>
                             {aiButton}

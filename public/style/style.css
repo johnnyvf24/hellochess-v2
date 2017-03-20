@@ -386,9 +386,11 @@ tr:hover {
     margin-right: 0px;
 }
 
+/*
 .player-card .card-block .row {
     overflow-x: hidden;
 }
+*/
 
 .player-card .card-block .row .card-text {
     padding-left: 5px;

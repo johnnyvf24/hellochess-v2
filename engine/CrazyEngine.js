@@ -12,8 +12,8 @@ module.exports = class TwoEngine extends Engine {
         if (str.indexOf("uciok") !== -1) {
             this.setupOptions();
         }
-        console.log("[crazyhouse engine: " + this.roomName+ "] " + str);
         if(str.indexOf("bestmove") !== -1) {
+            console.log("[crazyhouse engine: " + this.roomName+ "] " + str);
             let startIndex = str.indexOf("bestmove");
             let from = str.substring(startIndex + 9, startIndex + 11);
             let to = str.substring(startIndex + 11, startIndex + 13);
@@ -69,10 +69,12 @@ module.exports = class TwoEngine extends Engine {
 		return depth;
     }
     
-    go(timeLeft) {
-        let depth = this.depth;
-        
+    go(timeLeft, level) {
         this.timeLeft = timeLeft;
+        if (level) {
+            console.log("setting comp skill level to", level);
+            this.setOption("Skill Level", "" + level);
+        }
         let timeString;
         if (timeLeft) {
             timeString = " wtime "+timeLeft+" btime "+timeLeft+" ";

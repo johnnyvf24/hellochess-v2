@@ -184,28 +184,44 @@ module.exports = class FourEngine extends Engine {
         this.numOut += 1;
     }
     
-    adjustDepth(timeLeft) {
+    adjustDepth(timeLeft, level) {
         let depth = this.depth;
+        switch(level) {
+            case 1:
+                depth = 2;
+                break;
+            case 5:
+                depth = 3;
+                break;
+            case 10:
+                depth = 4;
+                break;
+            case 15:
+                depth = 5;
+                break;
+            case 20:
+                depth = 6;
+                break;
+        }
         if (timeLeft < 1000) { // 1 second
-            depth = 1;
+            depth = Math.min(1, depth);
         } else if (timeLeft < 2000) { // 2 seconds
-            depth = 2;
+            depth = Math.min(2, depth);
         } else if (timeLeft < 3000) { // 3 seconds
-            depth = 3;
+            depth = Math.min(3, depth);
         } else if (timeLeft < 10000) { // 10 seconds
-            depth = 4;
+            depth = Math.min(4, depth);
         } else if (timeLeft < 60000) { // 1 min
-            depth = 5;
+            depth = Math.min(5, depth);
         }
 		return depth;
     }
     
-    go(timeLeft) {
+    go(timeLeft, level) {
         let depth = this.depth;
-        if (timeLeft) {
-            depth = this.adjustDepth(timeLeft);
-        }
+        depth = this.adjustDepth(timeLeft, level);
         if(this.mode == 0) {
+            console.log("[FourEngine "+this.roomName+"]", "skill level:", level, "depth:", depth);
             this.engine.stdin.write("go depth " + depth + "\n");
         } else {
             goString = "go " + "depth 4" + "\n";

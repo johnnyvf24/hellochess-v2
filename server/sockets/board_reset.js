@@ -125,7 +125,8 @@ function startTimerCountDown(io, roomName, index) {
                     }
 
                     let timeLeft = rooms[index][roomName][currentTurn].time;
-                    fourComputers[roomName].go(timeLeft);
+                    let compLevel = rooms[index][roomName][currentTurn].level;
+                    fourComputers[roomName].go(timeLeft, compLevel);
                 }
 
                 //call this method again to begin next players clock

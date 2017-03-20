@@ -125,7 +125,8 @@ function fourGame(io, socket, action) {
                     fourComputers[roomName].setMode(0);
 
                     let timeLeft = rooms[roomIndex][roomName][currentTurn].time;
-                    fourComputers[roomName].go(timeLeft);
+                    let compLevel = rooms[roomIndex][roomName][currentTurn].level;
+                    fourComputers[roomName].go(timeLeft, compLevel);
                 }
             }
             break;
@@ -239,7 +240,8 @@ function fourGame(io, socket, action) {
                 if(rooms[index][roomName][newTurnFormatted].type == "computer") {
                     fourComputers[roomName].setMode(0);
                     
-                    fourComputers[roomName].go(timeLeft);
+                    let compLevel = rooms[index][roomName][newTurnFormatted].level;
+                    fourComputers[roomName].go(timeLeft, compLevel);
                 }
             }
 
