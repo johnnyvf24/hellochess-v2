@@ -5,6 +5,7 @@ import Room from '../components/room/room';
 import {mapObject} from '../utils/';
 import { selectedRoom, joinRoom, leaveRoom, updateLiveUser } from '../actions';
 
+import {Tabs, Tab, TabContainer, TabContent, TabPane} from 'react-bootstrap';
 
 class RoomViewer extends Component {
 
@@ -40,32 +41,13 @@ class RoomViewer extends Component {
     renderNavTab(chats, active) {
         return mapObject(chats, (key, value) => {
             return (
-                <li key={key} className={key === active ? "nav-item active" : "nav-item"}
-                    onClick={(event) => this.onTabClick(key, event)}>
-                    <a
-                        className={key === active ? "nav-link active" : "nav-link"}
-                        data-toggle="tab"
-                        href={"#room-chat-" + value.id}
-                        >
-                        <button
-                            className="close"
-                            type="button"
-                            onClick={this.onCloseChatTab.bind(this, key)}>×</button>
-                        {key}
-                    </a>
-                </li>
+                <Tab key={key} eventKey={key} onClick={(event) => this.onTabClick(key, event)} title={key}>
+                    <div id="chat-tab-content">
+                        <Room key={key} index={key} value={value} active={active}/>
+                    </div>
+                </Tab>
             );
         });
-    }
-
-
-    renderTabContent(chats, active) {
-        return mapObject(chats, (key, value) => {
-            return (
-                <Room key={key} index={key} value={value} active={active}/>
-            );
-        });
-
     }
 
     render() {
@@ -81,27 +63,12 @@ class RoomViewer extends Component {
         }
 
         return (
-            <div id="left-chatbox">
-
-                <ul className="nav nav-tabs nav-justified">
-                    <li className="nav-item">
-                        <a className="nav-link"
-                            data-toggle="tab"
-                            href="#chat-list"
-                            role="tab"
-                            ref={a => this.mainTab = a}
-                            onClick={(event) => this.onTabClick("Games", event)}>
-                            Games
-                        </a>
-                    </li>
-                    {this.renderNavTab(openThreads, activeThread)}
-                </ul>
-                <div id="chat-tab-content" className="tab-content">
+            <Tabs defaultActiveKey={200} id="left-chatbox">
+                <Tab eventKey={200} title="Games" onClick={(event) => this.onTabClick("Games", event)}>
                     <ExistingRoomList />
-                    {this.renderTabContent(openThreads, activeThread)}
-                </div>
-
-            </div>
+                </Tab>
+                {this.renderNavTab(openThreads, activeThread)}
+            </Tabs>
         );
     }
 }

@@ -104,17 +104,34 @@ body .container-fluid {
     height: 100%;
 }
 
+#left-chatbox ul li {
+    background-color: #e6e6e6;
+    border-radius: 5px 5px 0px 0px;
+}
+
 #left-chatbox .tab-content {
     height: 100%;
     border-radius: 5px;
 }
 
-
 #left-chatbox .tab-content>.active{
     height: 100%;
     display: flex;
     flex-direction: column;
-    /*background-color: #F6F8C4;*/
+    background-color: white;
+}
+
+#chat-tab-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+}
+
+.tab-pane .active{
+    height: 90%;
+    display: flex;
+    flex-direction: column;
     background-color: white;
 }
 
@@ -136,9 +153,12 @@ body .container-fluid {
 }
 
 .chatbox-message-list-wrapper {
-    flex: 0 1 auto;
+    
     margin: 5px;
     height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 auto;
     /*background-image: url(https://openclipart.org/download/140257/loose-leaf-paper.svg);*/
     /*background-size: cover;*/
 }
@@ -225,55 +245,78 @@ body .container-fluid {
     cursor: pointer;
 }
 
-/* NAV TABS FULL WIDTH OF PARENT FIX */
-.nav-justified {
-  width: 100%;
-  overflow-y: auto;
+.nav.nav-tabs.bs-adaptive-tabs li a label {
+    font-weight: normal;
 }
-  .nav-justified .nav-item {
-    float: none; }
-  .nav-justified .nav-link {
-    text-align: center;
-    margin-bottom: 5px; }
-  .nav-justified > .dropdown .dropdown-menu {
-    top: auto;
-    left: auto; }
-  @media (min-width: 544px) {
-    .nav-justified .nav-item {
-      display: table-cell;
-      width: 1%; }
-    .nav-justified .nav-link {
-      margin-bottom: 0; } }
-  .nav-justified .nav-link {
-    margin-right: 0;
-    border-radius: 0.25rem;
-    /*background-color: #E6DD93;*/
-    color: black;
+
+
+@media (max-width: 768px) {
+
+
+    .nav.nav-tabs.bs-adaptive-tabs {
+        position: relative;
+        height: 45px;
+        margin-bottom: 50px;
+        outline: none;
+    }
+
+
+    .nav.nav-tabs.bs-adaptive-tabs li {
+        position: static;
+    }
+    .nav.nav-tabs.bs-adaptive-tabs li:nth-child(n+6) {
+        visibility: hidden;
+        float: right;
+        clear: right;
+        z-index: 10;
+        margin-left: -100%;
+    }
+    .nav.nav-tabs.bs-adaptive-tabs li:nth-child(-n+5) {
+        width: 16.6%; /*  100/(5+1)  */
+        text-align: center;
+    }
+    .nav.nav-tabs.bs-adaptive-tabs li:nth-child(6) {
+        margin-top: 44px;
+    }
+    .nav.nav-tabs.bs-adaptive-tabs li:nth-child(5):after {
+        content: "\f142";
+        font-family: "FontAwesome";
+        cursor: pointer;
+        display: block;
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 10px 15px;
+    }
+    .nav.nav-tabs.bs-adaptive-tabs:focus:hover li {
+        visibility: visible;
+    }
+
+
+    .nav.nav-tabs.bs-adaptive-tabs li a {
+        position: static;
+    }
+    .nav.nav-tabs.bs-adaptive-tabs li:nth-child(n+6) a {
+        background-color: #fff;
+        border-color: #ddd;
+        border-radius: 0;
+        margin-top: 0;
+        margin-right: 0;
+    }
+
+
+    .nav.nav-tabs.bs-adaptive-tabs li a label {
+        visibility: hidden;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        padding: 10px 15px;
+    }
+    .nav.nav-tabs.bs-adaptive-tabs li.active a label {
+        visibility: visible;
+    }
 }
-  .nav-justified .nav-link.active,
-  .nav-justified .nav-link.active:hover,
-  .nav-justified .nav-link.active:focus {
-      /*background-color: #F6F8C4;*/
-    background-color: white;
-    border: 1px solid #ddd; }
-  @media (min-width: 544px) {
-    .nav-justified .nav-link {
-      border-bottom: 1px solid #ddd;
-      border-radius: 0.25rem 0.25rem 0 0; }
-    .nav-justified .nav-link.active,
-    .nav-justified .nav-link.active:hover,
-    .nav-justified .nav-link.active:focus {
-      border-bottom-color: #fff; } }
-  /*---------------------------------------------*/
 
-
-  /*----------BOOTSTRAP CLOSE TAB----------------*/
-  .nav-tabs > li .close {
-      margin: -2px 0 0 10px;
-      font-size: 18px;
-  }
-
-/*--------------------------------------------*/
 .table-curved {
     border-collapse: collapse;
 }
