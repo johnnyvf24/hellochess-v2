@@ -5,6 +5,8 @@ import Select from 'react-select';
 import CreateGameRoom from '../components/create_game/create_game_room';
 import NewGameModalContent from '../components/create_game/new_game_modal_content';
 
+import {Button, Modal} from 'react-bootstrap';
+
 
 class NewGame extends Component {
 
@@ -13,8 +15,16 @@ class NewGame extends Component {
 
         this.renderModal = this.renderModal.bind(this);
         this.renderModalContent = this.renderModalContent.bind(this);
+        this.state = { showModal: false };
     }
-
+    
+    close() {
+        this.setState({ showModal: false });
+    }
+    
+    open() {
+        this.setState({ showModal: true });
+    }
 
     renderModalContent() {
         if(this.props.makingGameRoom) {
@@ -27,28 +37,20 @@ class NewGame extends Component {
     renderModal() {
 
         return (
-            <div className="modal fade"
-                id="new-game-modal"
-                role="dialog"
-                aria-hidden="true"
-                data-backdrop="static">
-                <div className="modal-dialog" role="document">
-                    {this.renderModalContent()}
-                </div>
-            </div>
+            <Modal show={this.state.showModal} onHide={this.close} id="new-game-modal">
+                {this.renderModalContent()}
+            </Modal>
         );
     }
 
     render() {
         return (
             <div>
-                <button
-                    type="button"
-                    className="btn btn-warning"
-                    data-toggle="modal"
-                    data-target="#new-game-modal">
+                <Button
+                    bsStyle="warning"
+                    onClick={this.open.bind(this)}>
                     Play
-                </button>
+                </Button>
 
                 {this.renderModal()}
             </div>

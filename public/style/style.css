@@ -3,8 +3,8 @@ html {
 }
 
 body {
-    background-image: url('https://img01.deviantart.net/65b1/i/2005/143/8/a/wood_texture_by_reaperofblood.jpg');
-    background-color: grey;
+    background-image: url('/img/Red-Seamless-Wood-Texture-for-Photoshop.jpg');
+    background-color: white;
     height: 100%;
 }
 
@@ -105,34 +105,40 @@ body .container-fluid {
 }
 
 #left-chatbox ul li {
-    background-color: #e6e6e6;
+    backround-color: white;
     border-radius: 5px 5px 0px 0px;
 }
 
 #left-chatbox .tab-content {
     height: 100%;
     border-radius: 5px;
+    background: -webkit-linear-gradient(top, #80cde5, #aadeee);
+}
+
+#left-chatbox li a {
+    background: -webkit-linear-gradient(top, #b3b3b3, #cccccc);
+    color: black;
 }
 
 #left-chatbox .tab-content>.active{
     height: 100%;
     display: flex;
     flex-direction: column;
-    background-color: white;
+    background: -webkit-linear-gradient(top, #80cde5, #aadeee);
 }
 
 #chat-tab-content {
     height: 100%;
     display: flex;
     flex-direction: column;
-    background-color: white;
+    background: -webkit-linear-gradient(top, #80cde5, #aadeee);
 }
 
 .tab-pane .active{
     height: 90%;
     display: flex;
     flex-direction: column;
-    background-color: white;
+    background: -webkit-linear-gradient(top, #80cde5, #aadeee);
 }
 
 .chatbox-top-stats-wrapper {
@@ -184,7 +190,7 @@ body .container-fluid {
     margin: 0px;
     padding-top: 5px;
     padding-bottom: 5px;
-    background-color: #d6d6d6;
+    background: -webkit-linear-gradient(top, #b3b3b3, #cccccc);;
     display: block;
 }
 
@@ -193,7 +199,6 @@ body .container-fluid {
     margin-right: 20px;
     margin-bottom: 4px;
     border-radius: 10px;
-    background-color: #e6e6e6
 }
 
 .chatbox-message-list .list-group-item .list-group-item-text {
@@ -217,6 +222,7 @@ body .container-fluid {
 .chatbox-message-list .list-group-item {
     padding: 5px 4px;
     min-height: 50px;
+    background-color: #fff;
 }
 
 .chatbox-message-list .list-group-item.join-leave-message {

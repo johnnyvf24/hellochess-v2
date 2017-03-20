@@ -54,7 +54,7 @@ class MessageSend extends Component {
                     <span className="input-group-btn">
                         <button
                             type="submit"
-                            className="btn btn-secondary">Send</button>
+                            className="btn btn-warning">Send</button>
                     </span>
                 </div>
             </form>

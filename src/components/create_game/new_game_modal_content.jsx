@@ -9,6 +9,7 @@ import {
     selectedNewTimeIncrement,
     createGameRoom
 } from '../../actions/create_game.js';
+import {Modal} from 'react-bootstrap'
 
 const gameTypeOptions = [
     { value: 'two-player', label: 'Two Player'},

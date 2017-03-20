@@ -10,6 +10,7 @@ import {
  } from '../../actions/create_game';
 import {showError} from '../../actions'
 import ToggleButton from 'react-toggle-button'
+import {Modal} from 'react-bootstrap'
 
 function isNormalInteger(str) {
     var n = Math.floor(Number(str));
@@ -91,20 +92,11 @@ class CreateGameRoom extends Component {
 
     render() {
         return (
-            <div className="modal-content">
+            <div>
                 {/* Modal header */}
-                <div className="modal-header">
-                    <button type="button"
-                        className="close"
-                        data-dismiss="modal"
-                        onClick={(event) => this.props.resetNewGameModal()}
-                        aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h5 id="new-game-label" className="modal-title">
-                        Create Game Room
-                    </h5>
-                </div>
+                <Modal.Header closeButton>
+                    <Modal.Title>Create Game</Modal.Title>
+                </Modal.Header>
 
                 {/*Modal body */}
                 <div className="modal-body">
