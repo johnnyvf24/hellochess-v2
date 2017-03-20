@@ -69,20 +69,6 @@ module.exports = class Engine {
 
     adjustDepth(timeLeft) { }
 
-    go(timeLeft) {
-        let depth = this.depth;
-        if (timeLeft) {
-            depth = this.adjustDepth(timeLeft);
-        }
-        this.timeLeft = timeLeft;
-        console.log("engine go depth", depth, "timeLeft", timeLeft);
-        if(this.mode == 0) {
-            this.engine.stdin.write("go depth " + depth + "\n");
-        } else {
-            this.engine.stdin.write("go depth 4\n");
-        }
-        
-    }
 
     kill() {
         console.log("killing engine", this.roomName);

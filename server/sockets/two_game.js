@@ -226,7 +226,8 @@ function twoGame(io, socket, action) {
     
     
                     let timeLeft = rooms[index][roomName][newTurnFormatted].time;
-                    twoComputers[roomName].go(timeLeft);
+                    let compLevel = rooms[index][roomName][newTurnFormatted].level;
+                    twoComputers[roomName].go(timeLeft, compLevel);
                 }
             }
 

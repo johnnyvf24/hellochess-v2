@@ -382,11 +382,13 @@ function room(io, socket, action) {
                             rooms[index][roomName].black.type == "computer") {
                             if (roomGameType === "two-player") {
                                 twoComputers[roomName] =
-                                    new TwoEngine("./engine/bin/stockfish_8_x64", roomName, socket);
+                                    new TwoEngine("./engine/bin/stockfish_8_x64",
+                                        roomName, socket, rooms[index][roomName].time.increment);
                             }
                             else if (roomGameType === "crazyhouse") {
                                 twoComputers[roomName] =
-                                    new CrazyEngine("./engine/bin/stockfish_variant", roomName, socket);
+                                    new CrazyEngine("./engine/bin/stockfish_variant",
+                                        roomName, socket, rooms[index][roomName].time.increment);
                             }
                         }
                         
@@ -397,7 +399,7 @@ function room(io, socket, action) {
 
 
                             //search for a move
-                            twoComputers[roomName].go();
+                            twoComputers[roomName].go(userObj.time, userObj.level);
                         }
                     }
                 } else if (rooms[index][roomName].gameType === "four-player") {
@@ -449,7 +451,7 @@ function room(io, socket, action) {
                                 fourComputers[roomName].setTurn('w');
 
                                 //search for a move
-                                fourComputers[roomName].go();
+                                fourComputers[roomName].go(userObj.time, userObj.level);
                             }
 
                         }
