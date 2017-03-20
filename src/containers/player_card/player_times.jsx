@@ -58,6 +58,9 @@ class PlayerTimes extends Component {
             switch (room.gameType) {
                 case "four-player":
                     renderOrder = [this.renderGold, this.renderBlack, this.renderRed, this.renderWhite];
+                    if(!room.black) {
+                        break;
+                    }
                     switch (profile._id) {
                         case room.black._id:
                             renderOrder = [this.renderRed, this.renderWhite, this.renderGold, this.renderBlack];
@@ -74,17 +77,20 @@ class PlayerTimes extends Component {
                     }
                     break;
                 case "two-player":
-                default:
-                    renderOrder = [this.renderBlack, this.renderWhite];
-                    switch (profile._id) {
-                        case room.black._id:
-                            renderOrder = [this.renderWhite, this.renderBlack];
+                    default:
+                        renderOrder = [this.renderBlack, this.renderWhite];
+                        if(!room.black) {
                             break;
-                        case room.white._id:
-                        default:
-                            break;
-                    }
-                    break;
+                        }
+                        switch (profile._id) {
+                            case room.black._id:
+                                renderOrder = [this.renderWhite, this.renderBlack];
+                                break;
+                            case room.white._id:
+                            default:
+                                break;
+                        }
+                        break;
             }
         } catch (err) {
             console.error(err);

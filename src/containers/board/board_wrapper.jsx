@@ -15,23 +15,19 @@ class BoardWrapper extends Component {
     
     shouldComponentUpdate(nextProps, nextState) {
         return (
-            this.props.activeThread != nextProps.activeThread ||
-            Object.keys(this.props.openThreads).length != Object.keys(nextProps.openThreads).length
+            this.props.room != nextProps.room ||
+            Object.keys(this.props.openThreads).length != Object.keys(nextProps.openThreads).length ||
+            this.props.name == nextProps.name
         );
             
     }
 
     render() {
-        const {activeThread, openThreads} = this.props;
-        if(!activeThread || !openThreads[activeThread]) {
+        const {gameType, room} = this.props;
+        if(!room || !gameType) {
             return <div></div>
         }
 
-        const {gameType} = openThreads[activeThread];
-
-        if(!gameType) {
-            return <div></div>
-        }
         var newGameObject, setBoardPosition;
         switch(gameType) {
             case 'two-player':
@@ -46,7 +42,7 @@ class BoardWrapper extends Component {
                         <TwoBoard
                             setBoardPosition={setBoardPosition}
                             newGameObject={newGameObject}
-                            key={activeThread}/>
+                            key={room.name}/>
                     </div>
                 );
             case 'four-player':
@@ -82,7 +78,7 @@ class BoardWrapper extends Component {
                             newGameObject={newGameObject}
                             setBoardPosition={setBoardPosition}
                             crazyhouse={true}
-                            key={activeThread}/>
+                            key={room.name}/>
                     </div>
                 );
         }
@@ -92,10 +88,20 @@ class BoardWrapper extends Component {
 }
 
 function mapStateToProps(state) {
-    return {
-        activeThread: state.activeThread,
-        openThreads: state.openThreads,
+    if(state.openThreads[state.activeThread]) {
+        let gameType = null;
+        let room = state.openThreads[state.activeThread];
+        if(state.openThreads[state.activeThread].gameType) {
+            gameType = state.openThreads[state.activeThread].gameType
+        }
+        return {
+            gameType: gameType,
+            room: room,
+            name: state.activeThread,
+        }
     }
+
+    return {};
 }
 
 export default connect(mapStateToProps) (BoardWrapper)

@@ -149,7 +149,6 @@ export function loginUser({loginEmail, loginPassword}) {
                 );
 
                 dispatch({type: LOGIN_ERROR})
-                // return dispatch(authError('Incorrect login info'));
             });
 
     }
@@ -178,8 +177,14 @@ export function saveUsername(id, username) {
 
 export function selectedRoom(name) {
     return (dispatch) =>{
+        
+        dispatch({
+            type: 'server/get-room',
+            payload: name
+        });
+        
         return dispatch({
-            type: 'server/selected-room',
+            type: SELECTED_ROOM,
             payload: name
         });
     }

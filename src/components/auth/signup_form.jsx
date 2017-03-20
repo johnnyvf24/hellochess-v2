@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import { Field, reduxForm } from 'redux-form';
+import {FormGroup, FormControl, ControlLabel, Button} from 'react-bootstrap';
 
 const email = value =>
     value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value) ?
@@ -24,7 +25,6 @@ class SignUpForm extends Component {
         const { handleSubmit } = this.props;
         return (
             <form id="signUpForm"
-                className="form-control"
                 onSubmit={handleSubmit}>
                 <Field name="signUpEmail"
                     component={this.renderField}
@@ -47,10 +47,10 @@ class SignUpForm extends Component {
                     label="Verify Password"
                 />
 
-                <button className="btn btn-secondary"
-                    type="submit">
-                    Sign Up
-                </button>
+                <Button type="submit"
+                     bsStyle="primary">
+                     Sign Up
+                </Button>
             </form>
         );
     }

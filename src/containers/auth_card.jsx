@@ -12,6 +12,8 @@ import config from '../../config/config';
 import TwoBoard from '../components/demo_board/two_board';
 import FourBoard from '../components/demo_board/four_board';
 
+import {Row, Col, Clearfix, Button, Panel, PanelGroup, Accordion} from 'react-bootstrap';
+
 class AuthCard extends Component {
 
     onSignUpSubmit(values) {
@@ -35,17 +37,16 @@ class AuthCard extends Component {
     render() {
         const { errorMessage } = this.props;
         return (
-            <div className="row">
-                <div className="hidden-sm-down col-md-4 col-lg-4">
+            <Row>
+                <Col xs={0} md={4} lg={4} >
                     <div id="four-player-demo">
                         <FourBoard />
                     </div>
-                </div>
-                <div className="col-xs-12 col-md-4 col-lg-4">
-                    <div className="card card-container landing-card">
-                        <div className="panel-group">
-                            <div>
-                                <FacebookLogin
+                </Col>
+                <Col xs={12} md={4} lg={4}>
+                    <Panel className="landing-card">
+                        <PanelGroup>
+                            <FacebookLogin
                                     appId={config.facebookAuth.clientID}
                                     autoLoad={false}
                                     fields={config.facebookAuth.fields}
@@ -54,48 +55,33 @@ class AuthCard extends Component {
                                     cssClass="btn btn-block btn-social btn-facebook"
                                     icon="fa fa-facebook"
                                 />
-                            </div>
-                            <div>
-                                <GoogleLogin
-                                    clientId={config.googleAuth.GoogleClientID}
-                                    onSuccess={this.googleCallback.bind(this)}
-                                    className="btn btn-block btn-social btn-google">
-                                    Connect with Google
-                                    <span className="fa fa-google"></span>
-                                </GoogleLogin>
-                            </div>
-                        </div>
+                        </PanelGroup>
+                        <PanelGroup>
+                            <GoogleLogin
+                                clientId={config.googleAuth.GoogleClientID}
+                                onSuccess={this.googleCallback.bind(this)}
+                                className="btn btn-block btn-social btn-google">
+                                Connect with Google
+                                <span className="fa fa-google"></span>
+                            </GoogleLogin>
+                        </PanelGroup>
                         <hr />
-
-                        <a href="#signUp"
-                            id="signUpShower"
-                            className="btn btn-warning btn-block"
-                            data-toggle="collapse"
-                            aria-expanded="false">
-                            Sign Up
-                        </a>
-                        <div id="signUp" className="collapse">
-                            <SignUpForm onSubmit={this.onSignUpSubmit.bind(this)} />
-                        </div>
-
-                        <a href="#logIn"
-                            id="LoginShower"
-                            className="btn btn-warning btn-block"
-                            data-toggle="collapse"
-                            aria-expanded="False">
-                            Log In
-                        </a>
-                        <div id="logIn" className="collapse">
-                            <LoginForm onSubmit={this.onLoginSubmit.bind(this)} />
-                        </div>
-                    </div>
-                </div>
-                <div className="hidden-sm-down col-md-4 col-lg-4">
+                        <PanelGroup defaultActiveKey="2" accordion>
+                            <Panel header="Sign Up" eventKey="1">
+                                <SignUpForm onSubmit={this.onSignUpSubmit.bind(this)} />
+                            </Panel>
+                            <Panel header="Log In" eventKey="2">
+                                <LoginForm onSubmit={this.onLoginSubmit.bind(this)} />
+                            </Panel>
+                        </PanelGroup>
+                    </Panel>
+                </Col>
+                <Col xs={0} md={4} lg={4} >
                     <div id="two-player-demo">
                         <TwoBoard />
                     </div>
-                </div>
-            </div>
+                </Col>
+            </Row>
 
         );
     }

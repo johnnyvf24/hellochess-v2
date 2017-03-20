@@ -22,7 +22,7 @@ class FourBoard extends Component {
     shouldComponentUpdate(nextProps, nextState) {
         if(nextProps.name != this.props.name) {
             return true;
-        }
+        } 
         return false;
     }
 
@@ -32,19 +32,22 @@ class FourBoard extends Component {
             this.game.position(nextProps.fen);
 
             let usColor = 'w';
-            if(nextProps.room.white._id === nextProps.profile._id) {
-                this.board.orientation('white');
-                usColor = 'w';
-            } else if(nextProps.room.black._id === nextProps.profile._id) {
-                this.board.orientation('black');
-                usColor = 'b';
-            } else if(nextProps.room.gold._id === nextProps.profile._id) {
-                this.board.orientation('gold');
-                usColor = 'g';
-            } else if(nextProps.room.red._id === nextProps.profile._id) {
-                this.board.orientation('red');
-                usColor = 'r'
+            if(this.props.room.white) {
+                if(nextProps.room.white._id === nextProps.profile._id) {
+                    this.board.orientation('white');
+                    usColor = 'w';
+                } else if(nextProps.room.black._id === nextProps.profile._id) {
+                    this.board.orientation('black');
+                    usColor = 'b';
+                } else if(nextProps.room.gold._id === nextProps.profile._id) {
+                    this.board.orientation('gold');
+                    usColor = 'g';
+                } else if(nextProps.room.red._id === nextProps.profile._id) {
+                    this.board.orientation('red');
+                    usColor = 'r'
+                }
             }
+            
 
             if(nextProps.move) {
                 this.shadeSquareSource = nextProps.move.from;
@@ -281,28 +284,31 @@ class FourBoard extends Component {
         if(this.props.fen) {
             this.board.position(this.props.fen);
             this.game.position(this.props.fen);
-            if(this.props.room.white._id === this.props.profile._id) {
-                this.board.orientation('white');
+            if(this.props.black) {
+                if(this.props.room.white._id === this.props.profile._id) {
+                    this.board.orientation('white');
+                }
+                else if(this.props.room.black._id === this.props.profile._id) {
+                    this.board.orientation('black');
+                }
+                else if(this.props.room.gold._id === this.props.profile._id) {
+                    this.board.orientation('gold');
+                }
+                else if(this.props.room.red._id === this.props.profile._id) {
+                    this.board.orientation('red');
+                }
+    
+                if(this.props.move) {
+                    this.shadeSquare(this.props.move.from);
+                    this.shadeSquare(this.props.move.to);
+                }
             }
-            else if(this.props.room.black._id === this.props.profile._id) {
-                this.board.orientation('black');
-            }
-            else if(this.props.room.gold._id === this.props.profile._id) {
-                this.board.orientation('gold');
-            }
-            else if(this.props.room.red._id === this.props.profile._id) {
-                this.board.orientation('red');
-            }
-
-            if(this.props.move) {
-                this.shadeSquare(this.props.move.from);
-                this.shadeSquare(this.props.move.to);
-            }
+            
         }
     }
 
     render() {
-        if ( this.props.fen
+        if ( this.props.move && this.props.fen
             && this.props.move.from == this.shadeSquareSource
             && this.props.move.to == this.shadeSquareDest) {
                 this.shadeLastMove();

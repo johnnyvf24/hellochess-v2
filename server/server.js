@@ -50,38 +50,18 @@ const {User} = require('./models/user');
 const {authenticate} = require('./middleware/authenticate');
 
 
-if(env == "production") {
-    //CORS middleware for testing purposes
-    var allowCrossDomain = function(req, res, next) {
-        res.header('Access-Control-Allow-Origin', ['https://www.hellochess.com']);
-        res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH');
-        res.header('Access-Control-Allow-Headers', 'Content-Type,x-auth');
-        res.header('Access-Control-Expose-Headers', 'x-auth');
-        next();
-    }
-
-} else if(env == "staging") {
-
-    //CORS middleware for testing purposes
-    var allowCrossDomain = function(req, res, next) {
-        res.header('Access-Control-Allow-Origin', ['https://hellochess-dev-johnnyvf24.c9users.io']);
-        res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH');
-        res.header('Access-Control-Allow-Headers', 'Content-Type,x-auth');
-        res.header('Access-Control-Expose-Headers', 'x-auth');
-        next();
-    }
-
-} else {
-
-    //CORS middleware for testing purposes
-    var allowCrossDomain = function(req, res, next) {
-        res.header('Access-Control-Allow-Origin', ['http://localhost:8080']);
-        res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH');
-        res.header('Access-Control-Allow-Headers', 'Content-Type, x-auth');
-        res.header('Access-Control-Expose-Headers', 'x-auth');
-        next();
-    }
-
+//CORS middleware for testing purposes
+var allowCrossDomain = function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', [
+        'http://localhost:8080', 
+        'https://hellochess-johnnyvf24.c9users.io', 
+        'https://www.hellochess.com', 
+        'https://hellochess-dev-johnnyvf24.c9users.io'
+    ]);
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, x-auth');
+    res.header('Access-Control-Expose-Headers', 'x-auth');
+    next();
 }
 
 if(env == "production") {

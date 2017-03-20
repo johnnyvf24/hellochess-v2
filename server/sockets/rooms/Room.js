@@ -27,6 +27,21 @@ module.exports = class Room {
     }
     
     getRoom() {
+        if(this.game.fen()) {
+            return {
+                room: {
+                    name: this.name,
+                    private: this.private,
+                    voiceChat: this.voiceChat,
+                    maxPlayers: this.maxPlayers
+                },
+                users: this.getAllRoomPlayersWithoutSockets(),
+                messages: this.messages,
+                time: this.time,
+                gameType: this.gameType,
+                fen: this.game.fen()
+            }
+        }
         return {
             room: {
                 name: this.name,
@@ -36,7 +51,8 @@ module.exports = class Room {
             },
             users: this.getAllRoomPlayersWithoutSockets(),
             messages: this.messages,
-            time: this.time
+            time: this.time,
+            gameType: this.gameType
         }
     }
     
@@ -90,8 +106,9 @@ module.exports = class Room {
     }
     
     //Add a game object to the room
-    setGame(gameObj) {
+    setGame(gameObj, gameType) {
         this.game = gameObj;
+        this.gameType = gameType;
     }
     
     //set time control for the room

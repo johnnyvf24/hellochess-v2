@@ -52,12 +52,14 @@ class TwoBoard extends Component {
                 this.updatePosition(nextProps.fen);
             }
             let usColor = 'w';
-            if(nextProps.room.black._id === nextProps.profile._id) {
-                this.board.orientation('black');
-                usColor = 'b';
-            } else {
-                this.board.orientation('white');
-                usColor = 'w';
+            if(this.props.room.black) {
+                if(nextProps.room.black._id === nextProps.profile._id) {
+                    this.board.orientation('black');
+                    usColor = 'b';
+                } else {
+                    this.board.orientation('white');
+                    usColor = 'w';
+                }
             }
 
             if(nextProps.move) {
@@ -331,9 +333,12 @@ class TwoBoard extends Component {
                 this.game.load_pgn(this.props.pgn);
             }
 
-            if(this.props.room.black._id === this.props.profile._id) {
-                this.board.orientation('black');
+            if(this.props.room.black) {
+                if(this.props.room.black._id === this.props.profile._id) {
+                    this.board.orientation('black');
+                }
             }
+            
 
             if(this.props.move) {
                 this.game.move(this.props.move);

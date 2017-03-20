@@ -8,6 +8,7 @@ const Room = require('./rooms/Room.js');
 //Game Rules
 const {FourChess} = require('../../common/fourchess');
 const {Chess} = require('chess.js');
+const {Crazyhouse} = require('crazyhouse.js');
 
 //master connection object
 let conn = new Connection();
@@ -101,6 +102,19 @@ module.exports.socketServer = function(io) {
                     }
                     break;
                     
+                case 'server/get-room':
+                    roomName = action.payload;
+                    room = conn.getRoomByName(roomName);
+                    if(room == false) {
+                        return;
+                    }
+                    
+                    socket.emit('action', {
+                        type: 'joined-room',
+                        payload: room.getRoom()
+                    });
+                    
+                    break;
                 //user is joining a room
                 case 'server/join-room':
                     roomName = [Object.keys(action.payload)[0]];    //the roomName
@@ -119,10 +133,13 @@ module.exports.socketServer = function(io) {
                         if(data.gameType) { //user has initiated a game type room
                             switch(data.gameType) {
                                 case 'two-player':
-                                    room.setGame(new Chess());
+                                    room.setGame(new Chess(), 'two-player');
                                     break;
                                 case 'four-player':
-                                    room.setGame(new FourChess());
+                                    room.setGame(new FourChess(), 'four-player');
+                                    break;
+                                case 'crazyhouse':
+                                    room.setGame(new Crazyhouse(), 'crazyhouse');
                                     break;
                             }
                             
@@ -153,20 +170,21 @@ module.exports.socketServer = function(io) {
                         event_type: 'user-joined'
                     };
                     
-                    //Tell the current user that they have joined the room
-                    socket.emit('action', {
-                        type: 'joined-room',
-                        payload: room.getRoom()
-                    });
-        
                     //Tell everyone in the room that a new user has connnected
                     io.to(room.getName()).emit('action', {
                         type: 'user-room-joined',
                         payload: room.getRoom(),
                         message: msgObj
                     });
-        
+                    
                     room.addMessage(msgObj);
+                    
+                    //Tell the current user that they have joined the room
+                    socket.emit('action', {
+                        type: 'joined-room',
+                        payload: room.getRoom()
+                    });
+        
                     
                     //send a list of rooms to all members
                     io.emit('action', {
@@ -182,40 +200,6 @@ module.exports.socketServer = function(io) {
                         type: 'all-rooms',
                         payload: conn.getAllRooms()
                     });
-                    break;
-                    
-                //user has clicked on game room tab    
-                case 'server/selected-room':
-                    roomName = action.payload;
-                    if(roomName == 'Games') {
-                        socket.emit('action', {
-                        type: 'SELECTED_ROOM',
-                        payload: {
-                            thread: roomName,
-                            room: null
-                        }
-                    });
-                    }
-                    room = conn.getRoomByName(roomName);
-                    if(room === false) {
-                        //TODO error
-                        return; 
-                    }
-                    
-                    
-                    
-                    if(room.getGame()) {
-                        //TODO handle game stuff
-                    }
-                    
-                    socket.emit('action', {
-                        type: 'SELECTED_ROOM',
-                        payload: {
-                            thread: roomName,
-                            room: room.getRoom()
-                        }
-                    });
-                    
                     break;
                 
                 //someone is sending a new message
@@ -278,6 +262,11 @@ module.exports.socketServer = function(io) {
                         payload: conn.getAllRooms()
                     });
                     
+                    break;
+                    
+                //A user is requesting to play a color
+                case 'server/sit-down-board':
+                    console.log(action.payload)
                     break;
                     
                 //user is logging off
