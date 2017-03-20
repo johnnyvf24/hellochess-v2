@@ -34,7 +34,7 @@ module.exports = class TwoEngine extends Engine {
     setupOptions() {
         this.setOption("Skill Level", "1");
         this.setOption("Contempt", "100");
-        this.setOption("Slow Mover", "1000");
+        this.setOption("Move Overhead", "300");
     }
     
     setPosition(fen) {

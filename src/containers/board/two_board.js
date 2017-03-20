@@ -51,6 +51,8 @@ class TwoBoard extends Component {
                 this.game.load(nextProps.fen);
                 this.updatePosition(nextProps.fen);
             }
+            this.dragFrom = '';
+            console.log("set dragFrom to ''");
             let usColor = 'w';
             if(nextProps.room.black._id === nextProps.profile._id) {
                 this.board.orientation('black');
@@ -226,7 +228,7 @@ class TwoBoard extends Component {
         }
     }
     
-    setPremove(source, target) {
+    setPremove(source, target, piece) {
         this.resetPremove();
         let clickListener = (event) => {
             this.resetPremove();
@@ -235,8 +237,9 @@ class TwoBoard extends Component {
         this.premove = {
             source: source,
             target: target,
+            piece: piece,
             clickListener: clickListener
-        }
+        };
         // draw the premove
         this.renderPremove();
     }
@@ -244,9 +247,16 @@ class TwoBoard extends Component {
     executePremove() {
         if (!this.premove)
             return;
+        let from;
+        if (this.premove.source === "hand") {
+            from = '@';
+        } else {
+            from = this.premove.source;
+        }
         let action = {
-            from: this.premove.source,
+            from: from,
             to: this.premove.target,
+            piece: this.premove.piece,
             promotion: 'q'
         };
         //this.game.move(action);
@@ -260,6 +270,7 @@ class TwoBoard extends Component {
             this.boardEl.off('click', this.premove.clickListener);
         }
         this.premove = null;
+        this.dragFrom = '';
         this.boardRedraw();
     }
     
@@ -271,18 +282,15 @@ class TwoBoard extends Component {
     }
     
     onSnapbackEnd(piece, square, position, orientation) {
-        if (this.dragFrom) {
-            let pos = this.board.position();
-            pos[this.dragFrom] = piece;
-            this.board.position(pos, false);
-            this.dragFrom = '';
+        if (!this.dragFrom) {
+            this.setBoardPosition(this.props.fen);
         }
     }
 
     onDrop(source, target, piece) {
         let turn = this.formatTurn(this.game.turn());
         if (piece.length > 1) {
-            piece = piece.charAt(1);
+            piece = piece.charAt(1).toLowerCase();
         }
         let action = {
             from: source,
@@ -291,8 +299,13 @@ class TwoBoard extends Component {
             promotion: 'q' // NOTE: always promote to a queen for example simplicity
         };
         if(this.props.room[turn]._id !== this.props.profile._id) {
-            // set as premove
-            this.setPremove(source, target);
+            if (source === target) {
+                // reset premove when clicking on a piece
+                this.resetPremove();
+            } else {
+                // set as premove
+                this.setPremove(source, target, piece);
+            }
             return 'snapback';
         }
 
