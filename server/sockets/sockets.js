@@ -184,7 +184,6 @@ module.exports.socketServer = function(io) {
                         type: 'joined-room',
                         payload: room.getRoom()
                     });
-        
                     
                     //send a list of rooms to all members
                     io.emit('action', {

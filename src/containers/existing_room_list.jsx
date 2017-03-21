@@ -25,19 +25,17 @@ class ExistingRoomList extends Component {
         this.props.joinRoom(key);
     }
 
-    renderRoomItems(rooms) {
-        return mapObject( rooms, (key, value) => {
-            if(!value.users) {
-                return;
-            }
-            return (
-                <tr key={value.id} onClick={this.onClickRoom.bind(this, key)}>
-                    <td>{value.room.name}</td>
-                    <td>{value.gameType}</td>
-                    <td>{`${value.time.value}mins/${value.time.increment}secs` }</td>
-                </tr>
-            );
-        });
+    renderRoomItems(room) {
+        if(!room.users) {
+            return;
+        }
+        return (
+            <tr key={room.id} onClick={this.onClickRoom.bind(this, room.room.name)}>
+                <td>{room.room.name}</td>
+                <td>{room.gameType}</td>
+                <td>{`${room.time.value}mins/${room.time.increment}secs` }</td>
+            </tr>
+        );
     }
 
     render() {

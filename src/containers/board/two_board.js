@@ -41,7 +41,7 @@ class TwoBoard extends Component {
     shouldComponentUpdate(nextProps, nextState) {
         if(nextProps.name != this.props.name) {
             return true;
-        }
+        } 
         return false;
     }
 

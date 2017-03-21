@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
+import {Button} from 'react-bootstrap';
+
 //The input where the users can send messages to a chat
 class MessageSend extends Component {
 
@@ -52,9 +54,10 @@ class MessageSend extends Component {
                         className="form-control"
                         placeholder="Write a Message" />
                     <span className="input-group-btn">
-                        <button
-                            type="submit"
-                            className="btn btn-warning">Send</button>
+                        <Button bsStyle="warning"
+                            onClick={this.onMessageSend}>
+                            Send
+                        </Button>
                     </span>
                 </div>
             </form>

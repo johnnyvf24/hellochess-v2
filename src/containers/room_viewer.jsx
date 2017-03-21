@@ -23,8 +23,7 @@ class RoomViewer extends Component {
         }
     }
 
-    onTabClick(chatName, event) {
-
+    onSelectTab(chatName, event) {
         event.preventDefault();
         event.stopPropagation();
         this.props.selectedRoom(chatName);
@@ -41,7 +40,7 @@ class RoomViewer extends Component {
     renderNavTab(chats, active) {
         return mapObject(chats, (key, value) => {
             return (
-                <Tab key={key} eventKey={key} onClick={(event) => this.onTabClick(key, event)} title={key}>
+                <Tab key={key} eventKey={key} title={key}>
                     <div id="chat-tab-content">
                         <Room key={key} index={key} value={value} active={active}/>
                     </div>
@@ -63,8 +62,8 @@ class RoomViewer extends Component {
         }
 
         return (
-            <Tabs defaultActiveKey={200} id="left-chatbox">
-                <Tab eventKey={200} title="Games" onClick={(event) => this.onTabClick("Games", event)}>
+            <Tabs defaultActiveKey={200} onSelect={this.onSelectTab.bind(this)} id="left-chatbox">
+                <Tab eventKey={200} title="Games">
                     <ExistingRoomList />
                 </Tab>
                 {this.renderNavTab(openThreads, activeThread)}

@@ -29,6 +29,7 @@ module.exports = class Room {
     getRoom() {
         if(this.game.fen()) {
             return {
+                id: this.id,
                 room: {
                     name: this.name,
                     private: this.private,

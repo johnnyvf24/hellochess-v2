@@ -14,10 +14,12 @@ export const LIGHT_SQUARE_PREMOVE_COLOR = '#ff0000';
 class BoardWrapper extends Component {
     
     shouldComponentUpdate(nextProps, nextState) {
+        console.log(nextProps.gameType);
         return (
+            this.props.gameType != nextProps.gameType ||
             this.props.room != nextProps.room ||
-            Object.keys(this.props.openThreads).length != Object.keys(nextProps.openThreads).length ||
-            this.props.name == nextProps.name
+            Object.keys(this.props.openThreads).length != Object.keys(nextProps.openThreads).length
+           
         );
             
     }

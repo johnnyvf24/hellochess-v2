@@ -217,7 +217,7 @@ class Live extends Component {
                         <div className="pull-right">
                             <Dropdown id="dropdown-custom-menu">
                                 <CustomToggle bsRole="toggle">
-                                    <img id="profile-pic" className="img-responsive rounded-circle" src={this.props.profile.picture} alt="" />
+                                    <img id="profile-pic" className="img-responsive img-circle" src={this.props.profile.picture} alt="" />
                                 </CustomToggle>
                                 <CustomMenu bsRole="menu">
                                     <MenuItem onClick={this.onProfileClick.bind(this)} eventKey="1">Profile</MenuItem>

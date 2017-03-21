@@ -109,6 +109,8 @@ body .container-fluid {
     border-radius: 5px 5px 0px 0px;
 }
 
+
+
 #left-chatbox .tab-content {
     height: 100%;
     border-radius: 5px;
@@ -117,6 +119,11 @@ body .container-fluid {
 
 #left-chatbox li a {
     background: -webkit-linear-gradient(top, #80cde5, #cccccc);
+    color: black;
+}
+
+#left-chatbox ul .active a {
+    background: -webkit-linear-gradient(top, #aadeee, #80cde5);
     color: black;
 }
 
