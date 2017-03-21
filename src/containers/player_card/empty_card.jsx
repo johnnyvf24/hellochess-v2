@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {sitDownBoard, sitDownComputer} from '../../actions/room';
 
+import {Panel, Button, MenuItem, SplitButton, Row} from 'react-bootstrap';
+
 class EmptyCard extends Component {
     constructor(props) {
         super(props);
@@ -50,29 +52,6 @@ class EmptyCard extends Component {
         obj.color = this.props.color;
         this.props.sitDownComputer(obj);
     }
-    
-    renderAIButton() {
-        return (
-            <div className="btn-group">
-              <button type="button"
-                className="btn btn-default btn-sm dropdown-toggle"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false">
-                    <i className="fa fa-laptop" aria-hidden="true"></i>
-                    <span className="caret"></span>
-                    <span className="sr-only">AI Difficulty</span>
-              </button>
-              <ul className="dropdown-menu">
-                <li><a className="dropdown-item" href="#" onClick={this.aiSit.bind(this, 1)}>Very Easy</a></li>
-                <li><a className="dropdown-item" href="#" onClick={this.aiSit.bind(this, 5)}>Easy</a></li>
-                <li><a className="dropdown-item" href="#" onClick={this.aiSit.bind(this, 10)}>Normal</a></li>
-                <li><a className="dropdown-item" href="#" onClick={this.aiSit.bind(this, 15)}>Hard</a></li>
-                <li><a className="dropdown-item" href="#" onClick={this.aiSit.bind(this, 20)}>Very Hard</a></li>
-              </ul>
-            </div>
-        );
-    }
 
     render() {
         const {game} = this.props;
@@ -80,24 +59,34 @@ class EmptyCard extends Component {
         if(!time) {
             return <div></div>
         }
-        let aiButton = this.renderAIButton();
         return (
-            <div className="card player-card">
-                <div className={"card-block " + this.props.colorClass}>
-                    <div className="row">
-                        <div className="btn-group">
-                            <button
-                                className="btn btn-info"
-                                onClick={this.onSit}>
-                                Play
-                            </button>
-                            {aiButton}
-                        </div>
-                    </div>
+            <Panel className={"player-card " + this.props.colorClass}>
+                <Row>
 
-                    <h4 className="card-title pull-right">{`${time.value}:00`}</h4>
-                </div>
-            </div>
+                    <SplitButton id={"player-button-" + this.props.colorClass} 
+                        onClick={this.onSit} title="Play" bsStyle="info">
+                        <MenuItem eventKey="1" onClick={this.aiSit.bind(this, 1)} >
+                            Very Easy AI
+                        </MenuItem>
+                        <MenuItem eventKey="2" onClick={this.aiSit.bind(this, 5)} >
+                            Easy AI
+                        </MenuItem>
+                        <MenuItem eventKey="3" onClick={this.aiSit.bind(this, 10)} >
+                            Normal AI
+                        </MenuItem>
+                        <MenuItem eventKey="4" onClick={this.aiSit.bind(this, 15)} >
+                            Hard AI
+                        </MenuItem>
+                        <MenuItem eventKey="5" onClick={this.aiSit.bind(this, 20)} >
+                            Very Hard AI
+                        </MenuItem>
+                    </SplitButton>
+  
+                </Row>
+
+                <h4 className="card-title pull-right">{`${time.value}:00`}</h4>
+
+            </Panel>
         );
     }
 }

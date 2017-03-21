@@ -115,16 +115,16 @@ body .container-fluid {
 #left-chatbox .tab-content {
     height: 100%;
     border-radius: 5px;
-    background: -webkit-linear-gradient(top, #80cde5, #aadeee);
+    background: -webkit-linear-gradient(top, #aadeee, #c0e6f2);
 }
 
 #left-chatbox li a {
-    background: -webkit-linear-gradient(top, #80cde5, #cccccc);
+    background: -webkit-linear-gradient(top, #aadeee, #cccccc);
     color: black;
 }
 
 #left-chatbox ul .active a {
-    background: -webkit-linear-gradient(top, #aadeee, #80cde5);
+    background: -webkit-linear-gradient(top, #c0e6f2, #aadeee);
     color: black;
 }
 
@@ -132,21 +132,21 @@ body .container-fluid {
     height: 100%;
     display: flex;
     flex-direction: column;
-    background: -webkit-linear-gradient(top, #80cde5, #aadeee);
+    background: -webkit-linear-gradient(top, #aadeee, #c0e6f2);
 }
 
 #chat-tab-content {
     height: 100%;
     display: flex;
     flex-direction: column;
-    background: -webkit-linear-gradient(top, #80cde5, #aadeee);
+    background: -webkit-linear-gradient(top, #aadeee, #c0e6f2);
 }
 
 .tab-pane .active{
     height: 90%;
     display: flex;
     flex-direction: column;
-    background: -webkit-linear-gradient(top, #80cde5, #aadeee);
+    background: -webkit-linear-gradient(top, #aadeee, #c0e6f2);
 }
 
 .chatbox-top-stats-wrapper {
@@ -449,21 +449,18 @@ tr:hover {
 
 .player-card {
     border: none;
-    border-radius: 5px;
+    padding: 0;
+}
+
+.player-card .panel-body {
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
 .player-card.occupied {
     margin-bottom: 0px;
-}
-
-.player-card .card-block {
-    padding-top: 5px;
-    padding-bottom: 0px;
-    padding-left: 20px;
-    padding-right: 15px;
-    margin: 0px;
-    margin-left: 0px;
-    margin-right: 0px;
 }
 
 /*
@@ -476,17 +473,17 @@ tr:hover {
     padding-left: 5px;
 }
 
-.player-card .black-player {
+.black-player {
     background-color: black;
     color: white;
 }
 
-.player-card .red-player {
+.red-player {
     background-color: red;
     color: white;
 }
 
-.player-card .gold-player {
+.gold-player {
     background-color: gold;
     color: black;
 }
