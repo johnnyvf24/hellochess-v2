@@ -203,6 +203,16 @@ module.exports.socketServer = function(io) {
                 
                 //someone is sending a new message
                 case 'server/new-message':
+                    roomName = action.payload.thread;
+                    room = conn.getRoomByName(roomName);
+                    if(room == false) {
+                        return;
+                    }
+                    room.addMessage(action.payload);
+                    io.to(action.payload.thread).emit('action', {
+                        type: 'receive-message',
+                        payload: action.payload
+                    });
                     break;
                     
                 //user is leaving a room (by clicking 'x')

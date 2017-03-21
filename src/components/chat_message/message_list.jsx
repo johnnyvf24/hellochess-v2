@@ -2,15 +2,12 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import MessageListItem from './message_list_item';
 import {mapObject} from '../../utils'
+import {ListGroup} from 'react-bootstrap';
 
 export default class MessageList extends Component {
 
     constructor(props) {
         super(props);
-    }
-
-    shouldComponentUpdate(nextProps, nextState) {
-        return nextProps.messages.length !== this.props.messages.length;
     }
 
     componentDidUpdate  () {
@@ -27,6 +24,7 @@ export default class MessageList extends Component {
                 picture={message.picture}
                 uid={message.uid}
                 event_type={message.event_type}
+                time={message.time}
             />
         );
     }
@@ -35,9 +33,9 @@ export default class MessageList extends Component {
         const { messages } = this.props;
 
         return (
-            <ul ref="msgList" className="list-group chatbox-message-list">
+            <ListGroup ref="msgList" className="chatbox-message-list">
                 {mapObject(messages, this.renderChatListItem)}
-            </ul>
+            </ListGroup>
         );
     }
 }
