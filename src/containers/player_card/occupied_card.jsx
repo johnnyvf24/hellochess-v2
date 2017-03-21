@@ -4,6 +4,8 @@ import {tick, removeComputer} from '../../actions/room';
 import {millisToMinutesAndSeconds, formatTurn, showElo} from '../../utils/index';
 import { browserHistory } from 'react-router';
 
+import {Panel, Row} from 'react-bootstrap';
+
 class OccupiedCard extends Component {
 
     constructor(props) {
@@ -45,7 +47,7 @@ class OccupiedCard extends Component {
     renderActiveBorder() {
         const {player, game, resigned, turn} = this.props;
 
-        if (!player || !game)
+        if (!player || !game || !turn)
             return "";
         let isMyTurn = turn == player.color;
         let isResigned = resigned;
@@ -94,23 +96,23 @@ class OccupiedCard extends Component {
         }
         return (
             <div className={"player-card-border" + this.renderActiveBorder()}>
-                <div className={"card player-card occupied " + this.renderAliveIndicator()}>
-                    <div className={"card-block " + this.props.colorClass + " " + this.renderAliveIndicator()}>
-                        { !game.fen && this.renderLeaveSeat(player, name)}
+                <Panel className={"player-card occupied " + this.renderAliveIndicator() + " " + this.props.colorClass}>
+                    { !game.fen && this.renderLeaveSeat(player, name)}
 
-                        <div className="row">
-                            <a href="#"
-                                onClick={(e) => browserHistory.push(`/profile/${player._id}`)}>
-                                <img className="player-img rounded-circle" src={player.picture} />
-                            </a>
-                            <div className="card-text"><h5>{player.username}</h5>{showElo(game, player)}</div>
-                        </div>
-
-                        <h4 className="card-title pull-right">
+                    <Row>
+                        <a href="#"
+                            onClick={(e) => browserHistory.push(`/profile/${player._id}`)}
+                            className="pull-left">
+                            <img className="player-img img-circle" src={player.picture} />
+                        </a>
+                        <div className="player-sit-info"><h4>{player.username}</h4>{showElo(game, player)}</div>
+                        <h4 className="pull-right">
                             {this.renderTime(time)}
                         </h4>
-                    </div>
-                </div>
+                    </Row>
+
+                    
+                </Panel>
             </div>
         );
     }

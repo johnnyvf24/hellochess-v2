@@ -40,7 +40,11 @@ module.exports = class Room {
                 messages: this.messages,
                 time: this.time,
                 gameType: this.gameType,
-                fen: this.game.fen()
+                fen: this.game.fen(),
+                white: this.white,
+                black: this.black,
+                gold: this.gold,
+                red: this.red
             }
         }
         return {
@@ -53,7 +57,9 @@ module.exports = class Room {
             users: this.getAllRoomPlayersWithoutSockets(),
             messages: this.messages,
             time: this.time,
-            gameType: this.gameType
+            gameType: this.gameType,
+            lastMove: this.lastMove,
+            turn: this.turn
         }
     }
     
@@ -159,5 +165,82 @@ module.exports = class Room {
     
     getGame() {
         return this.game;
+    }
+    
+    getGameType() {
+        return this.gameType;
+    }
+    
+    sitPlayerColor(player, color) {
+        if(!player || !color) {
+            return false;
+        }
+        
+        player.time = this.time.value * 60 * 1000;
+        
+        //get which color the player is sitting down as
+        switch(color) {
+            case 'w':
+                this.white = player;
+                return true;
+            case 'b':
+                this.black = player
+                return true;
+            case 'g':
+                this.gold = player;
+                return true;
+            case 'r':
+                this.red = player;
+                return true;
+        }
+        
+        return false;
+    }
+    
+    //check to see if the game is ready to begin
+    gameReady() {
+        if(!this.gameType) {
+            return false;
+        }
+        
+        switch(this.gameType) {
+            case 'two-player':
+                if(this.white && this.black) {
+                    return true;
+                }
+                break;
+            case 'crazyhouse':
+                if(this.white && this.black) {
+                    return true;
+                }
+                break;
+            case 'four-player':
+                if(this.white && this.black 
+                    && this.gold && this.red) {
+                    return true;
+                }
+                break;
+        }
+        
+        return false;
+    }
+    
+    //begin the game
+    startGame() {
+        this.turn = 'white';
+        this.lastMove = Date.now();
+    }
+    
+    getPlayerByColor(color) {
+        switch(color) {
+            case 'w':
+                return this.white;
+            case 'g':
+                return this.gold;
+            case 'b':
+                return this.black;
+            case 'r':
+                return this.red;
+        }   
     }
 }

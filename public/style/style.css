@@ -461,8 +461,13 @@ tr:hover {
 
 .player-card.occupied {
     margin-bottom: 0px;
+    padding: 0px;
 }
 
+.player-sit-info {
+    padding-left: 55px;
+    word-break: break-all;
+}
 /*
 .player-card .card-block .row {
     overflow-x: hidden;

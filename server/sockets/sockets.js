@@ -79,6 +79,7 @@ module.exports.socketServer = function(io) {
             let room;
             let player;
             let turn;
+            let color;
             switch(action.type) {
                 //Sent after successful log in
                 case 'server/connected-user':
@@ -275,7 +276,68 @@ module.exports.socketServer = function(io) {
                     
                 //A user is requesting to play a color
                 case 'server/sit-down-board':
-                    console.log(action.payload)
+                    roomName = action.payload.roomName;
+                    
+                    //get the existing room
+                    room = conn.getRoomByName(roomName);
+                    
+                    //check if the room was retrieved successfully
+                    if(room == false) {
+                        //TODO error
+                        return;
+                    }
+                    
+                    switch(room.getGameType()) {
+                        case 'crazyhouse':
+                        case 'two-player':
+                        case 'four-player':
+                            color = action.payload.color;
+                            player = action.payload.profile;
+                            if(!color || !player) {
+                                return;
+                            }
+                            if(!room.sitPlayerColor(player, color)) {
+                                //TODO error
+                                return;   
+                            }
+                            
+                            //tell everyone in the room
+                            io.to(roomName).emit('action', {
+                                type: `sit-down-${color}`,
+                                payload: {
+                                    thread: roomName,
+                                    room: room.getPlayerByColor(color)
+                                }
+                            });
+                            break;
+                    }
+                    
+                    //Check to see if the game is ready to begin
+                    if(room.gameReady()) {
+                        room.startGame();
+                        
+                        //Notify all players that the game is ready to be played
+                        const notificationOpts = {
+                            title: 'The game has begun',
+                            message: '',
+                            position: 'tr',
+                            autoDismiss: 3,
+                        };
+                        
+                        io.to(roomName).emit('action', Notifications.warning(notificationOpts));
+                        
+                        io.to(roomName).emit('action', {
+                            type: 'game-started',
+                            payload: {
+                                thread: roomName,
+                                room: room.getRoom()
+                            }
+                        })
+                        
+                    } else {
+                        
+                    }
+                    
                     break;
                     
                 //user is logging off
