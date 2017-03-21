@@ -39,8 +39,13 @@ class RoomViewer extends Component {
 
     renderNavTab(chats, active) {
         return mapObject(chats, (key, value) => {
+            let title = <span>
+                            <button onClick={(e) =>this.onCloseChatTab(key, e)}
+                                className="close closeTab" 
+                                type="button" >×</button>{key}
+                            </span>;
             return (
-                <Tab key={key} eventKey={key} title={key}>
+                <Tab key={key} eventKey={key} title={title}>
                     <div id="chat-tab-content">
                         <Room key={key} index={key} value={value} active={active}/>
                     </div>

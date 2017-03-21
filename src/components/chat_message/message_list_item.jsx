@@ -35,8 +35,6 @@ function formatTime(startTime) {
     // the rest of timeDiff is number of days
     var days = timeDiff;
     
-    console.log('seconds ', seconds);
-    
     if(days > 0) {
         return `${days} days ago`
     } else if(hours > 0) {
@@ -57,7 +55,6 @@ export default (props) => {
     const uid = props.uid;
     const event_type = props.event_type;
     const time = formatTime(props.time);
-    console.log(time);
     
     let message_item = <li></li>;
     
@@ -73,13 +70,13 @@ export default (props) => {
                         </a>
                     </div>
                     <Row>
-                        <Col xs={12} md={9}>
+                        <div>
                             <small className="list-group-item-heading text-muted text-primary">{user}</small>
-                            <p className="list-group-item-text">
+                            <p className="list-group-item-text message-text">
                                 {text}
                             </p>
-                        </Col>
-                        <Col xs={0} md={3} className="pull-right"><div className="pull-right last-message-time">{time}</div></Col>
+                        </div>
+                        <div className="pull-right last-message-time">{time}</div>
                     </Row>
                 </ListGroupItem>;
             break;

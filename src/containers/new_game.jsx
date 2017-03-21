@@ -55,7 +55,7 @@ class NewGame extends Component {
                     <Button onClick={this.close.bind(this)}>
                         Cancel
                     </Button>
-                    <Button onClick={this.submitRoom.bind(this)}>
+                    <Button bsStyle="warning" onClick={this.submitRoom.bind(this)}>
                         Create Game
                     </Button>
                 </div>
@@ -74,7 +74,7 @@ class NewGame extends Component {
         return (
             <Modal show={this.state.showModal} onHide={this.close.bind(this)} id="new-game-modal">
                 <Modal.Header closeButton>
-                    <Modal.Title>Modal heading</Modal.Title>
+                    <Modal.Title>New Game</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     {this.renderModalContent()}

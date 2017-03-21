@@ -52,7 +52,7 @@ class ExistingRoomList extends Component {
                                 </div>
                             </div>
                             <Col xs={4}>
-                                <a className="pull-right">
+                                <a className="pull-right num-user-modal-link">
                                     {rooms.length} Game Rooms
                                 </a>
                             </Col>

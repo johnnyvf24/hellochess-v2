@@ -4,12 +4,27 @@ import MessageList from '../chat_message/message_list';
 import RoomSettings from './room_settings';
 import MessageSend from '../../containers/message_send';
 
-import {Row, Col} from 'react-bootstrap';
+import {Row, Col, Modal, Button} from 'react-bootstrap';
 
 
 export default class Room extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            showModal: false
+        }
+    }
+    
+    openUserModal() {
+        this.setState({
+            showModal: true 
+        });
+    }
+    
+    closeUserModal() {
+        this.setState({
+            showModal: false 
+        });
     }
 
     render() {
@@ -22,32 +37,22 @@ export default class Room extends Component {
                 <Row className="chatbox-top-stats-wrapper">
                     <span className="chatbox-top-stats">
                         <RoomSettings value={value}/>
-                        <a  className="float-xs-right"
-                            href="#"
-                            data-toggle="modal"
-                            data-target={"#modal-room-" + value.id}>
+                        <a  className="pull-right num-user-modal-link"
+                            href="#" onClick={this.openUserModal.bind(this)}>
                             {value.users.length} users
                         </a>
+                        <Modal show={this.state.showModal} onHide={this.closeUserModal.bind(this)}>
+                            <Modal.Header closeButton>
+                                <Modal.Title>Room Members</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <RoomUserList users={value.users}/>
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <Button onClick={this.closeUserModal.bind(this)}>Close</Button>
+                            </Modal.Footer>
+                        </Modal>
                     </span>
-
-                    <div className="modal fade" id={"modal-room-" + value.id}
-                        role="dialog"
-                        aria-labelledby="chatUserModal"
-                        aria-hidden="true">
-                        <div className="modal-dialog" role="document">
-                            <div className="modal-content">
-                                <div className="modal-header">
-                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                    <h5 className="modal-title" id="exampleModalLabel">Room Members</h5>
-                                </div>
-                                <div className="modal-body">
-                                    <RoomUserList users={value.users}/>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </Row>
                 <Row className="chatbox-message-list-wrapper">
                     <MessageList messages={value.messages}/>

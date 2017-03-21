@@ -177,8 +177,25 @@ body .container-fluid {
     /*background-size: cover;*/
 }
 
+.user-list-tab-li {
+    display: inline;
+}
+
 .last-message-time {
     font-size: 9px;
+    margin-right: 15px;
+    color: grey;
+}
+
+.message-text {
+    margin-right: 15px;
+}
+
+.num-user-modal-link {
+    color: black;
+}
+
+.num-user-modal-link:hover {
     color: grey;
 }
 
@@ -588,3 +605,22 @@ tr:hover {
 .promotion-black-1363e {
     filter: contrast(1.2);
 }*/
+
+.nav-tabs > li .close {
+    margin: 1px -10px 0 10px;
+    font-size: 18px;
+}
+.marginBottom {
+    margin-bottom :1px !important;
+}
+.operationDiv {
+    padding:5px 10px 5px 5px;
+}
+.operationDivWrapper {
+    margin-top:-1px;
+}
+.leftMenu {
+    height :70%;
+    background-color: #E6E6E6;
+    border-right: 2px solid #BFBFBF;
+}
