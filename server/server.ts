@@ -16,7 +16,7 @@ if(env == "production") {
         key: fs.readFileSync(creds.key),
         cert: fs.readFileSync(creds.cert),
         requestCert: true
-    };
+    }; 
 
 
     http = require('http').createServer(httpapp);

@@ -84,7 +84,7 @@ class EmptyCard extends Component {
   
                 </Row>
 
-                <h4 className="card-title pull-right">{`${time.value}:00`}</h4>
+                <h4 className="player-time-info pull-right">{`${time.value}:00`}</h4>
 
             </Panel>
         );

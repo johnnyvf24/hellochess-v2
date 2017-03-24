@@ -468,11 +468,11 @@ tr:hover {
     padding-left: 55px;
     word-break: break-all;
 }
-/*
-.player-card .card-block .row {
-    overflow-x: hidden;
+
+.player-time-info {
+    font-size: 22px;
+    margin-right: 10px;
 }
-*/
 
 .player-card .card-block .row .card-text {
     padding-left: 5px;

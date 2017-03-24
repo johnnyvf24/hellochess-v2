@@ -1,15 +1,23 @@
-const Game = require('../games/Game.js');
-const {FourChess} = require('../../../common/fourchess');
+const Notifications = require('react-notification-system-redux');
+import Player from '../players/Player';
 
-let numRooms = 0;
-
-module.exports = class Room {
+export default class Room {
+    private players: Player [];
+    private messages: any[];
+    private priv: boolean;
+    private id: number;
+    private voiceChat: boolean;
+    private maxPlayers: number;
+    private name: string;
+    private time: any;
+    private game: any;
     
-    constructor() {
-        this.players = [];  //a list of all the players in a room
+    static numRooms: number = 0;
+    
+    constructor(private io: any) {
         this.messages = []; //a list of all the messages stored for that room
-        numRooms++;
-        this.id = numRooms;
+        Room.numRooms++;
+        this.id = Room.numRooms;
     }
     
     setRoomAttributes(roomObj) {
@@ -19,47 +27,26 @@ module.exports = class Room {
             || typeof roomObj.name == undefined) {
             return false;        
         }
-        this.private = roomObj.private;
+        this.priv = roomObj.private;
         this.voiceChat = roomObj.voiceChat;
         this.maxPlayers = roomObj.maxPlayers;
         this.name = roomObj.name;
         return true;
     }
     
-    getRoom() {
-        if(this.game.fen()) {
-            return {
-                id: this.id,
-                room: {
-                    name: this.name,
-                    private: this.private,
-                    voiceChat: this.voiceChat,
-                    maxPlayers: this.maxPlayers
-                },
-                users: this.getAllRoomPlayersWithoutSockets(),
-                messages: this.messages,
-                time: this.time,
-                gameType: this.gameType,
-                fen: this.game.fen(),
-                white: this.white,
-                black: this.black,
-                gold: this.gold,
-                red: this.red
-            }
-        }
+    getRoom(): Object {
         return {
+            id: this.id,
             room: {
                 name: this.name,
-                private: this.private,
+                private: this.priv,
                 voiceChat: this.voiceChat,
                 maxPlayers: this.maxPlayers
             },
             users: this.getAllRoomPlayersWithoutSockets(),
             messages: this.messages,
             time: this.time,
-            gameType: this.gameType,
-            lastMove: this.lastMove,
-            turn: this.turn
+            game: this.game.getInfo()
         }
     }
     
@@ -68,13 +55,32 @@ module.exports = class Room {
             return false;
         }
         playerObj.getSocket().join(this.name);
+        
         this.players.push(playerObj);
+        let joinedMessage = `${playerObj.getUsername()} has joined the room.`;
+        let msgObj = {
+            user: playerObj.getPlayerAttributes(),
+            msg: joinedMessage,
+            thread: this.getName(),
+            picture: null,
+            event_type: 'user-joined'
+        };
+        
+        //Tell everyone in the room that a new user has connnected
+        this.io.to(this.getName()).emit('action', {
+            type: 'user-room-joined',
+            payload: this.getRoom(),
+            message: msgObj
+        });
+        
+        this.addMessage(msgObj);
+        
         playerObj.getSocket().emit('action', {
             type: 'joined-room',
             payload: {
                 room: {
                     name: this.name,
-                    private: this.private,
+                    private: this.priv,
                     voiceChat: this.voiceChat,
                     maxPlayers: this.maxPlayers
                 },
@@ -86,10 +92,10 @@ module.exports = class Room {
     }
     
     //Remove a player from the room;
-    removePlayer(playerId) {
+    removePlayer(playerId: string) {
         let foundPlayer = false;
         this.players = this.players.filter((player) => {
-            if(player._id !== playerId) {
+            if(player.id !== playerId) {
                 return player;
             } else {
                 foundPlayer = true;
@@ -113,9 +119,8 @@ module.exports = class Room {
     }
     
     //Add a game object to the room
-    setGame(gameObj, gameType) {
+    setGame(gameObj) {
         this.game = gameObj;
-        this.gameType = gameType;
     }
     
     //set time control for the room
@@ -125,6 +130,14 @@ module.exports = class Room {
         }
         this.time = timeObj;
         return true;
+    }
+    
+    emitMessage(messageObj) {
+        this.addMessage(messageObj);
+        this.io.to(messageObj.thread).emit('action', {
+            type: 'receive-message',
+            payload: messageObj
+        });
     }
     
     //add a message to the room
@@ -168,79 +181,47 @@ module.exports = class Room {
     }
     
     getGameType() {
-        return this.gameType;
-    }
-    
-    sitPlayerColor(player, color) {
-        if(!player || !color) {
-            return false;
-        }
-        
-        player.time = this.time.value * 60 * 1000;
-        
-        //get which color the player is sitting down as
-        switch(color) {
-            case 'w':
-                this.white = player;
-                return true;
-            case 'b':
-                this.black = player
-                return true;
-            case 'g':
-                this.gold = player;
-                return true;
-            case 'r':
-                this.red = player;
-                return true;
-        }
-        
-        return false;
+        return this.game.getGameType;
     }
     
     //check to see if the game is ready to begin
     gameReady() {
-        if(!this.gameType) {
-            return false;
-        }
-        
-        switch(this.gameType) {
-            case 'two-player':
-                if(this.white && this.black) {
-                    return true;
-                }
-                break;
-            case 'crazyhouse':
-                if(this.white && this.black) {
-                    return true;
-                }
-                break;
-            case 'four-player':
-                if(this.white && this.black 
-                    && this.gold && this.red) {
-                    return true;
-                }
-                break;
-        }
-        
-        return false;
+        return this.game.gameReady();
     }
     
     //begin the game
     startGame() {
-        this.turn = 'white';
-        this.lastMove = Date.now();
+        
+        //Notify all players that the game is ready to be played
+        const notificationOpts = {
+            title: 'The game has begun',
+            message: '',
+            position: 'tr',
+            autoDismiss: 3,
+        };
+        
+        this.io.to(this.name).emit('action', Notifications.warning(notificationOpts));
+        
+        this.io.to(this.name).emit('action', {
+            type: 'game-started',
+            payload: {
+                thread: this.name,
+                room: this.getRoom()
+            }
+        })
     }
     
-    getPlayerByColor(color) {
-        switch(color) {
+    formatTurn (turn) {
+        switch (turn) {
             case 'w':
-                return this.white;
-            case 'g':
-                return this.gold;
+                return 'white';
             case 'b':
-                return this.black;
+                return 'black';
+            case 'g':
+                return 'gold';
             case 'r':
-                return this.red;
-        }   
+                return 'red';
+        }
+        return false;
     }
 }

@@ -1,24 +1,41 @@
-module.exports = class Connection {
-    constructor() {
+import Player from './players/Player';
+import Room from './rooms/Room';
+
+export default class Connection {
+    private players: Player[];
+    private rooms: Room[];
+    
+    constructor(private io: any) {
         this.players = [];
         this.rooms = [];
     }
     
-    addRoom(roomObj) {
+    addRoom(roomObj: Room): void {
         this.rooms.push(roomObj);
     }
     
-    getRoomByName(roomName) {
-        if(!roomName) {
-            return false;
+    emitRoomByName(roomName: string, socket: any) {
+        let room : Room = this.getRoomByName(roomName);
+        
+        if(!room) {
+            return;
         }
-        let roomFound = false;
+        
+        socket.emit('action', {
+            type: 'joined-room',
+            payload: room.getRoom()
+        });
+    }
+    
+    getRoomByName(roomName: string): Room {
+        if(!roomName) {
+            return null;
+        }
         this.rooms.map((room) => {
             if(room.getName() == roomName) {
-                roomFound = room;
+                return room;
             }
         });
-        return roomFound;
     }
     
     removeRoomByName(roomName) {
@@ -37,13 +54,25 @@ module.exports = class Connection {
         return roomRemoved;
     }
     
+    emitAllRooms() {
+        //send a list of rooms to all members
+        this.io.emit('action', {
+            type: 'all-rooms',
+            payload: this.getAllRooms()
+        });
+    }
+    
     getAllRooms() {
-        let rooms = [];
+        if(!this.rooms) {
+            return null;
+        }
+        let tempRooms = [];
+        
         this.rooms.map((room) => {
-             rooms.push(room.getRoom());
+             tempRooms.push(room.getRoom());
         });
         
-        return rooms;
+        return tempRooms;
     }
     
     //get all the rooms a player is connected to
@@ -58,31 +87,29 @@ module.exports = class Connection {
         return rooms;
     }
     
-    addPlayer(playerObj) {
-        this.players.push(playerObj);
-        playerObj.getSocket().emit('action', {
+    addPlayer(player: Player) {
+        this.players.push(player);
+        player.getSocket().emit('action', {
             type: 'connected'
         });
     }
     
-    getPlayerBySocket(socket) {
-        if(!socket) {
-            return false;
+    getPlayerBySocket(socket: any) {
+        if(!socket || !this.players) {
+            return null;
         }
-        let p = null;
+        
         this.players.map((player) => {
             if(player.getSocket().id == socket.id) {
-                p = player;
+                return player;
             }
         });
-        
-        return p;
     }
     
     updatePlayer(data) {
         //check to see if the player is in the player list
         this.players.map((player) => {
-            if(player.getPlayerId() === data._id) {
+            if(player.id === data._id) {
                 let status = player.setPlayerAttributes(data);
                 return status;
             } 
@@ -97,7 +124,7 @@ module.exports = class Connection {
         }
         let foundPlayer = false;
         this.players = this.players.filter((player) => {
-            if(player._id !== playerId) {
+            if(player.id !== playerId) {
                 return player;
             } else {
                 foundPlayer = true;

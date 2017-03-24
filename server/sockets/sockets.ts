@@ -1,19 +1,18 @@
 const Notifications = require('react-notification-system-redux');
 const {mapObject} = require('../utils/utils');
 const Elo = require('elo-js');
-const Connection = require('./Connection');
-const Player = require('./players/Player');
-const Room = require('./rooms/Room.js');
+import Connection from './Connection';
+import Player from './players/Player';
+const Room = require('./rooms/Room');
 
 //Game Rules
-const {FourChess} = require('../../common/fourchess');
-const {Chess} = require('chess.js');
-const {Crazyhouse} = require('crazyhouse.js');
-
-//master connection object
-let conn = new Connection();
+const FourGame = require('./games/FourGame');
+const Standard = require('./games/Standard');
+const CrazyHouse = require('./games/CrazyHouse');
 
 module.exports.socketServer = function(io) {
+    //master connection object
+    let conn = new Connection(io);
 
     io.on('connection', (socket) => {
         
@@ -90,7 +89,6 @@ module.exports.socketServer = function(io) {
                     } else {
                         //TODO send error message
                     }
-                    
                     break;
                     
                 //Updates user information
@@ -105,16 +103,7 @@ module.exports.socketServer = function(io) {
                     
                 case 'server/get-room':
                     roomName = action.payload;
-                    room = conn.getRoomByName(roomName);
-                    if(room == false) {
-                        return;
-                    }
-                    
-                    socket.emit('action', {
-                        type: 'joined-room',
-                        payload: room.getRoom()
-                    });
-                    
+                    conn.emitRoomByName(roomName, socket);
                     break;
                 //user is joining a room
                 case 'server/join-room':
@@ -124,7 +113,7 @@ module.exports.socketServer = function(io) {
                     
                     //check to see if room previously existed
                     if(room == false) { 
-                        room = new Room(); //declare a new room
+                        room = new Room(io); //declare a new room
                         
                         if(!room.setRoomAttributes(data.room)) {
                             //TODO error message on join
@@ -134,13 +123,13 @@ module.exports.socketServer = function(io) {
                         if(data.gameType) { //user has initiated a game type room
                             switch(data.gameType) {
                                 case 'two-player':
-                                    room.setGame(new Chess(), 'two-player');
+                                    room.setGame(new Standard(io));
                                     break;
                                 case 'four-player':
-                                    room.setGame(new FourChess(), 'four-player');
+                                    room.setGame(new FourGame(io));
                                     break;
                                 case 'crazyhouse':
-                                    room.setGame(new Crazyhouse(), 'crazyhouse');
+                                    room.setGame(new CrazyHouse(io));
                                     break;
                             }
                             
@@ -161,45 +150,13 @@ module.exports.socketServer = function(io) {
                     }
                     
                     room.addPlayer(player);
-                    
-                    let joinedMessage = `${player.getUsername()} has joined the room.`;
-                    let msgObj = {
-                        user: player.getPlayerAttributes(),
-                        msg: joinedMessage,
-                        thread: room.getName(),
-                        picture: null,
-                        event_type: 'user-joined'
-                    };
-                    
-                    //Tell everyone in the room that a new user has connnected
-                    io.to(room.getName()).emit('action', {
-                        type: 'user-room-joined',
-                        payload: room.getRoom(),
-                        message: msgObj
-                    });
-                    
-                    room.addMessage(msgObj);
-                    
-                    //Tell the current user that they have joined the room
-                    socket.emit('action', {
-                        type: 'joined-room',
-                        payload: room.getRoom()
-                    });
-                    
-                    //send a list of rooms to all members
-                    io.emit('action', {
-                        type: 'all-rooms',
-                        payload: conn.getAllRooms()
-                    });
+                    conn.emitAllRooms();
                     
                     break;
                     
                 //User is requesting a list of rooms
                 case 'server/get-rooms':
-                    io.emit('action', {
-                        type: 'all-rooms',
-                        payload: conn.getAllRooms()
-                    });
+                    conn.emitAllRooms();
                     break;
                 
                 //someone is sending a new message
@@ -209,11 +166,7 @@ module.exports.socketServer = function(io) {
                     if(room == false) {
                         return;
                     }
-                    room.addMessage(action.payload);
-                    io.to(action.payload.thread).emit('action', {
-                        type: 'receive-message',
-                        payload: action.payload
-                    });
+                    room.emitMessage(action.payload);
                     break;
                     
                 //user is leaving a room (by clicking 'x')
@@ -265,13 +218,10 @@ module.exports.socketServer = function(io) {
                     if(room.removePlayerBySocket(player.getSocket())) {
                         //TODO error message
                     }
-        
-                    //Update the user count for that room
-                    io.emit('action', {
-                        type: 'all-rooms',
-                        payload: conn.getAllRooms()
-                    });
                     
+                    //Update all the rooms
+                    conn.emitAllRooms();
+
                     break;
                     
                 //A user is requesting to play a color
@@ -296,6 +246,18 @@ module.exports.socketServer = function(io) {
                             if(!color || !player) {
                                 return;
                             }
+                            
+                            let deletedPlayer = room.removePlayerFromBoardSeats(player);
+                            
+                            if(deletedPlayer) {
+                                io.to(roomName).emit('action', {
+                                    type: `up-${deletedPlayer}`,
+                                    payload: {
+                                        name: roomName
+                                    }
+                                });
+                            }
+                            
                             if(!room.sitPlayerColor(player, color)) {
                                 //TODO error
                                 return;   
@@ -306,7 +268,7 @@ module.exports.socketServer = function(io) {
                                 type: `sit-down-${color}`,
                                 payload: {
                                     thread: roomName,
-                                    room: room.getPlayerByColor(color)
+                                    player: room.getPlayerByColor(color)
                                 }
                             });
                             break;
@@ -315,25 +277,6 @@ module.exports.socketServer = function(io) {
                     //Check to see if the game is ready to begin
                     if(room.gameReady()) {
                         room.startGame();
-                        
-                        //Notify all players that the game is ready to be played
-                        const notificationOpts = {
-                            title: 'The game has begun',
-                            message: '',
-                            position: 'tr',
-                            autoDismiss: 3,
-                        };
-                        
-                        io.to(roomName).emit('action', Notifications.warning(notificationOpts));
-                        
-                        io.to(roomName).emit('action', {
-                            type: 'game-started',
-                            payload: {
-                                thread: roomName,
-                                room: room.getRoom()
-                            }
-                        })
-                        
                     } else {
                         
                     }

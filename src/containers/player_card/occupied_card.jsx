@@ -106,9 +106,9 @@ class OccupiedCard extends Component {
                             <img className="player-img img-circle" src={player.picture} />
                         </a>
                         <div className="player-sit-info"><h4>{player.username}</h4>{showElo(game, player)}</div>
-                        <h4 className="pull-right">
+                        <span className="pull-right player-time-info">
                             {this.renderTime(time)}
-                        </h4>
+                        </span>
                     </Row>
 
                     
