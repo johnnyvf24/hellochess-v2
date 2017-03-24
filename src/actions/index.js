@@ -1,6 +1,5 @@
 import axios from 'axios'
 import {browserHistory} from 'react-router'
-import {CALL_API} from '../middleware/api'
 import {
     ROOT_URL,
     LOGIN_SUCCESS,

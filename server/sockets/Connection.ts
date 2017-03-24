@@ -89,9 +89,7 @@ export default class Connection {
     
     addPlayer(player: Player) {
         this.players.push(player);
-        player.getSocket().emit('action', {
-            type: 'connected'
-        });
+        player.getSocket().emit('connected-user', {hello: true});
     }
     
     getPlayerBySocket(socket: any) {

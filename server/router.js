@@ -2,6 +2,7 @@ const Authentication = require('./controllers/authentication');
 const User = require('./controllers/user');
 const passportService = require('./services/passport');
 const passport = require('passport');
+const path = require('path');
 
 const requireAuth = passport.authenticate('jwt', {session: false});
 const requireLogin = passport.authenticate('local', {session: false});
@@ -13,6 +14,18 @@ module.exports = function(app) {
 
     app.use(passport.initialize());
     app.use(passport.session());
+    
+    app.get("/live", (req, res) => {
+        res.sendFile(path.join(__dirname, "../public/index.html"));
+    });
+    
+    app.get('/profile/:id', (req, res) => {
+        res.sendFile(path.join(__dirname, "../public/index.html"));
+    });
+    
+    app.get("/robots.txt", (req, res) => {
+        res.sendFile(path.join(__dirname, "../public/robots.txt"));
+    });
 
     //Authentication routes
     app.post('/api/users/signup', Authentication.signup);
