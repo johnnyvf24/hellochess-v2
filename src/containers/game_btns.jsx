@@ -63,7 +63,8 @@ class GameButtons extends Component {
         }
 
         if(openThreads[activeThread].gameType == 'two-player' ||
-           openThreads[activeThread].gameType == 'crazyhouse') {
+           openThreads[activeThread].gameType == 'crazyhouse' ||
+           openThreads[activeThread].gameType == 'crazyhouse960') {
             return (
                 <div className="row">
                     <div className="center">

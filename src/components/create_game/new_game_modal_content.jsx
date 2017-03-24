@@ -13,7 +13,8 @@ import {
 const gameTypeOptions = [
     { value: 'two-player', label: 'Two Player'},
     { value: 'four-player', label: 'Four Player'},
-    { value: 'crazyhouse', label: 'Crazyhouse'}
+    { value: 'crazyhouse', label: 'Crazyhouse'},
+    { value: 'crazyhouse960', label: 'Crazyhouse 960'},
     //{ value: 'four-player-team', label: 'Four Player Teams'}
 ]
 

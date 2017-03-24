@@ -62,8 +62,12 @@ class BoardWrapper extends Component {
                     </div>
                 );
             case 'crazyhouse':
+            case 'crazyhouse960':
                 newGameObject = function() {
-                    return new Crazyhouse();
+                    if (gameType === "crazyhouse")
+                        return new Crazyhouse();
+                    else
+                        return new Crazyhouse({960: true});
                 };
                 setBoardPosition = function(fen) {
                     if (fen) {

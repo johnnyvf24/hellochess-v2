@@ -346,7 +346,8 @@ function room(io, socket, action) {
                     }
                 }
                 var roomGameType = rooms[index][roomName].gameType;
-                if (roomGameType === "two-player" || roomGameType === "crazyhouse") {
+                if (roomGameType === "two-player" || roomGameType === "crazyhouse"
+                    || roomGameType === "crazyhouse960") {
                     //Check to see if the game is ready to start
                     if (rooms[index][roomName].white && rooms[index][roomName].black) {
 
@@ -365,6 +366,9 @@ function room(io, socket, action) {
                             rooms[index][roomName].game = new Chess();
                         else if (roomGameType === "crazyhouse")
                             rooms[index][roomName].game = new Crazyhouse();
+                        else if (roomGameType === "crazyhouse960")
+                            rooms[index][roomName].game = new Crazyhouse({960: true});
+                        
 
                         io.to(roomName).emit('action', {
                             type: 'game-started',
@@ -383,7 +387,7 @@ function room(io, socket, action) {
                                     new TwoEngine("./engine/bin/stockfish_8_x64",
                                         roomName, socket, rooms[index][roomName].time.increment);
                             }
-                            else if (roomGameType === "crazyhouse") {
+                            else if (roomGameType === "crazyhouse" || roomGameType === "crazyhouse960") {
                                 twoComputers[roomName] =
                                     new CrazyEngine("./engine/bin/stockfish_variant",
                                         roomName, socket, rooms[index][roomName].time.increment);

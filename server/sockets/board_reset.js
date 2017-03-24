@@ -134,7 +134,8 @@ function startTimerCountDown(io, roomName, index) {
 
             }
         } else if(rooms[index][roomName].gameType == 'two-player' ||
-                  rooms[index][roomName].gameType == 'crazyhouse'){
+                  rooms[index][roomName].gameType == 'crazyhouse' ||
+                  rooms[index][roomName].gameType == 'crazyhouse960'){
             time = 1;
             if(turn === 'white') {
                 winner = rooms[index][roomName].black;
