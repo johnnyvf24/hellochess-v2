@@ -239,7 +239,7 @@ export function joinRoom(name, gameOptions = initGameOptions) {
     return (dispatch) => {
         let obj = {};
         gameOptions.room.name = name;
-        obj[name] = gameOptions;
+        obj = gameOptions;
 
         return dispatch({
             type: 'server/join-room',

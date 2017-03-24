@@ -93,16 +93,19 @@ export default class Connection {
         player.socket.emit('connected-user');
     }
     
-    getPlayerBySocket(socket: any) {
+    getPlayerBySocket(socket: any) : Player{
         if(!socket || !this.players) {
             return null;
         }
         
+        let p: Player = null;        
         this.players.map((player) => {
             if(player.socket.id == socket.id) {
-                return player;
+                p =  player;
             }
         });
+        
+        return p;
     }
     
     updatePlayer(data) {

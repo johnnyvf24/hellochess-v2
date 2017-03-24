@@ -1,6 +1,6 @@
 import Player from '../logic/players/Player';
 
-module.exports = function(socket, connection) {
+module.exports = function(io, socket, connection) {
     
     //Clients emit this event upon successfully establishing a connection
     //The server will track all users

@@ -42,6 +42,11 @@ export default function(store) {
     socket.on('connected-user', data => {
         store.dispatch({type: 'connected-user'});
     });
+    
+    socket.on('joined-room', data => {
+        console.log(data);
+        store.dispatch({type: 'joined-room', payload: data}); 
+    });
 }
 
 // let socketIoMiddleware = createSocketIoMiddleware(socket, ['server/']);

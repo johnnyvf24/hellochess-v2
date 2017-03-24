@@ -1,60 +1,61 @@
 const Notifications = require('react-notification-system-redux');
 import Player from '../players/Player';
+import Message from './Message';
 
 export default class Room {
-    private players: Player [];
-    private messages: any[];
-    private priv: boolean;
-    private id: number;
-    private voiceChat: boolean;
-    private maxPlayers: number;
-    private name: string;
-    private time: any;
-    private game: any;
+    private _players: Player [];
+    private _messages: Message [];
+    private _priv: boolean;
+    private _id: number;
+    private _voiceChat: boolean;
+    private _maxPlayers: number;
+    private _name: string;
+    private _time: any;
     
     static numRooms: number = 0;
     
-    constructor(private io: any) {
-        this.messages = []; //a list of all the messages stored for that room
+    constructor(private io: any, private _game: any) {
+        this._messages = []; //a list of all the messages stored for that room
+        this._players = []; //a list of all players in the room
         Room.numRooms++;
-        this.id = Room.numRooms;
+        this._id = Room.numRooms;
     }
     
-    setRoomAttributes(roomObj) {
+    setRoomAttributes(roomObj: any): boolean {
         if( typeof roomObj.private == undefined
             || typeof roomObj.voiceChat == undefined 
             || typeof roomObj.maxPlayers == undefined
             || typeof roomObj.name == undefined) {
             return false;        
         }
-        this.priv = roomObj.private;
-        this.voiceChat = roomObj.voiceChat;
-        this.maxPlayers = roomObj.maxPlayers;
-        this.name = roomObj.name;
+        this._priv = roomObj.private;
+        this._voiceChat = roomObj.voiceChat;
+        this._maxPlayers = roomObj.maxPlayers;
+        this._name = roomObj.name;
         return true;
     }
     
     getRoom(): Object {
         return {
-            id: this.id,
+            id: this._id,
             room: {
-                name: this.name,
-                private: this.priv,
-                voiceChat: this.voiceChat,
-                maxPlayers: this.maxPlayers
+                name: this._name,
+                private: this._priv,
+                voiceChat: this._voiceChat,
+                maxPlayers: this._maxPlayers
             },
             users: this.getAllRoomPlayersWithoutSockets(),
-            messages: this.messages,
-            time: this.time,
-            game: this.game.getInfo()
+            messages: this._messages,
+            time: this._time,
+            game: this._game
         }
     }
     
     addPlayer(playerObj) {
-        playerObj.socket.join(this.name);
+        playerObj.socket.join(this._name);
         
-        this.players.push(playerObj);
-        let joinedMessage = `${playerObj.getUsername()} has joined the room.`;
+        this._players.push(playerObj);
+        let joinedMessage = `${playerObj.username} has joined the room.`;
         let msgObj = {
             user: playerObj.getPlayer(),
             msg: joinedMessage,
@@ -72,26 +73,16 @@ export default class Room {
         
         this.addMessage(msgObj);
         
-        playerObj.socket.emit('action', {
-            type: 'joined-room',
-            payload: {
-                room: {
-                    name: this.name,
-                    private: this.priv,
-                    voiceChat: this.voiceChat,
-                    maxPlayers: this.maxPlayers
-                },
-                users: this.getAllRoomPlayersWithoutSockets(),
-                messages: this.messages,
-            }
-        });
+        let data = this.getRoom();
+        
+        playerObj.socket.emit('joined-room', data);
         return true;
     }
     
     //Remove a player from the room;
     removePlayer(playerId: string) {
         let foundPlayer = false;
-        this.players = this.players.filter((player) => {
+        this._players = this._players.filter((player) => {
             if(player.playerId !== playerId) {
                 return player;
             } else {
@@ -105,7 +96,7 @@ export default class Room {
     //Remove a player from a room by their socket
     removePlayerBySocket(playerSocket) {
         let foundPlayer = false;
-        this.players = this.players.filter((player) => {
+        this._players = this._players.filter((player) => {
             if(playerSocket.id !== player.socket.id) {
                 return player;
             } else {
@@ -117,16 +108,15 @@ export default class Room {
     
     //Add a game object to the room
     setGame(gameObj) {
-        this.game = gameObj;
+        this._game = gameObj;
     }
     
-    //set time control for the room
-    setTime(timeObj) {
-        if(!timeObj.increment || !timeObj.value) {
-            return false;
-        }
-        this.time = timeObj;
-        return true;
+    set time(timeObj: any) {
+        this._time = timeObj;
+    }
+    
+    get time() {
+        return this._time;
     }
     
     emitMessage(messageObj) {
@@ -139,18 +129,18 @@ export default class Room {
     
     //add a message to the room
     addMessage(messageObj) {
-        this.messages.push(messageObj);
+        this._messages.push(messageObj);
     }
     
     //add all players in the room
     getAllRoomPlayers() {
-        return this.players;
+        return this._players;
     }
     
     //checks to see if the player is in a specified room
     isPlayerInRoom(socket) {
         let playerFound = false;
-        this.players.map((player) => {
+        this._players.map((player) => {
             if(player.socket.id === socket.id) {
                 playerFound = true;
             } 
@@ -160,7 +150,7 @@ export default class Room {
     }
     
     getAllRoomPlayersWithoutSockets() {
-        let players = this.players;
+        let players = this._players;
         let newPlayersList = [];
         players.map((player) => {
             newPlayersList.push(player.getPlayer());
@@ -170,20 +160,20 @@ export default class Room {
     }
     
     getName() {
-        return this.name;
+        return this._name;
     }
     
     getGame() {
-        return this.game;
+        return this._game;
     }
     
     getGameType() {
-        return this.game.getGameType;
+        return this._game.getGameType;
     }
     
     //check to see if the game is ready to begin
     gameReady() {
-        return this.game.gameReady();
+        return this._game.gameReady();
     }
     
     //begin the game
@@ -197,28 +187,14 @@ export default class Room {
             autoDismiss: 3,
         };
         
-        this.io.to(this.name).emit('action', Notifications.warning(notificationOpts));
+        this.io.to(this._name).emit('action', Notifications.warning(notificationOpts));
         
-        this.io.to(this.name).emit('action', {
+        this.io.to(this._name).emit('action', {
             type: 'game-started',
             payload: {
-                thread: this.name,
+                thread: this._name,
                 room: this.getRoom()
             }
         })
-    }
-    
-    formatTurn (turn) {
-        switch (turn) {
-            case 'w':
-                return 'white';
-            case 'b':
-                return 'black';
-            case 'g':
-                return 'gold';
-            case 'r':
-                return 'red';
-        }
-        return false;
     }
 }
