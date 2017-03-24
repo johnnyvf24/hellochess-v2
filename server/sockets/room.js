@@ -391,6 +391,8 @@ function room(io, socket, action) {
                                 twoComputers[roomName] =
                                     new CrazyEngine("./engine/bin/stockfish_variant",
                                         roomName, socket, rooms[index][roomName].time.increment);
+                                if (roomGameType === "crazyhouse960")
+                                    twoComputers[roomName].set960();
                             }
                         }
                         

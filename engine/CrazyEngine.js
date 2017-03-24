@@ -44,11 +44,14 @@ module.exports = class TwoEngine extends Engine {
     
     setupOptions() {
         this.setOption("UCI_Variant", "crazyhouse");
-        this.setOption("UCI_Chess960", "true");
         this.setOption("Skill Level", "7");
         this.setOption("Contempt", "100");
         this.setOption("Move Overhead", "300");
         //this.setOption("Slow Mover", "600");
+    }
+    
+    set960() {
+        this.setOption("UCI_Chess960", "true");
     }
     
     setPosition(fen) {
