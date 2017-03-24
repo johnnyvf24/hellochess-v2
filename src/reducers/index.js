@@ -212,7 +212,7 @@ function connection(state = {status: false, error: false}, action) {
             return {status: false, error: true};
         case 'disconnect':
             return {status: false};
-        case 'connected':
+        case 'connected-user':
             return {status: true};
         default:
             return state;

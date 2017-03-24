@@ -11,10 +11,18 @@ export function socketIoMiddleware(store) {
             return;
         }
         
-       if (socket && action.type === 'server/connected-user') {
-            let profile = store.getState().auth.profile;
-            socket.emit('connected-user', profile);
-        }
+        switch(action.type) {
+            case 'server/connected-user': 
+                let profile = store.getState().auth.profile;
+                socket.emit('connected-user', profile);
+                break;
+            case 'server/update-user':
+                socket.emit('update-user', action.payload.user);
+                break;
+            case 'server/join-room':
+                socket.emit('join-room', action.payload);
+                break;
+        } 
      
         return result;
     }
@@ -32,7 +40,7 @@ export default function(store) {
     }
 
     socket.on('connected-user', data => {
-        console.log(data); 
+        store.dispatch({type: 'connected-user'});
     });
 }
 

@@ -1,11 +1,11 @@
-import Player from './players/Player';
-import Room from './rooms/Room';
+import Player from './logic/players/Player';
+import Room from './logic/rooms/Room';
 
 export default class Connection {
     private players: Player[];
     private rooms: Room[];
     
-    constructor(private io: any) {
+    constructor(private io) {
         this.players = [];
         this.rooms = [];
     }
@@ -87,9 +87,10 @@ export default class Connection {
         return rooms;
     }
     
-    addPlayer(player: Player) {
+    addPlayer(player: Player):void {
         this.players.push(player);
-        player.getSocket().emit('connected-user', {hello: true});
+        
+        player.socket.emit('connected-user');
     }
     
     getPlayerBySocket(socket: any) {
@@ -98,7 +99,7 @@ export default class Connection {
         }
         
         this.players.map((player) => {
-            if(player.getSocket().id == socket.id) {
+            if(player.socket.id == socket.id) {
                 return player;
             }
         });
@@ -107,8 +108,8 @@ export default class Connection {
     updatePlayer(data) {
         //check to see if the player is in the player list
         this.players.map((player) => {
-            if(player.id === data._id) {
-                let status = player.setPlayerAttributes(data);
+            if(player.playerId === data._id) {
+                let status = player.username = data.username;
                 return status;
             } 
         });
@@ -122,7 +123,7 @@ export default class Connection {
         }
         let foundPlayer = false;
         this.players = this.players.filter((player) => {
-            if(player.id !== playerId) {
+            if(player.playerId !== playerId) {
                 return player;
             } else {
                 foundPlayer = true;
@@ -139,7 +140,7 @@ export default class Connection {
         }
         let foundPlayer = false;
         this.players = this.players.filter((player) => {
-            if(player.getSocket()._id !== playerSocket.id) {
+            if(player.socket._id !== playerSocket.id) {
                 return player;
             } else {
                 foundPlayer = true;
