@@ -22,6 +22,9 @@ export function socketIoMiddleware(store) {
             case 'server/join-room':
                 socket.emit('join-room', action.payload);
                 break;
+            case 'server/leave-room':
+                socket.emit('leave-room', action.payload);
+                break;
         } 
      
         return result;
@@ -43,9 +46,26 @@ export default function(store) {
         store.dispatch({type: 'connected-user'});
     });
     
+    //a list of all the rooms has been sent by the server
+    socket.on('all-rooms', data => {
+        store.dispatch({type: 'all-rooms', payload: data}); 
+    });
+    
+    //User has successfully joined a room
     socket.on('joined-room', data => {
-        console.log(data);
         store.dispatch({type: 'joined-room', payload: data}); 
+    });
+    
+    socket.on('left-room', data => {
+        store.dispatch({type: 'left-room', payload: data}) 
+    });
+    
+    socket.on('user-room-left', data => {
+        store.dispatch({type: 'user-room-left', payload: data}) 
+    });
+    
+    socket.on('user-room-joined', data => {
+        store.dispatch({type: 'user-room-joined', payload: data}) 
     });
 }
 

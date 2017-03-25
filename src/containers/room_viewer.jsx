@@ -34,7 +34,6 @@ class RoomViewer extends Component {
         event.stopPropagation();
         this.props.leaveRoom(chatName);
         this.props.selectedRoom("Games");
-        $(this.mainTab).tab('show');
     }
 
     renderNavTab(chats, active) {

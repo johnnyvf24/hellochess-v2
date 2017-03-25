@@ -19,6 +19,10 @@ export default class Player {
         
     }
     
+    get picture(): string {
+        return this._picture;
+    }
+    
     get socket() {
         return this._socket;
     }

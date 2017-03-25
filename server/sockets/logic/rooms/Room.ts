@@ -45,64 +45,64 @@ export default class Room {
                 maxPlayers: this._maxPlayers
             },
             users: this.getAllRoomPlayersWithoutSockets(),
-            messages: this._messages,
+            messages: this.getAllMessages(),
             time: this._time,
             game: this._game
         }
     }
     
-    addPlayer(playerObj) {
+    getAllMessages() {
+        let mess = [];
+        this._messages.map(message => {
+            mess.push(message.getMessage()); 
+        });
+        
+        return mess;
+    }
+    
+    addPlayer(playerObj: Player) {
         playerObj.socket.join(this._name);
         
         this._players.push(playerObj);
-        let joinedMessage = `${playerObj.username} has joined the room.`;
-        let msgObj = {
-            user: playerObj.getPlayer(),
-            msg: joinedMessage,
-            thread: this.getName(),
-            picture: null,
-            event_type: 'user-joined'
-        };
+        let joinMsg: Message = new Message(playerObj, null, this._name);
+        joinMsg.setToJoinMessage();
+        
+        this.addMessage(joinMsg);
+        
+        playerObj.socket.emit('joined-room', this.getRoom());
         
         //Tell everyone in the room that a new user has connnected
-        this.io.to(this.getName()).emit('action', {
-            type: 'user-room-joined',
-            payload: this.getRoom(),
-            message: msgObj
+        this.io.to(this._name).emit('user-room-left', {
+            name: this._name,
+            user: playerObj.getPlayer(),
+            message: joinMsg.getMessage()
         });
         
-        this.addMessage(msgObj);
-        
-        let data = this.getRoom();
-        
-        playerObj.socket.emit('joined-room', data);
         return true;
     }
     
     //Remove a player from the room;
-    removePlayer(playerId: string) {
+    removePlayer(playerThatLeft: Player) {
         let foundPlayer = false;
         this._players = this._players.filter((player) => {
-            if(player.playerId !== playerId) {
+            if(player.playerId !== playerThatLeft.playerId) {
                 return player;
             } else {
+                let leftMsg: Message = new Message(playerThatLeft, null, this._name);
+                leftMsg.setToLeaveMessage();
+                this.addMessage(leftMsg);
+                playerThatLeft.socket.leave(this._name);
+                playerThatLeft.socket.emit('left-room', this._name);
                 foundPlayer = true;
+                //Tell everyone in a room that a user has left
+                this.io.to(this._name).emit('user-room-left', {
+                    name: this._name,
+                    user: player.getPlayer(),
+                    message: leftMsg.getMessage()
+                });
             }
         })
         
-        return foundPlayer;
-    }
-    
-    //Remove a player from a room by their socket
-    removePlayerBySocket(playerSocket) {
-        let foundPlayer = false;
-        this._players = this._players.filter((player) => {
-            if(playerSocket.id !== player.socket.id) {
-                return player;
-            } else {
-                foundPlayer = true;
-            }
-        })
         return foundPlayer;
     }
     
@@ -128,8 +128,9 @@ export default class Room {
     }
     
     //add a message to the room
-    addMessage(messageObj) {
-        this._messages.push(messageObj);
+    addMessage(message: Message) {
+        this._messages.push(message);
+        
     }
     
     //add all players in the room
@@ -159,7 +160,7 @@ export default class Room {
         return newPlayersList;
     }
     
-    getName() {
+    get name() {
         return this._name;
     }
     

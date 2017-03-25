@@ -31,11 +31,15 @@ export default class Connection {
         if(!roomName) {
             return null;
         }
+        let r: Room = null;
+        
         this.rooms.map((room) => {
-            if(room.getName() == roomName) {
-                return room;
+            if(room.name == roomName) {
+                r = room;
             }
         });
+        
+        return r;
     }
     
     removeRoomByName(roomName) {
@@ -44,7 +48,7 @@ export default class Connection {
         }
         let roomRemoved = false;
         this.rooms = this.rooms.filter((room) => {
-            if(room.getName() !== roomName) {
+            if(room.name !== roomName) {
                 return room;
             } else {
                 roomRemoved = true;
@@ -56,10 +60,7 @@ export default class Connection {
     
     emitAllRooms() {
         //send a list of rooms to all members
-        this.io.emit('action', {
-            type: 'all-rooms',
-            payload: this.getAllRooms()
-        });
+        this.io.emit('all-rooms', this.getAllRooms());
     }
     
     getAllRooms() {
