@@ -50,6 +50,10 @@ module.exports = class TwoEngine extends Engine {
         //this.setOption("Slow Mover", "600");
     }
     
+    set960() {
+        this.setOption("UCI_Chess960", "true");
+    }
+    
     setPosition(fen) {
         this.engine.stdin.write(
             "position fen " + fen + "\n"
