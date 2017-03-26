@@ -60,7 +60,6 @@ module.exports.removeTimersFromRooms = function(rooms) {
 
 module.exports.deleteRoomByName = function(roomName) {
     if(fourComputers[roomName]) {
-        fourComputers[roomName].stdin.pause();
         fourComputers[roomName].kill();
         delete fourComputers[roomName];
     }
