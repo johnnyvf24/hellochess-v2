@@ -30,6 +30,7 @@ class BoardWrapper extends Component {
         }
         
         let gameType = room.game.gameType;
+        let roomName = room.room.name;
 
         var newGameObject, setBoardPosition;
         switch(gameType) {
@@ -45,13 +46,13 @@ class BoardWrapper extends Component {
                         <TwoBoard
                             setBoardPosition={setBoardPosition}
                             newGameObject={newGameObject}
-                            key={room.name}/>
+                            key={roomName}/>
                     </div>
                 );
             case 'four-player':
                 return (
                     <div id="board-wrapper">
-                        <FourBoard />
+                        <FourBoard key={roomName} />
                     </div>
                 );
             case 'four-player-teams':
@@ -81,7 +82,7 @@ class BoardWrapper extends Component {
                             newGameObject={newGameObject}
                             setBoardPosition={setBoardPosition}
                             crazyhouse={true}
-                            key={room.name}/>
+                            key={roomName}/>
                     </div>
                 );
         }
