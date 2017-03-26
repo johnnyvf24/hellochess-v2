@@ -146,7 +146,7 @@ class TwoBoard extends Component {
                     this.drag.to = source;
                 }
         }
-        else if(this.props.profile._id === this.props.room.black._id) {
+        if(this.props.profile._id === this.props.room.black._id) {
             //this is the black player
             if(piece.search(/^w/) !== -1) {
                 return false;
