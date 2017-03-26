@@ -382,8 +382,8 @@ class TwoBoard extends Component {
 function mapStateToProps(state) {
     return {
         profile: state.auth.profile,
-        fen: state.openThreads[state.activeThread].fen,
-        pgn: state.openThreads[state.activeThread].pgn,
+        fen: state.openThreads[state.activeThread].game.fen,
+        pgn: state.openThreads[state.activeThread].game.pgn,
         move: state.openThreads[state.activeThread].move,
         room: state.openThreads[state.activeThread],
         name: state.activeThread,

@@ -4,7 +4,7 @@ import Player from '../players/Player';
 
 export default class Standard implements Game {
     gameType: string = 'standard';
-    gameRulesObj: Object = new Chess();
+    gameRulesObj: any = new Chess();
     numPlayers: number = 2;
     io: Object;
     
@@ -12,6 +12,14 @@ export default class Standard implements Game {
         this.io = io;
     }
     
+    getGame() {
+        return {
+            numPlayers: this.numPlayers,
+            gameType: this.gameType,
+            fen: this.gameRulesObj.fen(),
+            pgn: this.gameRulesObj.pgn()
+        };
+    }
     
     move() {
         

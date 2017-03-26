@@ -40,11 +40,11 @@ class PlayerTimes extends Component {
     // returns the order of the player cards when the game hasn't started
     determineSitOrder(room, profile) {
         let renderOrder = [];
-        switch (room.gameType) {
+        switch (room.game.gameType) {
             case "four-player":
                 renderOrder = [this.renderGold, this.renderBlack, this.renderRed, this.renderWhite];
                 break;
-            case "two-player":
+            case "standard":
             default:
                 renderOrder = [this.renderBlack, this.renderWhite];
         }
@@ -55,7 +55,7 @@ class PlayerTimes extends Component {
     determinePlayingOrder(room, profile) {
         let renderOrder = [];
         try {
-            switch (room.gameType) {
+            switch (room.game.gameType) {
                 case "four-player":
                     renderOrder = [this.renderGold, this.renderBlack, this.renderRed, this.renderWhite];
                     if(!room.black) {
@@ -76,7 +76,7 @@ class PlayerTimes extends Component {
                             break;
                     }
                     break;
-                case "two-player":
+                case "standard":
                     default:
                         renderOrder = [this.renderBlack, this.renderWhite];
                         if(!room.black) {

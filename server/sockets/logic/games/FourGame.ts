@@ -15,7 +15,7 @@ export default class FourGame implements Game {
     
     getGame() {
         return {
-            numPlayers: 4,
+            numPlayers: this.numPlayers,
             gameType: this.gameType,
             fen: this.gameRulesObj.fen(),
             pgn: this.gameRulesObj.pgn()

@@ -15,7 +15,6 @@ class BoardWrapper extends Component {
     
     shouldComponentUpdate(nextProps, nextState) {
         return (
-            this.props.gameType != nextProps.gameType ||
             this.props.room != nextProps.room ||
             Object.keys(this.props.openThreads).length != Object.keys(nextProps.openThreads).length
            
@@ -34,7 +33,7 @@ class BoardWrapper extends Component {
 
         var newGameObject, setBoardPosition;
         switch(gameType) {
-            case 'two-player':
+            case 'standard':
                 newGameObject = function() {
                     return new Chess();
                 };
@@ -96,7 +95,7 @@ function mapStateToProps(state) {
         let gameType = null;
         let room = state.openThreads[state.activeThread];
         if(state.openThreads[state.activeThread].gameType) {
-            gameType = state.openThreads[state.activeThread].gameType
+            gameType = state.openThreads[state.activeThread].game.gameType
         }
         return {
             gameType: gameType,
