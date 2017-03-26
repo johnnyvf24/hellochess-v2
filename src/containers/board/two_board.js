@@ -52,7 +52,6 @@ class TwoBoard extends Component {
                 this.updatePosition(nextProps.fen);
             }
             this.dragFrom = '';
-            console.log("set dragFrom to ''");
             let usColor = 'w';
             if(nextProps.room.black._id === nextProps.profile._id) {
                 this.board.orientation('black');
@@ -96,7 +95,8 @@ class TwoBoard extends Component {
     
     updatePosition(fen) {
         this.setBoardPosition(fen);
-        if (this.dragFrom) {
+        let turn = this.formatTurn(this.game.turn());
+        if (this.dragFrom && this.props.room[turn]._id === this.props.profile._id) {
             let pos = this.board.position();
             delete pos[this.dragFrom];
             this.board.position(pos, false);
