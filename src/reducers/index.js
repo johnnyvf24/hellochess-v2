@@ -38,7 +38,7 @@ function openThreads(state = {}, action) {
             messages = [...newState[roomName].messages, msg_obj];
             obj = {...newState[roomName], messages};
             return {...newState, [roomName]: obj};
-        case 'joined-room':
+        case 'update-room':
             return {...state, [action.payload.room.name]: action.payload };
         case 'left-room':
             newState = Object.assign({}, state);

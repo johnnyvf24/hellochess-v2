@@ -4,10 +4,11 @@ interface Game {
     io: Object;
     numPlayers: number;
     gameType: string;
-    gameRulesObj: object;
+    gameRulesObj: any;
     
     move(): any;
     addPlayer(player: Player, color: string): boolean;
+    getGame(): any;
 }
 
 export default Game;

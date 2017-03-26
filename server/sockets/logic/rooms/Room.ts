@@ -36,18 +36,22 @@ export default class Room {
     }
     
     getRoom(): Object {
-        return {
-            id: this._id,
-            room: {
-                name: this._name,
-                private: this._priv,
-                voiceChat: this._voiceChat,
-                maxPlayers: this._maxPlayers
-            },
-            users: this.getAllRoomPlayersWithoutSockets(),
-            messages: this.getAllMessages(),
-            time: this._time,
-            game: this._game
+        let game;
+        if(this._game) {
+                game = this._game.getGame();
+            return {
+                id: this._id,
+                room: {
+                    name: this._name,
+                    private: this._priv,
+                    voiceChat: this._voiceChat,
+                    maxPlayers: this._maxPlayers
+                },
+                users: this.getAllRoomPlayersWithoutSockets(),
+                messages: this.getAllMessages(),
+                time: this._time,
+                game: game
+            }
         }
     }
     
@@ -70,7 +74,7 @@ export default class Room {
         this.addMessage(joinMsg);
         
         //Tell everyone in the room that a new user has connnected
-        this.io.to(this.name).emit('joined-room', this.getRoom());
+        this.io.to(this.name).emit('update-room', this.getRoom());
         
         return true;
     }

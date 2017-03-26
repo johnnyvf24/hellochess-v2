@@ -2,14 +2,24 @@ import Game from './Game';
 const {FourChess} = require('../../../../common/fourchess');
 import Player from '../players/Player';
 
-module.exports = class FourGame implements Game {
+export default class FourGame implements Game {
     gameType: string = 'four-player';
-    gameRulesObj: Object = new FourChess();
+    gameRulesObj: any = null;
     numPlayers: number = 4;
     io: Object;
     
     constructor(io: Object) {
         this.io = io;
+        this.gameRulesObj = new FourChess();
+    }
+    
+    getGame() {
+        return {
+            numPlayers: 4,
+            gameType: this.gameType,
+            fen: this.gameRulesObj.fen(),
+            pgn: this.gameRulesObj.pgn()
+        };
     }
     
     move() {

@@ -3,19 +3,11 @@ import Room from '../logic/rooms/Room';
 import Message from '../logic/rooms/Message';
 
 //Game Rules
-const FourGame = require('../logic/games/FourGame');
-const Standard = require('../logic/games/Standard');
-const CrazyHouse = require('../logic/games/CrazyHouse');
+import FourGame from '../logic/games/FourGame';
+import Standard from '../logic/games/Standard';
+import CrazyHouse from '../logic/games/CrazyHouse';
 
 module.exports = function(io, socket, connection) {
-    
-    socket.on('get-room', data => {
-        if(!data) {
-            return;
-        }
-        let roomName = data;
-        connection.emitRoomByName(roomName, socket);
-    });
     
     socket.on('new-message', data => {
         let roomName: string = data.thread;
@@ -26,7 +18,7 @@ module.exports = function(io, socket, connection) {
         room.addMessage(new Message(player, data.msg, roomName));
         
         // tell everyone there is a new message
-        io.to(room.name).emit('joined-room', room.getRoom())
+        io.to(room.name).emit('update-room', room.getRoom())
     });
     
     socket.on('leave-room', data => {
@@ -69,13 +61,13 @@ module.exports = function(io, socket, connection) {
             
             switch(data.gameType) {
                 case 'standard':
-                    room = new Room(io, new Standard());
+                    room = new Room(io, new Standard(io));
                     break;
                 case 'four-player':
-                    room = new Room(io, new FourGame());
+                    room = new Room(io, new FourGame(io));
                     break;
                 case 'crazyhouse':
-                    room = new Room(io, new CrazyHouse());
+                    room = new Room(io, new CrazyHouse(io));
                     break;
             }
             
@@ -101,6 +93,5 @@ module.exports = function(io, socket, connection) {
         
         room.addPlayer(player);
         connection.emitAllRooms();
-        
     });
 };

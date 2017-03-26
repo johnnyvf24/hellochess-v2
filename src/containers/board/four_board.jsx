@@ -323,10 +323,10 @@ class FourBoard extends Component {
 function mapStateToProps(state) {
     return {
         profile: state.auth.profile,
-        move: state.openThreads[state.activeThread].move,
+        move: state.openThreads[state.activeThread].game.move,
         room: state.openThreads[state.activeThread],
         name: state.activeThread,
-        fen: state.openThreads[state.activeThread].fen
+        fen: state.openThreads[state.activeThread].game.fen
     }
 }
 

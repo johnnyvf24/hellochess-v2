@@ -14,16 +14,6 @@ export default class Connection {
         this.rooms.push(roomObj);
     }
     
-    emitRoomByName(roomName: string, socket: any) {
-        let room : Room = this.getRoomByName(roomName);
-        
-        if(!room) {
-            return;
-        }
-        
-        socket.emit('joined-room', room.getRoom());
-    }
-    
     getRoomByName(roomName: string): Room {
         if(!roomName) {
             return null;

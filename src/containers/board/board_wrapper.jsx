@@ -24,10 +24,13 @@ class BoardWrapper extends Component {
     }
 
     render() {
-        const {gameType, room} = this.props;
-        if(!room || !gameType) {
+        const {room} = this.props;
+        
+        if(!room || !room.game.gameType) {
             return <div></div>
         }
+        
+        let gameType = room.game.gameType;
 
         var newGameObject, setBoardPosition;
         switch(gameType) {

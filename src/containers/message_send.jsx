@@ -31,12 +31,8 @@ class MessageSend extends Component {
         this.props.dispatch({
             type:'server/new-message',
             payload: {
-                user: this.props.profile.username,
                 msg: msg,
                 thread: this.props.activeThread,
-                picture: this.props.profile.picture,
-                uid: this.props.profile._id,
-                event_type: 'chat-message',
             }
         });
         this.setState({msg: ''});
