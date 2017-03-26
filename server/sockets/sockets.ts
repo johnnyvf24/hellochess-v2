@@ -3,7 +3,7 @@ const {mapObject} = require('../utils/utils');
 const Elo = require('elo-js');
 import Connection from './Connection';
 import Player from './logic/players/Player';
-const Room = require('./logic/rooms/Room');
+import Room from './logic/rooms/Room';
 
 module.exports.socketServer = function(io) {
     let conn = new Connection(io);

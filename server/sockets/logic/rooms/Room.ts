@@ -69,20 +69,24 @@ export default class Room {
         
         this.addMessage(joinMsg);
         
-        playerObj.socket.emit('joined-room', this.getRoom());
-        
         //Tell everyone in the room that a new user has connnected
-        this.io.to(this._name).emit('user-room-left', {
-            name: this._name,
-            user: playerObj.getPlayer(),
-            message: joinMsg.getMessage()
-        });
+        this.io.to(this.name).emit('joined-room', this.getRoom());
         
         return true;
     }
     
+    empty(): boolean {
+        if(this._players.length == 0 ) {
+            return true;
+        }
+        return false;
+    }
+    
     //Remove a player from the room;
     removePlayer(playerThatLeft: Player) {
+        if(!playerThatLeft) {
+            return false;
+        }
         let foundPlayer = false;
         this._players = this._players.filter((player) => {
             if(player.playerId !== playerThatLeft.playerId) {
@@ -139,14 +143,13 @@ export default class Room {
     }
     
     //checks to see if the player is in a specified room
-    isPlayerInRoom(socket) {
+    isPlayerInRoom(player: Player) {
         let playerFound = false;
         this._players.map((player) => {
-            if(player.socket.id === socket.id) {
+            if(player.playerId === player.playerId) {
                 playerFound = true;
             } 
         });
-        
         return playerFound;
     }
     

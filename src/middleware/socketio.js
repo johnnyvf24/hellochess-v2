@@ -67,6 +67,14 @@ export default function(store) {
     socket.on('user-room-joined', data => {
         store.dispatch({type: 'user-room-joined', payload: data}) 
     });
+    
+    socket.on('disconnect', data => {
+        store.dispatch({type: 'disconnect'});
+    });
+    
+    socket.on('reconnect', data => {
+        store.dispatch({type: 'reconnect'});
+    })
 }
 
 // let socketIoMiddleware = createSocketIoMiddleware(socket, ['server/']);

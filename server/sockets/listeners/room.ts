@@ -28,8 +28,12 @@ module.exports = function(io, socket, connection) {
             //TODO error
         }
         
-        if (io.sockets.adapter.rooms[roomName]) { //there are still users in the room
-        
+        if (room.empty()) { //there are no users in the room
+            if(connection.removeRoomByName(roomName)) {
+                //TODO not sure if anything else is needed here
+            } else {
+                console.log("could not delete room " + roomName);
+            }
         }
         
         connection.emitAllRooms();
@@ -39,6 +43,8 @@ module.exports = function(io, socket, connection) {
         if(!data || !data.room || !data.room.name) {
             return;
         }
+        
+        
         let roomName = data.room.name;
         let room: Room = connection.getRoomByName(roomName);
         
@@ -72,13 +78,14 @@ module.exports = function(io, socket, connection) {
             
             connection.addRoom(room);
         }
-        
         let player: Player = connection.getPlayerBySocket(socket);
         
         if(!player) {
             //TODO error
             return;
         }
+        //remove previous instances of this player
+        room.removePlayer(player)
         
         room.addPlayer(player);
         connection.emitAllRooms();

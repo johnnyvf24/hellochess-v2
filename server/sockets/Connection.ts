@@ -42,7 +42,7 @@ export default class Connection {
         return r;
     }
     
-    removeRoomByName(roomName) {
+    removeRoomByName(roomName: string): boolean {
         if(!roomName) {
             return false;
         }
@@ -74,6 +74,17 @@ export default class Connection {
         });
         
         return tempRooms;
+    }
+    
+    getPlayerRoomsByPlayer(player: Player): Room[]{
+        let rooms: Room[] = [];
+        this.rooms.map((room) => {
+            if(room.isPlayerInRoom(player)) {
+                rooms.push(room);
+            }
+        });
+        
+        return rooms;
     }
     
     //get all the rooms a player is connected to
