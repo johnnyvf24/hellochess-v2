@@ -37,7 +37,6 @@ class MessageSend extends Component {
                 picture: this.props.profile.picture,
                 uid: this.props.profile._id,
                 event_type: 'chat-message',
-                time: new Date()
             }
         });
         this.setState({msg: ''});

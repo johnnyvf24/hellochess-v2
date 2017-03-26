@@ -17,6 +17,18 @@ module.exports = function(io, socket, connection) {
         connection.emitRoomByName(roomName, socket);
     });
     
+    socket.on('new-message', data => {
+        let roomName: string = data.thread;
+        let player: Player = connection.getPlayerBySocket(socket);
+        let room: Room = connection.getRoomByName(roomName);
+        
+        //add the message to the room
+        room.addMessage(new Message(player, data.msg, roomName));
+        
+        // tell everyone there is a new message
+        io.to(room.name).emit('joined-room', room.getRoom())
+    });
+    
     socket.on('leave-room', data => {
         let roomName: string = data;
         

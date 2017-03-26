@@ -3,7 +3,8 @@ import Player from '../players/Player';
 export default class Message {
     private _picture: string;
     private _username: string;
-    private _eventType: string = null;
+    private _eventType: string = 'chat-message';
+    private _time = new Date();
     
     constructor(player: Player, 
                 private _message: string,
@@ -17,7 +18,8 @@ export default class Message {
             user: this._username,
             msg: this._message,
             picture: this._picture,
-            event_type: this._eventType
+            event_type: this._eventType,
+            time: this._time
         };
     }
     

@@ -25,6 +25,9 @@ export function socketIoMiddleware(store) {
             case 'server/leave-room':
                 socket.emit('leave-room', action.payload);
                 break;
+            case 'server/new-message':
+                socket.emit('new-message', action.payload);
+                break;
         } 
      
         return result;

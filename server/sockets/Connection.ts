@@ -21,10 +21,7 @@ export default class Connection {
             return;
         }
         
-        socket.emit('action', {
-            type: 'joined-room',
-            payload: room.getRoom()
-        });
+        socket.emit('joined-room', room.getRoom());
     }
     
     getRoomByName(roomName: string): Room {
