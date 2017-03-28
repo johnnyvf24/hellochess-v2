@@ -89,7 +89,7 @@ class EmptyCard extends Component {
                                 onClick={this.onSit}>
                                 Play
                             </button>
-                            {aiButton}
+                            {/*aiButton*/}
                         </div>
                     </div>
 
