@@ -10,7 +10,7 @@ export function socketIoMiddleware(store) {
         if(!socket) {
             return;
         }
-        
+
         switch(action.type) {
             case 'server/connected-user': 
                 let profile = store.getState().auth.profile;
@@ -27,6 +27,15 @@ export function socketIoMiddleware(store) {
                 break;
             case 'server/new-message':
                 socket.emit('new-message', action.payload);
+                break;
+            case 'server/sit-down-board':
+                socket.emit('sit-down-board', action.payload);
+                break;
+            case 'server/new-move':
+                socket.emit('new-move', action.payload);
+                break;
+            case 'server/four-new-move':
+                socket.emit('four-new-move', action.payload);
                 break;
         } 
      
@@ -59,16 +68,32 @@ export default function(store) {
         store.dispatch({type: 'update-room', payload: data}); 
     });
     
+    socket.on('sit-down-w', data => {
+        store.dispatch({type: 'sit-down-w', payload: data});
+    });
+    
+    socket.on('sit-down-b', data => {
+        store.dispatch({type: 'sit-down-b', payload: data});
+    });
+    
+    socket.on('sit-down-g', data => {
+        store.dispatch({type: 'sit-down-g', payload: data});
+    });
+    
+    socket.on('sit-down-r', data => {
+        store.dispatch({type: 'sit-down-r', payload: data});
+    });
+    
     socket.on('left-room', data => {
-        store.dispatch({type: 'left-room', payload: data}) 
+        store.dispatch({type: 'left-room', payload: data});
     });
     
     socket.on('user-room-left', data => {
-        store.dispatch({type: 'user-room-left', payload: data}) 
+        store.dispatch({type: 'user-room-left', payload: data});
     });
     
     socket.on('user-room-joined', data => {
-        store.dispatch({type: 'user-room-joined', payload: data}) 
+        store.dispatch({type: 'user-room-joined', payload: data});
     });
     
     socket.on('disconnect', data => {
@@ -77,7 +102,19 @@ export default function(store) {
     
     socket.on('reconnect', data => {
         store.dispatch({type: 'reconnect'});
-    })
+    });
+    
+    socket.on('game-started', data => {
+       store.dispatch({type: 'game-started', payload: data});
+    });
+    
+    socket.on('new-move', data => {
+        store.dispatch({type: 'new-move', payload: data});
+    });
+    
+    socket.on('four-new-move', data => {
+        store.dispatch({type: 'four-new-move', payload: data});
+    });
 }
 
 // let socketIoMiddleware = createSocketIoMiddleware(socket, ['server/']);

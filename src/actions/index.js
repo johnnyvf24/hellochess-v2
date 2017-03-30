@@ -188,11 +188,7 @@ export function userConnect(profile) {
         return dispatch({
             type: 'server/connected-user',
             payload: {
-                user: {
-                    username: profile.username,
-                    _id: profile._id,
-                    picture: profile.picture
-                }
+                user: { ...profile }
             }
         });
     }

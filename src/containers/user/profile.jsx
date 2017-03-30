@@ -21,7 +21,7 @@ class Profile extends Component {
     }
 
     render() {
-        if(!this.props.profile.four_elos) {
+        if(!this.props.profile.fourplayer_ratings) {
             return (
                 <div className="row">
                     <a href="#"
@@ -74,18 +74,32 @@ class Profile extends Component {
                                       </thead>
                                       <tbody>
                                         <tr>
-                                          <th scope="row">4 way</th>
-                                          <td>{this.props.profile.four_elos.bullet}</td>
-                                          <td>{this.props.profile.four_elos.blitz}</td>
-                                          <td>{this.props.profile.four_elos.rapid}</td>
-                                          <td>{this.props.profile.four_elos.classic}</td>
+                                          <th scope="row">Four-Player Chess</th>
+                                          <td>{this.props.profile.fourplayer_ratings.bullet}</td>
+                                          <td>{this.props.profile.fourplayer_ratings.blitz}</td>
+                                          <td>{this.props.profile.fourplayer_ratings.rapid}</td>
+                                          <td>{this.props.profile.fourplayer_ratings.classic}</td>
                                         </tr>
                                         <tr>
                                           <th scope="row">Standard Chess</th>
-                                          <td>{this.props.profile.two_elos.bullet}</td>
-                                          <td>{this.props.profile.two_elos.blitz}</td>
-                                          <td>{this.props.profile.two_elos.rapid}</td>
-                                          <td>{this.props.profile.two_elos.classic}</td>
+                                          <td>{this.props.profile.standard_ratings.bullet}</td>
+                                          <td>{this.props.profile.standard_ratings.blitz}</td>
+                                          <td>{this.props.profile.standard_ratings.rapid}</td>
+                                          <td>{this.props.profile.standard_ratings.classic}</td>
+                                        </tr>
+                                        <tr>
+                                          <th scope="row">Crazyhouse</th>
+                                          <td>{this.props.profile.crazyhouse_ratings.bullet}</td>
+                                          <td>{this.props.profile.crazyhouse_ratings.blitz}</td>
+                                          <td>{this.props.profile.crazyhouse_ratings.rapid}</td>
+                                          <td>{this.props.profile.crazyhouse_ratings.classic}</td>
+                                        </tr>
+                                        <tr>
+                                          <th scope="row">Crazyhouse 960</th>
+                                          <td>{this.props.profile.crazyhouse960_ratings.bullet}</td>
+                                          <td>{this.props.profile.crazyhouse960_ratings.blitz}</td>
+                                          <td>{this.props.profile.crazyhouse960_ratings.rapid}</td>
+                                          <td>{this.props.profile.crazyhouse960_ratings.classic}</td>
                                         </tr>
                                       </tbody>
                                     </table>

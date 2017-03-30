@@ -55,7 +55,7 @@ class TwoBoard extends Component {
             }
             let usColor = 'w';
             if(this.props.room.black) {
-                if(nextProps.room.black._id === nextProps.profile._id) {
+                if(nextProps.room.black.playerId === nextProps.profile._id) {
                     this.board.orientation('black');
                     usColor = 'b';
                 } else {
@@ -99,7 +99,7 @@ class TwoBoard extends Component {
     updatePosition(fen) {
         this.setBoardPosition(fen);
         let turn = this.formatTurn(this.game.turn());
-        if (this.drag.from && this.props.room[turn]._id === this.props.profile._id) {
+        if (this.drag.from && this.props.room[turn].playerId === this.props.profile._id) {
             // if the user is hovering a piece, delete it from the board position
             let pos = this.board.position();
             delete pos[this.drag.from];
@@ -141,14 +141,14 @@ class TwoBoard extends Component {
             return false;
         }
         if (source !== 'hand') {
-            if (this.props.profile._id === this.props.room.white._id ||
-                this.props.profile._id === this.props.room.black._id) {
+            if (this.props.profile._id === this.props.room.white.playerId ||
+                this.props.profile._id === this.props.room.black.playerId) {
                     // only set the drag squares for the user that's playing
                     this.drag.from = source;
                     this.drag.to = source;
                 }
         }
-        if(this.props.profile._id === this.props.room.black._id) {
+        if(this.props.profile._id === this.props.room.black.playerId) {
             //this is the black player
             if(piece.search(/^w/) !== -1) {
                 return false;
@@ -158,7 +158,7 @@ class TwoBoard extends Component {
             }
             return true;
 
-        } else if(this.props.profile._id === this.props.room.white._id && piece.search('/^b/') === -1) {
+        } else if(this.props.profile._id === this.props.room.white.playerId && piece.search('/^b/') === -1) {
             //this is the white player
             if(piece.search(/^b/) !== -1) {
                 return false;
@@ -177,7 +177,7 @@ class TwoBoard extends Component {
         // from and to so we can restore the border highlight
         // when a move is made
         let turn = this.formatTurn(this.game.turn());
-        if(this.props.room[turn]._id !== this.props.profile._id) {
+        if(this.props.room[turn].playerId !== this.props.profile._id) {
             this.drag = {from: source, to: newSquare};
         }
     }
@@ -323,7 +323,7 @@ class TwoBoard extends Component {
             piece: piece,
             promotion: 'q' // NOTE: always promote to a queen for example simplicity
         };
-        if(this.props.room[turn]._id !== this.props.profile._id) {
+        if(this.props.room[turn].playerId !== this.props.profile._id) {
             if (source === target) {
                 // reset premove when clicking on a piece
                 this.resetPremove();
@@ -370,7 +370,7 @@ class TwoBoard extends Component {
             }
 
             if(this.props.room.black) {
-                if(this.props.room.black._id === this.props.profile._id) {
+                if(this.props.room.black.playerId === this.props.profile._id) {
                     this.board.orientation('black');
                 }
             }

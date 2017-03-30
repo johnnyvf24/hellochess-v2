@@ -31,21 +31,29 @@ class EmptyCard extends Component {
         let difficultyText = this.difficulties[level];
         let obj = {};
         obj.roomName = this.props.activeThread;
-        let elos;
-        if (this.props.game.gameType === "two-player" ||
-            this.props.game.gameType === "crazyhouse" ||
-            this.props.game.gameType === "crazyhouse960")
-            elos = "two_elos";
-        else if (this.props.game.gameType === "four-player")
-            elos = "four_elos";
+        let ratings;
+        switch (this.props.gameType) {
+            case "two-player":
+                ratings = "standard_ratings";
+                break;
+            case "four-player":
+                ratings = "fourplayer_ratings";
+                break;
+            case "crazyhouse":
+                ratings = "crazyhouse_ratings";
+                break;
+            case "crazyhouse960":
+                ratings = "crazyhouse960_ratings";
+                break;
+        }
         obj.profile = {
             type: 'computer',
             username: difficultyText + ' AI',
             level: level,
             picture: 'https://openclipart.org/image/75px/svg_to_png/168755/cartoon-robot.png&disposition=attachment',
         };
-        obj.profile[elos] = {
-            classic: 1200,
+        obj.profile[ratings] = {
+            classical: 1200,
             rapid: 1200,
             blitz: 1200,
             bullet: 1200

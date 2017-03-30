@@ -1,5 +1,6 @@
 const Notifications = require('react-notification-system-redux');
 import Player from '../players/Player';
+import Game from '../games/Game';
 import Message from './Message';
 
 export default class Room {
@@ -14,7 +15,7 @@ export default class Room {
     
     static numRooms: number = 0;
     
-    constructor(private io: any, private _game: any) {
+    constructor(private io: any, private _game: Game) {
         this._messages = []; //a list of all the messages stored for that room
         this._players = []; //a list of all players in the room
         Room.numRooms++;
@@ -50,8 +51,9 @@ export default class Room {
                 users: this.getAllRoomPlayersWithoutSockets(),
                 messages: this.getAllMessages(),
                 time: this._time,
+                times: this._game.times,
                 game: game
-            }
+            };
         }
     }
     
@@ -115,7 +117,7 @@ export default class Room {
     }
     
     //Add a game object to the room
-    setGame(gameObj) {
+    set game(gameObj) {
         this._game = gameObj;
     }
     
@@ -171,12 +173,12 @@ export default class Room {
         return this._name;
     }
     
-    getGame() {
+    get game() {
         return this._game;
     }
     
     getGameType() {
-        return this._game.getGameType;
+        return this._game.gameType;
     }
     
     //check to see if the game is ready to begin
@@ -186,7 +188,7 @@ export default class Room {
     
     //begin the game
     startGame() {
-        
+        console.log("starting game:", this._name);
         //Notify all players that the game is ready to be played
         const notificationOpts = {
             title: 'The game has begun',
@@ -197,12 +199,11 @@ export default class Room {
         
         this.io.to(this._name).emit('action', Notifications.warning(notificationOpts));
         
-        this.io.to(this._name).emit('action', {
-            type: 'game-started',
-            payload: {
+        this.io.to(this._name).emit('game-started',
+            {
                 thread: this._name,
                 room: this.getRoom()
             }
-        })
+        );
     }
 }

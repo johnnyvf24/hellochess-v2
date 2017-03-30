@@ -1,11 +1,13 @@
-import Player from '../logic/players/Player';
-import Room from '../logic/rooms/Room';
-import Message from '../logic/rooms/Message';
+import Player from '../../../models/players/Player';
+import AI from '../../../models/players/AI';
+import Room from '../../../models/rooms/Room';
+import Game from '../../../models/games/Game';
+import Message from '../../../models/rooms/Message';
 
 //Game Rules
-import FourGame from '../logic/games/FourGame';
-import Standard from '../logic/games/Standard';
-import CrazyHouse from '../logic/games/CrazyHouse';
+import FourGame from '../../../models/games/FourGame';
+import Standard from '../../../models/games/Standard';
+import CrazyHouse from '../../../models/games/CrazyHouse';
 
 module.exports = function(io, socket, connection) {
     
@@ -19,6 +21,34 @@ module.exports = function(io, socket, connection) {
         
         // tell everyone there is a new message
         io.to(room.name).emit('update-room', room.getRoom())
+    });
+    
+    socket.on('sit-down-board', data => {
+        let roomName: string = data.roomName;
+        let room: Room = connection.getRoomByName(roomName);
+        let game: Game = room.game;
+        let player: Player;
+        let playerType = data.profile.type;
+        if (typeof playerType !== "undefined" && playerType === "computer") {
+            player = new AI(socket, data.profile.username);
+        } else {
+            player = connection.getPlayerBySocket(socket);
+        }
+        let color: string = data.color;
+        game.addPlayer(player, color);
+        let timeValue = room.time.value * 60 * 1000;
+        game.setColorTime(color, timeValue);
+        let actionString: string = "sit-down-" + color;
+        io.to(room.name).emit(actionString,
+            {
+                thread: room.name,
+                player: player.getPlayer(),
+                time: timeValue
+            });
+        if (room.gameReady()) {
+            // start the game if all players are seated
+            room.startGame();
+        }
     });
     
     socket.on('leave-room', data => {
@@ -94,4 +124,11 @@ module.exports = function(io, socket, connection) {
         room.addPlayer(player);
         connection.emitAllRooms();
     });
+    
+    socket.on('four-new-move', data => {
+        let roomName = data.thread;
+        let room: Room = connection.getRoomByName(roomName);
+        let game: Game = room.game;
+        let move = data.move;
+    })
 };

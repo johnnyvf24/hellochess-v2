@@ -1,5 +1,5 @@
-import Player from '../logic/players/Player';
-import Room from '../logic/rooms/Room';
+import Player from '../../../models/players/Player';
+import Room from '../../../models/rooms/Room';
 
 module.exports = function(io, socket, connection) {
     
@@ -9,7 +9,11 @@ module.exports = function(io, socket, connection) {
         if(!data._id || !data.picture) {
             return;
         }
-        let p = new Player(socket, data._id, data.username, data.picture);
+        let p = new Player(
+            socket, data._id, data.username, data.picture,
+            data.social, data.email,
+            data.standard_ratings, data.fourplayer_ratings,
+            data.crazyhouse_ratings, data.crazyhouse960_ratings);
         
         connection.addPlayer(p);
     });

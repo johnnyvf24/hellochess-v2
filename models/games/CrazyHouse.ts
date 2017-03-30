@@ -1,14 +1,21 @@
 import Game from './Game';
-const {Chess} = require('chess.js');
+const {Crazyhouse} = require('crazyhouse.js');
 import Player from '../players/Player';
 
-export default class Standard implements Game {
-    gameType: string = 'standard';
-    gameRulesObj: any = new Chess();
+export default class CrazyHouse extends Game {
+    gameType: string = 'crazyhouse';
+    gameRulesObj: any = new Crazyhouse();
     numPlayers: number = 2;
     io: Object;
+    white: Player = null;
+    black: Player = null;
+    times: Object = {
+        w: 0,
+        b: 0
+    }
     
     constructor(io: Object) {
+        super();
         this.io = io;
     }
     
@@ -21,11 +28,22 @@ export default class Standard implements Game {
         };
     }
     
+    
     move() {
         
     }
     
     addPlayer(player: Player, color: string) {
         return false;
+    }
+    
+    removePlayer(color: String): boolean {
+        return false;
+    }
+    
+    gameReady(): boolean {
+        return (
+            this.white !== null &&
+            this.black !== null);
     }
 }

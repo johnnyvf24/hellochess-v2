@@ -1,5 +1,5 @@
-import Player from './logic/players/Player';
-import Room from './logic/rooms/Room';
+import Player from '../../models/players/Player';
+import Room from '../../models/rooms/Room';
 
 export default class Connection {
     private players: Player[];

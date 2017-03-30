@@ -26,6 +26,7 @@ function openThreads(state = {}, action) {
     let obj = null, newState = null;
     let roomName = null;
     let messages = null, msg_obj = null;
+    console.log("action:", action.type);
     switch(action.type) {
         case 'user-room-left':
             roomName = action.payload.name;
@@ -123,24 +124,28 @@ function openThreads(state = {}, action) {
             newState[action.payload.thread].white = action.payload.player;
             newState[action.payload.thread].paused = true;
             newState[action.payload.thread].white.alive = true;
+            newState[action.payload.thread].times.w = action.payload.time;
             return newState;
         case 'sit-down-b':
             newState = Object.assign({}, state);
             newState[action.payload.thread].black = action.payload.player;
             newState[action.payload.thread].paused = true;
             newState[action.payload.thread].black.alive = true;
+            newState[action.payload.thread].times.b = action.payload.time;
             return newState;
         case 'sit-down-g':
             newState = Object.assign({}, state);
             newState[action.payload.thread].gold = action.payload.player;
             newState[action.payload.thread].paused = true;
             newState[action.payload.thread].gold.alive = true;
+            newState[action.payload.thread].times.g = action.payload.time;
             return newState;
         case 'sit-down-r':
             newState = Object.assign({}, state);
             newState[action.payload.thread].red = action.payload.player;
             newState[action.payload.thread].paused = true;
             newState[action.payload.thread].red.alive = true;
+            newState[action.payload.thread].times.r = action.payload.time;
             return newState;
         case 'up-w':
             newState = Object.assign({}, state);

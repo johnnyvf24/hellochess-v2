@@ -46,16 +46,16 @@ class FourBoard extends Component {
 
             let usColor = 'w';
             if(this.props.room.white) {
-                if(nextProps.room.white._id === nextProps.profile._id) {
+                if(nextProps.room.white.playerId === nextProps.profile._id) {
                     this.board.orientation('white');
                     usColor = 'w';
-                } else if(nextProps.room.black._id === nextProps.profile._id) {
+                } else if(nextProps.room.black.playerId === nextProps.profile._id) {
                     this.board.orientation('black');
                     usColor = 'b';
-                } else if(nextProps.room.gold._id === nextProps.profile._id) {
+                } else if(nextProps.room.gold.playerId === nextProps.profile._id) {
                     this.board.orientation('gold');
                     usColor = 'g';
-                } else if(nextProps.room.red._id === nextProps.profile._id) {
+                } else if(nextProps.room.red.playerId === nextProps.profile._id) {
                     this.board.orientation('red');
                     usColor = 'r'
                 }
@@ -101,7 +101,7 @@ class FourBoard extends Component {
     updatePosition(fen) {
         this.board.position(fen);
         let turn = this.formatTurn(this.game.turn());
-        if (this.drag.from && this.props.room[turn]._id === this.props.profile._id) {
+        if (this.drag.from && this.props.room[turn].playerId === this.props.profile._id) {
             // if the user is hovering a piece, delete it from the board position
             let pos = this.board.position();
             delete pos[this.drag.from];
@@ -124,16 +124,16 @@ class FourBoard extends Component {
             return false;
         }
 
-        if (this.props.profile._id === this.props.room.white._id ||
-            this.props.profile._id === this.props.room.black._id ||
-            this.props.profile._id === this.props.room.gold._id ||
-            this.props.profile._id === this.props.room.red._id) {
+        if (this.props.profile._id === this.props.room.white.playerId ||
+            this.props.profile._id === this.props.room.black.playerId ||
+            this.props.profile._id === this.props.room.gold.playerId ||
+            this.props.profile._id === this.props.room.red.playerId) {
                 // only set the drag squares for the user that's playing
                 this.drag.from = source;
                 this.drag.to = source;
             }
             
-        if(this.props.profile._id === this.props.room.black._id) {
+        if(this.props.profile._id === this.props.room.black.playerId) {
             //this is the black player
             if(piece.search(/^w/) !== -1 ||
                piece.search(/^g/) !== -1 ||
@@ -142,7 +142,7 @@ class FourBoard extends Component {
             }
             return true;
 
-        } else if(this.props.profile._id === this.props.room.white._id) {
+        } else if(this.props.profile._id === this.props.room.white.playerId) {
             //this is the white player
             if(piece.search(/^b/) !== -1 ||
                piece.search(/^g/) !== -1 ||
@@ -150,7 +150,7 @@ class FourBoard extends Component {
                 return false;
             }
             return true;
-        } else if(this.props.profile._id === this.props.room.gold._id) {
+        } else if(this.props.profile._id === this.props.room.gold.playerId) {
             //this is the white player
             if(piece.search(/^b/) !== -1 ||
                piece.search(/^w/) !== -1 ||
@@ -158,7 +158,7 @@ class FourBoard extends Component {
                 return false;
             }
             return true;
-        } else if(this.props.profile._id === this.props.room.red._id) {
+        } else if(this.props.profile._id === this.props.room.red.playerId) {
             //this is the white player
             if(piece.search(/^b/) !== -1 ||
                piece.search(/^g/) !== -1 ||
@@ -176,7 +176,7 @@ class FourBoard extends Component {
         // from and to so we can restore the border highlight
         // when a move is made
         let turn = this.formatTurn(this.game.turn());
-        if(this.props.room[turn]._id !== this.props.profile._id) {
+        if(this.props.room[turn].playerId !== this.props.profile._id) {
             this.drag = {from: source, to: newSquare};
         }
     }
@@ -307,7 +307,7 @@ class FourBoard extends Component {
             piece: piece,
             promotion: 'q' // NOTE: always promote to a queen for example simplicity
         };
-        if(this.props.room[turn]._id !== this.props.profile._id) {
+        if(this.props.room[turn].playerId !== this.props.profile._id) {
             if (source === target) {
                 // reset premove when clicking on a piece
                 this.resetPremove();
@@ -356,16 +356,16 @@ class FourBoard extends Component {
             this.board.position(this.props.fen);
             this.game.position(this.props.fen);
             if(this.props.black) {
-                if(this.props.room.white._id === this.props.profile._id) {
+                if(this.props.room.white.playerId === this.props.profile._id) {
                     this.board.orientation('white');
                 }
-                else if(this.props.room.black._id === this.props.profile._id) {
+                else if(this.props.room.black.playerId === this.props.profile._id) {
                     this.board.orientation('black');
                 }
-                else if(this.props.room.gold._id === this.props.profile._id) {
+                else if(this.props.room.gold.playerId === this.props.profile._id) {
                     this.board.orientation('gold');
                 }
-                else if(this.props.room.red._id === this.props.profile._id) {
+                else if(this.props.room.red.playerId === this.props.profile._id) {
                     this.board.orientation('red');
                 }
     

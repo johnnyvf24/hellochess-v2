@@ -61,17 +61,17 @@ class PlayerTimes extends Component {
                     if(!room.black) {
                         break;
                     }
-                    switch (profile._id) {
-                        case room.black._id:
+                    switch (profile.playerId) {
+                        case room.black.playerId:
                             renderOrder = [this.renderRed, this.renderWhite, this.renderGold, this.renderBlack];
                             break;
-                        case room.gold._id:
+                        case room.gold.playerId:
                             renderOrder = [this.renderBlack, this.renderRed, this.renderWhite, this.renderGold];
                             break;
-                        case room.red._id:
+                        case room.red.playerId:
                             renderOrder = [this.renderWhite, this.renderGold, this.renderBlack, this.renderRed];
                             break;
-                        case room.white._id:
+                        case room.white.playerId:
                         default:
                             break;
                     }
@@ -82,11 +82,11 @@ class PlayerTimes extends Component {
                         if(!room.black) {
                             break;
                         }
-                        switch (profile._id) {
-                            case room.black._id:
+                        switch (profile.playerId) {
+                            case room.black.playerId:
                                 renderOrder = [this.renderWhite, this.renderBlack];
                                 break;
-                            case room.white._id:
+                            case room.white.playerId:
                             default:
                                 break;
                         }

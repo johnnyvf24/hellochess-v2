@@ -45,11 +45,11 @@ class OccupiedCard extends Component {
     }
 
     renderActiveBorder() {
-        const {player, game, resigned, turn} = this.props;
-
+        const {player, game, resigned, turn, color, longColor} = this.props;
+        console.log("renderActiveBorder: player:", player,"game:",game,"turn:",turn);
         if (!player || !game || !turn)
             return "";
-        let isMyTurn = turn == player.color;
+        let isMyTurn = turn == color;
         let isResigned = resigned;
         let doDrawBorder = isMyTurn && !isResigned;
         return doDrawBorder ? " active" : "";
@@ -101,7 +101,7 @@ class OccupiedCard extends Component {
 
                     <Row>
                         <a href="#"
-                            onClick={(e) => browserHistory.push(`/profile/${player._id}`)}
+                            onClick={(e) => browserHistory.push(`/profile/${player.playerId}`)}
                             className="pull-left">
                             <img className="player-img img-circle" src={player.picture} />
                         </a>
@@ -122,7 +122,7 @@ function mapStateToProps(state, ownProps) {
     let color = ownProps.longColor;
     let game = state.openThreads[state.activeThread];
     let player = game[color];
-    let time = player ? player.time : null;
+    let time = game.times[ownProps.color];
     return {
         player: player,
         time: time,
@@ -132,7 +132,9 @@ function mapStateToProps(state, ownProps) {
         paused: game.paused,
         lastMove: game.lastMove,
         name: state.activeThread,
-        alive: player.alive
+        alive: player.alive,
+        color: ownProps.color,
+        longColor: ownProps.longColor
     }
 }
 
