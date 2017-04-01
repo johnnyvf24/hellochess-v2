@@ -26,7 +26,6 @@ module.exports = function(io, socket, connection) {
     socket.on('sit-down-board', data => {
         let roomName: string = data.roomName;
         let room: Room = connection.getRoomByName(roomName);
-        let game: Game = room.game;
         let player: Player;
         let playerType = data.profile.type;
         if (typeof playerType !== "undefined" && playerType === "computer") {
@@ -35,16 +34,12 @@ module.exports = function(io, socket, connection) {
             player = connection.getPlayerBySocket(socket);
         }
         let color: string = data.color;
-        game.addPlayer(player, color);
+        room.game.addPlayer(player, color);
         let timeValue = room.time.value * 60 * 1000;
-        game.setColorTime(color, timeValue);
-        let actionString: string = "sit-down-" + color;
-        io.to(room.name).emit(actionString,
-            {
-                thread: room.name,
-                player: player.getPlayer(),
-                time: timeValue
-            });
+        room.game.setColorTime(color, timeValue);
+        
+        io.to(roomName).emit('update-room', room.getRoom());
+
         if (room.gameReady()) {
             // start the game if all players are seated
             room.startGame();

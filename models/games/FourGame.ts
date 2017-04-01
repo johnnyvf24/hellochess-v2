@@ -29,7 +29,11 @@ export default class FourGame extends Game {
             numPlayers: this.numPlayers,
             gameType: this.gameType,
             fen: this.gameRulesObj.fen(),
-            pgn: this.gameRulesObj.pgn()
+            pgn: this.gameRulesObj.pgn(),
+            white: (this.white) ? this.white.getPlayer():false,
+            black: (this.black) ? this.black.getPlayer():false,
+            gold: (this.gold) ? this.gold.getPlayer():false,
+            red: (this.red) ? this.red.getPlayer():false,
         };
     }
     
@@ -37,7 +41,30 @@ export default class FourGame extends Game {
         
     }
     
+    removePlayerFromAllSeats(player: Player) {
+        if(this.white && this.white.playerId === player.playerId) {
+            this.removeColorTime('w');
+            this.white = null;
+        }
+        
+        if(this.black && this.black.playerId === player.playerId) {
+            this.removeColorTime('b');
+            this.black = null;
+        }
+        
+        if(this.gold && this.gold.playerId === player.playerId) {
+            this.removeColorTime('g');
+            this.gold = null;
+        }
+        
+        if(this.red && this.red.playerId === player.playerId) {
+            this.removeColorTime('r');
+            this.red = null;
+        }
+    }
+    
     addPlayer(player: Player, color: string) {
+        this.removePlayerFromAllSeats(player);
         switch(color.charAt(0)) {
             case 'w':
                 this.white = player;

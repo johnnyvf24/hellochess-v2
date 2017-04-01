@@ -130,10 +130,10 @@ class Live extends Component {
         } else {
             return (
                 <Row id="wrapper">
-                    <Col id="chatbox-wrapper" xs={0} sm={0} md={4} lg={5}>
+                    <Col id="chatbox-wrapper" xs={0} sm={6} md={4} lg={5}>
                         <RoomViewer />
                     </Col>
-                    <Col xs={12} sm={12} md={6} lg={5}>
+                    <Col xs={12} sm={6} md={6} lg={5}>
                         <Row id="start-game-btns">
                             <div className="text-center">
                                 <NewGame/>

@@ -26,7 +26,6 @@ function openThreads(state = {}, action) {
     let obj = null, newState = null;
     let roomName = null;
     let messages = null, msg_obj = null;
-    console.log("action:", action.type);
     switch(action.type) {
         case 'user-room-left':
             roomName = action.payload.name;
@@ -119,64 +118,6 @@ function openThreads(state = {}, action) {
                 return newState
             }
             return state;
-        case 'sit-down-w':
-            newState = Object.assign({}, state);
-            newState[action.payload.thread].white = action.payload.player;
-            newState[action.payload.thread].paused = true;
-            newState[action.payload.thread].white.alive = true;
-            newState[action.payload.thread].times.w = action.payload.time;
-            return newState;
-        case 'sit-down-b':
-            newState = Object.assign({}, state);
-            newState[action.payload.thread].black = action.payload.player;
-            newState[action.payload.thread].paused = true;
-            newState[action.payload.thread].black.alive = true;
-            newState[action.payload.thread].times.b = action.payload.time;
-            return newState;
-        case 'sit-down-g':
-            newState = Object.assign({}, state);
-            newState[action.payload.thread].gold = action.payload.player;
-            newState[action.payload.thread].paused = true;
-            newState[action.payload.thread].gold.alive = true;
-            newState[action.payload.thread].times.g = action.payload.time;
-            return newState;
-        case 'sit-down-r':
-            newState = Object.assign({}, state);
-            newState[action.payload.thread].red = action.payload.player;
-            newState[action.payload.thread].paused = true;
-            newState[action.payload.thread].red.alive = true;
-            newState[action.payload.thread].times.r = action.payload.time;
-            return newState;
-        case 'up-w':
-            newState = Object.assign({}, state);
-            delete newState[action.payload.name].white;
-            return newState;
-        case 'up-b':
-            newState = Object.assign({}, state);
-            delete newState[action.payload.name].black;
-            return newState;
-        case 'up-g':
-            newState = Object.assign({}, state);
-            delete newState[action.payload.name].gold;
-            return newState;
-        case 'up-r':
-            newState = Object.assign({}, state);
-            delete newState[action.payload.name].red;
-            return newState;
-        case 'game-started':
-            newState = Object.assign({}, state);
-            newState[action.payload.thread].fen = action.payload.room.fen;
-            newState[action.payload.thread].lastMove = action.payload.room.lastMove;
-            newState[action.payload.thread].turn = 'w';
-            newState[action.payload.thread].paused = false;
-            return newState;
-        case 'four-game-started':
-            newState = Object.assign({}, state);
-            newState[action.payload.thread].fen = action.payload.fen;
-            newState[action.payload.thread].lastMove = action.payload.lastMove;
-            newState[action.payload.thread].turn = 'w';
-            newState[action.payload.thread].paused = false;
-            return newState;
         case 'clear-timer':
             newState = Object.assign({}, state);
             newState[action.payload.thread].clearTimer = true;

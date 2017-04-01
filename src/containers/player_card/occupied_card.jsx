@@ -90,8 +90,8 @@ class OccupiedCard extends Component {
     }
 
     render() {
-        const {player, time, game, name} = this.props;
-        if(!player || !time) {
+        const {profile, room, game, player, time, playerTime} = this.props;
+        if(!profile || !room || !player || !game || !time || !playerTime) {
             return <div></div>
         }
         return (
@@ -105,9 +105,9 @@ class OccupiedCard extends Component {
                             className="pull-left">
                             <img className="player-img img-circle" src={player.picture} />
                         </a>
-                        <div className="player-sit-info"><h4>{player.username}</h4>{showElo(game, player)}</div>
+                        <div className="player-sit-info"><h4>{player.username}</h4>{showElo(game, time, player)}</div>
                         <span className="pull-right player-time-info">
-                            {this.renderTime(time)}
+                            {this.renderTime(playerTime)}
                         </span>
                     </Row>
 
@@ -118,23 +118,15 @@ class OccupiedCard extends Component {
     }
 }
 
-function mapStateToProps(state, ownProps) {
-    let color = ownProps.longColor;
-    let game = state.openThreads[state.activeThread];
-    let player = game[color];
-    let time = game.times[ownProps.color];
+function mapStateToProps(state, props) {
+    let cardPlayer = props.longColor;
     return {
-        player: player,
-        time: time,
-        game: game,
-        resigned: player.resigned,
-        turn: game.turn,
-        paused: game.paused,
-        lastMove: game.lastMove,
-        name: state.activeThread,
-        alive: player.alive,
-        color: ownProps.color,
-        longColor: ownProps.longColor
+        profile: state.auth.profile,
+        room: state.openThreads[state.activeThread],
+        game: state.openThreads[state.activeThread].game,
+        player: state.openThreads[state.activeThread].game[cardPlayer],
+        time: state.openThreads[state.activeThread].time.value,
+        playerTime: state.openThreads[state.activeThread].times[cardPlayer.charAt(0)]
     }
 }
 
