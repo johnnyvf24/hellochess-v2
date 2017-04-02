@@ -45,7 +45,7 @@ class FourBoard extends Component {
             }
 
             let usColor = 'w';
-            if(this.props.room.white) {
+            if(this.props.room.paused === false && this.props.room.white) {
                 if(nextProps.room.white.playerId === nextProps.profile._id) {
                     this.board.orientation('white');
                     usColor = 'w';
@@ -351,7 +351,6 @@ class FourBoard extends Component {
         window.addEventListener('resize', (event) => {
             this.boardRedraw();
         });
-
         if(this.props.fen) {
             this.board.position(this.props.fen);
             this.game.position(this.props.fen);
@@ -397,13 +396,19 @@ class FourBoard extends Component {
 }
 
 function mapStateToProps(state) {
+    let profile = state.auth.profile;
+    let name = state.activeThread;
+    let room = state.openThreads[name];
+    let game = room.game;
+    let move = game.move;
+    let fen = game.fen;
     return {
-        profile: state.auth.profile,
-        move: state.openThreads[state.activeThread].game.move,
-        fen: state.openThreads[state.activeThread].fen,
-        room: state.openThreads[state.activeThread],
-        name: state.activeThread,
-        fen: state.openThreads[state.activeThread].game.fen
+        profile: profile,
+        move: move,
+        room: room,
+        game: game,
+        name: name,
+        fen: fen
     }
 }
 

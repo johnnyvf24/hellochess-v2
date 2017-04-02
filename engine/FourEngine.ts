@@ -1,9 +1,9 @@
-const Engine = require('./Engine.js');
+import Engine from './Engine';
 const {ab2str} = require('../server/utils/utils');
 
-module.exports = class FourEngine extends Engine {
-    constructor(path, roomName, io) {
-        super(path, roomName, io);
+export default class FourEngine extends Engine {
+    constructor(roomName, io) {
+        super('./engine/bin/fourengine', roomName, io);
         this.setDepth(6);
         this.turn = 'w';
     }
@@ -34,7 +34,7 @@ module.exports = class FourEngine extends Engine {
                 from: str.substr(str.indexOf("bestmove") + 9, str.length).split('-')[0],
                 promotion: 'q'
             };
-            
+            /*
             let message = {
                 user:  turn + ' computer',
                 username: 'AI',
@@ -45,7 +45,16 @@ module.exports = class FourEngine extends Engine {
                 event_type: 'chat-message',
                 computer: true
             };
-            
+            */
+            console.log("FourEngine move:", compMove);
+            this.io.to(this.roomName).emit('server/four-new-move',
+                {
+                    thread: this.roomName,
+                    move: compMove
+                }
+            );
+            return;
+            /*
             if(this.mode == 0) {
                 this.io.to(this.roomName).emit('action', {
                     type: 'server/four-new-move',
@@ -162,7 +171,7 @@ module.exports = class FourEngine extends Engine {
                         payload: message
                     });
                 }
-            }
+            }*/
         }
     }
     
@@ -218,13 +227,14 @@ module.exports = class FourEngine extends Engine {
     }
     
     go(timeLeft, level) {
+        this.timeLeft = timeLeft;
         let depth = this.depth;
         depth = this.adjustDepth(timeLeft, level);
         if(this.mode == 0) {
             console.log("[FourEngine "+this.roomName+"]", "skill level:", level, "depth:", depth);
             this.engine.stdin.write("go depth " + depth + "\n");
         } else {
-            goString = "go " + "depth 4" + "\n";
+            let goString = "go " + "depth 4" + "\n";
             this.engine.stdin.write(goString);
         }
         

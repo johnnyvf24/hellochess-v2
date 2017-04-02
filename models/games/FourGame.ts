@@ -1,16 +1,12 @@
 import Game from './Game';
 const {FourChess} = require('../../common/fourchess');
 import Player from '../players/Player';
+import FourEngine from '../../engine/FourEngine';
 
 export default class FourGame extends Game {
     gameType: string = 'four-player';
-    gameRulesObj: any = null;
     numPlayers: number = 4;
     io: Object;
-    white: Player = null;
-    black: Player = null;
-    gold: Player = null;
-    red: Player = null;
     times: Object = {
         w: 0,
         b: 0,
@@ -29,12 +25,9 @@ export default class FourGame extends Game {
             numPlayers: this.numPlayers,
             gameType: this.gameType,
             fen: this.gameRulesObj.fen(),
-            pgn: this.gameRulesObj.pgn()
+            pgn: this.gameRulesObj.pgn(),
+            move: this._lastMove
         };
-    }
-    
-    move() {
-        
     }
     
     addPlayer(player: Player, color: string) {
@@ -79,6 +72,16 @@ export default class FourGame extends Game {
             this.black !== null &&
             this.gold !== null &&
             this.red !== null);
+    }
+    
+    outColor(): string {
+        if (this._lastMove.hasOwnProperty('color') && this._lastMove.color !== null) {
+            return this._lastMove.color;
+        }
+    }
+    
+    newEngineInstance(roomName: string, io: any) {
+        this.engineInstance = new FourEngine(roomName, io);
     }
     
 }

@@ -46,7 +46,6 @@ class OccupiedCard extends Component {
 
     renderActiveBorder() {
         const {player, game, resigned, turn, color, longColor} = this.props;
-        console.log("renderActiveBorder: player:", player,"game:",game,"turn:",turn);
         if (!player || !game || !turn)
             return "";
         let isMyTurn = turn == color;

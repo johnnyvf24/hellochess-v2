@@ -26,7 +26,6 @@ function openThreads(state = {}, action) {
     let obj = null, newState = null;
     let roomName = null;
     let messages = null, msg_obj = null;
-    console.log("action:", action.type);
     switch(action.type) {
         case 'user-room-left':
             roomName = action.payload.name;
@@ -62,7 +61,7 @@ function openThreads(state = {}, action) {
             return newState;
         case 'four-new-move':
             newState = Object.assign({}, state);
-            newState[action.payload.thread].fen = action.payload.fen;
+            newState[action.payload.thread].game.fen = action.payload.fen;
             newState[action.payload.thread].turn = action.payload.turn;
             newState[action.payload.thread].move = action.payload.move;
             newState[action.payload.thread].lastMove = action.payload.lastMove;
@@ -172,8 +171,8 @@ function openThreads(state = {}, action) {
             return newState;
         case 'four-game-started':
             newState = Object.assign({}, state);
-            newState[action.payload.thread].fen = action.payload.fen;
-            newState[action.payload.thread].lastMove = action.payload.lastMove;
+            newState[action.payload.thread].game = action.payload.room.game;
+            newState[action.payload.thread].lastMove = action.payload.room.game.move;
             newState[action.payload.thread].turn = 'w';
             newState[action.payload.thread].paused = false;
             return newState;

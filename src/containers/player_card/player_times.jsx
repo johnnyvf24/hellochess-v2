@@ -61,7 +61,7 @@ class PlayerTimes extends Component {
                     if(!room.black) {
                         break;
                     }
-                    switch (profile.playerId) {
+                    switch (profile._id) {
                         case room.black.playerId:
                             renderOrder = [this.renderRed, this.renderWhite, this.renderGold, this.renderBlack];
                             break;
@@ -82,7 +82,7 @@ class PlayerTimes extends Component {
                         if(!room.black) {
                             break;
                         }
-                        switch (profile.playerId) {
+                        switch (profile._id) {
                             case room.black.playerId:
                                 renderOrder = [this.renderWhite, this.renderBlack];
                                 break;
@@ -108,7 +108,7 @@ class PlayerTimes extends Component {
         // determine the vertical ordering of the cards.
         // current player goes on the bottom.
         let renderOrder = [];
-        if (activeThread.fen) {
+        if (activeThread.paused === false && activeThread.fen) {
             renderOrder = this.determinePlayingOrder(room, profile);
         } else {
             renderOrder = this.determineSitOrder(room, profile);

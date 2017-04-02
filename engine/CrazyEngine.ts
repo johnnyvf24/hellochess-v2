@@ -1,9 +1,9 @@
-const Engine = require('./Engine.js');
+import Engine from './Engine';
 const {ab2str} = require('../server/utils/utils');
 
-module.exports = class TwoEngine extends Engine {
-    constructor(path, roomName, socket, increment) {
-        super(path, roomName, socket);
+export default class TwoEngine extends Engine {
+    constructor(roomName, socket, increment) {
+        super('./engine/bin/stockfish_variant', roomName, socket);
         this.setDepth(15);
         this.increment = increment * 1000; // s -> ms
     }
@@ -13,14 +13,24 @@ module.exports = class TwoEngine extends Engine {
             this.setupOptions();
         }
         if(str.indexOf("bestmove") !== -1) {
+            console.log("[crazyhouse engine: " + this.roomName+ "] " + str);
             let startIndex = str.indexOf("bestmove");
             let from = str.substring(startIndex + 9, startIndex + 11);
             let to = str.substring(startIndex + 11, startIndex + 13);
-            let compMove = {
-                to: to,
-                from: from,
-                promotion: 'q'
-            };
+            let compMove: any = {};
+            if (from.indexOf('@') !== -1) {
+                let piece = from.charAt(0).toLowerCase();
+                from = '@';
+                compMove.piece = piece;
+            }
+            if (str.substring(startIndex + 13, startIndex + 14) === '=') {
+                compMove.promotion = str.substring(startIndex + 14, startIndex + 15);
+            } else {
+                compMove.promotion = 'q';
+            }
+            compMove.to = to;
+            compMove.from = from;
+            console.log("[crazyhouse engine: " + this.roomName + "]", compMove);
 
             this.io.to(this.roomName).emit('action', {
                 type: 'server/new-move',
@@ -33,9 +43,15 @@ module.exports = class TwoEngine extends Engine {
     }
     
     setupOptions() {
-        this.setOption("Skill Level", "1");
+        this.setOption("UCI_Variant", "crazyhouse");
+        this.setOption("Skill Level", "7");
         this.setOption("Contempt", "100");
         this.setOption("Move Overhead", "300");
+        //this.setOption("Slow Mover", "600");
+    }
+    
+    set960() {
+        this.setOption("UCI_Chess960", "true");
     }
     
     setPosition(fen) {
@@ -45,7 +61,7 @@ module.exports = class TwoEngine extends Engine {
     }
     
     setTurn(turnColor) {
-        console.log("set turn on TwoEngine");
+        console.log("set turn on CrazyEngine");
     }
     
     setOut(colorOut) {

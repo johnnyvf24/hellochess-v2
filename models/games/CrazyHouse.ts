@@ -1,14 +1,13 @@
 import Game from './Game';
 const {Crazyhouse} = require('crazyhouse.js');
 import Player from '../players/Player';
+import CrazyEngine from '../../engine/CrazyEngine';
 
 export default class CrazyHouse extends Game {
     gameType: string = 'crazyhouse';
     gameRulesObj: any = new Crazyhouse();
     numPlayers: number = 2;
     io: Object;
-    white: Player = null;
-    black: Player = null;
     times: Object = {
         w: 0,
         b: 0
@@ -28,11 +27,6 @@ export default class CrazyHouse extends Game {
         };
     }
     
-    
-    move() {
-        
-    }
-    
     addPlayer(player: Player, color: string) {
         return false;
     }
@@ -45,5 +39,11 @@ export default class CrazyHouse extends Game {
         return (
             this.white !== null &&
             this.black !== null);
+    }
+    
+    outColor(): string { return null; }
+    
+    newEngineInstance(roomName: string, io: any) {
+        this.engineInstance = new CrazyEngine(roomName, io, this.timeControl.increment);
     }
 }

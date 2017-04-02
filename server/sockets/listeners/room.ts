@@ -130,5 +130,17 @@ module.exports = function(io, socket, connection) {
         let room: Room = connection.getRoomByName(roomName);
         let game: Game = room.game;
         let move = data.move;
-    })
+        room.makeMove(move);
+    });
+    
+    socket.on('four-new-ai-move', data => {
+        let roomName = data.thread;
+        let room: Room = connection.getRoomByName(roomName);
+        let move = data.move;
+        room.makeEngineMove(move);
+    });
+    
+    socket.on('pause', data => {
+        
+    });
 };

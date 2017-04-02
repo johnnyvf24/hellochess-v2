@@ -1,14 +1,13 @@
 import Game from './Game';
 const {Chess} = require('chess.js');
 import Player from '../players/Player';
+import TwoEngine from '../../engine/TwoEngine';
 
 export default class Standard extends Game {
     gameType: string = 'standard';
     gameRulesObj: any = new Chess();
     numPlayers: number = 2;
     io: Object;
-    white: Player = null;
-    black: Player = null;
     times: Object = {
         w: 0,
         b: 0
@@ -28,10 +27,6 @@ export default class Standard extends Game {
         };
     }
     
-    move() {
-        
-    }
-    
     addPlayer(player: Player, color: string) {
         return false;
     }
@@ -44,5 +39,11 @@ export default class Standard extends Game {
         return (
             this.white !== null &&
             this.black !== null);
+    }
+    
+    outColor(): string { return null; }
+    
+    newEngineInstance(roomName: string, io: any) {
+        this.engineInstance = new TwoEngine(roomName, io, this.timeControl.increment);
     }
 }

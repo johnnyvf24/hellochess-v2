@@ -1,5 +1,6 @@
 const Notifications = require('react-notification-system-redux');
 import Player from '../players/Player';
+import AI from '../players/AI';
 import Game from '../games/Game';
 import Message from './Message';
 
@@ -12,6 +13,8 @@ export default class Room {
     private _maxPlayers: number;
     private _name: string;
     private _time: any;
+    private gameStartAction: string;
+    private newMoveAction: string;
     
     static numRooms: number = 0;
     
@@ -20,6 +23,20 @@ export default class Room {
         this._players = []; //a list of all players in the room
         Room.numRooms++;
         this._id = Room.numRooms;
+        // set up the action string depending on game type
+        switch (this.getGameType()) {
+            case "four-player":
+                this.gameStartAction = "four-game-started";
+                this.newMoveAction = "four-new-move";
+                break;
+            case "standard":
+            case "crazyhouse":
+            case "crazyhouse960":
+            default:
+                this.gameStartAction = "game-started";
+                this.newMoveAction = "new-move";
+                break;
+        }
     }
     
     setRoomAttributes(roomObj: any): boolean {
@@ -48,6 +65,7 @@ export default class Room {
                     voiceChat: this._voiceChat,
                     maxPlayers: this._maxPlayers
                 },
+                gameType: this._game.gameType,
                 users: this.getAllRoomPlayersWithoutSockets(),
                 messages: this.getAllMessages(),
                 time: this._time,
@@ -188,7 +206,6 @@ export default class Room {
     
     //begin the game
     startGame() {
-        console.log("starting game:", this._name);
         //Notify all players that the game is ready to be played
         const notificationOpts = {
             title: 'The game has begun',
@@ -196,14 +213,60 @@ export default class Room {
             position: 'tr',
             autoDismiss: 3,
         };
-        
         this.io.to(this._name).emit('action', Notifications.warning(notificationOpts));
         
-        this.io.to(this._name).emit('game-started',
+        // if there are any AI players, add an engine instance to the game
+        this._game.newEngineInstance(this._name, this.io);
+        
+        let roomObj: any = this.getRoom();
+        this.io.to(this._name).emit(this.gameStartAction,
             {
                 thread: this._name,
-                room: this.getRoom()
+                room: roomObj
             }
         );
+        
+        // if white is an AI, start the engine
+        if (this._game.white instanceof AI) {
+            this._game.engineGo();
+        }
+    }
+    
+    endGame() {
+        // pause the game
+        this.io.to(this._name).emit('pause', {thread: this._name});
+        
+    }
+    
+    sendNewMove(message: any): void {
+        this.io.to(this._name).emit(this.newMoveAction, message);
+    }
+    
+    makeMove(move: any): void {
+        // make the move in the game logic
+        this._game.makeMove(move);
+        // if it's a legal move, emit to other players
+        let thread: string = this._name;
+        let fen: string = this._game.fen;
+        let lastTurn: string = this._game.lastTurn;
+        lastTurn = Game.COLOR_SHORT_TO_LONG[lastTurn];
+        let turn: string = this._game.currentTurn;
+        let time: number = this._game.prevPlayerTime();
+        let outColor: string = this._game.outColor();
+        let message: any = {
+            thread: thread,
+            fen: fen,
+            lastTurn: lastTurn,
+            turn: turn,
+            time: time,
+            move: move,
+            outColor: outColor
+        };
+        console.log("four-new-move:", message);
+        this.sendNewMove(message);
+    }
+    
+    makeEngineMove(move) {
+        
     }
 }

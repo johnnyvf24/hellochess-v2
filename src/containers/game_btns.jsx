@@ -13,16 +13,16 @@ class GameButtons extends Component {
     }
 
     userIsPlaying(userObj, roomObj) {
-        if(roomObj.white && userObj._id === roomObj.white._id) {
+        if(roomObj.white && userObj._id === roomObj.white.playerId) {
             return true;
         }
-        if(roomObj.black && userObj._id === roomObj.black._id) {
+        if(roomObj.black && userObj._id === roomObj.black.playerId) {
             return true;
         }
-        if(roomObj.gold && userObj._id === roomObj.gold._id) {
+        if(roomObj.gold && userObj._id === roomObj.gold.playerId) {
             return true;
         }
-        if(roomObj.red && userObj._id === roomObj.red._id) {
+        if(roomObj.red && userObj._id === roomObj.red.playerId) {
             return true;
         }
 
@@ -48,9 +48,10 @@ class GameButtons extends Component {
             return <div></div>
         }
 
+        const room = openThreads[activeThread];
         const {fen} = openThreads[activeThread];
 
-        if(openThreads[activeThread].paused) {
+        if(room.paused) {
             return <div></div>
         }
 
@@ -58,13 +59,12 @@ class GameButtons extends Component {
             return <div></div>
         }
 
-        if(!this.userIsPlaying(profile, openThreads[activeThread])) {
+        if(!this.userIsPlaying(profile, room)) {
             return <div></div>
         }
-
-        if(openThreads[activeThread].gameType == 'two-player' ||
-           openThreads[activeThread].gameType == 'crazyhouse' ||
-           openThreads[activeThread].gameType == 'crazyhouse960') {
+        if(room.gameType == 'two-player' ||
+           room.gameType == 'crazyhouse' ||
+           room.gameType == 'crazyhouse960') {
             return (
                 <div className="row">
                     <div className="center">
@@ -85,21 +85,21 @@ class GameButtons extends Component {
                     </div>
                 </div>
             );
-        } else if(openThreads[activeThread].gameType == 'four-player') {
-            if(openThreads[activeThread].white && openThreads[activeThread].white._id == profile._id) {
-                if(openThreads[activeThread].fen && openThreads[activeThread].white.resigned) {
+        } else if(room.gameType == 'four-player') {
+            if(room.white && room.white.playerId == profile._id) {
+                if(room.fen && room.white.resigned) {
                     return <div></div>
                 }
-            } else if( openThreads[activeThread].black && openThreads[activeThread].black._id == profile._id) {
-                if(openThreads[activeThread].fen && openThreads[activeThread].black.resigned) {
+            } else if( room.black && room.black.playerId == profile._id) {
+                if(room.fen && room.black.resigned) {
                     return <div></div>
                 }
-            } else if( openThreads[activeThread].gold && openThreads[activeThread].gold._id == profile._id) {
-                if(openThreads[activeThread].fen && openThreads[activeThread].gold.resigned) {
+            } else if( room.gold && room.gold.playerId == profile._id) {
+                if(room.fen && room.gold.resigned) {
                     return <div></div>
                 }
-            } else if( openThreads[activeThread].red && openThreads[activeThread].red._id == profile._id) {
-                if(openThreads[activeThread].fen && openThreads[activeThread].red.resigned) {
+            } else if( room.red && room.red.playerId == profile._id) {
+                if(room.fen && room.red.resigned) {
                     return <div></div>
                 }
             }

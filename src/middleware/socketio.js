@@ -104,8 +104,16 @@ export default function(store) {
         store.dispatch({type: 'reconnect'});
     });
     
+    socket.on('pause', data => {
+        store.dispatch({type: 'pause', payload: data});
+    });
+    
     socket.on('game-started', data => {
        store.dispatch({type: 'game-started', payload: data});
+    });
+    
+    socket.on('four-game-started', data => {
+       store.dispatch({type: 'four-game-started', payload: data});
     });
     
     socket.on('new-move', data => {

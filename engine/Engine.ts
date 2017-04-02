@@ -1,11 +1,17 @@
-var spawn = require('child_process').spawn;
-const {fourComputers} = require('../server/sockets/data');
+let spawn = require('child_process').spawn;
 const {ab2str} = require('../server/utils/utils');
 
 
-module.exports = class Engine {
+abstract class Engine {
+    public turn: string;
+    public depth: number;
+    protected engine: any;
+    protected numOut;
+    protected mode;
+    protected timeLeft;
+    protected increment;
 
-    constructor(path, roomName, io) {
+    constructor(public path, public roomName, public io) {
         this.roomName = roomName;
         this.io = io;
         this.engine = spawn(path);
@@ -14,10 +20,15 @@ module.exports = class Engine {
         this.mode = 0;
         this.sendUci();
     }
-
-    onBestMove(data) {
-    }
     
+    abstract go(timeLeft: number, depth: number): void;
+    abstract adjustDepth(timeLeft: number, level: number): void;
+    abstract onBestMove(data: any): void;
+    abstract setPosition(fen): void;
+    abstract setTurn(turnColor): void;
+    abstract setOut(colorOut): void;
+
+
     setMode(mode) {
         this.mode = mode;
     }
@@ -46,13 +57,7 @@ module.exports = class Engine {
         return turn;
     }
 
-    setPosition(fen) { }
-
-    setTurn(turnColor) { }
-
-    setOut(colorOut) { }
-
-    setDepth(depth) {
+    public setDepth(depth): void {
         this.depth = depth;
     }
     
@@ -65,10 +70,6 @@ module.exports = class Engine {
             "setoption name " + name + " value " + value + "\n"
         );
     }
-    
-
-    adjustDepth(timeLeft) { }
-
 
     kill() {
         console.log("killing engine", this.roomName);
@@ -76,3 +77,5 @@ module.exports = class Engine {
         this.engine.kill();
     }
 }
+
+export default Engine;
