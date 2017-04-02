@@ -43,6 +43,10 @@ abstract class Game {
         this.times[color] = time;
     }
     
+    removeColorTime(color: string): void {
+        this.times[color] = 0;
+    }
+    
     getColorTime(color: string): number {
         return this.times[color];
     }

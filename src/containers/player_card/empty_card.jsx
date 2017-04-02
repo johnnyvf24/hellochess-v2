@@ -68,28 +68,30 @@ class EmptyCard extends Component {
         if(!time) {
             return <div></div>
         }
+        // <MenuItem eventKey="1" onClick={this.aiSit.bind(this, 1)} >
+        //     Very Easy AI
+        // </MenuItem>
+        // <MenuItem eventKey="2" onClick={this.aiSit.bind(this, 5)} >
+        //     Easy AI
+        // </MenuItem>
+        // <MenuItem eventKey="3" onClick={this.aiSit.bind(this, 10)} >
+        //     Normal AI
+        // </MenuItem>
+        // <MenuItem eventKey="4" onClick={this.aiSit.bind(this, 15)} >
+        //     Hard AI
+        // </MenuItem>
+        // <MenuItem eventKey="5" onClick={this.aiSit.bind(this, 20)} >
+        //     Very Hard AI
+        // </MenuItem>
+
         return (
             <Panel className={"player-card " + this.props.colorClass}>
                 <Row>
 
-                    <SplitButton id={"player-button-" + this.props.colorClass} 
+                    <Button id={"player-button-" + this.props.colorClass} 
                         onClick={this.onSit} title="Play" bsStyle="info">
-                        <MenuItem eventKey="1" onClick={this.aiSit.bind(this, 1)} >
-                            Very Easy AI
-                        </MenuItem>
-                        <MenuItem eventKey="2" onClick={this.aiSit.bind(this, 5)} >
-                            Easy AI
-                        </MenuItem>
-                        <MenuItem eventKey="3" onClick={this.aiSit.bind(this, 10)} >
-                            Normal AI
-                        </MenuItem>
-                        <MenuItem eventKey="4" onClick={this.aiSit.bind(this, 15)} >
-                            Hard AI
-                        </MenuItem>
-                        <MenuItem eventKey="5" onClick={this.aiSit.bind(this, 20)} >
-                            Very Hard AI
-                        </MenuItem>
-                    </SplitButton>
+                        Play
+                    </Button>
   
                 </Row>
 

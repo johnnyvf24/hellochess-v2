@@ -6,7 +6,7 @@ import EmptyCard from './empty_card';
 class PlayerTimes extends Component {
 
     renderWhite(thread) {
-        if (thread.white) {
+        if (thread.game.white) {
             return <OccupiedCard color="w" longColor="white" colorClass=""/>
         } else {
             return <EmptyCard color="w" colorClass=""/>
@@ -14,7 +14,7 @@ class PlayerTimes extends Component {
     }
 
     renderBlack(thread) {
-        if (thread.black) {
+        if (thread.game.black) {
             return <OccupiedCard color="b" longColor="black" colorClass="black-player"/>
         } else {
             return <EmptyCard color="b" colorClass="black-player"/>
@@ -22,7 +22,7 @@ class PlayerTimes extends Component {
     }
 
     renderGold(thread) {
-        if (thread.gold) {
+        if (thread.game.gold) {
             return <OccupiedCard color="g" longColor="gold" colorClass="gold-player"/>
         } else {
             return <EmptyCard color="g" colorClass="gold-player"/>
@@ -30,7 +30,7 @@ class PlayerTimes extends Component {
     }
 
     renderRed(thread) {
-        if (thread.red) {
+        if (thread.game.red) {
             return <OccupiedCard color="r" longColor="red" colorClass="red-player"/>
         } else {
             return <EmptyCard color="r" colorClass="red-player"/>
