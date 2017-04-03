@@ -28,9 +28,9 @@ abstract class Game {
     gameRulesObj: any;
     timeControl: any;
     times: any;
-    protected _lastMove: any;
-    protected _lastTurn: string;
-    protected _currentTurn: string;
+    _lastMove: any;
+    _lastTurn: string;
+    _currentTurn: string;
     
     abstract addPlayer(player: Player, color: string): boolean;
     abstract removePlayer(color: string): boolean;
@@ -38,9 +38,19 @@ abstract class Game {
     abstract gameReady(): boolean;
     abstract outColor(): string;
     abstract newEngineInstance(roomName: string, io: any): void;
+    abstract startGame(): any;
+    abstract getTurn(): string;
+    abstract setNextTurn(): void;
+    abstract setPlayerOutByColor(color: string): void;
+    abstract gameOver(): boolean;
+    abstract endAndSaveGame(): boolean;
     
     setColorTime(color: string, time: number): void {
         this.times[color] = time;
+    }
+    
+    setLastMove() {
+        this.lastMove = Date.now();
     }
     
     removeColorTime(color: string): void {

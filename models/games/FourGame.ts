@@ -7,17 +7,39 @@ export default class FourGame extends Game {
     gameType: string = 'four-player';
     numPlayers: number = 4;
     io: Object;
-    times: Object = {
+    white: Player = null;
+    black: Player = null;
+    gold: Player = null;
+    red: Player = null;
+    times: any = {
         w: 0,
         b: 0,
         g: 0,
         r: 0
-    }
+    };
+    gameStarted: boolean = false;
     
     constructor(io: Object) {
         super();
         this.io = io;
         this.gameRulesObj = new FourChess();
+    }
+    
+    getTurn():string {
+        return this.gameRulesObj.turn();
+    }
+    
+    setNextTurn(): void {
+        this.gameRulesObj.nextTurn();
+    }
+    
+    startGame() {
+        this.gameStarted = true;
+        this.white.alive = true;
+        this.black.alive = true;
+        this.gold.alive = true;
+        this.red.alive = true;
+        this.setLastMove();
     }
     
     getGame() {
@@ -31,6 +53,8 @@ export default class FourGame extends Game {
             black: (this.black) ? this.black.getPlayer():false,
             gold: (this.gold) ? this.gold.getPlayer():false,
             red: (this.red) ? this.red.getPlayer():false,
+            turn: this.gameRulesObj.turn(),
+            gameStarted: this.gameStarted,
         };
     }
     
@@ -39,6 +63,9 @@ export default class FourGame extends Game {
     }
     
     removePlayerFromAllSeats(player: Player) {
+        if(player.type == 'computer') { //Only remove human players
+            return;
+        }
         if(this.white && this.white.playerId === player.playerId) {
             this.removeColorTime('w');
             this.white = null;
@@ -79,6 +106,44 @@ export default class FourGame extends Game {
         return false;
     }
     
+    getPlayer(playerColor: string) {
+        switch(playerColor.charAt(0)) {
+            case 'w':
+                return this.white;
+            case 'b':
+                return this.black;
+            case 'g':
+                return this.gold;
+            case 'r':
+                return this.red;
+        }
+    }
+    
+    setPlayerOutByColor(color: string) {
+        switch(color.charAt(0)) {
+            case 'w':
+                this.white.alive = false;
+                this.times.w = 1;
+                this.gameRulesObj.setWhiteOut();
+                break;
+            case 'b':
+                this.black.alive = false;
+                this.times.b = 1;
+                this.gameRulesObj.setBlackOut();
+                break;
+            case 'g':
+                this.gold.alive = false;
+                this.times.g = 1;
+                this.gameRulesObj.setGoldOut();
+                break;
+            case 'r':
+                this.gameRulesObj.setRedOut();
+                this.red.alive = false;
+                this.times.r = 1;
+                break;
+        }
+    }
+    
     removePlayer(color: string) {
         switch(color.charAt(0)) {
             case 'w':
@@ -113,6 +178,15 @@ export default class FourGame extends Game {
     
     newEngineInstance(roomName: string, io: any) {
         this.engineInstance = new FourEngine(roomName, io);
+    }
+    
+    gameOver(): boolean {
+        return this.gameRulesObj.game_over();
+    }
+    
+    endAndSaveGame(): boolean {
+        this.gameStarted = false;
+        return true;
     }
     
 }

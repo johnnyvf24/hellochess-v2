@@ -9,6 +9,11 @@ import FourGame from '../../../models/games/FourGame';
 import Standard from '../../../models/games/Standard';
 import CrazyHouse from '../../../models/games/CrazyHouse';
 
+//server environment
+const dotenv = require('dotenv').load();
+
+const env = process.env.NODE_ENV || "development";
+
 module.exports = function(io, socket, connection) {
     
     socket.on('new-message', data => {
@@ -29,7 +34,9 @@ module.exports = function(io, socket, connection) {
         let player: Player;
         let playerType = data.profile.type;
         if (typeof playerType !== "undefined" && playerType === "computer") {
-            player = new AI(socket, data.profile.username);
+            
+            player = new AI(io, data.profile.username);
+            player.type = 'computer'
         } else {
             player = connection.getPlayerBySocket(socket);
         }
@@ -37,13 +44,12 @@ module.exports = function(io, socket, connection) {
         room.game.addPlayer(player, color);
         let timeValue = room.time.value * 60 * 1000;
         room.game.setColorTime(color, timeValue);
-        
-        io.to(roomName).emit('update-room', room.getRoom());
 
         if (room.gameReady()) {
             // start the game if all players are seated
             room.startGame();
         }
+        io.to(roomName).emit('update-room', room.getRoom());
     });
     
     socket.on('leave-room', data => {

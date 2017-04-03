@@ -6,9 +6,10 @@ module.exports = function(io, socket, connection) {
     //Clients emit this event upon successfully establishing a connection
     //The server will track all users
     socket.on('connected-user', data => {
-        if(!data._id || !data.picture) {
+        if(!data || !data._id || !data.picture) {
             return;
         }
+        //TODO get player data from database instead of client
         let p = new Player(
             socket, data._id, data.username, data.picture,
             data.social, data.email,

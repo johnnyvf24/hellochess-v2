@@ -15,6 +15,7 @@ export default class Room {
     private _time: any;
     private gameStartAction: string;
     private newMoveAction: string;
+    private timer: any = null;
     
     static numRooms: number = 0;
     
@@ -204,6 +205,87 @@ export default class Room {
         return this._game.gameReady();
     }
     
+    //initialize the timers
+    startTimer() {
+        
+        if(!this._name) {
+            return;
+        }
+        
+        if(!this.game) {
+            return;
+        }
+        
+        if(this.timer) {
+           clearTimeout(this.timer); 
+        }
+        
+        //get players turn
+        let turn = this.game.getTurn();
+        
+        //get when the last move was made
+        let lastMove = this.game.lastMove;
+        
+        //get how much time has passed
+        let timeElapsed = Date.now() - lastMove;
+        
+        if(!this.game.times) {
+            return;
+        }
+        
+        //calculate how much time the current player has left
+        let timeLeft = this.game.times[turn];
+        let time = timeLeft - timeElapsed;
+        
+        //start timing this person to check if they flag
+        this.timer = setTimeout(function() {
+            if(!this._name || !this.game) {
+                return;
+            }
+            
+            //get the player that lost and remove them from the game
+            let loser = this.game.getPlayer(turn);
+            this.game.setPlayerOutByColor(turn);
+            
+            //Notify all players that a player has lost on time
+            let notificationOpts = {
+                title: `${loser.username} has lost on time!`,
+                position: 'tr',
+                autoDismiss: 5,
+            };
+            this.io.to(this._name).emit('action', Notifications.info(notificationOpts));
+            
+            //Check to see if the game has ended
+            if(this.game.gameOver()) {
+                this.game.endAndSaveGame();
+                
+                //Notify all players that the game is over
+                let notificationOpts = {
+                    title: `${this._name}'s game is over`,
+                    position: 'tr',
+                    autoDismiss: 5,
+                };
+                this.io.to(this._name).emit('action', Notifications.success(notificationOpts));
+                
+                //set the next turn (for asythetic purposes)
+                this.game.setNextTurn();
+                
+                //sync the room again
+                this.io.to(this.name).emit('update-room', this.getRoom());
+            } else {
+                //set the next turn
+                this.game.setNextTurn();
+                
+                //sync the room again
+                this.io.to(this.name).emit('update-room', this.getRoom());
+                
+                //start the next players timer
+                this.startTimer();
+            }
+            
+        }.bind(this), timeLeft);
+    }
+    
     //begin the game
     startGame() {
         //Notify all players that the game is ready to be played
@@ -214,6 +296,7 @@ export default class Room {
             autoDismiss: 3,
         };
         this.io.to(this._name).emit('action', Notifications.warning(notificationOpts));
+<<<<<<< HEAD
         
         // if there are any AI players, add an engine instance to the game
         this._game.newEngineInstance(this._name, this.io);
@@ -230,6 +313,8 @@ export default class Room {
         if (this._game.white instanceof AI) {
             this._game.engineGo();
         }
+        this.game.startGame();
+        this.startTimer();
     }
     
     endGame() {
@@ -268,5 +353,9 @@ export default class Room {
     
     makeEngineMove(move) {
         
+    }
+    
+    clearTimer() {
+        clearTimeout(this.timer);
     }
 }
