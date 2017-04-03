@@ -11,7 +11,7 @@ export default class FourGame extends Game {
     black: Player = null;
     gold: Player = null;
     red: Player = null;
-    times: Object = {
+    times: any = {
         w: 0,
         b: 0,
         g: 0,
@@ -52,6 +52,7 @@ export default class FourGame extends Game {
             black: (this.black) ? this.black.getPlayer():false,
             gold: (this.gold) ? this.gold.getPlayer():false,
             red: (this.red) ? this.red.getPlayer():false,
+            turn: this.gameRulesObj.turn(),
             gameStarted: this.gameStarted,
         };
     }
@@ -121,19 +122,23 @@ export default class FourGame extends Game {
         switch(color.charAt(0)) {
             case 'w':
                 this.white.alive = false;
+                this.times.w = 1;
                 this.gameRulesObj.setWhiteOut();
                 break;
             case 'b':
                 this.black.alive = false;
+                this.times.b = 1;
                 this.gameRulesObj.setBlackOut();
                 break;
             case 'g':
                 this.gold.alive = false;
+                this.times.g = 1;
                 this.gameRulesObj.setGoldOut();
                 break;
             case 'r':
                 this.gameRulesObj.setRedOut();
                 this.red.alive = false;
+                this.times.r = 1;
                 break;
         }
     }
@@ -169,6 +174,7 @@ export default class FourGame extends Game {
     }
     
     endAndSaveGame(): boolean {
+        this.gameStarted = false;
         return true;
     }
     

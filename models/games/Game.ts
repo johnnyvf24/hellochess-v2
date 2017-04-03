@@ -21,7 +21,6 @@ abstract class Game {
     abstract endAndSaveGame(): boolean;
     
     setColorTime(color: string, time: number): void {
-        console.log("setting", color, "time to", time);
         this.times[color] = time;
     }
     

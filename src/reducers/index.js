@@ -112,9 +112,9 @@ function openThreads(state = {}, action) {
             }
             return state;
         case 'TICK':
-            if(state[action.payload.thread][action.payload.turn].time) {
+            if(state[action.payload.thread].times[action.payload.turn]) {
                 newState = Object.assign({}, state);
-                newState[action.payload.thread][action.payload.turn].time -= 1000;
+                newState[action.payload.thread].times[action.payload.turn] -= 1000;
                 return newState
             }
             return state;

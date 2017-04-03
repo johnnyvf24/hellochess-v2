@@ -14,28 +14,28 @@ class OccupiedCard extends Component {
     };
 
     componentWillReceiveProps(nextProps) {
-        if(nextProps.turn != this.props.turn
-            && !nextProps.paused) {
+        if(((nextProps.turn != this.props.turn) || (this.props.gameStarted != nextProps.gameStarted))
+            && nextProps.gameStarted == true) {
             if(nextProps.turn == this.props.color) {
                 clearInterval(this.countDown);
                 this.countDown = setInterval( () => {
-                    this.props.tick(nextProps.name, formatTurn(nextProps.turn))
+                    this.props.tick(this.props.room.room.name, nextProps.turn)
                 }, 1000);
             } else {
                 clearInterval(this.countDown);
             }
-        } else if(nextProps.paused) {
+        } else if(nextProps.gameStarted == false) {
             clearInterval(this.countDown);
         }
     }
 
     componentWillMount() {
-        if(this.props.turn == this.props.color && !this.props.paused) {
+        if(this.props.turn == this.props.color && this.props.gameStarted == true) {
             clearInterval(this.countDown);
             this.countDown = setInterval( () => {
-                this.props.tick(this.props.name, formatTurn(this.props.turn))
+                this.props.tick(this.props.room.room.name, this.props.turn)
             }, 1000);
-        } else {
+        } else if(this.props.gameStarted == false){
             clearInterval(this.countDown);
         }
     }
@@ -46,7 +46,6 @@ class OccupiedCard extends Component {
 
     renderActiveBorder() {
         const {player, game, resigned, turn, color, longColor} = this.props;
-        console.log("renderActiveBorder: player:", player,"game:",game,"turn:",turn);
         if (!player || !game || !turn)
             return "";
         let isMyTurn = turn == color;
@@ -81,9 +80,9 @@ class OccupiedCard extends Component {
     // if dead, returns the className that will
     // indicate a dead player
     renderAliveIndicator() {
-        const {alive, longColor} = this.props;
+        const {player, longColor} = this.props;
         let className = "";
-        if (alive === false) {
+        if (player.alive === false) {
             className = longColor + "-dead";
         }
         return className;
@@ -97,7 +96,7 @@ class OccupiedCard extends Component {
         return (
             <div className={"player-card-border" + this.renderActiveBorder()}>
                 <Panel className={"player-card occupied " + this.renderAliveIndicator() + " " + this.props.colorClass}>
-                    { !game.fen && this.renderLeaveSeat(player, name)}
+                    { !game.fen && this.renderLeaveSeat(player, room.room.name)}
 
                     <Row>
                         <a href="#"
@@ -124,9 +123,12 @@ function mapStateToProps(state, props) {
         profile: state.auth.profile,
         room: state.openThreads[state.activeThread],
         game: state.openThreads[state.activeThread].game,
+        turn: state.openThreads[state.activeThread].game.turn,
         player: state.openThreads[state.activeThread].game[cardPlayer],
         time: state.openThreads[state.activeThread].time.value,
-        playerTime: state.openThreads[state.activeThread].times[cardPlayer.charAt(0)]
+        playerTime: state.openThreads[state.activeThread].times[cardPlayer.charAt(0)],
+        playerColor: cardPlayer,
+        gameStarted: state.openThreads[state.activeThread].game.gameStarted
     }
 }
 

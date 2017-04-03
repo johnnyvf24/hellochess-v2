@@ -44,13 +44,12 @@ module.exports = function(io, socket, connection) {
         room.game.addPlayer(player, color);
         let timeValue = room.time.value * 60 * 1000;
         room.game.setColorTime(color, timeValue);
-        
-        io.to(roomName).emit('update-room', room.getRoom());
 
         if (room.gameReady()) {
             // start the game if all players are seated
             room.startGame();
         }
+        io.to(roomName).emit('update-room', room.getRoom());
     });
     
     socket.on('leave-room', data => {

@@ -219,8 +219,6 @@ export default class Room {
         let timeLeft = this.game.times[turn];
         let time = timeLeft - timeElapsed;
         
-        console.log(timeLeft);
-        
         //start timing this person to check if they flag
         this.timer = setTimeout(function() {
             if(!this._name || !this.game) {
@@ -250,6 +248,12 @@ export default class Room {
                     autoDismiss: 5,
                 };
                 this.io.to(this._name).emit('action', Notifications.success(notificationOpts));
+                
+                //set the next turn (for asythetic purposes)
+                this.game.setNextTurn();
+                
+                //sync the room again
+                this.io.to(this.name).emit('update-room', this.getRoom());
             } else {
                 //set the next turn
                 this.game.setNextTurn();
@@ -261,7 +265,7 @@ export default class Room {
                 this.startTimer();
             }
             
-        }.bind(this), timeLeft/6);
+        }.bind(this), timeLeft);
     }
     
     //begin the game
@@ -275,10 +279,11 @@ export default class Room {
         };
         
         this.io.to(this._name).emit('action', Notifications.warning(notificationOpts));
-        
-        this.io.to(this.name).emit('update-room', this.getRoom());
-        
         this.game.startGame();
         this.startTimer();
+    }
+    
+    clearTimer() {
+        clearTimeout(this.timer);
     }
 }
