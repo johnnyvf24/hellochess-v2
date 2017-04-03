@@ -9,6 +9,11 @@ import FourGame from '../../../models/games/FourGame';
 import Standard from '../../../models/games/Standard';
 import CrazyHouse from '../../../models/games/CrazyHouse';
 
+//server environment
+const dotenv = require('dotenv').load();
+
+const env = process.env.NODE_ENV || "development";
+
 module.exports = function(io, socket, connection) {
     
     socket.on('new-message', data => {
@@ -29,7 +34,9 @@ module.exports = function(io, socket, connection) {
         let player: Player;
         let playerType = data.profile.type;
         if (typeof playerType !== "undefined" && playerType === "computer") {
-            player = new AI(socket, data.profile.username);
+            
+            player = new AI(io, data.profile.username);
+            player.type = 'computer'
         } else {
             player = connection.getPlayerBySocket(socket);
         }

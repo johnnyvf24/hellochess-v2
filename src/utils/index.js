@@ -51,7 +51,7 @@ export function showElo(game, time, player) {
     let twentyMins = 12000000;
 
     switch(game.gameType) {
-        case 'two-player':
+        case 'standard':
             ratings = "standard_ratings";
             break;
         case 'crazyhouse':
@@ -65,7 +65,7 @@ export function showElo(game, time, player) {
             break;
     }
     switch(game.gameType) {
-        case 'two-player':
+        case 'standard':
         case 'crazyhouse':
         case 'crazyhouse960':
             if( totalTimeMs <= twoMins) {

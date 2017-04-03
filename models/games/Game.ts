@@ -6,16 +6,27 @@ abstract class Game {
     gameType: string;
     gameRulesObj: any;
     times: Object;
+    lastMove: any;
     
     abstract move(): any;
     abstract addPlayer(player: Player, color: string): boolean;
     abstract removePlayer(color: string): boolean;
     abstract getGame(): any;
     abstract gameReady(): boolean;
+    abstract startGame(): any;
+    abstract getTurn(): string;
+    abstract setNextTurn(): void;
+    abstract setPlayerOutByColor(color: string): void;
+    abstract gameOver(): boolean;
+    abstract endAndSaveGame(): boolean;
     
     setColorTime(color: string, time: number): void {
         console.log("setting", color, "time to", time);
         this.times[color] = time;
+    }
+    
+    setLastMove() {
+        this.lastMove = Date.now();
     }
     
     removeColorTime(color: string): void {

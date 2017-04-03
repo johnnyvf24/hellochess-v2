@@ -115,6 +115,10 @@ export default function(store) {
     socket.on('four-new-move', data => {
         store.dispatch({type: 'four-new-move', payload: data});
     });
+    
+    socket.on('action', data => {
+        store.dispatch(data);
+    });
 }
 
 // let socketIoMiddleware = createSocketIoMiddleware(socket, ['server/']);
