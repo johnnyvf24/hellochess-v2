@@ -39,7 +39,7 @@ export default class FourEngine extends Engine {
                 promotion: 'q'
             };
 
-            console.log("FourEngine move:", compMove);
+            // console.log("FourEngine move:", compMove);
             
             let roomName = this.roomName;
             let room: Room = this.connection.getRoomByName(roomName);
@@ -117,7 +117,7 @@ export default class FourEngine extends Engine {
         let depth = this.depth;
         depth = this.adjustDepth(timeLeft, level);
         if(this.mode == 0) {
-            console.log("[FourEngine "+this.roomName+"]", "skill level:", level, "depth:", depth);
+            // console.log("[FourEngine "+this.roomName+"]", "skill level:", level, "depth:", depth);
             if (this.engine) this.engine.stdin.write("go depth " + depth + "\n");
         } else {
             let goString = "go " + "depth 4" + "\n";

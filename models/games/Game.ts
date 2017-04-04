@@ -128,6 +128,7 @@ abstract class Game {
     }
     
     setPlayerOutByColor(color: string) {
+        console.log(color);
         let playerOut = null;
         switch(color.charAt(0)) {
             case 'w':
@@ -175,13 +176,16 @@ abstract class Game {
     
     makeMove(move: any, increment: number): void {
         this._lastTurn = this.gameRulesObj.turn();
-        this.gameRulesObj.move(move);
+        let validMove = this.gameRulesObj.move(move);
         
-        if(move == null) {
+        //set the last move made
+        this._lastMove = move;
+        
+        if(validMove == null) {
             return;
         } else  { //the move was valid
-            if(move.color) { // A player was eliminated
-                this.setPlayerOutByColor(move.color);
+            if(validMove.color) { // A player was eliminated
+                this.setPlayerOutByColor(validMove.color);
             }
             
             if(this.gameRulesObj.inCheckMate()) { //this player is in checkmate
@@ -200,9 +204,6 @@ abstract class Game {
                 this.gameRulesObj.nextTurn();
             }
         }
-        
-        //set the last move made
-        this._lastMove = move;
         
         //calculate the time difference between the last move
         let timeElapsed = Date.now() - this.lastMoveTime;

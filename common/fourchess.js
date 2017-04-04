@@ -1166,19 +1166,19 @@ var FourChess = function (fen) {
                 switch (TURN) {
                     case WHITE:
                         TURN = GOLD;
-                        newTurnSet = (goldOut) ? false : true;
+                        newTurnSet = (goldOut || inCheckMate()) ? false : true;
                         break;
                     case BLACK:
                         TURN = RED;
-                        newTurnSet = (redOut) ? false : true;
+                        newTurnSet = (redOut || inCheckMate()) ? false : true;
                         break;
                     case GOLD:
                         TURN = BLACK;
-                        newTurnSet = (blackOut) ? false : true;
+                        newTurnSet = (blackOut || inCheckMate()) ? false : true;
                         break;
                     case RED:
                         TURN = WHITE;
-                        newTurnSet = (whiteOut) ? false : true;
+                        newTurnSet = (whiteOut || inCheckMate()) ? false : true;
                         break;
                 }
             }

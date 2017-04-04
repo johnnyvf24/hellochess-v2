@@ -91,13 +91,13 @@ module.exports = function(io, socket, connection) {
             
             switch(data.gameType) {
                 case 'standard':
-                    room = new Room(io, new Standard(io));
+                    // room = new Room(io, new Standard(io));
                     break;
                 case 'four-player':
                     room = new Room(io, new FourGame(io, roomName));
                     break;
                 case 'crazyhouse':
-                    room = new Room(io, new CrazyHouse(io));
+                    // room = new Room(io, new CrazyHouse(io));
                     break;
             }
             
