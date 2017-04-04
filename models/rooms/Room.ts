@@ -1,4 +1,5 @@
 const Notifications = require('react-notification-system-redux');
+import Connection from '../../server/sockets/Connection';
 import Player from '../players/Player';
 import AI from '../players/AI';
 import Game from '../games/Game';
@@ -224,10 +225,10 @@ export default class Room {
         let turn = this.game.getTurn();
         
         //get when the last move was made
-        let lastMove = this.game.lastMove;
+        let lastMoveTime = this.game.lastMoveTime;
         
         //get how much time has passed
-        let timeElapsed = Date.now() - lastMove;
+        let timeElapsed = Date.now() - lastMoveTime;
         
         if(!this.game.times) {
             return;
@@ -287,7 +288,7 @@ export default class Room {
     }
     
     //begin the game
-    startGame() {
+    startGame(connection: Connection) {
         //Notify all players that the game is ready to be played
         const notificationOpts = {
             title: 'The game has begun',
@@ -296,10 +297,9 @@ export default class Room {
             autoDismiss: 3,
         };
         this.io.to(this._name).emit('action', Notifications.warning(notificationOpts));
-<<<<<<< HEAD
         
         // if there are any AI players, add an engine instance to the game
-        this._game.newEngineInstance(this._name, this.io);
+        this._game.newEngineInstance(this._name, connection);
         
         let roomObj: any = this.getRoom();
         this.io.to(this._name).emit(this.gameStartAction,
@@ -329,26 +329,31 @@ export default class Room {
     
     makeMove(move: any): void {
         // make the move in the game logic
-        this._game.makeMove(move);
-        // if it's a legal move, emit to other players
-        let thread: string = this._name;
-        let fen: string = this._game.fen;
-        let lastTurn: string = this._game.lastTurn;
-        lastTurn = Game.COLOR_SHORT_TO_LONG[lastTurn];
-        let turn: string = this._game.currentTurn;
-        let time: number = this._game.prevPlayerTime();
-        let outColor: string = this._game.outColor();
-        let message: any = {
-            thread: thread,
-            fen: fen,
-            lastTurn: lastTurn,
-            turn: turn,
-            time: time,
-            move: move,
-            outColor: outColor
-        };
-        console.log("four-new-move:", message);
-        this.sendNewMove(message);
+        this._game.makeMove(move, this.time.increment);
+        
+        clearTimeout(this.timer);
+        this.startTimer();
+        this.io.to(this.name).emit('update-room', this.getRoom());
+        
+        // // if it's a legal move, emit to other players
+        // let thread: string = this._name;
+        // let fen: string = this._game.fen;
+        // let lastTurn: string = this._game.lastTurn;
+        // lastTurn = Game.COLOR_SHORT_TO_LONG[lastTurn];
+        // let turn: string = this._game.currentTurn;
+        // let time: number = this._game.prevPlayerTime();
+        // let outColor: string = this._game.outColor();
+        // let message: any = {
+        //     thread: thread,
+        //     fen: fen,
+        //     lastTurn: lastTurn,
+        //     turn: turn,
+        //     time: time,
+        //     move: move,
+        //     outColor: outColor
+        // };
+        // console.log("four-new-move:", message);
+        // this.sendNewMove(message);
     }
     
     makeEngineMove(move) {

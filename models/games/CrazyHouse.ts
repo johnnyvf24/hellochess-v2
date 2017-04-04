@@ -46,4 +46,16 @@ export default class CrazyHouse extends Game {
     newEngineInstance(roomName: string, io: any) {
         this.engineInstance = new CrazyEngine(roomName, io, this.timeControl.increment);
     }
+    
+    startGame() {
+        this.gameStarted = true;
+        this.white.alive = true;
+        this.black.alive = true;
+        this.setLastMove();
+    }
+    
+    endAndSaveGame(): boolean {
+        this.gameStarted = false;
+        return true;
+    }
 }

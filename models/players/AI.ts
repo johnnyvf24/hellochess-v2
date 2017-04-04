@@ -2,9 +2,11 @@ import Player from './Player';
 import Ratings from '../ratings/Ratings';
 
 export default class AI extends Player {
+    
     constructor(
         _io: any,
-        _username: string
+        _username: string,
+        playerLevel: number
     ) {
         let defaultRatings: Ratings = new Ratings(1200, 1200, 1200, 1200);
         
@@ -19,5 +21,8 @@ export default class AI extends Player {
             defaultRatings,
             defaultRatings,
             defaultRatings);
+            
+        this.playerLevel = playerLevel;
     }
+    
 }

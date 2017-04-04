@@ -3,6 +3,7 @@ import Ratings from '../ratings/Ratings';
 export default class Player {
     private _type: string = 'human'; //default player will be human
     private _alive: boolean = false;
+    private _playerLevel: number;
 
     constructor( 
         public _socket: any, 
@@ -22,12 +23,14 @@ export default class Player {
     get crazyhouse_ratings(): Ratings { return this._crazyhouse_ratings; }
     get crazyhouse960_ratings(): Ratings { return this._crazyhouse960_ratings; }
     get alive(): boolean { return this._alive; }
+    get playerLevel(): number { return this._playerLevel; }
     
     set standard_ratings(ratings: Ratings) { this._standard_ratings = ratings; }
     set fourplayer_ratings(ratings: Ratings) { this._fourplayer_ratings = ratings; }
     set crazyhouse_ratings(ratings: Ratings) { this._crazyhouse_ratings = ratings; }
     set crazyhouse960_ratings(ratings: Ratings) { this._crazyhouse960_ratings = ratings; }
     set alive(alive: boolean) { this._alive = alive; }
+    set playerLevel(num: number) { this._playerLevel = num; }
     
     getPlayer(): any {
         return {
@@ -38,7 +41,8 @@ export default class Player {
             fourplayer_ratings: this._fourplayer_ratings,
             crazyhouse_ratings: this._crazyhouse_ratings,
             crazyhouse960_ratings: this._crazyhouse960_ratings,
-            alive: this._alive
+            alive: this._alive,
+            level: this._playerLevel
         };
     }
     

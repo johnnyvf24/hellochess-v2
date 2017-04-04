@@ -65,7 +65,7 @@ function openThreads(state = {}, action) {
             newState[action.payload.thread].turn = action.payload.turn;
             newState[action.payload.thread].move = action.payload.move;
             newState[action.payload.thread].lastMove = action.payload.lastMove;
-            newState[action.payload.thread][action.payload.lastTurn].time = action.payload.time;
+            newState[action.payload.thread].game[action.payload.lastTurn].time = action.payload.time;
             if (action.payload.outColor)
                 newState[action.payload.thread][action.payload.outColor].alive = false;
             return newState;

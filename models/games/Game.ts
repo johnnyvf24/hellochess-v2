@@ -1,3 +1,4 @@
+const Notifications = require('react-notification-system-redux');
 import Player from '../players/Player';
 import Engine from '../../engine/Engine';
 import AI from '../players/AI';
@@ -22,15 +23,18 @@ abstract class Game {
     public gold: Player = null;
     public red: Player = null;
     engineInstance: Engine;
-    io: Object;
+    io: any;
     numPlayers: number;
     gameType: string;
     gameRulesObj: any;
     timeControl: any;
     times: any;
     _lastMove: any;
+    _lastMoveTime: any;
     _lastTurn: string;
     _currentTurn: string;
+    gameStarted: boolean = false;
+    roomName: string;
     
     abstract addPlayer(player: Player, color: string): boolean;
     abstract removePlayer(color: string): boolean;
@@ -39,18 +43,25 @@ abstract class Game {
     abstract outColor(): string;
     abstract newEngineInstance(roomName: string, io: any): void;
     abstract startGame(): any;
-    abstract getTurn(): string;
-    abstract setNextTurn(): void;
-    abstract setPlayerOutByColor(color: string): void;
-    abstract gameOver(): boolean;
-    abstract endAndSaveGame(): boolean;
     
     setColorTime(color: string, time: number): void {
         this.times[color] = time;
     }
     
-    setLastMove() {
-        this.lastMove = Date.now();
+    get lastMoveTime() {
+        return this._lastMoveTime;
+    }
+    
+    set lastMoveTime(time) {
+        this._lastMoveTime = time;
+    }
+    
+    get lastMove() {
+        return this._lastMove;
+    }
+    
+    set lastMove(move) {
+        this._lastMove = move;
     }
     
     removeColorTime(color: string): void {
@@ -73,17 +84,36 @@ abstract class Game {
         return this._currentTurn;
     }
     
+    getTurn(): string {
+        return this.gameRulesObj.turn();
+    }
+    
+    setNextTurn(): void {
+        this.gameRulesObj.nextTurn();
+    }
+    
     prevPlayerTime(): number {
         return this.times[this.lastTurn];
     }
     
     engineGo() {
         this.engineInstance.setPosition(this.gameRulesObj.fen());
-        this.engineInstance.go(this.currentTurnTime(), 5);
+        this.engineInstance.setTurn(this.gameRulesObj.turn());
+        let playerTimeLeft = this.currentTurnTime();
+        let currentPlayer = this.currentTurnPlayer();
+        if(playerTimeLeft && currentPlayer.playerLevel) {
+            this.engineInstance.go(playerTimeLeft, currentPlayer.playerLevel);
+        }
     }
     
-    currentTurnPlayer() {
-        switch (this._currentTurn) {
+    killEngineInstance() {
+        if(this.engineInstance) {
+            this.engineInstance.kill();
+        }
+    }
+    
+    currentTurnPlayer(): Player {
+        switch (this.gameRulesObj.turn()) {
             case 'w':
                 return this.white;
             case 'b':
@@ -97,19 +127,110 @@ abstract class Game {
         }
     }
     
-    currentTurnTime() {
-        return this.times[this._currentTurn];
+    setPlayerOutByColor(color: string) {
+        let playerOut = null;
+        switch(color.charAt(0)) {
+            case 'w':
+                this.white.alive = false;
+                playerOut = this.white;
+                this.times.w = 1;
+                this.gameRulesObj.setWhiteOut();
+                break;
+            case 'b':
+                this.black.alive = false;
+                playerOut = this.black;
+                this.times.b = 1;
+                this.gameRulesObj.setBlackOut();
+                break;
+            case 'g':
+                this.gold.alive = false;
+                playerOut = this.gold;
+                this.times.g = 1;
+                this.gameRulesObj.setGoldOut();
+                break;
+            case 'r':
+                this.gameRulesObj.setRedOut();
+                this.red.alive = false;
+                playerOut = this.red;
+                this.times.r = 1;
+                break;
+        }
+        if(playerOut) {
+            const notificationOpts = {
+                title: 'Player Elimination',
+                message: `${playerOut.username} has been eliminated!`,
+                position: 'tr',
+                autoDismiss: 5,
+            };
+            if(this.roomName) {
+                this.io.to(this.roomName).emit('action', Notifications.info(notificationOpts));
+            }
+            
+        }
     }
     
-    makeMove(move: any): void {
+    currentTurnTime() {
+        return this.times[this.gameRulesObj.turn()];
+    }
+    
+    makeMove(move: any, increment: number): void {
         this._lastTurn = this.gameRulesObj.turn();
         this.gameRulesObj.move(move);
+        
+        if(move == null) {
+            return;
+        } else  { //the move was valid
+            if(move.color) { // A player was eliminated
+                this.setPlayerOutByColor(move.color);
+            }
+            
+            if(this.gameRulesObj.inCheckMate()) { //this player is in checkmate
+                if(this.roomName) {
+                    let currentPlayer = this.currentTurnPlayer();
+                    
+                    const notificationOpts = {
+                        title: 'Checkmate',
+                        message: `A player is in checkmate! ${currentPlayer.username}'s turn has been skipped.`,
+                        position: 'tr',
+                        autoDismiss: 5,
+                    };
+                    
+                    this.io.to(this.roomName).emit('action', Notifications.warning(notificationOpts));
+                }
+                this.gameRulesObj.nextTurn();
+            }
+        }
+        
+        //set the last move made
         this._lastMove = move;
+        
+        //calculate the time difference between the last move
+        let timeElapsed = Date.now() - this.lastMoveTime;
+        this.lastMoveTime = Date.now();
+        
+        //calculate the time increment and add it to the current players time
+        let timeIncrement = increment * 1000;
+        this.setColorTime(this._lastTurn, this.times[this._lastTurn] - timeElapsed + timeIncrement);
+        
+        //check to see if the game is over
+        if (this.gameRulesObj.game_over()) {
+    
+            if (this.gameRulesObj.in_draw()) {
+    
+            } else {
+                return;
+            }
+        }
+        
         this._currentTurn = this.gameRulesObj.turn();
         // if the next player is an AI, start the engine
         if (this.currentTurnPlayer() instanceof AI) {
-            this.engineGo();
+            setTimeout(() => this.engineGo(), 100); // add a small delay between AI's moving
         }
+    }
+    
+    gameOver(): boolean {
+        return this.gameRulesObj.game_over();
     }
     
 }

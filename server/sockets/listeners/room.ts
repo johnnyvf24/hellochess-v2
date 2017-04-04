@@ -33,10 +33,10 @@ module.exports = function(io, socket, connection) {
         let room: Room = connection.getRoomByName(roomName);
         let player: Player;
         let playerType = data.profile.type;
-        if (typeof playerType !== "undefined" && playerType === "computer") {
-            
-            player = new AI(io, data.profile.username);
-            player.type = 'computer'
+        let playerLevel = data.profile.level;
+        if (typeof playerType !== "undefined" && playerType === "computer" && typeof playerLevel === "number") {
+            player = new AI(io, data.profile.username, playerLevel);
+            player.type = 'computer';
         } else {
             player = connection.getPlayerBySocket(socket);
         }
@@ -47,7 +47,7 @@ module.exports = function(io, socket, connection) {
 
         if (room.gameReady()) {
             // start the game if all players are seated
-            room.startGame();
+            room.startGame(connection);
         }
         io.to(roomName).emit('update-room', room.getRoom());
     });
@@ -79,7 +79,6 @@ module.exports = function(io, socket, connection) {
             return;
         }
         
-        
         let roomName = data.room.name;
         let room: Room = connection.getRoomByName(roomName);
         
@@ -95,7 +94,7 @@ module.exports = function(io, socket, connection) {
                     room = new Room(io, new Standard(io));
                     break;
                 case 'four-player':
-                    room = new Room(io, new FourGame(io));
+                    room = new Room(io, new FourGame(io, roomName));
                     break;
                 case 'crazyhouse':
                     room = new Room(io, new CrazyHouse(io));

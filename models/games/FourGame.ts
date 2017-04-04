@@ -17,20 +17,13 @@ export default class FourGame extends Game {
         g: 0,
         r: 0
     };
-    gameStarted: boolean = false;
+    roomName: string;
     
-    constructor(io: Object) {
+    constructor(io: Object, roomName:string) {
         super();
         this.io = io;
         this.gameRulesObj = new FourChess();
-    }
-    
-    getTurn():string {
-        return this.gameRulesObj.turn();
-    }
-    
-    setNextTurn(): void {
-        this.gameRulesObj.nextTurn();
+        this.roomName = roomName;
     }
     
     startGame() {
@@ -39,7 +32,7 @@ export default class FourGame extends Game {
         this.black.alive = true;
         this.gold.alive = true;
         this.red.alive = true;
-        this.setLastMove();
+        this.lastMoveTime = Date.now();
     }
     
     getGame() {
@@ -119,30 +112,6 @@ export default class FourGame extends Game {
         }
     }
     
-    setPlayerOutByColor(color: string) {
-        switch(color.charAt(0)) {
-            case 'w':
-                this.white.alive = false;
-                this.times.w = 1;
-                this.gameRulesObj.setWhiteOut();
-                break;
-            case 'b':
-                this.black.alive = false;
-                this.times.b = 1;
-                this.gameRulesObj.setBlackOut();
-                break;
-            case 'g':
-                this.gold.alive = false;
-                this.times.g = 1;
-                this.gameRulesObj.setGoldOut();
-                break;
-            case 'r':
-                this.gameRulesObj.setRedOut();
-                this.red.alive = false;
-                this.times.r = 1;
-                break;
-        }
-    }
     
     removePlayer(color: string) {
         switch(color.charAt(0)) {
@@ -176,13 +145,10 @@ export default class FourGame extends Game {
         }
     }
     
-    newEngineInstance(roomName: string, io: any) {
-        this.engineInstance = new FourEngine(roomName, io);
+    newEngineInstance(roomName: string, connection: any) {
+        this.engineInstance = new FourEngine(roomName, connection);
     }
     
-    gameOver(): boolean {
-        return this.gameRulesObj.game_over();
-    }
     
     endAndSaveGame(): boolean {
         this.gameStarted = false;

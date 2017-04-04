@@ -11,9 +11,9 @@ abstract class Engine {
     protected timeLeft;
     protected increment;
 
-    constructor(public path, public roomName, public io) {
+    constructor(public path, public roomName, public connection) {
         this.roomName = roomName;
-        this.io = io;
+        this.connection = connection;
         this.engine = spawn(path);
         this.engine.stdout.on('data', this.onBestMove.bind(this));
         this.numOut = 0;
@@ -75,6 +75,7 @@ abstract class Engine {
         console.log("killing engine", this.roomName);
         this.engine.stdin.pause();
         this.engine.kill();
+        this.engine = null;
     }
 }
 

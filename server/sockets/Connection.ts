@@ -38,7 +38,11 @@ export default class Connection {
             if(room.name !== roomName) {
                 return room;
             } else {
+                
                 room.clearTimer();
+                if(room.game) {
+                    room.game.killEngineInstance();
+                }
                 roomRemoved = true;
             }
         });
