@@ -355,21 +355,21 @@ class FourBoard extends Component {
         if(this.props.fen) {
             this.board.position(this.props.fen);
             this.game.position(this.props.fen);
-            if(this.props.black) {
-                if(this.props.room.white.playerId === this.props.profile._id) {
+            if(this.props.game.black) {
+                if(this.props.game.white.playerId === this.props.profile._id) {
                     this.board.orientation('white');
                 }
-                else if(this.props.room.black.playerId === this.props.profile._id) {
+                else if(this.props.game.black.playerId === this.props.profile._id) {
                     this.board.orientation('black');
                 }
-                else if(this.props.room.gold.playerId === this.props.profile._id) {
+                else if(this.props.game.gold.playerId === this.props.profile._id) {
                     this.board.orientation('gold');
                 }
-                else if(this.props.room.red.playerId === this.props.profile._id) {
+                else if(this.props.game.red.playerId === this.props.profile._id) {
                     this.board.orientation('red');
                 }
     
-                if(this.props.move) {
+                if(this.props.game.lastMove) {
                     this.shadeSquare(this.props.move.from);
                     this.shadeSquare(this.props.move.to);
                 }

@@ -14,7 +14,7 @@ import PlayerTimes from './player_card/player_times';
 import GameButtons from './game_btns';
 import { logout, saveUsername, clearError, userConnect} from '../actions';
 
-import {Grid, Row, Col, Button, Dropdown, MenuItem} from 'react-bootstrap';
+import {Grid, Row, Col, Button, Dropdown, MenuItem, Alert} from 'react-bootstrap';
 
 class CustomToggle extends React.Component {
   constructor(props, context) {
@@ -80,6 +80,7 @@ class Live extends Component {
         this.state = {
             usernameInput: '',
             errorMessage: '',
+            alertVisible: true
         }
 
         this.onInputChange = this.onInputChange.bind(this);
@@ -174,6 +175,10 @@ class Live extends Component {
             );
         }
     }
+    
+    handleAlertDismiss() {
+        this.setState({alertVisible: false});
+    }
 
     render() {
         if(this.props.connection.error) {
@@ -214,6 +219,15 @@ class Live extends Component {
             return (
                 <div id="main-panel">
                     <Row>
+                        
+                        <Col xs={0} sm={1} md={2} lg={3}></Col>
+                        {this.state.alertVisible && 
+                        <Col xs={12} sm={10} md={8} lg={6}>
+                            <Alert bsStyle="success" onDismiss={this.handleAlertDismiss.bind(this)}>
+                                <i className="fa fa-wrench fa-lg" aria-hidden="true"></i> <strong> Please note this site is under active development!</strong> Other game modes are temporarily removed while we work on new features.
+                            </Alert>
+                        </Col> 
+                        }
                         <div className="pull-right">
                             <Dropdown id="dropdown-custom-menu">
                                 <CustomToggle bsRole="toggle">

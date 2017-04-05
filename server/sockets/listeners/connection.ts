@@ -30,7 +30,7 @@ module.exports = function(io, socket, connection) {
         let player: Player = connection.getPlayerBySocket(socket);
         
         //get a list of rooms in which the player is in
-        let rooms: Room[] = connection.getPlayerRoomsByPlayer(player);
+        let rooms: Room [] = connection.getPlayerRoomsByPlayer(player);
         
         if(!rooms || !player) {
             //TODO error
