@@ -2026,18 +2026,18 @@ var FourChess = function (fen) {
                 white: nWhiteOut,
                 black: nBlackOut,
                 gold: nGoldOut,
-                red: nRedOut
+                rred: nRedOut
             }
         },
         getWinnerColor: function() {
             if(goldOut && blackOut && redOut) {
-                return 'w';
+                return 'white';
             } else if(blackOut && redOut && whiteOut) {
-                return 'g';
+                return 'gold';
             } else if(redOut && whiteOut && goldOut) {
-                return 'b';
+                return 'black';
             } else if(whiteOut && goldOut && blackOut) {
-                return 'r';
+                return 'red';
             } else {
                 return null;
             }

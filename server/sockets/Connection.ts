@@ -112,6 +112,21 @@ export default class Connection {
         return p;
     }
     
+    duplicateUser(playerId: string) {
+        if(!this.players) {
+            return false;
+        }
+        
+        let found = false;       
+        this.players.map((player) => {
+            if(player.playerId == playerId) {
+                found = true;
+            }
+        });
+        
+        return found;
+    }
+    
     updatePlayer(data) {
         //check to see if the player is in the player list
         this.players.map((player) => {

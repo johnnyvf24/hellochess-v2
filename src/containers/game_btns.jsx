@@ -13,16 +13,16 @@ class GameButtons extends Component {
     }
 
     userIsPlaying(userObj, roomObj) {
-        if(roomObj.white && userObj._id === roomObj.white.playerId) {
+        if(roomObj.game.white && userObj._id === roomObj.game.white.playerId) {
             return true;
         }
-        if(roomObj.black && userObj._id === roomObj.black.playerId) {
+        if(roomObj.game.black && userObj._id === roomObj.game.black.playerId) {
             return true;
         }
-        if(roomObj.gold && userObj._id === roomObj.gold.playerId) {
+        if(roomObj.game.gold && userObj._id === roomObj.game.gold.playerId) {
             return true;
         }
-        if(roomObj.red && userObj._id === roomObj.red.playerId) {
+        if(roomObj.game.red && userObj._id === roomObj.game.red.playerId) {
             return true;
         }
 
@@ -49,15 +49,11 @@ class GameButtons extends Component {
         }
 
         const room = openThreads[activeThread];
-        const {fen} = openThreads[activeThread];
 
-        if(room.paused) {
+        if(room.paused){
             return <div></div>
         }
 
-        if(!fen) {
-            return <div></div>
-        }
 
         if(!this.userIsPlaying(profile, room)) {
             return <div></div>
@@ -86,20 +82,20 @@ class GameButtons extends Component {
                 </div>
             );
         } else if(room.gameType == 'four-player') {
-            if(room.white && room.white.playerId == profile._id) {
-                if(room.fen && room.white.resigned) {
+            if(room.game.white && room.game.white.playerId == profile._id) {
+                if(room.game.gameStarted && !room.game.white.alive) {
                     return <div></div>
                 }
-            } else if( room.black && room.black.playerId == profile._id) {
-                if(room.fen && room.black.resigned) {
+            } else if( room.game.black && room.game.black.playerId == profile._id) {
+                if(room.game.gameStarted && !room.game.black.alive) {
                     return <div></div>
                 }
-            } else if( room.gold && room.gold.playerId == profile._id) {
-                if(room.fen && room.gold.resigned) {
+            } else if( room.game.gold && room.game.gold.playerId == profile._id) {
+                if(room.game.gameStarted && !room.game.gold.alive) {
                     return <div></div>
                 }
-            } else if( room.red && room.red.playerId == profile._id) {
-                if(room.fen && room.red.resigned) {
+            } else if( room.game.red && room.game.red.playerId == profile._id) {
+                if(room.game.gameStarted && !room.game.red.alive) {
                     return <div></div>
                 }
             }

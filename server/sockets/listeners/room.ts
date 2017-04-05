@@ -1,3 +1,5 @@
+const Notifications = require('react-notification-system-redux');
+
 import Player from '../../../models/players/Player';
 import AI from '../../../models/players/AI';
 import Room from '../../../models/rooms/Room';
@@ -94,7 +96,7 @@ module.exports = function(io, socket, connection) {
                     // room = new Room(io, new Standard(io));
                     break;
                 case 'four-player':
-                    room = new Room(io, new FourGame(io, roomName));
+                    room = new Room(io, new FourGame(io, roomName, data.time));
                     break;
                 case 'crazyhouse':
                     // room = new Room(io, new CrazyHouse(io));
@@ -133,14 +135,37 @@ module.exports = function(io, socket, connection) {
         room.makeMove(move);
     });
     
-    socket.on('four-new-ai-move', data => {
-        let roomName = data.thread;
+    socket.on('four-resign', data => {
+        let roomName = data.roomName;
         let room: Room = connection.getRoomByName(roomName);
-        let move = data.move;
-        room.makeEngineMove(move);
-    });
-    
-    socket.on('pause', data => {
+        if(!room) {
+            return;
+        }
         
+        let player: Player = connection.getPlayerBySocket(socket);
+        
+        if(!room.game || !player) {
+            return;
+        }
+        
+        room.game.setPlayerResignByPlayerObj(player);
+        
+        room.clearTimer();
+        room.startTimer();
+        
+        if(room.game.currentTurnPlayer() instanceof AI) {
+            room.game.engineGo();
+        }
+        
+        //Notify all players that a player has resigned
+        let notificationOpts = {
+            title: `${player.username} has resigned!`,
+            position: 'tr',
+            autoDismiss: 5,
+        };
+        
+        io.to(room.name).emit('action', Notifications.info(notificationOpts));
+        
+        io.to(room.name).emit('update-room', room.getRoom());
     });
 };

@@ -15,6 +15,12 @@ module.exports = function(io, socket, connection) {
             data.social, data.email,
             data.standard_ratings, data.fourplayer_ratings,
             data.crazyhouse_ratings, data.crazyhouse960_ratings);
+            
+        //check to see if the player is already connected elsewhere
+        if(connection.duplicateUser(data._id) == true) {
+            console.log('duplicate login');
+            return socket.emit('duplicate-login');
+        }
         
         connection.addPlayer(p);
     });
@@ -47,7 +53,10 @@ module.exports = function(io, socket, connection) {
                 } else {
                     console.log("could not delete room " + room.name);
                 }
-            }   
+            } else {
+                //tell everyone that the player has left the room
+                io.to(room.name).emit('update-room', room.getRoom());
+            }
         });
         
         connection.emitAllRooms();

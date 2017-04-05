@@ -73,8 +73,11 @@ abstract class Engine {
 
     kill() {
         console.log("killing engine", this.roomName);
-        this.engine.stdin.pause();
-        this.engine.kill();
+        if(this.engine && this.engine.stdin) {
+            this.engine.stdin.pause();
+            this.engine.kill();
+        }
+        
         this.engine = null;
     }
 }

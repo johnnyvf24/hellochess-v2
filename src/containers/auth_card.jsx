@@ -12,7 +12,7 @@ import config from '../../config/config';
 import TwoBoard from '../components/demo_board/two_board';
 import FourBoard from '../components/demo_board/four_board';
 
-import {Row, Col, Clearfix, Button, Panel, PanelGroup, Accordion} from 'react-bootstrap';
+import {Row, Col, Clearfix, Button, Panel, PanelGroup, Accordion, Grid} from 'react-bootstrap';
 
 class AuthCard extends Component {
 
@@ -37,51 +37,45 @@ class AuthCard extends Component {
     render() {
         const { errorMessage } = this.props;
         return (
-            <Row>
-                <Col xs={0} md={4} lg={4} >
-                    <div id="four-player-demo">
-                        <FourBoard />
-                    </div>
-                </Col>
-                <Col xs={12} md={4} lg={4}>
-                    <Panel className="landing-card">
-                        <PanelGroup>
-                            <FacebookLogin
-                                    appId={config.facebookAuth.clientID}
-                                    autoLoad={false}
-                                    fields={config.facebookAuth.fields}
-                                    callback={this.fbCallback.bind(this)}
-                                    scope="public_profile,user_friends,email"
-                                    cssClass="btn btn-block btn-social btn-facebook"
-                                    icon="fa fa-facebook"
-                                />
-                        </PanelGroup>
-                        <PanelGroup>
-                            <GoogleLogin
-                                clientId={config.googleAuth.GoogleClientID}
-                                onSuccess={this.googleCallback.bind(this)}
-                                className="btn btn-block btn-social btn-google">
-                                Connect with Google
-                                <span className="fa fa-google"></span>
-                            </GoogleLogin>
-                        </PanelGroup>
-                        <hr />
-                        <PanelGroup defaultActiveKey="2" accordion>
-                            <Panel header="Sign Up" eventKey="1">
-                                <SignUpForm onSubmit={this.onSignUpSubmit.bind(this)} />
-                            </Panel>
-                            <Panel header="Log In" eventKey="2">
-                                <LoginForm onSubmit={this.onLoginSubmit.bind(this)} />
-                            </Panel>
-                        </PanelGroup>
-                    </Panel>
-                </Col>
-                <Col xs={0} md={4} lg={4} >
-                    <div id="two-player-demo">
-                        <TwoBoard />
-                    </div>
-                </Col>
-            </Row>
+                <Row>
+                    <Col xs={0} sm={0} md={4} lg={4} >
+                    </Col>
+                    <Col xs={12} sm={12} md={4} lg={4}>
+                        <Panel className="landing-card">
+                            <PanelGroup>
+                                <FacebookLogin
+                                        appId={config.facebookAuth.clientID}
+                                        autoLoad={false}
+                                        fields={config.facebookAuth.fields}
+                                        callback={this.fbCallback.bind(this)}
+                                        scope="public_profile,user_friends,email"
+                                        cssClass="btn btn-block btn-social btn-facebook"
+                                        icon="fa fa-facebook"
+                                    />
+                            </PanelGroup>
+                            <PanelGroup>
+                                <GoogleLogin
+                                    clientId={config.googleAuth.GoogleClientID}
+                                    onSuccess={this.googleCallback.bind(this)}
+                                    className="btn btn-block btn-social btn-google">
+                                    Connect with Google
+                                    <span className="fa fa-google"></span>
+                                </GoogleLogin>
+                            </PanelGroup>
+                            <hr />
+                            <PanelGroup  defaultActiveKey="2" accordion>
+                                <Panel header="Sign Up" eventKey="1">
+                                    <SignUpForm onSubmit={this.onSignUpSubmit.bind(this)} />
+                                </Panel>
+                                <Panel header="Log In" eventKey="2">
+                                    <LoginForm onSubmit={this.onLoginSubmit.bind(this)} />
+                                </Panel>
+                            </PanelGroup>
+                        </Panel>
+                    </Col>
+                    <Col xs={0} sm={0} md={4} lg={4} >
+                    </Col>
+                </Row>
 
         );
     }

@@ -9,11 +9,11 @@ export default class Login extends Component {
         return (
             <Grid fluid={true}>
                 <Row>
-                    <Col xs={12} md={4} />
+                    <Col xs={0} sm={0} md={4} />
                     <Col xs={12} md={4}>
                         <img className="img-responsive home-logo" src="https://www.hellochess.com/img/alpha_banner.png" alt="" />
                     </Col>
-                    <Col xs={12} md={4} />
+                    <Col xs={0} sm={0} md={4} />
                 </Row>
                 
                 <AuthCard />

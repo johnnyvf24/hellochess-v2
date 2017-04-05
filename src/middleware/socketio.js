@@ -37,6 +37,12 @@ export function socketIoMiddleware(store) {
             case 'server/four-new-move':
                 socket.emit('four-new-move', action.payload);
                 break;
+            case 'server/four-resign':
+                socket.emit('four-resign', action.payload);
+                break;
+            case 'server/logout':
+                socket.emit('disconnect', action.payload);
+                break;
         } 
      
         return result;
@@ -126,6 +132,10 @@ export default function(store) {
     
     socket.on('action', data => {
         store.dispatch(data);
+    });
+    
+    socket.on('duplicate-login', data => {
+        store.dispatch({type: 'duplicate-login'})
     });
 }
 

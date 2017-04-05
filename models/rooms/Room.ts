@@ -246,6 +246,7 @@ export default class Room {
             
             //get the player that lost and remove them from the game
             let loser = this.game.getPlayer(turn);
+            if(!loser) return;
             this.game.setPlayerOutByColor(turn);
             
             //Notify all players that a player has lost on time
@@ -276,6 +277,11 @@ export default class Room {
             } else {
                 //set the next turn
                 this.game.setNextTurn();
+                
+                // if white is an AI, start the engine
+                if (this.game.currentTurnPlayer() instanceof AI) {
+                    this.game.engineGo();
+                }
                 
                 //sync the room again
                 this.io.to(this.name).emit('update-room', this.getRoom());

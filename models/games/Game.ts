@@ -35,6 +35,7 @@ abstract class Game {
     _currentTurn: string;
     gameStarted: boolean = false;
     roomName: string;
+    time: any;
     
     abstract addPlayer(player: Player, color: string): boolean;
     abstract removePlayer(color: string): boolean;
@@ -43,6 +44,8 @@ abstract class Game {
     abstract outColor(): string;
     abstract newEngineInstance(roomName: string, io: any): void;
     abstract startGame(): any;
+    abstract endAndSaveGame(): boolean;
+    abstract setPlayerResignByPlayerObj(player: Player)
     
     setColorTime(color: string, time: number): void {
         this.times[color] = time;
@@ -216,9 +219,11 @@ abstract class Game {
         //check to see if the game is over
         if (this.gameRulesObj.game_over()) {
     
+            
             if (this.gameRulesObj.in_draw()) {
-    
+                
             } else {
+                this.endAndSaveGame();
                 return;
             }
         }
