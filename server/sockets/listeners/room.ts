@@ -75,7 +75,7 @@ module.exports = function(io, socket, connection) {
                 console.log("could not delete room " + roomName);
             }
         } else {
-            if(room.game) {
+            if(room.game && room.game.gameStarted == false) {
                 room.game.removePlayerFromAllSeats(player);
             }
             io.to(room.name).emit('update-room', room.getRoom());
@@ -133,6 +133,15 @@ module.exports = function(io, socket, connection) {
         
         room.addPlayer(player);
         connection.emitAllRooms();
+    });
+    
+    socket.on('kill-ais', data => {
+        let roomName: string = data;
+        let room: Room = connection.getRoomByName(roomName);
+        if(room.game) {
+            room.game.endAndSaveGame();
+            io.to(roomName).emit('update-room', room.getRoom());
+        }
     });
     
     socket.on('four-new-move', data => {

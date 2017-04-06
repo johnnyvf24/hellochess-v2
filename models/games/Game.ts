@@ -108,6 +108,9 @@ abstract class Game {
         this.engineInstance.setTurn(this.gameRulesObj.turn());
         let playerTimeLeft = this.currentTurnTime();
         let currentPlayer = this.currentTurnPlayer();
+        if(!currentPlayer) {
+            return;
+        }
         if(playerTimeLeft && currentPlayer.playerLevel) {
             this.engineInstance.go(playerTimeLeft, currentPlayer.playerLevel);
         }

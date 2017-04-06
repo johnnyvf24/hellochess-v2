@@ -46,6 +46,9 @@ export function socketIoMiddleware(store) {
             case 'server/remove-ai-player':
                 socket.emit('remove-ai-player', action.payload);
                 break;
+            case 'server/kill-ais':
+                socket.emit('kill-ais', action.payload);
+                break;
         } 
      
         return result;

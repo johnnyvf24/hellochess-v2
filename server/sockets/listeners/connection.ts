@@ -32,7 +32,7 @@ module.exports = function(io, socket, connection) {
                     console.log("could not delete room " + room.name);
                 }
             } else {
-                if(room.game) {
+                if(room.game && room.game.gameStarted == false) {
                     room.game.removePlayerFromAllSeats(player);
                 }
                 //tell everyone that the player has left the room

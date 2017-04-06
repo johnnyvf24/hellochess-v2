@@ -89,3 +89,10 @@ export function acceptDraw(roomName) {
         }
     }
 }
+
+export function killAIs(roomName) {
+    return {
+        type: 'server/kill-ais',
+        payload: roomName
+    }
+}

@@ -83,10 +83,10 @@ export default class FourEngine extends Engine {
         let depth = this.depth;
         switch(level) {
             case 1:
-                depth = 2;
+                depth = 4;
                 break;
             case 5:
-                depth = 3;
+                depth = 4;
                 break;
             case 10:
                 depth = 4;

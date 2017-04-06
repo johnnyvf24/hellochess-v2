@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import {resign, draw, fourResign} from '../actions/room';
+import {resign, draw, fourResign, killAIs} from '../actions/room';
 
 class GameButtons extends Component {
 
@@ -40,6 +40,26 @@ class GameButtons extends Component {
     onDraw(event) {
         this.props.draw(this.props.activeThread);
     }
+    
+    killAIs(event) {
+        this.props.killAIs(this.props.activeThread);
+    }
+    
+    onlyAIs(gameObj) {
+        if(gameObj.white && gameObj.white.alive && gameObj.white.type != 'computer') {
+            return false;
+        }
+        if(gameObj.black && gameObj.black.alive &&  gameObj.black.type != 'computer') {
+            return false;
+        }
+        if(gameObj.gold && gameObj.gold.alive && gameObj.gold.type != 'computer') {
+            return false;
+        }
+        if(gameObj.red && gameObj.red.alive && gameObj.red.type != 'computer') {
+            return false;
+        }
+        return true;
+    }
 
     render() {
         const {activeThread, openThreads, profile} = this.props;
@@ -49,15 +69,23 @@ class GameButtons extends Component {
         }
 
         const room = openThreads[activeThread];
-
-        if(room.paused){
+        
+        if(room.game.gameStarted == false) {
             return <div></div>
         }
 
-
+        if(this.onlyAIs(room.game)) {
+            return (<div><button type="button"
+                    className="btn btn-secondary"
+                    onClick={this.killAIs.bind(this)}>
+                    Stop AI Game
+                </button></div>);
+        }
+        
         if(!this.userIsPlaying(profile, room)) {
             return <div></div>
         }
+        
         if(room.gameType == 'two-player' ||
            room.gameType == 'crazyhouse' ||
            room.gameType == 'crazyhouse960') {
@@ -68,13 +96,13 @@ class GameButtons extends Component {
                             <button
                                 type="button"
                                 className="btn btn-secondary"
-                                onClick={this.onResign}>
+                                onClick={this.onResign.bind(this)}>
                                 Resign
                             </button>
                             <button
                                 type="button"
                                 className="btn btn-secondary"
-                                onClick={this.onDraw}>
+                                onClick={this.onDraw.bind(this)}>
                                 Send Draw Request
                             </button>
                         </div>
@@ -82,6 +110,7 @@ class GameButtons extends Component {
                 </div>
             );
         } else if(room.gameType == 'four-player') {
+            
             if(room.game.white && room.game.white.playerId == profile._id) {
                 if(!room.game.gameStarted || !room.game.white.alive) {
                     return <div></div>
@@ -127,4 +156,4 @@ function mapStateToProps(state) {
 
 }
 
-export default connect(mapStateToProps, {resign, draw, fourResign}) (GameButtons)
+export default connect(mapStateToProps, {resign, draw, fourResign, killAIs}) (GameButtons)
