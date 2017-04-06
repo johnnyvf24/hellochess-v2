@@ -46,7 +46,7 @@ class OccupiedCard extends Component {
 
     renderActiveBorder() {
         const {player, game, resigned, turn, color, longColor} = this.props;
-        if (!player || !game || !turn)
+        if (!player || !game || !turn || !game.gameStarted)
             return "";
         let isMyTurn = turn == color;
         let isResigned = resigned;
@@ -59,7 +59,9 @@ class OccupiedCard extends Component {
     }
 
     renderLeaveSeat(player, roomName) {
-        if(player.type) {
+        console.log('player ', player);
+        console.log('room ', roomName);
+        if(player.type == "computer") {
             return (
                 <div className="pull-right">
                     <a href="#"
@@ -89,14 +91,14 @@ class OccupiedCard extends Component {
     }
 
     render() {
-        const {profile, room, game, player, time, playerTime} = this.props;
-        if(!profile || !room || !player || !game || !time || !playerTime) {
+        const {profile, room, game, player, time, playerTime, activeThread} = this.props;
+        if(!profile || !room || !player || !game || !time || !playerTime || !activeThread) {
             return <div></div>
         }
         return (
             <div className={"player-card-border" + this.renderActiveBorder()}>
                 <Panel className={"player-card occupied " + this.renderAliveIndicator() + " " + this.props.colorClass}>
-                    { !game.fen && this.renderLeaveSeat(player, room.room.name)}
+                    { !game.gameStarted && this.renderLeaveSeat(player, activeThread)}
 
                     <Row>
                         <a href="#"
@@ -110,7 +112,6 @@ class OccupiedCard extends Component {
                         </span>
                     </Row>
 
-                    
                 </Panel>
             </div>
         );
@@ -120,15 +121,18 @@ class OccupiedCard extends Component {
 function mapStateToProps(state, props) {
     let cardPlayer = props.longColor;
     return {
+        fourplayer_ratings: state.auth.profile.fourplayer_ratings,
+        standard_ratings: state.auth.profile.standard_ratings,
         profile: state.auth.profile,
         room: state.openThreads[state.activeThread],
         game: state.openThreads[state.activeThread].game,
         turn: state.openThreads[state.activeThread].game.turn,
         player: state.openThreads[state.activeThread].game[cardPlayer],
-        time: state.openThreads[state.activeThread].time.value,
+        time: state.openThreads[state.activeThread].time,
         playerTime: state.openThreads[state.activeThread].times[cardPlayer.charAt(0)],
         playerColor: cardPlayer,
-        gameStarted: state.openThreads[state.activeThread].game.gameStarted
+        gameStarted: state.openThreads[state.activeThread].game.gameStarted,
+        activeThread: state.activeThread
     }
 }
 

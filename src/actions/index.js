@@ -198,13 +198,7 @@ export function updateLiveUser(profile) {
     return (dispatch) => {
         return dispatch({
             type: 'server/update-user',
-            payload: {
-                user: {
-                    username: profile.username,
-                    _id: profile._id,
-                    picture: profile.picture
-                }
-            }
+            payload: profile
         });
     }
 }

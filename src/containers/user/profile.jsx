@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
 
 import { getUserProfile } from '../../actions/user';
+import {Panel, Button} from 'react-bootstrap'
 
 class Profile extends Component {
 
@@ -37,13 +38,13 @@ class Profile extends Component {
                 <div>
                     <div className="row">
                         <a href="#"
-                            className="btn btn-secondary"
+                            className="btn btn-default"
                             onClick={this.back.bind(this)}>
                             <i className="fa fa-chevron-left fa-2x" aria-hidden="true"></i>
                         </a>
                     </div>
                     <div className="row">
-                        <h1 className="profile-heading center">{this.props.profile.username}</h1>
+                        <h1 className="profile-heading text-center">{this.props.profile.username}</h1>
                     </div>
                     <div className="row">
                         <div className="col-xs-5">
@@ -59,7 +60,7 @@ class Profile extends Component {
                         </div>
                         <div className="col-xs-6">
 
-                            <div className="card rating-card text-center">
+                            <Panel className="rating-card text-center">
                                 <div className="card-block">
                                     <h3 className="card-title">Ratings</h3>
                                     <table className="table">
@@ -105,7 +106,7 @@ class Profile extends Component {
                                     </table>
 
                                 </div>
-                            </div>
+                            </Panel>
                         </div>
                         <div className="col-xs-3">
                         </div>

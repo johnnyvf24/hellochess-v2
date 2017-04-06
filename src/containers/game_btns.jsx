@@ -83,19 +83,19 @@ class GameButtons extends Component {
             );
         } else if(room.gameType == 'four-player') {
             if(room.game.white && room.game.white.playerId == profile._id) {
-                if(room.game.gameStarted && !room.game.white.alive) {
+                if(!room.game.gameStarted || !room.game.white.alive) {
                     return <div></div>
                 }
             } else if( room.game.black && room.game.black.playerId == profile._id) {
-                if(room.game.gameStarted && !room.game.black.alive) {
+                if( !room.game.gameStarted || !room.game.black.alive) {
                     return <div></div>
                 }
             } else if( room.game.gold && room.game.gold.playerId == profile._id) {
-                if(room.game.gameStarted && !room.game.gold.alive) {
+                if(!room.game.gameStarted || !room.game.gold.alive) {
                     return <div></div>
                 }
             } else if( room.game.red && room.game.red.playerId == profile._id) {
-                if(room.game.gameStarted && !room.game.red.alive) {
+                if(!room.game.gameStarted || !room.game.red.alive) {
                     return <div></div>
                 }
             }

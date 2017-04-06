@@ -17,7 +17,7 @@ export function socketIoMiddleware(store) {
                 socket.emit('connected-user', profile);
                 break;
             case 'server/update-user':
-                socket.emit('update-user', action.payload.user);
+                socket.emit('update-user', action.payload);
                 break;
             case 'server/join-room':
                 socket.emit('join-room', action.payload);
@@ -41,7 +41,10 @@ export function socketIoMiddleware(store) {
                 socket.emit('four-resign', action.payload);
                 break;
             case 'server/logout':
-                socket.emit('disconnect', action.payload);
+                socket.emit('logout', action.payload);
+                break;
+            case 'server/remove-ai-player':
+                socket.emit('remove-ai-player', action.payload);
                 break;
         } 
      
@@ -128,6 +131,10 @@ export default function(store) {
     
     socket.on('four-new-move', data => {
         store.dispatch({type: 'four-new-move', payload: data});
+    });
+    
+    socket.on('update-user', data => {
+        store.dispatch({type: 'update-user', payload: data}); 
     });
     
     socket.on('action', data => {

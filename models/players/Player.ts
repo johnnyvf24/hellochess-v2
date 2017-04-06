@@ -42,7 +42,8 @@ export default class Player {
             crazyhouse_ratings: this._crazyhouse_ratings,
             crazyhouse960_ratings: this._crazyhouse960_ratings,
             alive: this._alive,
-            level: this._playerLevel
+            level: this._playerLevel,
+            type: this._type
         };
     }
     

@@ -3,6 +3,7 @@ import Player from '../players/Player';
 export default class Message {
     private _picture: string;
     private _username: string;
+    private _playerId: string;
     private _eventType: string = 'chat-message';
     private _time = new Date();
     
@@ -11,6 +12,7 @@ export default class Message {
                 private _thread: string) {
         this._picture = player.picture;
         this._username = player.username;
+        this._playerId = player.playerId;
     }
     
     getMessage() {
@@ -19,7 +21,8 @@ export default class Message {
             msg: this._message,
             picture: this._picture,
             event_type: this._eventType,
-            time: this._time
+            time: this._time,
+            playerId: this._playerId
         };
     }
     

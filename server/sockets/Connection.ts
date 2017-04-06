@@ -130,12 +130,21 @@ export default class Connection {
     updatePlayer(data) {
         //check to see if the player is in the player list
         this.players.map((player) => {
-            if(player.playerId === data._id) {
+            if(player.playerId === data._id || player.playerId === data.playerId) {
                 let status = player.username = data.username;
+                console.log('updating user ', player.username);
+                console.log('with data ', data);
+                player.standard_ratings = data.standard_ratings;
+                player.fourplayer_ratings = data.fourplayer_ratings;
+                player.crazyhouse_ratings = data.crazyhouse_ratings;
+                player.crazyhouse960_ratings = player.crazyhouse960_ratings;
                 return status;
             } 
         });
-        return false;   //player did not exist
+        
+        this.rooms.map(room => {
+            room.updatePlayer(data);
+        });
     }
     
     //Remove a player from the room;

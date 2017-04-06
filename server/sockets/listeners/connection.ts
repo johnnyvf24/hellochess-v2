@@ -3,6 +3,46 @@ import Room from '../../../models/rooms/Room';
 
 module.exports = function(io, socket, connection) {
     
+    function disconnect() {
+                //retrieve the user which has disconnected
+        let player: Player = connection.getPlayerBySocket(socket);
+        
+        //get a list of rooms in which the player is in
+        let rooms: Room [] = connection.getPlayerRoomsByPlayer(player);
+        
+       
+        if(!rooms || !player) {
+            //TODO error
+            return;
+        }
+        
+        //remove the player connection
+        connection.removePlayer(player.playerId);
+        
+        rooms.map((room: Room) => {
+            if(!room.removePlayer(player)) {
+                //TODO error
+                return;
+            }
+            
+            if (room.empty()) { //there are no users in the room
+                if(connection.removeRoomByName(room.name)) {
+                    //TODO not sure if anything else is needed here
+                } else {
+                    console.log("could not delete room " + room.name);
+                }
+            } else {
+                if(room.game) {
+                    room.game.removePlayerFromAllSeats(player);
+                }
+                //tell everyone that the player has left the room
+                io.to(room.name).emit('update-room', room.getRoom());
+            }
+        });
+        
+        connection.emitAllRooms();
+    }
+    
     //Clients emit this event upon successfully establishing a connection
     //The server will track all users
     socket.on('connected-user', data => {
@@ -28,37 +68,13 @@ module.exports = function(io, socket, connection) {
     socket.on('update-user', data => {
         //Used to update the username on the server when the user adds it
         connection.updatePlayer(data);
+        
+        // socket.emit('action', {type: 'update-user', payload: data})
     });
     
+    socket.on('logout', data=> {disconnect()})
+    
     socket.on('disconnect', (reason) => {
-
-        //retrieve the user which has disconnected
-        let player: Player = connection.getPlayerBySocket(socket);
-        
-        //get a list of rooms in which the player is in
-        let rooms: Room [] = connection.getPlayerRoomsByPlayer(player);
-        
-        if(!rooms || !player) {
-            //TODO error
-        }
-        
-        rooms.map((room: Room) => {
-            if(!room.removePlayer(player)) {
-                //TODO error
-                return;
-            }
-            if (room.empty()) { //there are no users in the room
-                if(connection.removeRoomByName(room.name)) {
-                    //TODO not sure if anything else is needed here
-                } else {
-                    console.log("could not delete room " + room.name);
-                }
-            } else {
-                //tell everyone that the player has left the room
-                io.to(room.name).emit('update-room', room.getRoom());
-            }
-        });
-        
-        connection.emitAllRooms();
+        disconnect();
     });
 };

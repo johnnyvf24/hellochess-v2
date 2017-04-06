@@ -168,6 +168,19 @@ export default class Room {
         return this._players;
     }
     
+    updatePlayer(data) {
+        this._players.map((player) => {
+            if(player.playerId === data._id || player.playerId === data.playerId) {
+                let status = player.username = data.username;
+                player.standard_ratings = data.standard_ratings;
+                player.fourplayer_ratings = data.fourplayer_ratings;
+                player.crazyhouse_ratings = data.crazyhouse_ratings;
+                player.crazyhouse960_ratings = player.crazyhouse960_ratings;
+                return status;
+            } 
+        });
+    }
+    
     //checks to see if the player is in a specified room
     isPlayerInRoom(player: Player) {
         let playerFound = false;

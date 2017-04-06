@@ -131,7 +131,7 @@ class Live extends Component {
         } else {
             return (
                 <Row id="wrapper">
-                    <Col id="chatbox-wrapper" xs={0} sm={6} md={4} lg={5}>
+                    <Col id="chatbox-wrapper" xs={0} sm={4} md={4} lg={5}>
                         <RoomViewer />
                     </Col>
                     <Col xs={12} sm={6} md={6} lg={5}>
@@ -144,7 +144,7 @@ class Live extends Component {
                         <BoardWrapper />
                         <GameButtons />
                     </Col>
-                    <div id="time-ads-column" className="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+                    <div id="time-ads-column" className="col-xs-12 col-sm-2 col-md-2 col-lg-2">
                         <PlayerTimes />
                     </div>
                 </Row>

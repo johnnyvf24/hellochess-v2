@@ -16,7 +16,7 @@ function activeThread (state = 'Global', action) {
         case SELECTED_ROOM:
             return action.payload;
         case LOGOUT_SUCCESS:
-            return 'Global';
+            return 'Games';
         default:
             return state;
     }

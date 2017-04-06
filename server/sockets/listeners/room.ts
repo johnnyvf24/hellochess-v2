@@ -34,6 +34,9 @@ module.exports = function(io, socket, connection) {
         let roomName: string = data.roomName;
         let room: Room = connection.getRoomByName(roomName);
         let player: Player;
+        if(!data.profile) {
+            return;
+        }
         let playerType = data.profile.type;
         let playerLevel = data.profile.level;
         if (typeof playerType !== "undefined" && playerType === "computer" && typeof playerLevel === "number") {
@@ -71,6 +74,11 @@ module.exports = function(io, socket, connection) {
             } else {
                 console.log("could not delete room " + roomName);
             }
+        } else {
+            if(room.game) {
+                room.game.removePlayerFromAllSeats(player);
+            }
+            io.to(room.name).emit('update-room', room.getRoom());
         }
         
         connection.emitAllRooms();
@@ -96,7 +104,7 @@ module.exports = function(io, socket, connection) {
                     // room = new Room(io, new Standard(io));
                     break;
                 case 'four-player':
-                    room = new Room(io, new FourGame(io, roomName, data.time));
+                    room = new Room(io, new FourGame(io, roomName, data.time, connection));
                     break;
                 case 'crazyhouse':
                     // room = new Room(io, new CrazyHouse(io));
@@ -133,6 +141,19 @@ module.exports = function(io, socket, connection) {
         let game: Game = room.game;
         let move = data.move;
         room.makeMove(move);
+    });
+    
+    socket.on('remove-ai-player', data => {
+        let roomName = data.thread;
+        let player = data.player;
+        
+        let room: Room = connection.getRoomByName(roomName);
+        if(!room || !room.game) {
+            return;
+        }
+        
+        room.game.removePlayerByPlayerId(player.playerId);
+        io.to(room.name).emit('update-room', room.getRoom());
     });
     
     socket.on('four-resign', data => {

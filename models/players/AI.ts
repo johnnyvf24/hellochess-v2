@@ -3,6 +3,8 @@ import Ratings from '../ratings/Ratings';
 
 export default class AI extends Player {
     
+    static aiId = 1;
+    
     constructor(
         _io: any,
         _username: string,
@@ -12,7 +14,7 @@ export default class AI extends Player {
         
         super(
             null,
-            _username,
+            _username + AI.aiId,
             _username,
             "https://openclipart.org/image/75px/svg_to_png/168755/cartoon-robot.png&disposition=attachment",
             false,
@@ -23,6 +25,7 @@ export default class AI extends Player {
             defaultRatings);
             
         this.playerLevel = playerLevel;
+        AI.aiId++;
     }
     
 }

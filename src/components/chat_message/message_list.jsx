@@ -10,7 +10,7 @@ export default class MessageList extends Component {
         super(props);
     }
 
-    componentDidUpdate  () {
+    componentDidUpdate  (prevProps) {
         const msgList = this.refs.msgList;
         msgList.scrollTop = msgList.scrollHeight;
     }
@@ -22,7 +22,7 @@ export default class MessageList extends Component {
                 text={message.msg}
                 user={message.user}
                 picture={message.picture}
-                uid={message.uid}
+                uid={message.playerId}
                 event_type={message.event_type}
                 time={message.time}
             />
@@ -33,9 +33,11 @@ export default class MessageList extends Component {
         const { messages } = this.props;
 
         return (
-            <ListGroup ref="msgList" className="chatbox-message-list">
-                {mapObject(messages, this.renderChatListItem)}
-            </ListGroup>
+            <div ref="msgList" className="chatbox-message-list">
+                <ListGroup>
+                    {mapObject(messages, this.renderChatListItem)}
+                </ListGroup>
+            </div>
         );
     }
 }

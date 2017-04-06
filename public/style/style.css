@@ -17,7 +17,7 @@ body .container-fluid {
 }
 
 .landing-card {
-    background-color: #76bdd5;
+    background: -webkit-linear-gradient(top, #aadeee, #c0e6f2);
     padding: 60px;
     float: center;
 }

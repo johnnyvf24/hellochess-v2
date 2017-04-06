@@ -11,7 +11,7 @@ export default class Login extends Component {
                 <Row>
                     <Col xs={0} sm={0} md={4} />
                     <Col xs={12} md={4}>
-                        <img className="img-responsive home-logo" src="https://www.hellochess.com/img/alpha_banner.png" alt="" />
+                        <img className="img-responsive home-logo" src="/img/tan_logo.png" alt="" />
                     </Col>
                     <Col xs={0} sm={0} md={4} />
                 </Row>

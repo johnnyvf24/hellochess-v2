@@ -45,17 +45,17 @@ class FourBoard extends Component {
             }
 
             let usColor = 'w';
-            if(this.props.room.paused === false && this.props.room.white) {
-                if(nextProps.room.white.playerId === nextProps.profile._id) {
+            if(nextProps.game.gameStarted !== false && nextProps.game.white) {
+                if(nextProps.game.white.playerId === nextProps.profile._id) {
                     this.board.orientation('white');
                     usColor = 'w';
-                } else if(nextProps.room.black.playerId === nextProps.profile._id) {
+                } else if(nextProps.game.black.playerId === nextProps.profile._id) {
                     this.board.orientation('black');
                     usColor = 'b';
-                } else if(nextProps.room.gold.playerId === nextProps.profile._id) {
+                } else if(nextProps.game.gold.playerId === nextProps.profile._id) {
                     this.board.orientation('gold');
                     usColor = 'g';
-                } else if(nextProps.room.red.playerId === nextProps.profile._id) {
+                } else if(nextProps.game.red.playerId === nextProps.profile._id) {
                     this.board.orientation('red');
                     usColor = 'r'
                 }
@@ -76,12 +76,12 @@ class FourBoard extends Component {
                 window.addEventListener('resize', shadeOnResize);
                 this.prevMoveResizeListener = shadeOnResize;
                 // execute premove if it's our turn
-                if (nextProps.room.turn === usColor) {
+                if (nextProps.room.game.turn === usColor) {
                     this.executePremove();
                 }
             }
 
-            if(nextProps.pgn) {
+            if(nextProps.game.pgn) {
                 //TODO fourchess still doesn't have a load pgn feature
             }
         } else {
@@ -352,9 +352,9 @@ class FourBoard extends Component {
         window.addEventListener('resize', (event) => {
             this.boardRedraw();
         });
-        if(this.props.fen) {
-            this.board.position(this.props.fen);
-            this.game.position(this.props.fen);
+        if(this.props.game.fen) {
+            this.board.position(this.props.game.fen);
+            this.game.position(this.props.game.fen);
             if(this.props.game.black) {
                 if(this.props.game.white.playerId === this.props.profile._id) {
                     this.board.orientation('white');

@@ -66,7 +66,7 @@ class RoomViewer extends Component {
         }
 
         return (
-            <Tabs defaultActiveKey={200} onSelect={this.onSelectTab.bind(this)} id="left-chatbox">
+            <Tabs defaultActiveKey={this.props.activeThread} onSelect={this.onSelectTab.bind(this)} id="left-chatbox">
                 <Tab eventKey={200} title="Games">
                     <ExistingRoomList />
                 </Tab>

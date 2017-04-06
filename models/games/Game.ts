@@ -2,6 +2,7 @@ const Notifications = require('react-notification-system-redux');
 import Player from '../players/Player';
 import Engine from '../../engine/Engine';
 import AI from '../players/AI';
+import Connection from '../../server/sockets/Connection';
 
 abstract class Game {
     public static COLOR_SHORT_TO_LONG: any =
@@ -36,6 +37,7 @@ abstract class Game {
     gameStarted: boolean = false;
     roomName: string;
     time: any;
+    connection: Connection;
     
     abstract addPlayer(player: Player, color: string): boolean;
     abstract removePlayer(color: string): boolean;
@@ -45,7 +47,9 @@ abstract class Game {
     abstract newEngineInstance(roomName: string, io: any): void;
     abstract startGame(): any;
     abstract endAndSaveGame(): boolean;
-    abstract setPlayerResignByPlayerObj(player: Player)
+    abstract setPlayerResignByPlayerObj(player: Player);
+    abstract removePlayerFromAllSeats(player: Player);
+    abstract removePlayerByPlayerId(playerId: string);
     
     setColorTime(color: string, time: number): void {
         this.times[color] = time;
@@ -218,8 +222,6 @@ abstract class Game {
         
         //check to see if the game is over
         if (this.gameRulesObj.game_over()) {
-    
-            
             if (this.gameRulesObj.in_draw()) {
                 
             } else {
