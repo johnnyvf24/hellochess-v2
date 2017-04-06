@@ -1,23 +1,23 @@
 import React, { Component } from 'react'
 import AuthCard from '../../containers/auth_card';
 import { login, logoutUser } from '../../actions/index'
+import {Grid, Row, Col, Clearfix} from 'react-bootstrap';
 
 export default class Login extends Component {
     render() {
 
         return (
-            <div>
-                <div className="row">
-                    <div className="col-sm-hidden col-md-3 col-lg-4">
-                    </div>
-                    <div className="col-sm-12 col-md-6 col-lg-4">
-                        <img className="img-fluid home-logo" src="https://www.hellochess.com/img/alpha_banner.png" alt="" />
-                    </div>
-                    <div className="col-sm-hidden col-md-3 col-lg-4">
-                    </div>
-                </div>
+            <Grid fluid={true}>
+                <Row>
+                    <Col xs={0} sm={0} md={4} />
+                    <Col xs={12} md={4}>
+                        <img className="img-responsive home-logo" src="/img/tan_logo.png" alt="" />
+                    </Col>
+                    <Col xs={0} sm={0} md={4} />
+                </Row>
+                
                 <AuthCard />
-            </div>
+            </Grid>
         );
     }
 }

@@ -4,6 +4,8 @@ import {tick, removeComputer} from '../../actions/room';
 import {millisToMinutesAndSeconds, formatTurn, showElo} from '../../utils/index';
 import { browserHistory } from 'react-router';
 
+import {Panel, Row} from 'react-bootstrap';
+
 class OccupiedCard extends Component {
 
     constructor(props) {
@@ -12,28 +14,28 @@ class OccupiedCard extends Component {
     };
 
     componentWillReceiveProps(nextProps) {
-        if(nextProps.turn != this.props.turn
-            && !nextProps.paused) {
+        if(((nextProps.turn != this.props.turn) || (this.props.gameStarted != nextProps.gameStarted))
+            && nextProps.gameStarted == true) {
             if(nextProps.turn == this.props.color) {
                 clearInterval(this.countDown);
                 this.countDown = setInterval( () => {
-                    this.props.tick(nextProps.name, formatTurn(nextProps.turn))
+                    this.props.tick(this.props.room.room.name, nextProps.turn)
                 }, 1000);
             } else {
                 clearInterval(this.countDown);
             }
-        } else if(nextProps.paused) {
+        } else if(nextProps.gameStarted == false) {
             clearInterval(this.countDown);
         }
     }
 
     componentWillMount() {
-        if(this.props.turn == this.props.color && !this.props.paused) {
+        if(this.props.turn == this.props.color && this.props.gameStarted == true) {
             clearInterval(this.countDown);
             this.countDown = setInterval( () => {
-                this.props.tick(this.props.name, formatTurn(this.props.turn))
+                this.props.tick(this.props.room.room.name, this.props.turn)
             }, 1000);
-        } else {
+        } else if(this.props.gameStarted == false){
             clearInterval(this.countDown);
         }
     }
@@ -43,11 +45,10 @@ class OccupiedCard extends Component {
     }
 
     renderActiveBorder() {
-        const {player, game, resigned, turn} = this.props;
-
-        if (!player || !game)
+        const {player, game, resigned, turn, color, longColor} = this.props;
+        if (!player || !game || !turn || !game.gameStarted)
             return "";
-        let isMyTurn = turn == player.color;
+        let isMyTurn = turn == color;
         let isResigned = resigned;
         let doDrawBorder = isMyTurn && !isResigned;
         return doDrawBorder ? " active" : "";
@@ -58,7 +59,9 @@ class OccupiedCard extends Component {
     }
 
     renderLeaveSeat(player, roomName) {
-        if(player.type) {
+        console.log('player ', player);
+        console.log('room ', roomName);
+        if(player.type == "computer") {
             return (
                 <div className="pull-right">
                     <a href="#"
@@ -79,58 +82,57 @@ class OccupiedCard extends Component {
     // if dead, returns the className that will
     // indicate a dead player
     renderAliveIndicator() {
-        const {alive, longColor} = this.props;
+        const {player, longColor} = this.props;
         let className = "";
-        if (alive === false) {
+        if (player.alive === false) {
             className = longColor + "-dead";
         }
         return className;
     }
 
     render() {
-        const {player, time, game, name} = this.props;
-        if(!player || !time) {
+        const {profile, room, game, player, time, playerTime, activeThread} = this.props;
+        if(!profile || !room || !player || !game || !time || !playerTime || !activeThread) {
             return <div></div>
         }
         return (
             <div className={"player-card-border" + this.renderActiveBorder()}>
-                <div className={"card player-card occupied " + this.renderAliveIndicator()}>
-                    <div className={"card-block " + this.props.colorClass + " " + this.renderAliveIndicator()}>
-                        { !game.fen && this.renderLeaveSeat(player, name)}
+                <Panel className={"player-card occupied " + this.renderAliveIndicator() + " " + this.props.colorClass}>
+                    { !game.gameStarted && this.renderLeaveSeat(player, activeThread)}
 
-                        <div className="row">
-                            <a href="#"
-                                onClick={(e) => browserHistory.push(`/profile/${player._id}`)}>
-                                <img className="player-img rounded-circle" src={player.picture} />
-                            </a>
-                            <div className="card-text"><h5>{player.username}</h5>{showElo(game, player)}</div>
-                        </div>
+                    <Row>
+                        <a href="#"
+                            onClick={(e) => browserHistory.push(`/profile/${player.playerId}`)}
+                            className="pull-left">
+                            <img className="player-img img-circle" src={player.picture} />
+                        </a>
+                        <div className="player-sit-info"><h4>{player.username}</h4>{showElo(game, time, player)}</div>
+                        <span className="pull-right player-time-info">
+                            {this.renderTime(playerTime)}
+                        </span>
+                    </Row>
 
-                        <h4 className="card-title pull-right">
-                            {this.renderTime(time)}
-                        </h4>
-                    </div>
-                </div>
+                </Panel>
             </div>
         );
     }
 }
 
-function mapStateToProps(state, ownProps) {
-    let color = ownProps.longColor;
-    let game = state.openThreads[state.activeThread];
-    let player = game[color];
-    let time = player ? player.time : null;
+function mapStateToProps(state, props) {
+    let cardPlayer = props.longColor;
     return {
-        player: player,
-        time: time,
-        game: game,
-        resigned: player.resigned,
-        turn: game.turn,
-        paused: game.paused,
-        lastMove: game.lastMove,
-        name: state.activeThread,
-        alive: player.alive
+        fourplayer_ratings: state.auth.profile.fourplayer_ratings,
+        standard_ratings: state.auth.profile.standard_ratings,
+        profile: state.auth.profile,
+        room: state.openThreads[state.activeThread],
+        game: state.openThreads[state.activeThread].game,
+        turn: state.openThreads[state.activeThread].game.turn,
+        player: state.openThreads[state.activeThread].game[cardPlayer],
+        time: state.openThreads[state.activeThread].time,
+        playerTime: state.openThreads[state.activeThread].times[cardPlayer.charAt(0)],
+        playerColor: cardPlayer,
+        gameStarted: state.openThreads[state.activeThread].game.gameStarted,
+        activeThread: state.activeThread
     }
 }
 

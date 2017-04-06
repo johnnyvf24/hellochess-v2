@@ -42,7 +42,7 @@ var UserSchema = new Schema({
         type: Boolean,
         default: false
     },
-    two_elos: {
+    standard_ratings: {
         bullet: {
             type: Number,
             default: 1200
@@ -60,7 +60,43 @@ var UserSchema = new Schema({
             default: 1200
         }
     },
-    four_elos: {
+    fourplayer_ratings: {
+        bullet: {
+            type: Number,
+            default: 1200
+        },
+        blitz: {
+            type: Number,
+            default: 1200
+        },
+        rapid: {
+            type: Number,
+            default: 1200
+        },
+        classic: {
+            type: Number,
+            default: 1200
+        }
+    },
+    crazyhouse_ratings: {
+        bullet: {
+            type: Number,
+            default: 1200
+        },
+        blitz: {
+            type: Number,
+            default: 1200
+        },
+        rapid: {
+            type: Number,
+            default: 1200
+        },
+        classic: {
+            type: Number,
+            default: 1200
+        }
+    },
+    crazyhouse960_ratings: {
         bullet: {
             type: Number,
             default: 1200
@@ -108,8 +144,10 @@ UserSchema.methods.toJSON = function() {
         'email',
         'username',
         'social',
-        'two_elos',
-        'four_elos'
+        'standard_ratings',
+        'fourplayer_ratings',
+        'crazyhouse_ratings',
+        'crazyhouse960_ratings'
     ]);
 };
 

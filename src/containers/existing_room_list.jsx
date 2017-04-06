@@ -2,7 +2,9 @@ import React, {Component} from 'react';
 import Select from 'react-select';
 import { connect } from 'react-redux';
 import { mapObject } from '../utils/'
-import {joinRoom} from '../actions/';
+import { joinRoom } from '../actions/';
+
+import {Row, Col, Button, Table} from 'react-bootstrap';
 
 const gameTypeOptions = [
     { value: 'all', label: 'All Games'},
@@ -23,55 +25,42 @@ class ExistingRoomList extends Component {
         this.props.joinRoom(key);
     }
 
-    renderRoomItems(rooms) {
-        return mapObject( rooms, (key, value) => {
-            if(!value.users) {
-                return;
-            }
-            return (
-                <tr key={value.id} onClick={this.onClickRoom.bind(this, key)}>
-                    <td>{value.room.name}</td>
-                    <td>{value.gameType}</td>
-                    <td>{`${value.time.value}mins/${value.time.increment}secs` }</td>
-                </tr>
-            );
-        });
+    renderRoomItems(room) {
+        if(!room.users) {
+            return;
+        }
+        return (
+            <tr key={room.id} onClick={this.onClickRoom.bind(this, room.room.name)}>
+                <td>{room.room.name}</td>
+                <td>{room.gameType}</td>
+                <td>{`${room.time.value}mins/${room.time.increment}secs` }</td>
+            </tr>
+        );
     }
 
     render() {
         const { rooms } = this.props;
-
-        //TODO add to filter-game-type
-        // <Select
-        //     name="game-type"
-        //     value={"all"}
-        //     options={gameTypeOptions}
-        //     onChange={(event) => {}}
-        // />
         return (
-            <div
-                id="chat-list"
-                className="tab-pane"
-                role="tabpanel">
-                <div className="row chatbox-top-stats-wrapper">
+            <div id="chat-list">
+                <Row className="chatbox-top-stats-wrapper">
                     <span className="chatbox-top-stats">
-                        <div className="row">
-                            <div className="col-xs-4"></div>
+                        <Row>
+                            <Col xs={4}></Col>
                             <div className="col-xs-4">
                                 <div id="filter-game-type" className="col-xs-12">
 
                                 </div>
                             </div>
-                            <div className="col-xs-4">
-                            <a className="float-xs-right">
-                                {rooms.length} Game Rooms
-                            </a>
-                            </div>
-                        </div>
+                            <Col xs={4}>
+                                <a className="pull-right num-user-modal-link">
+                                    {rooms.length} Game Rooms
+                                </a>
+                            </Col>
+                        </Row>
                     </span>
-                </div>
-                <div className="col-xs-8 col-xs-10 col-md-12">
-                    <table className="table-responsive table-sm table-curved">
+                </Row>
+                <Col md={12}>
+                    <Table responsive>
                         <thead className="thead-inverse">
                             <tr>
                                 <th>Title</th>
@@ -82,8 +71,8 @@ class ExistingRoomList extends Component {
                         <tbody>
                             {rooms.map(this.renderRoomItems)}
                         </tbody>
-                    </table>
-                </div>
+                    </Table>
+                </Col>
             </div>
         );
     }

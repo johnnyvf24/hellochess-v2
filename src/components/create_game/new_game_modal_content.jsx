@@ -1,21 +1,23 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import Select from 'react-select';
-import ReactBootstrapSlider  from 'react-bootstrap-slider';
+import {Button, Row, Col} from 'react-bootstrap';
+import Slider, { Range } from 'rc-slider';
+import 'rc-slider/assets/index.css';
 
 import {
     selectedGameType,
     selectedNewTime,
     selectedNewTimeIncrement,
-    createGameRoom
 } from '../../actions/create_game.js';
 
+
 const gameTypeOptions = [
-    { value: 'two-player', label: 'Two Player'},
+    // { value: 'standard', label: 'Standard'},
     { value: 'four-player', label: 'Four Player'},
-    { value: 'crazyhouse', label: 'Crazyhouse'},
-    { value: 'crazyhouse960', label: 'Crazyhouse 960'},
-    //{ value: 'four-player-team', label: 'Four Player Teams'}
+    // { value: 'crazyhouse', label: 'Crazyhouse'},
+    // { value: 'crazyhouse960', label: 'Crazyhouse 960'},
+    // { value: 'four-player-team', label: 'Four Player Teams'}
 ]
 
 class NewGameModalContent extends Component {
@@ -23,7 +25,6 @@ class NewGameModalContent extends Component {
         super(props);
 
         this.renderTimeType = this.renderTimeType.bind(this);
-        this.onCreateGame = this.onCreateGame.bind(this);
         this.ononSelectGameType = this.onSelectGameType.bind(this);
     }
 
@@ -52,38 +53,19 @@ class NewGameModalContent extends Component {
         this.props.selectedGameType(val.value);
     }
 
-    onChangeTime(event) {
-        this.props.selectedNewTime(event.target.value);
+    onChangeTime(value) {
+        this.props.selectedNewTime(value);
     }
 
-    onChangeTimeInverval(event) {
-        this.props.selectedNewTimeIncrement(event.target.value);
-    }
-
-    onCreateGame() {
-        this.props.createGameRoom();
+    onChangeTimeInverval(value) {
+        this.props.selectedNewTimeIncrement(value);
     }
 
     render() {
         return (
-            <div className="modal-content">
-                {/* Modal header */}
-                <div className="modal-header">
-                    <button type="button"
-                        className="close"
-                        data-dismiss="modal"
-                        aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h5 id="new-game-label" className="modal-title">
-                        New Game
-                    </h5>
-                </div>
-
-                {/*Modal body */}
-                <div className="modal-body">
-                    <div className="row">
-                    <div className="col-xs-12 col-sm-6">
+            <div>
+                <Row>
+                    <Col xs={12} sm={6}>
                         <label>
                             Select a game type
                         </label>
@@ -93,15 +75,15 @@ class NewGameModalContent extends Component {
                             options={gameTypeOptions}
                             onChange={this.onSelectGameType.bind(this)}
                         />
-                    </div>
-                    <div className="col-xs-12 col-sm-6">
+                    </Col>
+                    <Col xs={12} sm={6}>
                         <div>
                             <label>
-                                Time Control (mins)
+                                Time Control ({this.props.newGame.time.value} mins)
                             </label>
-                            <ReactBootstrapSlider
+                            <Slider
                                 value={this.props.newGame.time.value}
-                                slideStop={this.onChangeTime.bind(this)}
+                                onChange={this.onChangeTime.bind(this)}
                                 step={1}
                                 max={45}
                                 min={1} />
@@ -109,31 +91,18 @@ class NewGameModalContent extends Component {
 
                         <div>
                             <label>
-                                Increment (secs)
+                                Increment ({this.props.newGame.time.increment} secs)
                             </label>
-                            <ReactBootstrapSlider
+                            <Slider
                                 value={this.props.newGame.time.increment}
-                                slideStop={this.onChangeTimeInverval.bind(this)}
+                                onChange={this.onChangeTimeInverval.bind(this)}
                                 step={1}
                                 max={15}
                                 min={0} />
                         </div>
 
-                    </div>
-                    </div>
-                </div>
-
-                {/*Modal footer */}
-                <div className="modal-footer">
-                    <div className="pull-left">
-                        {this.props.newGame.time.value} min {this.renderTimeType()}
-                    </div>
-                    <button type="button"
-                        onClick={this.onCreateGame}
-                        className="btn btn-warning">
-                        Host Game
-                    </button>
-                </div>
+                    </Col>
+                </Row>
             </div>
         );
     }
@@ -145,4 +114,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps, {selectedGameType, selectedNewTime, selectedNewTimeIncrement, createGameRoom}) (NewGameModalContent);
+export default connect(mapStateToProps, {selectedGameType, selectedNewTime, selectedNewTimeIncrement}) (NewGameModalContent);

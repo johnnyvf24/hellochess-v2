@@ -35,10 +35,10 @@ export function formatTurn(turn) {
     }
 }
 
-export function showElo(game, player) {
-    let eloIndex, tcIndex;
+export function showElo(game, time, player) {
+    let ratings, tcIndex;
     //this time estimate is based on an estimated game length of 35 moves
-    let totalTimeMs = (game.time.value * 60 * 1000) + (35 * game.time.increment * 1000);
+    let totalTimeMs = (time.value * 60 * 1000) + (35 * time.increment * 1000);
 
     //Two player cutoff times
     let twoMins = 120000;   //two minutes in ms
@@ -51,10 +51,23 @@ export function showElo(game, player) {
     let twentyMins = 12000000;
 
     switch(game.gameType) {
-        case 'two-player':
+        case 'standard':
+            ratings = "standard_ratings";
+            break;
+        case 'crazyhouse':
+            ratings = "crazyhouse_ratings";
+            break;
+        case 'crazyhouse960':
+            ratings = "crazyhouse960_ratings";
+            break;
+        case 'four-player':
+            ratings = 'fourplayer_ratings';
+            break;
+    }
+    switch(game.gameType) {
+        case 'standard':
         case 'crazyhouse':
         case 'crazyhouse960':
-            eloIndex = 'two_elos';
             if( totalTimeMs <= twoMins) {
                 //bullet
                 tcIndex = 'bullet';
@@ -68,9 +81,8 @@ export function showElo(game, player) {
                 //classical
                 tcIndex = 'classic';
             }
-            return player[eloIndex][tcIndex];
+            return player[ratings][tcIndex];
         case 'four-player':
-            eloIndex = 'four_elos';
             if( totalTimeMs <= fourMins) {
                 //bullet
                 tcIndex = 'bullet';
@@ -84,6 +96,6 @@ export function showElo(game, player) {
                 //classical
                 tcIndex = 'classic';
             }
-            return player[eloIndex][tcIndex];
+            return player[ratings][tcIndex];
     }
 }

@@ -74,12 +74,10 @@ export function finalizeGameRoom(game, host) {
     delete game.isMakingGameRoom;
     delete host.email;
     game.host = host;
-    let obj = {};
-    obj[game.room.name] = game;
     return (dispatch) => {
         return dispatch({
             type: 'server/join-room',
-            payload: obj
+            payload: game
         });
     }
 }

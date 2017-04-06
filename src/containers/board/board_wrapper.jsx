@@ -15,26 +15,26 @@ class BoardWrapper extends Component {
     
     shouldComponentUpdate(nextProps, nextState) {
         return (
-            this.props.activeThread != nextProps.activeThread ||
+            this.props.room != nextProps.room ||
             Object.keys(this.props.openThreads).length != Object.keys(nextProps.openThreads).length
+           
         );
             
     }
 
     render() {
-        const {activeThread, openThreads} = this.props;
-        if(!activeThread || !openThreads[activeThread]) {
+        const {room} = this.props;
+        
+        if(!room || !room.game.gameType) {
             return <div></div>
         }
+        
+        let gameType = room.game.gameType;
+        let roomName = room.room.name;
 
-        const {gameType} = openThreads[activeThread];
-
-        if(!gameType) {
-            return <div></div>
-        }
         var newGameObject, setBoardPosition;
         switch(gameType) {
-            case 'two-player':
+            case 'standard':
                 newGameObject = function() {
                     return new Chess();
                 };
@@ -46,13 +46,13 @@ class BoardWrapper extends Component {
                         <TwoBoard
                             setBoardPosition={setBoardPosition}
                             newGameObject={newGameObject}
-                            key={activeThread}/>
+                            key={roomName}/>
                     </div>
                 );
             case 'four-player':
                 return (
                     <div id="board-wrapper">
-                        <FourBoard />
+                        <FourBoard key={roomName} />
                     </div>
                 );
             case 'four-player-teams':
@@ -86,7 +86,7 @@ class BoardWrapper extends Component {
                             newGameObject={newGameObject}
                             setBoardPosition={setBoardPosition}
                             crazyhouse={true}
-                            key={activeThread}/>
+                            key={roomName}/>
                     </div>
                 );
         }
@@ -96,10 +96,20 @@ class BoardWrapper extends Component {
 }
 
 function mapStateToProps(state) {
-    return {
-        activeThread: state.activeThread,
-        openThreads: state.openThreads,
+    if(state.openThreads[state.activeThread]) {
+        let gameType = null;
+        let room = state.openThreads[state.activeThread];
+        if(state.openThreads[state.activeThread].gameType) {
+            gameType = state.openThreads[state.activeThread].game.gameType
+        }
+        return {
+            gameType: gameType,
+            room: room,
+            name: state.activeThread,
+        }
     }
+
+    return {};
 }
 
 export default connect(mapStateToProps) (BoardWrapper)

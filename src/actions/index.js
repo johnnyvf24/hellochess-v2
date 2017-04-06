@@ -1,6 +1,5 @@
 import axios from 'axios'
 import {browserHistory} from 'react-router'
-import {CALL_API} from '../middleware/api'
 import {
     ROOT_URL,
     LOGIN_SUCCESS,
@@ -22,7 +21,7 @@ let initGameOptions = {
     },
     time: {
         increment: 3,
-        value: 8
+        value: 1
     }
 };
 
@@ -149,7 +148,6 @@ export function loginUser({loginEmail, loginPassword}) {
                 );
 
                 dispatch({type: LOGIN_ERROR})
-                // return dispatch(authError('Incorrect login info'));
             });
 
     }
@@ -179,7 +177,7 @@ export function saveUsername(id, username) {
 export function selectedRoom(name) {
     return (dispatch) =>{
         return dispatch({
-            type: 'server/selected-room',
+            type: SELECTED_ROOM,
             payload: name
         });
     }
@@ -190,11 +188,7 @@ export function userConnect(profile) {
         return dispatch({
             type: 'server/connected-user',
             payload: {
-                user: {
-                    username: profile.username,
-                    _id: profile._id,
-                    picture: profile.picture
-                }
+                user: { ...profile }
             }
         });
     }
@@ -204,13 +198,7 @@ export function updateLiveUser(profile) {
     return (dispatch) => {
         return dispatch({
             type: 'server/update-user',
-            payload: {
-                user: {
-                    username: profile.username,
-                    _id: profile._id,
-                    picture: profile.picture
-                }
-            }
+            payload: profile
         });
     }
 }
@@ -235,7 +223,7 @@ export function joinRoom(name, gameOptions = initGameOptions) {
     return (dispatch) => {
         let obj = {};
         gameOptions.room.name = name;
-        obj[name] = gameOptions;
+        obj = gameOptions;
 
         return dispatch({
             type: 'server/join-room',

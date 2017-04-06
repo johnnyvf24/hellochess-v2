@@ -42,6 +42,7 @@ export default function newGameOptions (state=initialState, action) {
             return {...state, room: { ...state.room, voiceChat: !state.room.voiceChat}}
         }
         case ActionTypes.RESET_NEW_GAME_MODAL:
+            initialState.room.name = 'random' + makeid();
             return initialState;
         case ActionTypes.SET_MAX_PLAYERS:
             return {...state, room: {...state.room, maxPlayers: action.payload}}

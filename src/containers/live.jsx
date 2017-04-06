@@ -14,6 +14,64 @@ import PlayerTimes from './player_card/player_times';
 import GameButtons from './game_btns';
 import { logout, saveUsername, clearError, userConnect} from '../actions';
 
+import {Grid, Row, Col, Button, Dropdown, MenuItem, Alert} from 'react-bootstrap';
+
+class CustomToggle extends React.Component {
+  constructor(props, context) {
+    super(props, context);
+
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleClick(e) {
+    e.preventDefault();
+
+    this.props.onClick(e);
+  }
+
+  render() {
+    return (
+      <a href="" onClick={this.handleClick}>
+        {this.props.children}
+      </a>
+    );
+  }
+}
+
+class CustomMenu extends React.Component {
+  constructor(props, context) {
+    super(props, context);
+
+    this.onChange = e => this.setState({ value: e.target.value });
+
+    this.state = { value: '' };
+  }
+
+  focusNext() {
+    const input = ReactDOM.findDOMNode(this.input);
+
+    if (input) {
+      input.focus();
+    }
+  }
+
+  render() {
+    const { children } = this.props;
+    const { value } = this.state;
+
+    return (
+      <div className="dropdown-menu dropdown-menu-right" style={{ padding: '' }}>
+         {React.Children.toArray(children).filter(child => (
+            !value.trim() || child.props.children.indexOf(value) !== -1
+            ))}
+        <ul className="list-unstyled">
+            
+        </ul>
+      </div>
+    );
+  }
+}
+
 class Live extends Component {
 
     constructor(props) {
@@ -22,6 +80,7 @@ class Live extends Component {
         this.state = {
             usernameInput: '',
             errorMessage: '',
+            alertVisible: true
         }
 
         this.onInputChange = this.onInputChange.bind(this);
@@ -71,22 +130,24 @@ class Live extends Component {
             return <div></div>
         } else {
             return (
-                <div id="wrapper" className="row">
-                    <div id="chatbox-wrapper" className="hidden-sm-down col-md-4 col-lg-5">
-                        <RoomViewer username=""/>
-                    </div>
-                    <div className="col-xs-12 col-sm-12 col-md-6 col-lg-5">
-                        <div id="start-game-btns" className="row flex-items-xs-center">
-                            <NewGame/>
-                        </div>
+                <Row id="wrapper">
+                    <Col id="chatbox-wrapper" xs={0} sm={4} md={4} lg={5}>
+                        <RoomViewer />
+                    </Col>
+                    <Col xs={12} sm={6} md={6} lg={5}>
+                        <Row id="start-game-btns">
+                            <div className="text-center">
+                                <NewGame/>
+                            </div>
+                        </Row>
 
                         <BoardWrapper />
                         <GameButtons />
-                    </div>
-                    <div id="time-ads-column" className="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+                    </Col>
+                    <div id="time-ads-column" className="col-xs-12 col-sm-2 col-md-2 col-lg-2">
                         <PlayerTimes />
                     </div>
-                </div>
+                </Row>
             );
         }
     }
@@ -114,6 +175,10 @@ class Live extends Component {
             );
         }
     }
+    
+    handleAlertDismiss() {
+        this.setState({alertVisible: false});
+    }
 
     render() {
         if(this.props.connection.error) {
@@ -133,43 +198,50 @@ class Live extends Component {
 
         else if(!this.props.connection.status) {
             return (
-                <div>
-                    <div className="row">
+                <Grid>
+                    <Row>
                         <div className="center">
                             <Loading type='cylon' color='#e3e3e3' >
                             </Loading>
                         </div>
 
-                    </div>
-                    <div className="row">
+                    </Row>
+                    <Row>
                         <h2 id="main-loading-message" className="center">Connecting To Server</h2>
-                    </div>
-                </div>
+                    </Row>
+                </Grid>
             );
         }
         else {
-
+        
             let {activeThread} = this.props;
 
             return (
                 <div id="main-panel">
-                    <div className="row flex-items-xs-right">
-                        <div className="col-xs-10 col-md-6 col-lg-4">
-
+                    <Row>
+                        
+                        <Col xs={0} sm={1} md={2} lg={3}></Col>
+                        {this.state.alertVisible && 
+                        <Col xs={12} sm={10} md={8} lg={6}>
+                            <Alert bsStyle="success" onDismiss={this.handleAlertDismiss.bind(this)}>
+                                <i className="fa fa-wrench fa-lg" aria-hidden="true"></i> <strong> Please note this site is under active development!</strong> Other game modes are temporarily removed while we work on new features.
+                            </Alert>
+                        </Col> 
+                        }
+                        <div className="pull-right">
+                            <Dropdown id="dropdown-custom-menu">
+                                <CustomToggle bsRole="toggle">
+                                    <img id="profile-pic" className="img-responsive img-circle" src={this.props.profile.picture} alt="" />
+                                </CustomToggle>
+                                <CustomMenu bsRole="menu">
+                                    <MenuItem onClick={this.onProfileClick.bind(this)} eventKey="1">Profile</MenuItem>
+                                    <MenuItem divider />
+                                    <MenuItem onClick={this.logout.bind(this)} eventKey="2">Logout</MenuItem>
+                                </CustomMenu>
+                                
+                            </Dropdown>
                         </div>
-                        <div className="col-xs-2 col-md-4 col-lg-4">
-                            <div className="dropdown float-xs-right">
-                                <a className="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <img id="profile-pic" className="img-fluid rounded-circle" src={this.props.profile.picture} alt="" />
-                                </a>
-
-                                <div className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                    <a className="dropdown-item" onClick={this.onProfileClick.bind(this)} href="#" >Profile</a>
-                                    <a className="dropdown-item" onClick={this.logout.bind(this)} href="#">Logout</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    </Row>
                     { this.renderInputUsername() }
 
                     { this.renderLiveContent() }

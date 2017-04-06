@@ -12,6 +12,7 @@ class TwoBoard extends Component {
     constructor(props) {
         super(props);
         this.onDrop = this.onDrop.bind(this);
+        this.onDragMove = this.onDragMove.bind(this);
         this.onDragStart = this.onDragStart.bind(this);
         this.onSnapbackEnd = this.onSnapbackEnd.bind(this);
         this.board, this.boardEl = $('#board');
@@ -25,6 +26,7 @@ class TwoBoard extends Component {
         this.cfg = {
             draggable: true,
             onDragStart: this.onDragStart,
+            onDragMove: this.onDragMove,
             onDrop: this.onDrop,
             moveSpeed: 'fast',
             onMouseoutSquare: this.onMouseoutSquare,
@@ -34,14 +36,14 @@ class TwoBoard extends Component {
         if (this.props.crazyhouse) {
             this.cfg.crazyhouse = this.props.crazyhouse;
         }
-        this.dragFrom = '';
+        this.drag = {from: '', to: ''};
 
     }
 
     shouldComponentUpdate(nextProps, nextState) {
         if(nextProps.name != this.props.name) {
             return true;
-        }
+        } 
         return false;
     }
 
@@ -51,15 +53,15 @@ class TwoBoard extends Component {
                 this.game.load(nextProps.fen);
                 this.updatePosition(nextProps.fen);
             }
-            this.dragFrom = '';
-            console.log("set dragFrom to ''");
             let usColor = 'w';
-            if(nextProps.room.black._id === nextProps.profile._id) {
-                this.board.orientation('black');
-                usColor = 'b';
-            } else {
-                this.board.orientation('white');
-                usColor = 'w';
+            if(this.props.room.black) {
+                if(nextProps.room.black.playerId === nextProps.profile._id) {
+                    this.board.orientation('black');
+                    usColor = 'b';
+                } else {
+                    this.board.orientation('white');
+                    usColor = 'w';
+                }
             }
 
             if(nextProps.move) {
@@ -89,18 +91,19 @@ class TwoBoard extends Component {
                 window.removeEventListener('resize', this.prevMoveResizeListener);
             }
             this.prevMoveResizeListener = null;
-            this.dragFrom = '';
+            this.drag = {from: '', to: ''};
             this.boardRedraw(); // redraw the board to remove square shading
         }
     }
     
     updatePosition(fen) {
         this.setBoardPosition(fen);
-        if (this.dragFrom) {
+        let turn = this.formatTurn(this.game.turn());
+        if (this.drag.from && this.props.room[turn].playerId === this.props.profile._id) {
+            // if the user is hovering a piece, delete it from the board position
             let pos = this.board.position();
-            delete pos[this.dragFrom];
+            delete pos[this.drag.from];
             this.board.position(pos, false);
-            this.dragFrom = '';
         }
     }
     
@@ -138,13 +141,14 @@ class TwoBoard extends Component {
             return false;
         }
         if (source !== 'hand') {
-            if (this.props.profile._id === this.props.room.white._id ||
-                this.props.profile._id === this.props.room.black._id) {
-                    // only set dragFrom if we're playing
-                    this.dragFrom = source;
+            if (this.props.profile._id === this.props.room.white.playerId ||
+                this.props.profile._id === this.props.room.black.playerId) {
+                    // only set the drag squares for the user that's playing
+                    this.drag.from = source;
+                    this.drag.to = source;
                 }
         }
-        else if(this.props.profile._id === this.props.room.black._id) {
+        if(this.props.profile._id === this.props.room.black.playerId) {
             //this is the black player
             if(piece.search(/^w/) !== -1) {
                 return false;
@@ -154,7 +158,7 @@ class TwoBoard extends Component {
             }
             return true;
 
-        } else if(this.props.profile._id === this.props.room.white._id && piece.search('/^b/') === -1) {
+        } else if(this.props.profile._id === this.props.room.white.playerId && piece.search('/^b/') === -1) {
             //this is the white player
             if(piece.search(/^b/) !== -1) {
                 return false;
@@ -165,6 +169,16 @@ class TwoBoard extends Component {
             return true;
         } else {
             return false;
+        }
+    }
+    
+    onDragMove(newSquare, oldSquare, source, piece, position) {
+        // if it's not our turn, save which square we're dragging
+        // from and to so we can restore the border highlight
+        // when a move is made
+        let turn = this.formatTurn(this.game.turn());
+        if(this.props.room[turn].playerId !== this.props.profile._id) {
+            this.drag = {from: source, to: newSquare};
         }
     }
     
@@ -185,6 +199,7 @@ class TwoBoard extends Component {
         this.board.resize();
         this.shadeLastMove();
         this.renderPremove();
+        this.drawHoverBorders();
     }
 
     shadeSquare(square) {
@@ -206,6 +221,15 @@ class TwoBoard extends Component {
             this.shadeSquare(this.shadeSquareSource);
         if (this.shadeSquareDest)
             this.shadeSquare(this.shadeSquareDest);
+    }
+    
+    drawHoverBorders() {
+        // restore square border highlights after a move is received
+        if (this.drag.from && this.drag.to) {
+            $('#board .square-'+this.drag.from).addClass("highlight1-32417");
+            $('#board .square-'+this.drag.to).addClass("highlight2-9c5d2");
+            this.drag = {from: '', to: ''};
+        }
     }
     
     shadeSquarePremove(square) {
@@ -270,7 +294,7 @@ class TwoBoard extends Component {
             this.boardEl.off('click', this.premove.clickListener);
         }
         this.premove = null;
-        this.dragFrom = '';
+        this.drag = {from: '', to: ''};
         this.boardRedraw();
     }
     
@@ -282,12 +306,13 @@ class TwoBoard extends Component {
     }
     
     onSnapbackEnd(piece, square, position, orientation) {
-        if (!this.dragFrom) {
+        if (!this.drag.from) {
             this.setBoardPosition(this.props.fen);
         }
     }
 
     onDrop(source, target, piece) {
+        this.drag = {from: '', to: ''};
         let turn = this.formatTurn(this.game.turn());
         if (piece.length > 1) {
             piece = piece.charAt(1).toLowerCase();
@@ -298,7 +323,7 @@ class TwoBoard extends Component {
             piece: piece,
             promotion: 'q' // NOTE: always promote to a queen for example simplicity
         };
-        if(this.props.room[turn]._id !== this.props.profile._id) {
+        if(this.props.room[turn].playerId !== this.props.profile._id) {
             if (source === target) {
                 // reset premove when clicking on a piece
                 this.resetPremove();
@@ -344,9 +369,12 @@ class TwoBoard extends Component {
                 this.game.load_pgn(this.props.pgn);
             }
 
-            if(this.props.room.black._id === this.props.profile._id) {
-                this.board.orientation('black');
+            if(this.props.room.black) {
+                if(this.props.room.black.playerId === this.props.profile._id) {
+                    this.board.orientation('black');
+                }
             }
+            
 
             if(this.props.move) {
                 this.game.move(this.props.move);
@@ -377,8 +405,8 @@ class TwoBoard extends Component {
 function mapStateToProps(state) {
     return {
         profile: state.auth.profile,
-        fen: state.openThreads[state.activeThread].fen,
-        pgn: state.openThreads[state.activeThread].pgn,
+        fen: state.openThreads[state.activeThread].game.fen,
+        pgn: state.openThreads[state.activeThread].game.pgn,
         move: state.openThreads[state.activeThread].move,
         room: state.openThreads[state.activeThread],
         name: state.activeThread,

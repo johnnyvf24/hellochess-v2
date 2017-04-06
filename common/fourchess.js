@@ -1166,19 +1166,19 @@ var FourChess = function (fen) {
                 switch (TURN) {
                     case WHITE:
                         TURN = GOLD;
-                        newTurnSet = (goldOut) ? false : true;
+                        newTurnSet = (goldOut || inCheckMate()) ? false : true;
                         break;
                     case BLACK:
                         TURN = RED;
-                        newTurnSet = (redOut) ? false : true;
+                        newTurnSet = (redOut || inCheckMate()) ? false : true;
                         break;
                     case GOLD:
                         TURN = BLACK;
-                        newTurnSet = (blackOut) ? false : true;
+                        newTurnSet = (blackOut || inCheckMate()) ? false : true;
                         break;
                     case RED:
                         TURN = WHITE;
-                        newTurnSet = (whiteOut) ? false : true;
+                        newTurnSet = (whiteOut || inCheckMate()) ? false : true;
                         break;
                 }
             }
@@ -2026,18 +2026,18 @@ var FourChess = function (fen) {
                 white: nWhiteOut,
                 black: nBlackOut,
                 gold: nGoldOut,
-                red: nRedOut
+                rred: nRedOut
             }
         },
         getWinnerColor: function() {
             if(goldOut && blackOut && redOut) {
-                return 'w';
+                return 'white';
             } else if(blackOut && redOut && whiteOut) {
-                return 'g';
+                return 'gold';
             } else if(redOut && whiteOut && goldOut) {
-                return 'b';
+                return 'black';
             } else if(whiteOut && goldOut && blackOut) {
-                return 'r';
+                return 'red';
             } else {
                 return null;
             }

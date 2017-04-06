@@ -8,6 +8,7 @@ webpack.config.js
 current_errors
 .forever
 engine/bin
+data
 
 # IntelliJ
 *.iml

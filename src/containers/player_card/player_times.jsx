@@ -6,7 +6,7 @@ import EmptyCard from './empty_card';
 class PlayerTimes extends Component {
 
     renderWhite(thread) {
-        if (thread.white) {
+        if (thread.game.white) {
             return <OccupiedCard color="w" longColor="white" colorClass=""/>
         } else {
             return <EmptyCard color="w" colorClass=""/>
@@ -14,7 +14,7 @@ class PlayerTimes extends Component {
     }
 
     renderBlack(thread) {
-        if (thread.black) {
+        if (thread.game.black) {
             return <OccupiedCard color="b" longColor="black" colorClass="black-player"/>
         } else {
             return <EmptyCard color="b" colorClass="black-player"/>
@@ -22,7 +22,7 @@ class PlayerTimes extends Component {
     }
 
     renderGold(thread) {
-        if (thread.gold) {
+        if (thread.game.gold) {
             return <OccupiedCard color="g" longColor="gold" colorClass="gold-player"/>
         } else {
             return <EmptyCard color="g" colorClass="gold-player"/>
@@ -30,7 +30,7 @@ class PlayerTimes extends Component {
     }
 
     renderRed(thread) {
-        if (thread.red) {
+        if (thread.game.red) {
             return <OccupiedCard color="r" longColor="red" colorClass="red-player"/>
         } else {
             return <EmptyCard color="r" colorClass="red-player"/>
@@ -40,11 +40,11 @@ class PlayerTimes extends Component {
     // returns the order of the player cards when the game hasn't started
     determineSitOrder(room, profile) {
         let renderOrder = [];
-        switch (room.gameType) {
+        switch (room.game.gameType) {
             case "four-player":
                 renderOrder = [this.renderGold, this.renderBlack, this.renderRed, this.renderWhite];
                 break;
-            case "two-player":
+            case "standard":
             default:
                 renderOrder = [this.renderBlack, this.renderWhite];
         }
@@ -55,36 +55,42 @@ class PlayerTimes extends Component {
     determinePlayingOrder(room, profile) {
         let renderOrder = [];
         try {
-            switch (room.gameType) {
+            switch (room.game.gameType) {
                 case "four-player":
                     renderOrder = [this.renderGold, this.renderBlack, this.renderRed, this.renderWhite];
+                    if(!room.black) {
+                        break;
+                    }
                     switch (profile._id) {
-                        case room.black._id:
+                        case room.black.playerId:
                             renderOrder = [this.renderRed, this.renderWhite, this.renderGold, this.renderBlack];
                             break;
-                        case room.gold._id:
+                        case room.gold.playerId:
                             renderOrder = [this.renderBlack, this.renderRed, this.renderWhite, this.renderGold];
                             break;
-                        case room.red._id:
+                        case room.red.playerId:
                             renderOrder = [this.renderWhite, this.renderGold, this.renderBlack, this.renderRed];
                             break;
-                        case room.white._id:
+                        case room.white.playerId:
                         default:
                             break;
                     }
                     break;
-                case "two-player":
-                default:
-                    renderOrder = [this.renderBlack, this.renderWhite];
-                    switch (profile._id) {
-                        case room.black._id:
-                            renderOrder = [this.renderWhite, this.renderBlack];
+                case "standard":
+                    default:
+                        renderOrder = [this.renderBlack, this.renderWhite];
+                        if(!room.black) {
                             break;
-                        case room.white._id:
-                        default:
-                            break;
-                    }
-                    break;
+                        }
+                        switch (profile._id) {
+                            case room.black.playerId:
+                                renderOrder = [this.renderWhite, this.renderBlack];
+                                break;
+                            case room.white.playerId:
+                            default:
+                                break;
+                        }
+                        break;
             }
         } catch (err) {
             console.error(err);
@@ -102,7 +108,7 @@ class PlayerTimes extends Component {
         // determine the vertical ordering of the cards.
         // current player goes on the bottom.
         let renderOrder = [];
-        if (activeThread.fen) {
+        if (activeThread.paused === false && activeThread.fen) {
             renderOrder = this.determinePlayingOrder(room, profile);
         } else {
             renderOrder = this.determineSitOrder(room, profile);

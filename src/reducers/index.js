@@ -16,7 +16,7 @@ function activeThread (state = 'Global', action) {
         case SELECTED_ROOM:
             return action.payload;
         case LOGOUT_SUCCESS:
-            return 'Global';
+            return 'Games';
         default:
             return state;
     }
@@ -27,25 +27,18 @@ function openThreads(state = {}, action) {
     let roomName = null;
     let messages = null, msg_obj = null;
     switch(action.type) {
-        case 'user-room-joined':
-            const users = action.payload.users;
-            msg_obj = action.message;
-            roomName = action.payload.room.name;
-            messages = [...state[roomName].messages, msg_obj];
-            obj = {...state[roomName], users, messages};
-            return {...state, [roomName]: obj};
         case 'user-room-left':
             roomName = action.payload.name;
             const user = action.payload.user;
             newState = Object.assign({}, state);
             newState[roomName].users = newState[roomName].users.filter((member) => {
-                return user.user._id !== member._id;
+                return user.playerId !== member.playerId;
             });
             msg_obj = action.payload.message;
             messages = [...newState[roomName].messages, msg_obj];
             obj = {...newState[roomName], messages};
             return {...newState, [roomName]: obj};
-        case 'joined-room':
+        case 'update-room':
             return {...state, [action.payload.room.name]: action.payload };
         case 'left-room':
             newState = Object.assign({}, state);
@@ -68,11 +61,11 @@ function openThreads(state = {}, action) {
             return newState;
         case 'four-new-move':
             newState = Object.assign({}, state);
-            newState[action.payload.thread].fen = action.payload.fen;
+            newState[action.payload.thread].game.fen = action.payload.fen;
             newState[action.payload.thread].turn = action.payload.turn;
             newState[action.payload.thread].move = action.payload.move;
             newState[action.payload.thread].lastMove = action.payload.lastMove;
-            newState[action.payload.thread][action.payload.lastTurn].time = action.payload.time;
+            newState[action.payload.thread].game[action.payload.lastTurn].time = action.payload.time;
             if (action.payload.outColor)
                 newState[action.payload.thread][action.payload.outColor].alive = false;
             return newState;
@@ -119,63 +112,67 @@ function openThreads(state = {}, action) {
             }
             return state;
         case 'TICK':
-            if(state[action.payload.thread][action.payload.turn].time) {
+            if(state[action.payload.thread].times[action.payload.turn]) {
                 newState = Object.assign({}, state);
-                newState[action.payload.thread][action.payload.turn].time -= 1000;
+                newState[action.payload.thread].times[action.payload.turn] -= 1000;
                 return newState
             }
             return state;
-        case 'sit-down-white':
+        case 'sit-down-w':
             newState = Object.assign({}, state);
-            newState[action.payload.thread].white = action.payload.room;
+            newState[action.payload.thread].white = action.payload.player;
             newState[action.payload.thread].paused = true;
             newState[action.payload.thread].white.alive = true;
+            newState[action.payload.thread].times.w = action.payload.time;
             return newState;
-        case 'sit-down-black':
+        case 'sit-down-b':
             newState = Object.assign({}, state);
-            newState[action.payload.thread].black = action.payload.room;
+            newState[action.payload.thread].black = action.payload.player;
             newState[action.payload.thread].paused = true;
             newState[action.payload.thread].black.alive = true;
+            newState[action.payload.thread].times.b = action.payload.time;
             return newState;
-        case 'sit-down-gold':
+        case 'sit-down-g':
             newState = Object.assign({}, state);
-            newState[action.payload.thread].gold = action.payload.room;
+            newState[action.payload.thread].gold = action.payload.player;
             newState[action.payload.thread].paused = true;
             newState[action.payload.thread].gold.alive = true;
+            newState[action.payload.thread].times.g = action.payload.time;
             return newState;
-        case 'sit-down-red':
+        case 'sit-down-r':
             newState = Object.assign({}, state);
-            newState[action.payload.thread].red = action.payload.room;
+            newState[action.payload.thread].red = action.payload.player;
             newState[action.payload.thread].paused = true;
             newState[action.payload.thread].red.alive = true;
+            newState[action.payload.thread].times.r = action.payload.time;
             return newState;
-        case 'up-white':
+        case 'up-w':
             newState = Object.assign({}, state);
             delete newState[action.payload.name].white;
             return newState;
-        case 'up-black':
+        case 'up-b':
             newState = Object.assign({}, state);
             delete newState[action.payload.name].black;
             return newState;
-        case 'up-gold':
+        case 'up-g':
             newState = Object.assign({}, state);
             delete newState[action.payload.name].gold;
             return newState;
-        case 'up-red':
+        case 'up-r':
             newState = Object.assign({}, state);
             delete newState[action.payload.name].red;
             return newState;
         case 'game-started':
             newState = Object.assign({}, state);
-            newState[action.payload.thread].fen = action.payload.fen;
-            newState[action.payload.thread].lastMove = action.payload.lastMove;
+            newState[action.payload.thread].fen = action.payload.room.fen;
+            newState[action.payload.thread].lastMove = action.payload.room.lastMove;
             newState[action.payload.thread].turn = 'w';
             newState[action.payload.thread].paused = false;
             return newState;
         case 'four-game-started':
             newState = Object.assign({}, state);
-            newState[action.payload.thread].fen = action.payload.fen;
-            newState[action.payload.thread].lastMove = action.payload.lastMove;
+            newState[action.payload.thread].game = action.payload.room.game;
+            newState[action.payload.thread].lastMove = action.payload.room.game.move;
             newState[action.payload.thread].turn = 'w';
             newState[action.payload.thread].paused = false;
             return newState;
@@ -212,7 +209,7 @@ function connection(state = {status: false, error: false}, action) {
             return {status: false, error: true};
         case 'disconnect':
             return {status: false};
-        case 'connected':
+        case 'connected-user':
             return {status: true};
         default:
             return state;
