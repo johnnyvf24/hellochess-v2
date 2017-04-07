@@ -36,6 +36,9 @@ export function formatTurn(turn) {
 }
 
 export function showElo(game, time, player) {
+    if(!game || !time || !player) {
+        return "";
+    }
     let ratings, tcIndex;
     //this time estimate is based on an estimated game length of 35 moves
     let totalTimeMs = (time.value * 60 * 1000) + (35 * time.increment * 1000);
