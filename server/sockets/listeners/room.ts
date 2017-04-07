@@ -69,6 +69,7 @@ module.exports = function(io, socket, connection) {
         
         if(!room || !player || !room.removePlayer(player)) {
             //TODO error
+            return;
         }
         
         if (room.empty()) { //there are no users in the room
