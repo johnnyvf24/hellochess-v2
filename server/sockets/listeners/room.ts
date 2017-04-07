@@ -22,6 +22,7 @@ module.exports = function(io, socket, connection) {
         let roomName: string = data.thread;
         let player: Player = connection.getPlayerBySocket(socket);
         let room: Room = connection.getRoomByName(roomName);
+        if(!room) return;
         
         //add the message to the room
         room.addMessage(new Message(player, data.msg, roomName));
@@ -33,6 +34,8 @@ module.exports = function(io, socket, connection) {
     socket.on('sit-down-board', data => {
         let roomName: string = data.roomName;
         let room: Room = connection.getRoomByName(roomName);
+        if(!room) return;
+        
         let player: Player;
         if(!data.profile) {
             return;
@@ -147,6 +150,7 @@ module.exports = function(io, socket, connection) {
     socket.on('four-new-move', data => {
         let roomName = data.thread;
         let room: Room = connection.getRoomByName(roomName);
+        if(!room) return;
         let game: Game = room.game;
         let move = data.move;
         room.makeMove(move);
