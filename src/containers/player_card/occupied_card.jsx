@@ -59,8 +59,6 @@ class OccupiedCard extends Component {
     }
 
     renderLeaveSeat(player, roomName) {
-        console.log('player ', player);
-        console.log('room ', roomName);
         if(player.type == "computer") {
             return (
                 <div className="pull-right">
