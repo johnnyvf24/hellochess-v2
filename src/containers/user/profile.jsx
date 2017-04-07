@@ -33,7 +33,6 @@ class Profile extends Component {
                 </div>
             );
         } else {
-            console.log(this.props.profile);
             return (
                 <div>
                     <div className="row">
