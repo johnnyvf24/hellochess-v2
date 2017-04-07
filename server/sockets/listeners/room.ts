@@ -141,6 +141,7 @@ module.exports = function(io, socket, connection) {
     socket.on('kill-ais', data => {
         let roomName: string = data;
         let room: Room = connection.getRoomByName(roomName);
+        if(!room) return;
         if(room.game) {
             room.game.endAndSaveGame();
             io.to(roomName).emit('update-room', room.getRoom());

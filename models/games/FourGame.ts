@@ -278,6 +278,10 @@ export default class FourGame extends Game {
         
         let finished = false;
         
+        if(!white || !black || !red || !gold) {
+            return;
+        }
+        
         if( white.type == 'computer' || black.type == 'computer'
             || gold.type == 'computer' || red.type == 'computer') {
             //Dont save computer games
