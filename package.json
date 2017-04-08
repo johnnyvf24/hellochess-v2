@@ -83,6 +83,7 @@
     "react-select": "^1.0.0-rc.2",
     "react-timeout": "^1.0.0",
     "react-toggle-button": "^2.1.0",
+    "react-youtube": "^7.3.0",
     "redux": "^3.0.4",
     "redux-form": "^6.4.3",
     "redux-promise": "^0.5.3",

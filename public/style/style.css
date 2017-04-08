@@ -12,20 +12,23 @@ body .container-fluid {
     height: 80%;
 }
 
-.btn-google {
-    margin-top: 10px;
-}
-
 .landing-card {
     background: -webkit-linear-gradient(top, #aadeee, #c0e6f2);
-    padding: 60px;
+    padding: 5px;
     float: center;
+    margin-top: 45px;
 }
 
 .home-logo {
     padding: 40px 0;
 }
 
+.reg-login-header {
+    color: #f9deb9;
+    font-weight: bold;
+    text-align: center;
+}
+
 #signUpForm {
     background: none;
     border: none;
@@ -34,15 +37,70 @@ body .container-fluid {
 #signUpForm {
     background: none;
     border: none;
+    font-size: 20px;
+    color: #f0d9b5;
 }
 
 #loginForm {
     background: none;
     border: none;
+    font-size: 20px;
+    color: #f0d9b5;
 }
 
+#signUpForm .form-group .form-control  {
+    background-color: rgba(255, 255, 255, 0.4);
+    border: none;
+    color: black;
+}
+
+#signUpForm .form-group .form-control::-webkit-input-placeholder { color: #3f2c0d;}
+#signUpForm .form-group .form-control::-moz-placeholder {color: #3f2c0d; }
+#signUpForm .form-group .form-control:-moz-placeholder {color: #3f2c0d;}
+#signUpForm .form-group .form-control:-ms-input-placeholder {color: #3f2c0d;}
+#signUpForm .form-group:last-child {
+    margin-bottom: 25px;
+}
+
+#loginForm .form-group .form-control  {
+    background-color: rgba(255, 255, 255, 0.4);
+    border: none;
+    color: black;
+}
+
+#loginForm .form-group .form-control::-webkit-input-placeholder { color: #3f2c0d;}
+#loginForm .form-group .form-control::-moz-placeholder {color: #3f2c0d; }
+#loginForm .form-group .form-control:-moz-placeholder {color: #3f2c0d;}
+#loginForm .form-group .form-control:-ms-input-placeholder {color: #3f2c0d;}
+#loginForm .form-group .form-control:last-child {
+    margin-bottom: 25px;
+}
+
+.landing-video {
+    margin-bottom: -5px;
+    height: 26vw;
+}
+
+
+ /*div[class*='col']*/
+ /*       {*/
+ /*           border:solid 1px #000;*/
+ /*           height:100%;*/
+ /*         display: table-cell;*/
+ /*         float: none*/
+ /*       }*/
+ /*       .row*/
+ /*       {*/
+ /*           border:solid 1px #000;*/
+            /* height:500px; */
+ /*         display: table;*/
+ /*         width: 100%*/
+
+ /*       }*/
+
+
 .form-error {
-    color: red;
+    color: #aadeee;
 }
 
 #signUpShower {

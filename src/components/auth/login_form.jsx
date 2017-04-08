@@ -3,12 +3,13 @@ import { Field, reduxForm } from 'redux-form';
 import {FormGroup, FormControl, ControlLabel, Button} from 'react-bootstrap';
 
 class LoginForm extends Component {
+    
     render() {
         const { handleSubmit } = this.props;
         return (
             <form id="loginForm"
                 onSubmit={handleSubmit}>
-                <FormGroup>
+                <FormGroup bsSize="large">
                     <ControlLabel htmlFor="loginEmail">Email</ControlLabel>
                     <Field name="loginEmail"
                         component="input"
@@ -17,7 +18,7 @@ class LoginForm extends Component {
                         placeholder="Enter email"
                     />
                 </FormGroup>
-                <FormGroup>
+                <FormGroup bsSize="large">
                     <ControlLabel htmlFor="loginPassword">Password</ControlLabel>
                     <Field name="loginPassword"
                         component="input"
@@ -26,8 +27,9 @@ class LoginForm extends Component {
                         placeholder="Enter password"
                     />
                 </FormGroup>
-                <Button type="submit"
-                     bsStyle="primary"
+                <Button block type="submit"
+                     bsStyle="warning"
+                     bsSize="large"
                      id="logInTrigger">
                      Login
                 </Button>

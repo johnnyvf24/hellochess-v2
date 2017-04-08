@@ -55,7 +55,7 @@ export default class Room extends Component {
                     </span>
                 </Row>
                 <Row className="chatbox-message-list-wrapper">
-                    <MessageList messages={value.messages}/>
+                    <MessageList messages={value.messages} thread={active} />
                 </Row>
                 <Row className="chatbox-input-send-wrapper">
                     <MessageSend />

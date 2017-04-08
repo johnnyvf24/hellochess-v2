@@ -26,29 +26,32 @@ class SignUpForm extends Component {
         return (
             <form id="signUpForm"
                 onSubmit={handleSubmit}>
-                <Field name="signUpEmail"
-                    component={this.renderField}
-                    type="email"
-                    placeholder="Enter email"
-                    label="Email"
-                />
+                <FormGroup bsSize="large">
+                    <Field name="signUpEmail"
+                        component={this.renderField}
+                        type="email"
+                        placeholder="Enter email"
+                        label="Email"
+                    />
+    
+                    <Field name="signUpPassword"
+                        component={this.renderField}
+                        type="password"
+                        placeholder="Enter password"
+                        label="Password"
+                    />
+    
+                    <Field name="vSignUpPassword"
+                        component={this.renderField}
+                        type="password"
+                        placeholder="Reenter password"
+                        label="Verify Password"
+                    />
+                </FormGroup>
 
-                <Field name="signUpPassword"
-                    component={this.renderField}
-                    type="password"
-                    placeholder="Enter password"
-                    label="Password"
-                />
-
-                <Field name="vSignUpPassword"
-                    component={this.renderField}
-                    type="password"
-                    placeholder="Reenter password"
-                    label="Verify Password"
-                />
-
-                <Button type="submit"
-                     bsStyle="primary">
+                <Button block type="submit"
+                    bsSize="large"
+                    bsStyle="warning">
                      Sign Up
                 </Button>
             </form>

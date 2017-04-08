@@ -69,12 +69,22 @@ export default class Room {
                 },
                 gameType: this._game.gameType,
                 users: this.getAllRoomPlayersWithoutSockets(),
-                messages: this.getAllMessages(),
+                messages: this.getLast30Messages(),
                 time: this._time,
                 times: this._game.times,
                 game: game
             };
         }
+    }
+    
+    getLast30Messages() {
+        let mess = [];
+        let tmp = this._messages.slice(Math.max(this._messages.length - 30, 1));
+        tmp.map(message => {
+            mess.push(message.getMessage());
+        });
+        
+        return mess;
     }
     
     getAllMessages() {
