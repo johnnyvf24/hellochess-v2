@@ -15,6 +15,16 @@ export default class Room extends Component {
         }
     }
     
+    shouldComponentUpdate(nextProps) {
+        if(!this.props.value.numMessages) {
+            return true;
+        }
+        if(nextProps.value.numMessages != this.props.value.numMessages) {
+            return true;
+        }
+        return false;
+    }
+    
     openUserModal() {
         this.setState({
             showModal: true 

@@ -70,6 +70,7 @@ export default class Room {
                 gameType: this._game.gameType,
                 users: this.getAllRoomPlayersWithoutSockets(),
                 messages: this.getLast30Messages(),
+                numMessages: this._messages.length,
                 time: this._time,
                 times: this._game.times,
                 game: game

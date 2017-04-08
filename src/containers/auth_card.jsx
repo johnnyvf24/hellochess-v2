@@ -46,7 +46,7 @@ class AuthCard extends Component {
             height: '500px',
             width: '100%',
             playerVars: { // https://developers.google.com/youtube/player_parameters 
-                autoplay: 1
+                autoplay: 0
             },
             
         };
@@ -81,7 +81,7 @@ class AuthCard extends Component {
                         <Col sm={12}>
                             <div className="landing-card">
                                 <YouTube
-                                    videoId="jishVgzq7no"
+                                    videoId="ZAEa0vqw2fg"
                                     opts={opts}
                                     onReady={this._onReady}
                                     className="landing-video"

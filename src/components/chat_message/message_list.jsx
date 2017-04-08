@@ -9,14 +9,17 @@ export default class MessageList extends Component {
     constructor(props) {
         super(props);
     }
+    
+    getLastMessage(messages) {
+        return messages[messages.length - 1];
+    }
+
 
     componentDidUpdate (prevProps) {
         const msgList = this.refs.msgList;
-        console.log(this.props.thread);
-        if (this.props.messages.length !== prevProps.messages.length) {
-            // Scroll to bottom
-            msgList.scrollTop = msgList.scrollHeight;
-        }
+
+        msgList.scrollTop = msgList.scrollHeight;
+        
         
     }
 

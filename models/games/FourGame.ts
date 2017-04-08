@@ -310,7 +310,7 @@ export default class FourGame extends Game {
                 }
             }.bind(this));
             
-            if(!firstOut || !secondOut || !thirdOut) {
+            if(!firstOut || !secondOut || !thirdOut || winner) {
                 this.removePlayer('w');
                 this.removePlayer('b');
                 this.removePlayer('g');
