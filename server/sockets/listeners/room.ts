@@ -219,7 +219,6 @@ module.exports = function(io, socket, connection) {
         
         if(room.game.gameStarted == true) {
             room.startTimer();
-        } else {
             if(room.game.currentTurnPlayer() instanceof AI) {
                 room.game.engineGo();
             }

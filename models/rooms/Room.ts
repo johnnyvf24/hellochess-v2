@@ -276,7 +276,6 @@ export default class Room {
             console.log('turn ', turn);
             let loser = this.game.getPlayer(turn);
             
-            console.log('loser ', loser.username);
             if(!loser) return;
             this.game.setPlayerOutByColor(turn);
             
