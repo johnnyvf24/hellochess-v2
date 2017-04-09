@@ -318,7 +318,7 @@ export default class Room {
                 this.startTimer();
             }
             
-        }.bind(this), 5000);
+        }.bind(this), timeLeft);
     }
     
     //begin the game
