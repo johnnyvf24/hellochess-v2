@@ -298,7 +298,6 @@ export default class FourGame extends Game {
         }
     }
     
-    
     endAndSaveGame(): boolean {
         if(this.engineInstance && typeof this.engineInstance.kill == 'function') {
             this.engineInstance.kill(); //stop any active engine
@@ -318,6 +317,7 @@ export default class FourGame extends Game {
         if( white.type == 'computer' || black.type == 'computer'
             || gold.type == 'computer' || red.type == 'computer') {
             //Dont save computer games
+            console.log("no ratings! Computer in game");
         } else {
             
             //update all player's elos
@@ -325,13 +325,16 @@ export default class FourGame extends Game {
             
             let winnerColor = this.gameRulesObj.getWinnerColor(); //player that won
             
+            console.log(winnerColor);
+            
             let winner = this.getPlayer(winnerColor);
             
             //order in which losers lost
             let loserOrder = this.gameRulesObj.getLoserOrder(); 
+            console.log('loserorder ', loserOrder);
             delete loserOrder[winnerColor]; //remove the winner from the loser order
             
-            let firstOut, secondOut, thirdOut;
+            let firstOut : Player, secondOut : Player, thirdOut : Player;
             
             mapObject(loserOrder, function (key, player) {
                 if(player === 1) {
@@ -343,13 +346,19 @@ export default class FourGame extends Game {
                 }
             }.bind(this));
             
+            console.log('firsOut ', firstOut.getPlayer());
+            console.log('secondOut', secondOut.getPlayer());
+            console.log('thirdOut', thirdOut.getPlayer());
+            console.log('winner', winner.getPlayer());
+            
             if(!firstOut || !secondOut || !thirdOut || !winner) {
                 this.removePlayer('w');
                 this.removePlayer('b');
                 this.removePlayer('g');
                 this.removePlayer('r');
                 this.gameStarted = false;
-                this.gameRulesObj = new FourChess(); 
+                this.gameRulesObj = new FourChess();
+                console.log("One of the player's is null");
                 return;
         
             }
@@ -357,6 +366,7 @@ export default class FourGame extends Game {
             let timeType = getTimeTypeForTimeControl(this.time);
             
             if(!timeType) {
+                console.log("no timeType");
                 return;
             }
             
@@ -487,6 +497,11 @@ export default class FourGame extends Game {
         this.gameRulesObj = new FourChess(); 
         
         return true;
+    }
+    
+    
+    gameOver(): boolean {
+        return this.gameRulesObj.game_over();
     }
     
     setPlayerOutByColor(color: string) {

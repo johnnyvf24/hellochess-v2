@@ -245,6 +245,10 @@ export default class Room {
            clearTimeout(this.timer); 
         }
         
+        if(!this.game.gameStarted) {
+            clearTimeout(this.timer); 
+        }
+        
         //get players turn
         let turn = this.game.getTurn();
         
@@ -269,7 +273,10 @@ export default class Room {
             }
             
             //get the player that lost and remove them from the game
+            console.log('turn ', turn);
             let loser = this.game.getPlayer(turn);
+            
+            console.log('loser ', loser.username);
             if(!loser) return;
             this.game.setPlayerOutByColor(turn);
             
@@ -311,7 +318,7 @@ export default class Room {
                 this.startTimer();
             }
             
-        }.bind(this), timeLeft);
+        }.bind(this), 5000);
     }
     
     //begin the game

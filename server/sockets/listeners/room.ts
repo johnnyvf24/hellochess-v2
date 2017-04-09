@@ -213,14 +213,18 @@ module.exports = function(io, socket, connection) {
             return;
         }
         
+        room.clearTimer();
         room.game.setPlayerResignByPlayerObj(player);
         
-        room.clearTimer();
-        room.startTimer();
         
-        if(room.game.currentTurnPlayer() instanceof AI) {
-            room.game.engineGo();
+        if(room.game.gameStarted == true) {
+            room.startTimer();
+        } else {
+            if(room.game.currentTurnPlayer() instanceof AI) {
+                room.game.engineGo();
+            }
         }
+        
         
         //Notify all players that a player has resigned
         let notificationOpts = {

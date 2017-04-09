@@ -2023,21 +2023,21 @@ var FourChess = function (fen) {
         },
         getLoserOrder: function() {
             return {
-                white: nWhiteOut,
-                black: nBlackOut,
-                gold: nGoldOut,
-                rred: nRedOut
+                w: nWhiteOut,
+                b: nBlackOut,
+                g: nGoldOut,
+                r: nRedOut
             }
         },
         getWinnerColor: function() {
             if(goldOut && blackOut && redOut) {
-                return 'white';
+                return 'w';
             } else if(blackOut && redOut && whiteOut) {
-                return 'gold';
+                return 'g';
             } else if(redOut && whiteOut && goldOut) {
-                return 'black';
+                return 'b';
             } else if(whiteOut && goldOut && blackOut) {
-                return 'red';
+                return 'r';
             } else {
                 return null;
             }

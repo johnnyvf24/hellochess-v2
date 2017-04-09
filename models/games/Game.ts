@@ -103,8 +103,12 @@ abstract class Game {
         return this.times[this.lastTurn];
     }
     
-    getPlayer(playerColor: string) {
-        switch(playerColor.charAt(0)) {
+    gameOver(): boolean {
+        return this.gameRulesObj.game_over() || !this.white.alive || !this.black.alive;
+    }
+    
+    getPlayer(playerColor: string) : Player {
+        switch(playerColor) {
             case 'w':
                 return this.white;
             case 'b':
@@ -195,9 +199,7 @@ abstract class Game {
         }
     }
     
-    gameOver(): boolean {
-        return this.gameRulesObj.game_over() || !this.white.alive || !this.black.alive;
-    }
+    
     
     removePlayerByPlayerId(playerId: string) {
         if(this.white && playerId == this.white.playerId) {
