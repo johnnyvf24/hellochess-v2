@@ -49,6 +49,7 @@ abstract class Game {
     abstract endAndSaveGame(draw) : boolean;
     abstract setPlayerResignByPlayerObj(player: Player);
     abstract removePlayerFromAllSeats(player: Player);
+    abstract setPlayerOutByColor(color: string);
     
     setColorTime(color: string, time: number): void {
         this.times[color] = time;
@@ -146,22 +147,6 @@ abstract class Game {
                 return this.red;
             default:
                 return null;
-        }
-    }
-    
-    setPlayerOutByColor(color: string) {
-        let playerOut = null;
-        switch(color.charAt(0)) {
-            case 'w':
-                this.white.alive = false;
-                playerOut = this.white;
-                this.times.w = 1;
-                break;
-            case 'b':
-                this.black.alive = false;
-                playerOut = this.black;
-                this.times.b = 1;
-                break;
         }
     }
     

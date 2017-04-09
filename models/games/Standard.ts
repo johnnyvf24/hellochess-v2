@@ -10,7 +10,7 @@ export default class Standard extends Game {
     gameRulesObj: any = new Chess();
     numPlayers: number = 2;
     io: any;
-    times: Object = {
+    times: any = {
         w: 0,
         b: 0
     };
@@ -103,6 +103,23 @@ export default class Standard extends Game {
         this.white.alive = true;
         this.black.alive = true;
         this.lastMoveTime = Date.now();
+    }
+    
+    
+    setPlayerOutByColor(color: string) {
+        let playerOut = null;
+        switch(color.charAt(0)) {
+            case 'w':
+                this.white.alive = false;
+                playerOut = this.white;
+                this.times.w = 1;
+                break;
+            case 'b':
+                this.black.alive = false;
+                playerOut = this.black;
+                this.times.b = 1;
+                break;
+        }
     }
 
     endAndSaveGame(draw): boolean {
