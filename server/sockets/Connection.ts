@@ -132,8 +132,8 @@ export default class Connection {
         this.players.map((player) => {
             if(player.playerId === data._id || player.playerId === data.playerId) {
                 let status = player.username = data.username;
-                console.log('updating user ', player.username);
-                console.log('with data ', data);
+                // console.log('updating user ', player.username);
+                // console.log('with data ', data);
                 player.standard_ratings = data.standard_ratings;
                 player.fourplayer_ratings = data.fourplayer_ratings;
                 player.crazyhouse_ratings = data.crazyhouse_ratings;

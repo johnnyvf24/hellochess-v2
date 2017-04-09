@@ -16,7 +16,7 @@ export default class Room extends Component {
     }
     
     shouldComponentUpdate(nextProps) {
-        if(!this.props.value.numMessages) {
+        if(!this.props.value.room.name != nextProps.value.room.name) {
             return true;
         }
         if(nextProps.value.numMessages != this.props.value.numMessages) {

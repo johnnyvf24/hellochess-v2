@@ -10,9 +10,6 @@ import SignUpForm from '../components/auth/signup_form';
 import LoginForm from '../components/auth/login_form';
 import config from '../../config/config';
 
-import TwoBoard from '../components/demo_board/two_board';
-import FourBoard from '../components/demo_board/four_board';
-
 import {Row, Col, Clearfix, Button, Panel, PanelGroup, Accordion, Grid} from 'react-bootstrap';
 
 class AuthCard extends Component {

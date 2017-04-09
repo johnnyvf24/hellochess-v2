@@ -105,7 +105,7 @@ module.exports = function(io, socket, connection) {
             
             switch(data.gameType) {
                 case 'standard':
-                    // room = new Room(io, new Standard(io));
+                    room = new Room(io, new Standard(io, roomName, data.time, connection));
                     break;
                 case 'four-player':
                     room = new Room(io, new FourGame(io, roomName, data.time, connection));
@@ -144,7 +144,7 @@ module.exports = function(io, socket, connection) {
         let room: Room = connection.getRoomByName(roomName);
         if(!room) return;
         if(room.game) {
-            room.game.endAndSaveGame();
+            room.game.endAndSaveGame(false);
             io.to(roomName).emit('update-room', room.getRoom());
         }
     });
@@ -168,6 +168,35 @@ module.exports = function(io, socket, connection) {
         }
         
         room.game.removePlayerByPlayerId(player.playerId);
+        io.to(room.name).emit('update-room', room.getRoom());
+    });
+    
+    socket.on('resign', data => {
+        let roomName = data.roomName;
+        let room: Room = connection.getRoomByName(roomName);
+        if(!room) {
+            return;
+        }
+        
+        let player: Player = connection.getPlayerBySocket(socket);
+        
+        if(!room.game || !player) {
+            return;
+        }
+        
+        room.game.setPlayerResignByPlayerObj(player);
+        room.clearTimer();
+        room.game.endAndSaveGame(false);
+        
+        //Notify all players that a player has resigned
+        let notificationOpts = {
+            title: `${player.username} has resigned!`,
+            position: 'tr',
+            autoDismiss: 5,
+        };
+        
+        io.to(room.name).emit('action', Notifications.info(notificationOpts));
+        
         io.to(room.name).emit('update-room', room.getRoom());
     });
     
@@ -202,6 +231,70 @@ module.exports = function(io, socket, connection) {
         
         io.to(room.name).emit('action', Notifications.info(notificationOpts));
         
+        io.to(room.name).emit('update-room', room.getRoom());
+    });
+    
+    socket.on('draw', data => {
+        let roomName = data.roomName;
+        let room: Room = connection.getRoomByName(roomName);
+        if(!room) {
+            return;
+        }
+        
+        let player: Player = connection.getPlayerBySocket(socket);
+        
+        if(!room.game || !player) {
+            return;
+        }
+        
+        let color = null;
+        
+        if(room.game.white.playerId == player.playerId) {
+            color = 'black';
+        } else {
+            color = 'white';
+        }
+        
+        if(room.game[color].socket) {
+            room.game[color].socket.emit('draw-request', {
+                thread: roomName
+            });
+        }
+        
+        
+        
+        let notif = {
+            title: `Draw request sent by ${player.username}!`,
+            position: 'tr',
+            autoDismiss: 2,
+        };
+        io.to(roomName).emit('action', Notifications.info(notif));
+    });
+    
+    socket.on('accept-draw', data => {
+        let roomName = data.roomName;
+        let room: Room = connection.getRoomByName(roomName);
+        if(!room) {
+            return;
+        }
+        
+        let player: Player = connection.getPlayerBySocket(socket);
+        
+        if(!room.game || !player) {
+            return;
+        }
+        
+        //Notify all players that the game has ended in a draw
+        let notificationOpts = {
+            title: 'Game Over',
+            message: 'The game ended in a draw!',
+            position: 'tr',
+            autoDismiss: 5,
+        };
+        
+        io.to(roomName).emit('action', Notifications.warning(notificationOpts));
+        
+        room.game.endAndSaveGame(true);
         io.to(room.name).emit('update-room', room.getRoom());
     });
 };

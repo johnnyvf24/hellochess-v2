@@ -1,5 +1,6 @@
 // import createSocketIoMiddleware from 'redux-socket.io';
 import io from 'socket.io-client';
+import Notifications from 'react-notification-system-redux';
 
 let socket = null;
 
@@ -32,13 +33,22 @@ export function socketIoMiddleware(store) {
                 socket.emit('sit-down-board', action.payload);
                 break;
             case 'server/new-move':
-                socket.emit('new-move', action.payload);
+                socket.emit('four-new-move', action.payload);
                 break;
             case 'server/four-new-move':
                 socket.emit('four-new-move', action.payload);
                 break;
             case 'server/four-resign':
                 socket.emit('four-resign', action.payload);
+                break;
+            case 'server/draw':
+                socket.emit('draw', action.payload);
+                break;
+            case 'server/accept-draw':
+                socket.emit('accept-draw', action.payload);
+                break;
+            case 'server/resign':
+                socket.emit('resign', action.payload);
                 break;
             case 'server/logout':
                 socket.emit('logout', action.payload);
@@ -68,6 +78,23 @@ export default function(store) {
 
     socket.on('connected-user', data => {
         store.dispatch({type: 'connected-user'});
+    });
+    
+    socket.on('draw-request', data => {
+        let notif = {
+            title: 'Your opponent has offered a draw',
+            position: 'tc',
+            autoDismiss: 6,
+            action: {
+                label: 'Accept',
+                callback: () => {
+                    socket.emit('accept-draw', {
+                        roomName: data.thread
+                    });
+                }
+            }
+        };
+        store.dispatch(Notifications.info(notif));
     });
     
     //a list of all the rooms has been sent by the server

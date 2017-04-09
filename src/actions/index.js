@@ -21,7 +21,7 @@ let initGameOptions = {
     },
     time: {
         increment: 3,
-        value: 1
+        value: 5
     }
 };
 

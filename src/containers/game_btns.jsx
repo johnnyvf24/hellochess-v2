@@ -86,7 +86,7 @@ class GameButtons extends Component {
             return <div></div>
         }
         
-        if(room.gameType == 'two-player' ||
+        if(room.gameType == 'standard' ||
            room.gameType == 'crazyhouse' ||
            room.gameType == 'crazyhouse960') {
             return (

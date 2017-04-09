@@ -1,9 +1,13 @@
 import Engine from './Engine';
 const {ab2str} = require('../server/utils/utils');
 
+import Room from '../models/rooms/Room';
+import Connection from '../server/sockets/Connection';
+import Game from '../models/games/Game';
+
 export default class TwoEngine extends Engine {
-    constructor(roomName, socket, increment) {
-        super('./engine/bin/stockfish_8_x64', roomName, socket);
+    constructor(roomName, increment, connection) {
+        super('./engine/bin/stockfish_8_x64', roomName, connection);
         this.setDepth(15);
         this.increment = increment * 1000; // s -> ms
     }
@@ -21,14 +25,15 @@ export default class TwoEngine extends Engine {
                 from: from,
                 promotion: 'q'
             };
-
-            this.io.to(this.roomName).emit('action', {
-                type: 'server/new-move',
-                payload: {
-                    thread: this.roomName,
-                    move: compMove
-                }
-            });
+            
+            let roomName = this.roomName;
+            let room: Room = this.connection.getRoomByName(roomName);
+            if(!room) {
+                return;
+            }
+            let game: Game = room.game;
+            let move = data.move;
+            room.makeMove(compMove);
         }
     }
     

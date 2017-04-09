@@ -1,4 +1,4 @@
-
+var async = require('async');
 const Notifications = require('react-notification-system-redux');
 import Connection from '../../server/sockets/Connection';
 import Game from './Game';
@@ -7,6 +7,8 @@ const Elo = require('elo-js');
 const {FourChess} = require('../../common/fourchess');
 import Player from '../players/Player';
 import FourEngine from '../../engine/FourEngine';
+import Engine from '../../engine/Engine';
+import AI from '../players/AI';
 
 function mapObject(object, callback) {
     return Object.keys(object).map(function (key) {
@@ -47,7 +49,7 @@ function getTimeTypeForTimeControl(time) {
 export default class FourGame extends Game {
     gameType: string = 'four-player';
     numPlayers: number = 4;
-    io: Object;
+    io: any;
     white: Player = null;
     black: Player = null;
     gold: Player = null;
@@ -203,19 +205,6 @@ export default class FourGame extends Game {
         return false;
     }
     
-    getPlayer(playerColor: string) {
-        switch(playerColor.charAt(0)) {
-            case 'w':
-                return this.white;
-            case 'b':
-                return this.black;
-            case 'g':
-                return this.gold;
-            case 'r':
-                return this.red;
-        }
-    }
-    
     
     removePlayer(color: string) {
         switch(color.charAt(0)) {
@@ -235,18 +224,6 @@ export default class FourGame extends Game {
         return true;
     }
     
-    removePlayerByPlayerId(playerId: string) {
-        if(this.white && playerId == this.white.playerId) {
-            this.white = null;
-        } else if(this.black && playerId == this.black.playerId) {
-            this.black = null;
-        } else if(this.gold && playerId == this.gold.playerId) {
-            this.gold = null;
-        } else if(this.red && playerId == this.red.playerId) {
-            this.red = null;
-        }
-    }
-    
     gameReady(): boolean {
         return (
             this.white !== null &&
@@ -263,6 +240,62 @@ export default class FourGame extends Game {
     
     newEngineInstance(roomName: string, connection: any) {
         this.engineInstance = new FourEngine(roomName, connection);
+    }
+    
+        makeMove(move: any, increment: number): void {
+        this._lastTurn = this.gameRulesObj.turn();
+        let validMove = this.gameRulesObj.move(move);
+        
+        //set the last move made
+        this._lastMove = move;
+        
+        if(validMove == null) {
+            return;
+        } else  { //the move was valid
+            if(validMove.color) { // A player was eliminated
+                this.setPlayerOutByColor(validMove.color);
+            }
+            
+            if(this.gameRulesObj.inCheckMate()) { //this player is in checkmate
+                if(this.roomName) {
+                    let currentPlayer = this.currentTurnPlayer();
+                    
+                    const notificationOpts = {
+                        title: 'Checkmate',
+                        message: `A player is in checkmate! ${currentPlayer.username}'s turn has been skipped.`,
+                        position: 'tr',
+                        autoDismiss: 5,
+                    };
+                    
+                    this.io.to(this.roomName).emit('action', Notifications.warning(notificationOpts));
+                }
+                this.gameRulesObj.nextTurn();
+            }
+        }
+        
+        //calculate the time difference between the last move
+        let timeElapsed = Date.now() - this.lastMoveTime;
+        this.lastMoveTime = Date.now();
+        
+        //calculate the time increment and add it to the current players time
+        let timeIncrement = increment * 1000;
+        this.setColorTime(this._lastTurn, this.times[this._lastTurn] - timeElapsed + timeIncrement);
+        
+        //check to see if the game is over
+        if (this.gameRulesObj.game_over()) {
+            if (this.gameRulesObj.in_draw()) {
+                
+            } else {
+                this.endAndSaveGame();
+                return;
+            }
+        }
+        
+        this._currentTurn = this.gameRulesObj.turn();
+        // if the next player is an AI, start the engine
+        if (this.currentTurnPlayer() instanceof AI) {
+            setTimeout(() => this.engineGo(), 100); // add a small delay between AI's moving
+        }
     }
     
     
@@ -310,7 +343,7 @@ export default class FourGame extends Game {
                 }
             }.bind(this));
             
-            if(!firstOut || !secondOut || !thirdOut || winner) {
+            if(!firstOut || !secondOut || !thirdOut || !winner) {
                 this.removePlayer('w');
                 this.removePlayer('b');
                 this.removePlayer('g');
@@ -324,6 +357,7 @@ export default class FourGame extends Game {
             let timeType = getTimeTypeForTimeControl(this.time);
             
             if(!timeType) {
+                return;
             }
             
             //get appropriate elos for the time control
@@ -453,6 +487,48 @@ export default class FourGame extends Game {
         this.gameRulesObj = new FourChess(); 
         
         return true;
+    }
+    
+    setPlayerOutByColor(color: string) {
+        let playerOut = null;
+        switch(color.charAt(0)) {
+            case 'w':
+                this.white.alive = false;
+                playerOut = this.white;
+                this.times.w = 1;
+                this.gameRulesObj.setWhiteOut();
+                break;
+            case 'b':
+                this.black.alive = false;
+                playerOut = this.black;
+                this.times.b = 1;
+                this.gameRulesObj.setBlackOut();
+                break;
+            case 'g':
+                this.gold.alive = false;
+                playerOut = this.gold;
+                this.times.g = 1;
+                this.gameRulesObj.setGoldOut();
+                break;
+            case 'r':
+                this.gameRulesObj.setRedOut();
+                this.red.alive = false;
+                playerOut = this.red;
+                this.times.r = 1;
+                break;
+        }
+        if(playerOut) {
+            const notificationOpts = {
+                title: 'Player Elimination',
+                message: `${playerOut.username} has been eliminated!`,
+                position: 'tr',
+                autoDismiss: 5,
+            };
+            if(this.roomName) {
+                this.io.to(this.roomName).emit('action', Notifications.info(notificationOpts));
+            }
+            
+        }
     }
     
 }

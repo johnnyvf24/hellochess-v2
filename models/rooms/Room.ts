@@ -293,9 +293,6 @@ export default class Room {
                 };
                 this.io.to(this._name).emit('action', Notifications.success(notificationOpts));
                 
-                //set the next turn (for asythetic purposes)
-                this.game.setNextTurn();
-                
                 //sync the room again
                 this.io.to(this.name).emit('update-room', this.getRoom());
             } else {

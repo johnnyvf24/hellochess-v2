@@ -224,7 +224,7 @@ class Live extends Component {
                         {this.state.alertVisible && 
                         <Col xs={12} sm={10} md={8} lg={6}>
                             <Alert bsStyle="success" onDismiss={this.handleAlertDismiss.bind(this)}>
-                                <i className="fa fa-wrench fa-lg" aria-hidden="true"></i> <strong> Please note this site is under active development!</strong> Other game modes are temporarily removed while we work on new features.
+                                <i className="fa fa-wrench fa-lg" aria-hidden="true"></i> <strong> Please note this site is under active development!</strong> Standard chess has been re-added. More to come!
                             </Alert>
                         </Col> 
                         }

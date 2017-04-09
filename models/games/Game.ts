@@ -32,7 +32,7 @@ abstract class Game {
     times: any;
     _lastMove: any;
     _lastMoveTime: any;
-    _lastTurn: string;
+    _lastTurn: string = 'b';
     _currentTurn: string;
     gameStarted: boolean = false;
     roomName: string;
@@ -46,10 +46,9 @@ abstract class Game {
     abstract outColor(): string;
     abstract newEngineInstance(roomName: string, io: any): void;
     abstract startGame(): any;
-    abstract endAndSaveGame(): boolean;
+    abstract endAndSaveGame(draw) : boolean;
     abstract setPlayerResignByPlayerObj(player: Player);
     abstract removePlayerFromAllSeats(player: Player);
-    abstract removePlayerByPlayerId(playerId: string);
     
     setColorTime(color: string, time: number): void {
         this.times[color] = time;
@@ -103,6 +102,19 @@ abstract class Game {
         return this.times[this.lastTurn];
     }
     
+    getPlayer(playerColor: string) {
+        switch(playerColor.charAt(0)) {
+            case 'w':
+                return this.white;
+            case 'b':
+                return this.black;
+            case 'g':
+                return this.gold;
+            case 'r':
+                return this.red;
+        }
+    }
+    
     engineGo() {
         this.engineInstance.setPosition(this.gameRulesObj.fen());
         this.engineInstance.setTurn(this.gameRulesObj.turn());
@@ -138,45 +150,18 @@ abstract class Game {
     }
     
     setPlayerOutByColor(color: string) {
-        console.log(color);
         let playerOut = null;
         switch(color.charAt(0)) {
             case 'w':
                 this.white.alive = false;
                 playerOut = this.white;
                 this.times.w = 1;
-                this.gameRulesObj.setWhiteOut();
                 break;
             case 'b':
                 this.black.alive = false;
                 playerOut = this.black;
                 this.times.b = 1;
-                this.gameRulesObj.setBlackOut();
                 break;
-            case 'g':
-                this.gold.alive = false;
-                playerOut = this.gold;
-                this.times.g = 1;
-                this.gameRulesObj.setGoldOut();
-                break;
-            case 'r':
-                this.gameRulesObj.setRedOut();
-                this.red.alive = false;
-                playerOut = this.red;
-                this.times.r = 1;
-                break;
-        }
-        if(playerOut) {
-            const notificationOpts = {
-                title: 'Player Elimination',
-                message: `${playerOut.username} has been eliminated!`,
-                position: 'tr',
-                autoDismiss: 5,
-            };
-            if(this.roomName) {
-                this.io.to(this.roomName).emit('action', Notifications.info(notificationOpts));
-            }
-            
         }
     }
     
@@ -193,27 +178,7 @@ abstract class Game {
         
         if(validMove == null) {
             return;
-        } else  { //the move was valid
-            if(validMove.color) { // A player was eliminated
-                this.setPlayerOutByColor(validMove.color);
-            }
-            
-            if(this.gameRulesObj.inCheckMate()) { //this player is in checkmate
-                if(this.roomName) {
-                    let currentPlayer = this.currentTurnPlayer();
-                    
-                    const notificationOpts = {
-                        title: 'Checkmate',
-                        message: `A player is in checkmate! ${currentPlayer.username}'s turn has been skipped.`,
-                        position: 'tr',
-                        autoDismiss: 5,
-                    };
-                    
-                    this.io.to(this.roomName).emit('action', Notifications.warning(notificationOpts));
-                }
-                this.gameRulesObj.nextTurn();
-            }
-        }
+        } 
         
         //calculate the time difference between the last move
         let timeElapsed = Date.now() - this.lastMoveTime;
@@ -225,12 +190,17 @@ abstract class Game {
         
         //check to see if the game is over
         if (this.gameRulesObj.game_over()) {
+            
             if (this.gameRulesObj.in_draw()) {
                 
+                this.endAndSaveGame(true);
+                
             } else {
-                this.endAndSaveGame();
-                return;
+                this.setPlayerOutByColor(this.gameRulesObj.turn())
+                this.endAndSaveGame(false);
             }
+            
+            return;
         }
         
         this._currentTurn = this.gameRulesObj.turn();
@@ -241,7 +211,19 @@ abstract class Game {
     }
     
     gameOver(): boolean {
-        return this.gameRulesObj.game_over();
+        return this.gameRulesObj.game_over() || !this.white.alive || !this.black.alive;
+    }
+    
+    removePlayerByPlayerId(playerId: string) {
+        if(this.white && playerId == this.white.playerId) {
+            this.white = null;
+        } else if(this.black && playerId == this.black.playerId) {
+            this.black = null;
+        } else if(this.gold && playerId == this.gold.playerId) {
+            this.gold = null;
+        } else if(this.red && playerId == this.red.playerId) {
+            this.red = null;
+        }
     }
     
 }
