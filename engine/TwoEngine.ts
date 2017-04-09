@@ -44,9 +44,11 @@ export default class TwoEngine extends Engine {
     }
     
     setPosition(fen) {
-        this.engine.stdin.write(
-            "position fen " + fen + "\n"
-        );
+        if(this.engine) {
+            this.engine.stdin.write(
+                "position fen " + fen + "\n"
+            );
+        }
     }
     
     setTurn(turnColor) {
@@ -54,7 +56,9 @@ export default class TwoEngine extends Engine {
     }
     
     setOut(colorOut) {
-        this.engine.stdin.write("stop");
+        if(this.engine) {
+            this.engine.stdin.write("stop");
+        }
     }
     
     adjustDepth(timeLeft) {
@@ -79,7 +83,9 @@ export default class TwoEngine extends Engine {
         if(this.mode == 0) {
             goString = "go" + timeString + "\n";
             console.log("[engine: "+this.roomName+"]", goString);
-            this.engine.stdin.write(goString);
+            if(this.engine) {
+                this.engine.stdin.write(goString);
+            }
         } else {
             goString = "go " + "depth 4" + "\n";
             this.engine.stdin.write(goString);
