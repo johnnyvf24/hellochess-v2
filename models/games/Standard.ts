@@ -124,6 +124,10 @@ export default class Standard extends Game {
 
     endAndSaveGame(draw): boolean {
         
+        if(this.engineInstance && typeof this.engineInstance.kill == 'function') {
+            this.engineInstance.kill(); //stop any active engine
+        }
+        
         let winner, loser;
         
         //get the loser and the winner

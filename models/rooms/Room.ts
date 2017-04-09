@@ -366,7 +366,10 @@ export default class Room {
         this._game.makeMove(move, this.time.increment);
         
         clearTimeout(this.timer);
-        this.startTimer();
+        if(this._game.gameStarted == true) {
+            this.startTimer();
+        }
+        
         this.io.to(this.name).emit('update-room', this.getRoom());
         
         // // if it's a legal move, emit to other players

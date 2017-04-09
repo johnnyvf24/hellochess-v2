@@ -346,10 +346,10 @@ export default class FourGame extends Game {
                 }
             }.bind(this));
             
-            console.log('firsOut ', firstOut.getPlayer());
-            console.log('secondOut', secondOut.getPlayer());
-            console.log('thirdOut', thirdOut.getPlayer());
-            console.log('winner', winner.getPlayer());
+            // console.log('firsOut ', firstOut.getPlayer());
+            // console.log('secondOut', secondOut.getPlayer());
+            // console.log('thirdOut', thirdOut.getPlayer());
+            // console.log('winner', winner.getPlayer());
             
             if(!firstOut || !secondOut || !thirdOut || !winner) {
                 this.removePlayer('w');
@@ -511,22 +511,22 @@ export default class FourGame extends Game {
                 this.white.alive = false;
                 playerOut = this.white;
                 this.times.w = 1;
-                this.gameRulesObj.setWhiteOut();
+                // this.gameRulesObj.setWhiteOut();
                 break;
             case 'b':
                 this.black.alive = false;
                 playerOut = this.black;
                 this.times.b = 1;
-                this.gameRulesObj.setBlackOut();
+                // this.gameRulesObj.setBlackOut();
                 break;
             case 'g':
                 this.gold.alive = false;
                 playerOut = this.gold;
                 this.times.g = 1;
-                this.gameRulesObj.setGoldOut();
+                // this.gameRulesObj.setGoldOut();
                 break;
             case 'r':
-                this.gameRulesObj.setRedOut();
+                // this.gameRulesObj.setRedOut();
                 this.red.alive = false;
                 playerOut = this.red;
                 this.times.r = 1;
