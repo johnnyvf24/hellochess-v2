@@ -111,7 +111,10 @@ module.exports = function(io, socket, connection) {
                     room = new Room(io, new FourGame(io, roomName, data.time, connection));
                     break;
                 case 'crazyhouse':
-                    room = new Room(io, new CrazyHouse(io, roomName, data.time, connection));
+                    room = new Room(io, new CrazyHouse(io, roomName, data.time, false, connection));
+                    break;
+                case 'crazyhouse960':
+                    room = new Room(io, new CrazyHouse(io, roomName, data.time, true, connection));
                     break;
             }
             

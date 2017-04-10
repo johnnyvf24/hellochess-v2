@@ -1,4 +1,6 @@
+import Room from '../models/rooms/Room';
 import Connection from '../server/sockets/Connection';
+import Game from '../models/games/Game';
 import Engine from './Engine';
 
 const {ab2str} = require('../server/utils/utils');
@@ -6,7 +8,7 @@ const {ab2str} = require('../server/utils/utils');
 
 export default class CrazyEngine extends Engine {
     constructor(roomName, increment, connection : Connection) {
-        super('./engine/bin/stockfish_variant', roomName, Connection);
+        super('./engine/bin/stockfish_variant', roomName, connection);
         this.setDepth(15);
         this.increment = increment * 1000; // s -> ms
     }

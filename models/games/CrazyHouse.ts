@@ -40,7 +40,7 @@ function getTimeTypeForTimeControl (time) {
 }
 
 export default class CrazyHouse extends Game {
-    gameType: string = 'standard';
+    gameType: string = 'crazyhouse';
     gameRulesObj: any = new Crazyhouse();
     numPlayers: number = 2;
     io: any;
@@ -49,15 +49,23 @@ export default class CrazyHouse extends Game {
         b: 0
     };
     time: any;
+    set_960: boolean = false;
     connection: Connection;
     
-    constructor(io: Object, roomName:string, time: any, connection: Connection) {
+    constructor(io: Object, roomName:string, time: any, set_960: boolean, connection: Connection) {
         super();
         this.io = io;
         this.gameRulesObj = new Crazyhouse();
         this.roomName = roomName;
         this.time = time;
         this.connection = connection;
+        this.set_960 = set_960;
+        if(set_960) {
+            this.gameType = 'crazyhouse960';
+            this.gameRulesObj = new Crazyhouse({960: true});
+        } else {
+            this.gameRulesObj = new Crazyhouse(); 
+        }
     }
     
     
@@ -129,7 +137,7 @@ export default class CrazyHouse extends Game {
     outColor(): string { return null; }
     
     newEngineInstance(roomName: string, io: any) {
-        this.engineInstance = new CrazyEngine(roomName, this.timeControl.increment, this.connection);
+        this.engineInstance = new CrazyEngine(roomName, this.time.increment, this.connection);
     }
     
     startGame() {
@@ -187,8 +195,16 @@ export default class CrazyHouse extends Game {
             
             let elo = new Elo();
             
-            let winnerElo = winner.crazyhouse_ratings[timeType];
-            let loserElo = loser.crazyhouse_ratings[timeType];
+            let winnerElo, loserElo;
+            
+            if(this.set_960) {
+                winnerElo = winner.crazyhouse960_ratings[timeType];
+                loserElo = loser.crazyhouse_ratings[timeType];
+            } else {
+                winnerElo = winner.crazyhouse960_ratings[timeType];
+                loserElo = loser.crazyhouse_ratings[timeType];
+            }
+            
 
             let newWinnerElo = elo.ifWins(winnerElo, loserElo);
             let newLoserElo = elo.ifLoses(loserElo, winnerElo);
@@ -211,7 +227,12 @@ export default class CrazyHouse extends Game {
                     //save winner
                     User.findById({_id: winner.playerId})
                     .then( function (user) {
-                        user.crazyhouse_ratings[timeType] = newWinnerElo;
+                        if(this.set_960) {
+                            user.crazyhouse960_ratings[timeType] = newWinnerElo;
+                        } else {
+                            user.crazyhouse_ratings[timeType] = newWinnerElo;
+                        }
+                        
                         user.save( function(err, updatedUser) {
                             if(err) {
                                 return;
@@ -230,7 +251,13 @@ export default class CrazyHouse extends Game {
                     //save loser
                     User.findById({_id: loser.playerId})
                     .then( function (user) {
-                        user.crazyhouse_ratings[timeType] = newLoserElo;
+                        if(this.set_960) {
+                            user.crazyhouse960_ratings[timeType] = newLoserElo;
+                        } else {
+                            user.crazyhouse_ratings[timeType] = newLoserElo;
+                            
+                        }
+                        
                         user.save( function(err, updatedUser) {
                             if(err) {
                                 return;
@@ -274,7 +301,12 @@ export default class CrazyHouse extends Game {
         this.removePlayer('w');
         this.removePlayer('b');
         this.gameStarted = false;
-        this.gameRulesObj = new Crazyhouse(); 
+        if(this.set_960) {
+            this.gameRulesObj = new Crazyhouse({960: true}); 
+        } else {
+            this.gameRulesObj = new Crazyhouse(); 
+        }
+        
         
         return true;
     }

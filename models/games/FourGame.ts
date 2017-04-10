@@ -16,7 +16,7 @@ function mapObject(object, callback) {
 }
 
 function getTimeTypeForTimeControl(time) {
-    if(!time || !time.value || !time.increment) {
+    if(!time || !time.value) {
         return;
     }
     let tcIndex;
