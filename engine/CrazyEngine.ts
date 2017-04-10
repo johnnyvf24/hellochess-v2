@@ -1,9 +1,12 @@
+import Connection from '../server/sockets/Connection';
 import Engine from './Engine';
+
 const {ab2str} = require('../server/utils/utils');
 
-export default class TwoEngine extends Engine {
-    constructor(roomName, socket, increment) {
-        super('./engine/bin/stockfish_variant', roomName, socket);
+
+export default class CrazyEngine extends Engine {
+    constructor(roomName, increment, connection : Connection) {
+        super('./engine/bin/stockfish_variant', roomName, Connection);
         this.setDepth(15);
         this.increment = increment * 1000; // s -> ms
     }
@@ -30,15 +33,15 @@ export default class TwoEngine extends Engine {
             }
             compMove.to = to;
             compMove.from = from;
-            console.log("[crazyhouse engine: " + this.roomName + "]", compMove);
-
-            this.io.to(this.roomName).emit('action', {
-                type: 'server/new-move',
-                payload: {
-                    thread: this.roomName,
-                    move: compMove
-                }
-            });
+            
+            let roomName = this.roomName;
+            let room: Room = this.connection.getRoomByName(roomName);
+            if(!room) {
+                return;
+            }
+            let game: Game = room.game;
+            let move = data.move;
+            room.makeMove(compMove);
         }
     }
     
@@ -55,9 +58,12 @@ export default class TwoEngine extends Engine {
     }
     
     setPosition(fen) {
-        this.engine.stdin.write(
-            "position fen " + fen + "\n"
-        );
+        if(this.engine) {
+            this.engine.stdin.write(
+                "position fen " + fen + "\n"
+            );
+        }
+        
     }
     
     setTurn(turnColor) {
@@ -65,7 +71,9 @@ export default class TwoEngine extends Engine {
     }
     
     setOut(colorOut) {
-        this.engine.stdin.write("stop");
+        if(this.engine) {
+            this.engine.stdin.write("stop");
+        }
     }
     
     adjustDepth(timeLeft) {
@@ -90,7 +98,9 @@ export default class TwoEngine extends Engine {
         if(this.mode == 0) {
             goString = "go" + timeString + "\n";
             console.log("[engine: "+this.roomName+"]", goString);
-            this.engine.stdin.write(goString);
+            if(this.engine) {
+                this.engine.stdin.write(goString);
+            }
         } else {
             goString = "go " + "depth 4" + "\n";
             this.engine.stdin.write(goString);

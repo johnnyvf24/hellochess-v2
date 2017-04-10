@@ -1,4 +1,3 @@
-var async = require('async');
 const Notifications = require('react-notification-system-redux');
 import Connection from '../../server/sockets/Connection';
 import Game from './Game';
@@ -420,6 +419,7 @@ export default class FourGame extends Game {
                         };
                         
                         winner.socket.emit('action', Notifications.success(eloNotif));
+                        firstOut.socket.emit('update-user', updatedUser);
                     }.bind(this));
                 }.bind(this)).catch(e => console.log(e));
                 
