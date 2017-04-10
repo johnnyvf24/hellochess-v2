@@ -242,7 +242,7 @@ export default class FourGame extends Game {
         this.engineInstance = new FourEngine(roomName, connection);
     }
     
-        makeMove(move: any, increment: number): void {
+    makeMove(move: any, increment: number): void {
         this._lastTurn = this.gameRulesObj.turn();
         let validMove = this.gameRulesObj.move(move);
         
@@ -257,6 +257,7 @@ export default class FourGame extends Game {
             }
             
             if(this.gameRulesObj.inCheckMate()) { //this player is in checkmate
+                console.log(this.roomName);
                 if(this.roomName) {
                     let currentPlayer = this.currentTurnPlayer();
                     
@@ -511,22 +512,22 @@ export default class FourGame extends Game {
                 this.white.alive = false;
                 playerOut = this.white;
                 this.times.w = 1;
-                // this.gameRulesObj.setWhiteOut();
+                if(!this.gameRulesObj.isWhiteOut()) this.gameRulesObj.setWhiteOut();
                 break;
             case 'b':
                 this.black.alive = false;
                 playerOut = this.black;
                 this.times.b = 1;
-                // this.gameRulesObj.setBlackOut();
+                if(!this.gameRulesObj.isBlackOut()) this.gameRulesObj.setBlackOut();
                 break;
             case 'g':
                 this.gold.alive = false;
                 playerOut = this.gold;
                 this.times.g = 1;
-                // this.gameRulesObj.setGoldOut();
+                if(!this.gameRulesObj.isGoldOut()) this.gameRulesObj.setGoldOut();
                 break;
             case 'r':
-                // this.gameRulesObj.setRedOut();
+                if(!this.gameRulesObj.isRedOut()) this.gameRulesObj.setRedOut();
                 this.red.alive = false;
                 playerOut = this.red;
                 this.times.r = 1;

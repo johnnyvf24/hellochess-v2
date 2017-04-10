@@ -1155,6 +1155,35 @@ var FourChess = function (fen) {
 
         return false;
     }
+    
+    function setImmediateTurn() {
+        //Set the new Turn
+        var newTurnSet = false;
+
+        //TODO FIX this! IT's a really crappy way of doing this
+        if(!gameOver()) {
+            while (!newTurnSet ) {
+                switch (TURN) {
+                    case WHITE:
+                        TURN = GOLD;
+                        newTurnSet = (goldOut) ? false : true;
+                        break;
+                    case BLACK:
+                        TURN = RED;
+                        newTurnSet = (redOut) ? false : true;
+                        break;
+                    case GOLD:
+                        TURN = BLACK;
+                        newTurnSet = (blackOut) ? false : true;
+                        break;
+                    case RED:
+                        TURN = WHITE;
+                        newTurnSet = (whiteOut) ? false : true;
+                        break;
+                }
+            }
+        }
+    }
 
     function setNextTurn() {
         //Set the new Turn
@@ -1935,7 +1964,8 @@ var FourChess = function (fen) {
                             BOARD[SQUARES[move.to]] = piece;
                     }
 
-                    setNextTurn();
+                    setImmediateTurn();
+                    // setNextTurn();
 
                     status.turn = TURN;
 

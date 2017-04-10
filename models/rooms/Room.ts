@@ -57,8 +57,27 @@ export default class Room {
     
     getRoom(): Object {
         let game;
+        
         if(this._game) {
-                game = this._game.getGame();
+            
+            let times = JSON.parse(JSON.stringify(this._game.times));
+            if(this._game.gameStarted) {
+                let timeElapsed = Date.now() - this._game.lastMoveTime;
+                if(times.w && this._game.getTurn() == 'w') {
+                    times.w -= timeElapsed;
+                }
+                if(times.b && this._game.getTurn() == 'b') {
+                    times.b -= timeElapsed;
+                }
+                if(times.g && this._game.getTurn() == 'g') {
+                    times.g -= timeElapsed;
+                }
+                if(times.r && this._game.getTurn() == 'r') {
+                    times.r -= timeElapsed
+                }
+            }
+            
+            game = this._game.getGame();
             return {
                 id: this._id,
                 room: {
@@ -72,7 +91,7 @@ export default class Room {
                 messages: this.getLast30Messages(),
                 numMessages: this._messages.length,
                 time: this._time,
-                times: this._game.times,
+                times: times,
                 game: game
             };
         }

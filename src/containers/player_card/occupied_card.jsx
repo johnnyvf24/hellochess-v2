@@ -12,6 +12,20 @@ class OccupiedCard extends Component {
         super(props);
         this.countDown = null;
     };
+    
+    shouldComponentUpdate(nextProps) {
+        if(nextProps.activeThread != this.props.activeThread) 
+            return true;
+        if(nextProps.game.fen != this.props.game.fen) {
+            return true;
+        }
+        
+        if(this.props.playerTime != nextProps.playerTime) {
+            return true;
+        }
+        
+        return false;
+    }
 
     componentWillReceiveProps(nextProps) {
         if(((nextProps.turn != this.props.turn) || (this.props.gameStarted != nextProps.gameStarted))

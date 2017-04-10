@@ -48,7 +48,10 @@ export default class FourEngine extends Engine {
             }
             let game: Game = room.game;
             let move = data.move;
-            room.makeMove(compMove);
+            setTimeout(() => {
+                room.makeMove(compMove);
+            }, 400);
+            
             
             return;
         }
@@ -106,7 +109,7 @@ export default class FourEngine extends Engine {
             depth = Math.min(3, depth);
         } else if (timeLeft < 10000) { // 10 seconds
             depth = Math.min(4, depth);
-        } else if (timeLeft < 60000) { // 1 min
+        } else if (timeLeft < 120000) { // 2 mins
             depth = Math.min(5, depth);
         }
 		return depth;
