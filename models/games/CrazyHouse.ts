@@ -70,7 +70,13 @@ export default class CrazyHouse extends Game {
     
     
     setPlayerResignByPlayerObj(player: Player) {
+        if(this.white && this.white.playerId === player.playerId) {
+            this.white.alive = false;
+        }
         
+        if(this.black && this.black.playerId === player.playerId) {
+            this.black.alive = false;
+        }
     }
     
     getGame() {

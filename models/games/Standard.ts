@@ -63,7 +63,13 @@ export default class Standard extends Game {
     
     
     setPlayerResignByPlayerObj(player: Player) {
+        if(this.white && this.white.playerId === player.playerId) {
+            this.white.alive = false;
+        }
         
+        if(this.black && this.black.playerId === player.playerId) {
+            this.black.alive = false;
+        }
     }
     
     getGame() {
@@ -166,12 +172,12 @@ export default class Standard extends Game {
         let winner, loser, wOldelo, lOldElo;
         
         //get the loser and the winner
-        if(!this.white.alive) {
-            loser = this.white;
-            winner = this.black;
-        } else {
-            loser = this.black;
+        if(this.white.alive == true) {
             winner = this.white;
+            loser = this.black;
+        } else {
+            winner = this.black;
+            loser = this.white;
         }
         
         
