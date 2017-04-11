@@ -7,7 +7,7 @@ const {ab2str} = require('../server/utils/utils');
 
 
 export default class CrazyEngine extends Engine {
-    constructor(roomName, increment, connection : Connection) {
+    constructor(roomName, increment, connection : Connection, private set_960: boolean) {
         super('./engine/bin/stockfish_variant', roomName, connection);
         this.setDepth(15);
         this.increment = increment * 1000; // s -> ms
@@ -52,6 +52,9 @@ export default class CrazyEngine extends Engine {
         this.setOption("Skill Level", "7");
         this.setOption("Contempt", "100");
         this.setOption("Move Overhead", "300");
+        if (this.set_960) {
+            this.set960();
+        }
         //this.setOption("Slow Mover", "600");
     }
     

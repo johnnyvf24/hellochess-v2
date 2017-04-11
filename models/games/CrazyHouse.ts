@@ -137,7 +137,7 @@ export default class CrazyHouse extends Game {
     outColor(): string { return null; }
     
     newEngineInstance(roomName: string, io: any) {
-        this.engineInstance = new CrazyEngine(roomName, this.time.increment, this.connection);
+        this.engineInstance = new CrazyEngine(roomName, this.time.increment, this.connection, this.set_960);
     }
     
     startGame() {
