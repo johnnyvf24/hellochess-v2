@@ -194,7 +194,7 @@ class TwoBoard extends Component {
     boardRedraw() {
         if (this.props.crazyhouse === true) {
             $("#board").css("margin-left", "10%");
-            $("#board").css("margin-right", "10%");
+            $("#board").css("margin-right", "100px");
         }
         this.board.resize();
         this.shadeLastMove();
