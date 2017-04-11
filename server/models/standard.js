@@ -1,30 +1,31 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-var TwoGameSchema = new Schema({
+var StandardSchema = new Schema({
     white: {
         user_id: {
-            type: Number,
+            type: mongoose.Schema.Types.ObjectId,
             required: true,
+            ref: 'User'
         },
         elo: {
-            type: String,
+            type: Number,
             required: true
         }
     },
     black: {
         user_id: {
-            type: Number,
+            type: mongoose.Schema.Types.ObjectId,
             required: true,
+            ref: 'User'
         },
         elo: {
-            type: String,
+            type: Number,
             required: true
         }
     },
     pgn: {
         type: String,
-        required: true
     },
     final_fen: {
         type: String,
@@ -40,12 +41,12 @@ var TwoGameSchema = new Schema({
             required: true
         }
     },
-    winner: {
+    result: {
         type: String,
         required: true
     }
 });
 
-var TwoGame = mongoose.model('TwoGame', TwoGameSchema);
+var StandardGame = mongoose.model('StandardGame', StandardSchema);
 
-module.exports = {TwoGame};
+module.exports = {StandardGame};

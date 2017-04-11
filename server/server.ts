@@ -45,7 +45,6 @@ const cors = require('cors');
 
 const router = require('./router');
 const {mongoose} = require('./db/mongoose');
-const {TwoGame} = require('./models/two_game');
 const {User} = require('./models/user');
 const {authenticate} = require('./middleware/authenticate');
 

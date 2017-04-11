@@ -18,7 +18,7 @@ export default class CrazyEngine extends Engine {
             this.setupOptions();
         }
         if(str.indexOf("bestmove") !== -1) {
-            console.log("[crazyhouse engine: " + this.roomName+ "] " + str);
+            // console.log("[crazyhouse engine: " + this.roomName+ "] " + str);
             let startIndex = str.indexOf("bestmove");
             let from = str.substring(startIndex + 9, startIndex + 11);
             let to = str.substring(startIndex + 11, startIndex + 13);

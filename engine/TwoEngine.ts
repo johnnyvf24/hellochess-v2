@@ -13,7 +13,6 @@ export default class TwoEngine extends Engine {
     }
     onBestMove(data) {
         var str = ab2str(data);
-        console.log(str);
         if (str.indexOf("uciok") !== -1) {
             this.setupOptions();
         }

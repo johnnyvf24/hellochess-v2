@@ -1,6 +1,7 @@
 import Game from './Game';
 const {Chess} = require('chess.js');
 const {User} = require('../../server/models/user');
+const {StandardGame} = require('../../server/models/standard');
 const Elo = require('elo-js');
 import Player from '../players/Player';
 import TwoEngine from '../../engine/TwoEngine';
@@ -204,7 +205,54 @@ export default class Standard extends Game {
             this.connection.updatePlayer(winner);
             this.connection.updatePlayer(loser);
             
-                        //send new ratings to each individual player
+            let data;
+            
+            if(winner.playerId === this.white.playerId) {
+                let result = (draw) ? "1/2-1/2" : "1-0";
+                data = {
+                    white: {
+                        "user_id": this.white.playerId, 
+                        "elo": winnerElo
+                        
+                    },
+                    black: {
+                        "user_id": this.black.playerId,
+                        "elo": loserElo
+                    },
+                    pgn: this.gameRulesObj.pgn(),
+                    final_fen: this.gameRulesObj.fen(),
+                    time: this.time,
+                    result: result
+                }
+                
+                
+            } else {
+                let result = (draw) ? "1/2-1/2" : "0-1";
+                data = {
+                    white: {
+                        "user_id": this.white.playerId, 
+                        "elo": loserElo
+                        
+                    },
+                    black: {
+                        "user_id": this.black.playerId,
+                        "elo": winnerElo
+                    },
+                    pgn: this.gameRulesObj.pgn(),
+                    final_fen: this.gameRulesObj.fen(),
+                    time: this.time,
+                    result: result
+                }
+            }
+            
+            console.log(data);
+            
+            var standard_game = new StandardGame(data);
+            standard_game.save().then((game) => {
+                console.log('saved game ', game);
+            }).catch(e => console.log(e));
+            
+            //send new ratings to each individual player
             setTimeout( function() {
                 try {
                     
