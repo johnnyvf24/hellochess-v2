@@ -138,6 +138,9 @@ export default class CrazyHouse extends Game {
     
     newEngineInstance(roomName: string, io: any) {
         this.engineInstance = new CrazyEngine(roomName, this.time.increment, this.connection);
+        if (this.set960) {
+            this.engineInstance.set960();
+        }
     }
     
     startGame() {
