@@ -26,23 +26,21 @@ class Leaderboard extends Component {
         return (
             <ListGroupItem className="leaderboard-listgroup-item" key={user._id}>
                 <Row>
-                <Col xs={4}>
-                    <div className="pull-left">
-                        <h5 className="leaderboard-position">{(parseInt(index) + 1)}</h5>
-                    </div>
-                    <img className="img-responsive img-circle leaderboard-pic" src={user.picture} />
-                </Col>
-                <Col xs={4}>
-                    <h5>
-                        {user.username}
-                    </h5>
-                </Col>
-                
-                <Col xs={4}>
-                    <div className="pull-right">
-                        <h5>{user[eloCategory][eloType]}</h5>
-                    </div>
-                </Col>  
+                    <Col xs={0} sm={0} md={0} lg={3}>
+                        <img className="img-responsive img-circle leaderboard-pic" src={user.picture} />
+    
+                    </Col>
+                    <Col xs={8} sm={8} md={8} lg={6}>
+                        <h5 className="leaderboard-username">
+                            {user.username}
+                        </h5>
+                    </Col>
+                    
+                    <Col xs={4} sm={4} md={4} lg={3}>
+                        <div className="pull-right">
+                            <h5>{user[eloCategory][eloType]}</h5>
+                        </div>
+                    </Col>  
                 </Row>
             </ListGroupItem>
         );
@@ -83,7 +81,7 @@ class Leaderboard extends Component {
                         <Col xs={1} />
                             <Col xs={10}>
                                 <Panel className="leaderboard-container">
-                                    <Tabs active={1}>
+                                    <Tabs id="leaderboard-tabs">
                                         <Tab eventKey={1} title="Four player">
                                             <div className="row leaderboard-box">
                                                 <div className="col-xs-3">

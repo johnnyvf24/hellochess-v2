@@ -711,7 +711,7 @@ tr:hover {
 }
 
 
-/*For leaderboard button*/
+/*For leaderboard*/
 .ribbon {
  font-size: 18px !important;
  font-family: Verdana, Geneva, sans-serif;
@@ -759,4 +759,8 @@ tr:hover {
 .ribbon .ribbon-content:after {
  right: 0;
  border-width: 1em 1em 0 0;
+}
+
+.leaderboard-username {
+    overflow-x: hidden;
 }
