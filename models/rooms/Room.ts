@@ -227,16 +227,19 @@ export default class Room {
     }
     
     //checks to see if the player is in a specified room
-    isPlayerInRoom(player: Player) {
+    isPlayerInRoom(user: Player) {
+        if(!this._players) {
+            return;
+        }
         let playerFound = false;
         this._players.map((player) => {
-            if(player.playerId === player.playerId) {
+            if(user.playerId === player.playerId) {
                 playerFound = true;
             } 
         });
         return playerFound;
     }
-    
+
     getAllRoomPlayersWithoutSockets() {
         let players = this._players;
         let newPlayersList = [];
