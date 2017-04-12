@@ -97,6 +97,21 @@ export default class Room {
         }
     }
     
+    getRoomCondensed(): Object {
+        return {
+            id: this._id,
+            room: {
+                name: this._name,
+                private: this._priv,
+                voiceChat: this._voiceChat,
+                maxPlayers: this._maxPlayers
+            },
+            gameType: this._game.gameType,
+            numPlayers: this._players.length,
+            time: this._time,
+        };
+    }
+    
     getLast30Messages() {
         let mess = [];
         let tmp = this._messages.slice(Math.max(this._messages.length - 30, 1));

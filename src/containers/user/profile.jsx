@@ -26,7 +26,7 @@ class Profile extends Component {
             return (
                 <div className="row">
                     <a href="#"
-                        className="btn btn-secondary"
+                        className="btn btn-warning"
                         onClick={this.back.bind(this)}>
                         <i className="fa fa-chevron-left fa-2x" aria-hidden="true"></i>
                     </a>
@@ -37,7 +37,7 @@ class Profile extends Component {
                 <div>
                     <div className="row">
                         <a href="#"
-                            className="btn btn-default"
+                            className="btn btn-warning"
                             onClick={this.back.bind(this)}>
                             <i className="fa fa-chevron-left fa-2x" aria-hidden="true"></i>
                         </a>

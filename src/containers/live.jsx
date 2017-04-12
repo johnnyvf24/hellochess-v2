@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { browserHistory } from 'react-router';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import ReactTimeout from 'react-timeout';
+import {LinkContainer} from 'react-router-bootstrap';
 var Loading = require('react-loading');
 
 import SearchBar from '../components/search_bar';
@@ -220,7 +221,13 @@ class Live extends Component {
                 <div id="main-panel">
                     <Row>
                         
-                        <Col xs={0} sm={1} md={2} lg={3}></Col>
+                        <Col xs={0} sm={1} md={2} lg={3}>
+                            <LinkContainer to={{pathname: '/leaderboard'}}>
+                                <Button>
+                                    Leaderboard
+                                </Button>
+                            </LinkContainer>
+                        </Col>
                         {this.state.alertVisible && 
                         <Col xs={12} sm={10} md={8} lg={6}>
                             <Alert bsStyle="success" onDismiss={this.handleAlertDismiss.bind(this)}>
@@ -238,7 +245,6 @@ class Live extends Component {
                                     <MenuItem divider />
                                     <MenuItem onClick={this.logout.bind(this)} eventKey="2">Logout</MenuItem>
                                 </CustomMenu>
-                                
                             </Dropdown>
                         </div>
                     </Row>

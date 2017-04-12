@@ -26,7 +26,7 @@ class ExistingRoomList extends Component {
     }
 
     renderRoomItems(room) {
-        if(!room.users) {
+        if(!room.numPlayers) {
             return;
         }
         return (
@@ -34,6 +34,7 @@ class ExistingRoomList extends Component {
                 <td>{room.room.name}</td>
                 <td>{room.gameType}</td>
                 <td>{`${room.time.value}mins/${room.time.increment}secs` }</td>
+                <td>{room.numPlayers}</td>
             </tr>
         );
     }
@@ -66,6 +67,7 @@ class ExistingRoomList extends Component {
                                 <th>Title</th>
                                 <th>Game Type</th>
                                 <th>Time Control</th>
+                                <th>Number of players</th>
                             </tr>
                         </thead>
                         <tbody>

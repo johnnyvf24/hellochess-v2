@@ -62,7 +62,7 @@ export default class Connection {
         let tempRooms = [];
         
         this.rooms.map((room) => {
-             tempRooms.push(room.getRoom());
+             tempRooms.push(room.getRoomCondensed());
         });
         
         return tempRooms;

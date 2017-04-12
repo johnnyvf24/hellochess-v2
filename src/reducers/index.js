@@ -9,7 +9,7 @@ import AuthReducer from './auth_reducer';
 import newGameOptions from './new_game_reducer';
 import currentProfile from './profile_reducer';
 
-import {SELECTED_ROOM,LOGOUT_SUCCESS} from '../actions/types';
+import {SELECTED_ROOM,LOGOUT_SUCCESS, VIEW_LEADERBOARD} from '../actions/types';
 
 function activeThread (state = 'Global', action) {
     switch(action.type) {
@@ -216,6 +216,15 @@ function connection(state = {status: false, error: false}, action) {
     }
 }
 
+function leaderboard(state = {}, action) {
+    switch(action.type) {
+        case VIEW_LEADERBOARD:
+            return action.payload;
+        default:
+            return state;
+    }
+}
+
 
 const rootReducer = combineReducers({
     connection,
@@ -225,6 +234,7 @@ const rootReducer = combineReducers({
     openThreads,
     currentProfile,
     newGameOptions,
+    leaderboard,
     auth: AuthReducer,
     form: formReducer,
 });

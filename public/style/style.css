@@ -99,6 +99,31 @@ body .container-fluid {
  /*       }*/
 
 
+#leaderboard-btn {
+    margin-top: 10px;
+}
+
+.leaderboard-container {
+    background: -webkit-linear-gradient(top, #aadeee, #c0e6f2);
+}
+
+.leaderboard-listgroup-item {
+    background-color: rgba(235, 145, 20);
+}
+
+
+.leaderboard-box {
+    margin-top: 20px;
+}
+
+.leaderboard-position {
+    margin-right: 10px;
+}
+
+.leaderboard-pic {
+    max-width: 30px;
+}
+
 .form-error {
     color: #aadeee;
 }
@@ -683,4 +708,55 @@ tr:hover {
     height :70%;
     background-color: #E6E6E6;
     border-right: 2px solid #BFBFBF;
+}
+
+
+/*For leaderboard button*/
+.ribbon {
+ font-size: 18px !important;
+ font-family: Verdana, Geneva, sans-serif;
+ /* This ribbon is based on a 16px font side and a 24px vertical rhythm. I've used em's to position each element for scalability. If you want to use a different font size you may have to play with the position of the ribbon elements */
+
+ width: 50%;
+ position: relative;
+ background: #f0ad4e;
+ border-radius: 5px;
+ color: white;
+ text-align: center;
+ padding: 1em 2em; /* Adjust to suit */
+ margin: 1em auto 3em; /* Based on 24px vertical rhythm. 48px bottom margin - normally 24 but the ribbon 'graphics' take up 24px themselves so we double it. */
+}
+.ribbon:before, .ribbon:after {
+ content: "";
+ position: absolute;
+ display: block;
+ bottom: -1em;
+ border: 1.5em solid #d38312;
+ z-index: -1;
+}
+.ribbon:before {
+ left: -2em;
+ border-right-width: 1.5em;
+ border-left-color: transparent;
+}
+.ribbon:after {
+ right: -2em;
+ border-left-width: 1.5em;
+ border-right-color: transparent;
+}
+.ribbon .ribbon-content:before, .ribbon .ribbon-content:after {
+ content: "";
+ position: absolute;
+ display: block;
+ border-style: solid;
+ border-color: #bc7410 transparent transparent transparent;
+ bottom: -1em;
+}
+.ribbon .ribbon-content:before {
+ left: 0;
+ border-width: 1em 0 0 1em;
+}
+.ribbon .ribbon-content:after {
+ right: 0;
+ border-width: 1em 1em 0 0;
 }
