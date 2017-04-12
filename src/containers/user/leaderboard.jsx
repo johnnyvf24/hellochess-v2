@@ -26,17 +26,17 @@ class Leaderboard extends Component {
         return (
             <ListGroupItem className="leaderboard-listgroup-item" key={user._id}>
                 <Row>
-                    <Col xs={0} sm={0} md={0} lg={3}>
+                    <Col xs={3}>
                         <img className="img-responsive img-circle leaderboard-pic" src={user.picture} />
     
                     </Col>
-                    <Col xs={8} sm={8} md={8} lg={6}>
+                    <Col xs={4}>
                         <h5 className="leaderboard-username">
                             {user.username}
                         </h5>
                     </Col>
                     
-                    <Col xs={4} sm={4} md={4} lg={3}>
+                    <Col xs={3}>
                         <div className="pull-right">
                             <h5>{user[eloCategory][eloType]}</h5>
                         </div>
@@ -84,7 +84,7 @@ class Leaderboard extends Component {
                                     <Tabs id="leaderboard-tabs">
                                         <Tab eventKey={1} title="Four player">
                                             <div className="row leaderboard-box">
-                                                <div className="col-xs-3">
+                                                <Col xs={12} sm={6} md={3}>
                                                     <Panel bsStyle="info" header="Bullet">
                                                         <ListGroup>
                                                             {mapObject(
@@ -94,8 +94,8 @@ class Leaderboard extends Component {
                                                             )}
                                                         </ListGroup>
                                                     </Panel>
-                                                </div>
-                                                <div className="col-xs-3">
+                                                </Col>
+                                                <Col xs={12} sm={6} md={3}>
                                                     <Panel bsStyle="info" header="Blitz">
                                                         <ListGroup>
                                                             {mapObject(
@@ -105,8 +105,8 @@ class Leaderboard extends Component {
                                                             )}
                                                         </ListGroup>
                                                     </Panel>
-                                                </div>
-                                                <div className="col-xs-3">
+                                                </Col>
+                                                <Col xs={12} sm={6} md={3}>
                                                     <Panel bsStyle="info" header="Rapid">
                                                         <ListGroup>
                                                             {mapObject(
@@ -116,8 +116,8 @@ class Leaderboard extends Component {
                                                             )}
                                                         </ListGroup>
                                                     </Panel>
-                                                </div>
-                                                <div className="col-xs-3">
+                                                </Col>
+                                                <Col xs={12} sm={6} md={3}>
                                                     <Panel bsStyle="info" header="Classical">
                                                         <ListGroup>
                                                             {mapObject(
@@ -127,12 +127,12 @@ class Leaderboard extends Component {
                                                             )}
                                                         </ListGroup>
                                                     </Panel>
-                                                </div>
+                                                </Col>
                                             </div>
                                         </Tab>
                                         <Tab eventKey={2} title="Standard">
                                             <div className="row leaderboard-box">
-                                                <div className="col-xs-3">
+                                                <Col xs={12} sm={6} md={3}>
                                                     <Panel bsStyle="info" header="Bullet">
                                                         <ListGroup>
                                                             {mapObject(
@@ -142,8 +142,8 @@ class Leaderboard extends Component {
                                                             )}
                                                         </ListGroup>
                                                     </Panel>
-                                                </div>
-                                                <div className="col-xs-3">
+                                                </Col>
+                                                <Col xs={12} sm={6} md={3}>
                                                     <Panel bsStyle="info" header="Blitz">
                                                         <ListGroup>
                                                             {mapObject(
@@ -153,8 +153,8 @@ class Leaderboard extends Component {
                                                             )}
                                                         </ListGroup>
                                                     </Panel>
-                                                </div>
-                                                <div className="col-xs-3">
+                                                </Col>
+                                                <Col xs={12} sm={6} md={3}>
                                                     <Panel bsStyle="info" header="Rapid">
                                                         <ListGroup>
                                                             {mapObject(
@@ -164,8 +164,8 @@ class Leaderboard extends Component {
                                                             )}
                                                         </ListGroup>
                                                     </Panel>
-                                                </div>
-                                                <div className="col-xs-3">
+                                                </Col>
+                                                <Col xs={12} sm={6} md={3}>
                                                     <Panel bsStyle="info" header="Classical">
                                                         <ListGroup>
                                                             {mapObject(
@@ -175,12 +175,12 @@ class Leaderboard extends Component {
                                                             )}
                                                         </ListGroup>
                                                     </Panel>
-                                                </div>
+                                                </Col>
                                             </div>
                                         </Tab>
                                         <Tab eventKey={3} title="Crazyhouse">
                                             <div className="row leaderboard-box">
-                                                <div className="col-xs-3">
+                                                <Col xs={12} sm={6} md={3}>
                                                     <Panel bsStyle="info" header="Bullet">
                                                         <ListGroup>
                                                             {mapObject(
@@ -190,8 +190,8 @@ class Leaderboard extends Component {
                                                             )}
                                                         </ListGroup>
                                                     </Panel>
-                                                </div>
-                                                <div className="col-xs-3">
+                                                </Col>
+                                                <Col xs={12} sm={6} md={3}>
                                                     <Panel bsStyle="info" header="Blitz">
                                                         <ListGroup>
                                                             {mapObject(
@@ -201,8 +201,8 @@ class Leaderboard extends Component {
                                                             )}
                                                         </ListGroup>
                                                     </Panel>
-                                                </div>
-                                                <div className="col-xs-3">
+                                                </Col>
+                                                <Col xs={12} sm={6} md={3}>
                                                     <Panel bsStyle="info" header="Rapid">
                                                         <ListGroup>
                                                             {mapObject(
@@ -212,8 +212,8 @@ class Leaderboard extends Component {
                                                             )}
                                                         </ListGroup>
                                                     </Panel>
-                                                </div>
-                                                <div className="col-xs-3">
+                                                </Col>
+                                                <Col xs={12} sm={6} md={3}>
                                                     <Panel bsStyle="info" header="Classical">
                                                         <ListGroup>
                                                             {mapObject(
@@ -223,12 +223,12 @@ class Leaderboard extends Component {
                                                             )}
                                                         </ListGroup>
                                                     </Panel>
-                                                </div>
+                                                </Col>
                                             </div>
                                         </Tab>
                                         <Tab eventKey={4} title="Crazyhouse 960">
                                             <div className="row leaderboard-box">
-                                                <div className="col-xs-3">
+                                                <Col xs={12} sm={6} md={3}>
                                                     <Panel bsStyle="info" header="Bullet">
                                                         <ListGroup>
                                                             {mapObject(
@@ -238,8 +238,8 @@ class Leaderboard extends Component {
                                                             )}
                                                         </ListGroup>
                                                     </Panel>
-                                                </div>
-                                                <div className="col-xs-3">
+                                                </Col>
+                                                <Col xs={12} sm={6} md={3}>
                                                     <Panel bsStyle="info" header="Blitz">
                                                         <ListGroup>
                                                             {mapObject(
@@ -249,8 +249,8 @@ class Leaderboard extends Component {
                                                             )}
                                                         </ListGroup>
                                                     </Panel>
-                                                </div>
-                                                <div className="col-xs-3">
+                                                </Col>
+                                                <Col xs={12} sm={6} md={3}>
                                                     <Panel bsStyle="info" header="Rapid">
                                                         <ListGroup>
                                                             {mapObject(
@@ -260,8 +260,8 @@ class Leaderboard extends Component {
                                                             )}
                                                         </ListGroup>
                                                     </Panel>
-                                                </div>
-                                                <div className="col-xs-3">
+                                                </Col>
+                                                <Col xs={12} sm={6} md={3}>
                                                     <Panel bsStyle="info" header="Classical">
                                                         <ListGroup>
                                                             {mapObject(
@@ -271,7 +271,7 @@ class Leaderboard extends Component {
                                                             )}
                                                         </ListGroup>
                                                     </Panel>
-                                                </div>
+                                                </Col>
                                             </div>
                                         </Tab>
                                     </Tabs>

@@ -231,7 +231,7 @@ class Live extends Component {
                         {this.state.alertVisible && 
                         <Col xs={12} sm={10} md={8} lg={6}>
                             <Alert bsStyle="success" onDismiss={this.handleAlertDismiss.bind(this)}>
-                                <i className="fa fa-wrench fa-lg" aria-hidden="true"></i> <strong> Please note this site is under active development!</strong> Try the hellochess exclusive crazyhouse960!
+                                <i className="fa fa-wrench fa-lg" aria-hidden="true"></i> <strong> Please note this site is under active development!</strong> A new leaderboard has been added!
                             </Alert>
                         </Col> 
                         }
