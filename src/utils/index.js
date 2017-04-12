@@ -36,7 +36,6 @@ export function formatTurn(turn) {
 }
 
 export function showElo(game, time, player) {
-    console.log(time);
     if(!game || !time || !player || !time.value || !time.value) {
         return "";
     }
@@ -69,7 +68,6 @@ export function showElo(game, time, player) {
             ratings = 'fourplayer_ratings';
             break;
     }
-    console.log(player[ratings]);
     switch(game.gameType) {
         case 'standard':
         case 'crazyhouse':
@@ -87,8 +85,6 @@ export function showElo(game, time, player) {
                 //classical
                 tcIndex = 'classic';
             }
-            
-            console.log(player[ratings][tcIndex]);
             
             if(!player[ratings] || !player[ratings][tcIndex]) {
                 return "";

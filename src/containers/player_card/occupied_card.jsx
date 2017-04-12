@@ -24,6 +24,10 @@ class OccupiedCard extends Component {
             return true;
         }
         
+        if (this.props.gameStarted != nextProps.gameStarted) {
+            return true;
+        }
+        
         return false;
     }
 
@@ -94,23 +98,23 @@ class OccupiedCard extends Component {
     // if dead, returns the className that will
     // indicate a dead player
     renderAliveIndicator() {
-        const {player, longColor} = this.props;
+        const {player, longColor, gameStarted} = this.props;
         let className = "";
-        if (player.alive === false) {
+        if (gameStarted === true && player.alive === false) {
             className = longColor + "-dead";
         }
         return className;
     }
 
     render() {
-        const {profile, room, game, player, time, playerTime, activeThread} = this.props;
+        const {profile, room, game, player, time, playerTime, activeThread, gameStarted} = this.props;
         if(!profile || !room || !player || !game || !time || !playerTime || !activeThread) {
             return <div></div>
         }
         return (
             <div className={"player-card-border" + this.renderActiveBorder()}>
                 <Panel className={"player-card occupied " + this.renderAliveIndicator() + " " + this.props.colorClass}>
-                    { !game.gameStarted && this.renderLeaveSeat(player, activeThread)}
+                    { !gameStarted && this.renderLeaveSeat(player, activeThread)}
 
                     <Row>
                         <a href="#"

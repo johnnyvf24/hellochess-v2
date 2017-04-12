@@ -54,24 +54,28 @@ class PlayerTimes extends Component {
     // returns the order of the player cards when the game has started
     determinePlayingOrder(room, profile) {
         let renderOrder = [];
+        const white = room.game.white;
+        const black = room.game.black;
+        const red = room.game.red;
+        const gold = room.game.gold;
         try {
             switch (room.game.gameType) {
                 case "four-player":
                     renderOrder = [this.renderGold, this.renderBlack, this.renderRed, this.renderWhite];
-                    if(!room.black) {
+                    if(!black) {
                         break;
                     }
                     switch (profile._id) {
-                        case room.black.playerId:
+                        case black.playerId:
                             renderOrder = [this.renderRed, this.renderWhite, this.renderGold, this.renderBlack];
                             break;
-                        case room.gold.playerId:
+                        case gold.playerId:
                             renderOrder = [this.renderBlack, this.renderRed, this.renderWhite, this.renderGold];
                             break;
-                        case room.red.playerId:
+                        case red.playerId:
                             renderOrder = [this.renderWhite, this.renderGold, this.renderBlack, this.renderRed];
                             break;
-                        case room.white.playerId:
+                        case white.playerId:
                         default:
                             break;
                     }
@@ -79,14 +83,14 @@ class PlayerTimes extends Component {
                 case "standard":
                     default:
                         renderOrder = [this.renderBlack, this.renderWhite];
-                        if(!room.black) {
+                        if(!black) {
                             break;
                         }
                         switch (profile._id) {
-                            case room.black.playerId:
+                            case black.playerId:
                                 renderOrder = [this.renderWhite, this.renderBlack];
                                 break;
-                            case room.white.playerId:
+                            case white.playerId:
                             default:
                                 break;
                         }
@@ -108,7 +112,7 @@ class PlayerTimes extends Component {
         // determine the vertical ordering of the cards.
         // current player goes on the bottom.
         let renderOrder = [];
-        if (activeThread.paused === false && activeThread.fen) {
+        if (activeThread.game.gameStarted === true) {
             renderOrder = this.determinePlayingOrder(room, profile);
         } else {
             renderOrder = this.determineSitOrder(room, profile);
