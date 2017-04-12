@@ -97,6 +97,21 @@ export default class Room {
         }
     }
     
+    getRoomCondensed(): Object {
+        return {
+            id: this._id,
+            room: {
+                name: this._name,
+                private: this._priv,
+                voiceChat: this._voiceChat,
+                maxPlayers: this._maxPlayers
+            },
+            gameType: this._game.gameType,
+            numPlayers: this._players.length,
+            time: this._time,
+        };
+    }
+    
     getLast30Messages() {
         let mess = [];
         let tmp = this._messages.slice(Math.max(this._messages.length - 30, 1));
@@ -212,16 +227,19 @@ export default class Room {
     }
     
     //checks to see if the player is in a specified room
-    isPlayerInRoom(player: Player) {
+    isPlayerInRoom(user: Player) {
+        if(!this._players || !user) {
+            return false;
+        }
         let playerFound = false;
         this._players.map((player) => {
-            if(player.playerId === player.playerId) {
+            if(user.playerId === player.playerId) {
                 playerFound = true;
             } 
         });
         return playerFound;
     }
-    
+
     getAllRoomPlayersWithoutSockets() {
         let players = this._players;
         let newPlayersList = [];

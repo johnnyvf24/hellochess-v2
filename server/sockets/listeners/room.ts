@@ -130,6 +130,13 @@ module.exports = function(io, socket, connection) {
             connection.addRoom(room);
         }
         let player: Player = connection.getPlayerBySocket(socket);
+        if(!player) {
+            return;
+        }
+        
+        if(room.isPlayerInRoom(player) == true) {
+            return;
+        }
         
         if(!player) {
             //TODO error
