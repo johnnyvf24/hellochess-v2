@@ -228,8 +228,8 @@ export default class Room {
     
     //checks to see if the player is in a specified room
     isPlayerInRoom(user: Player) {
-        if(!this._players) {
-            return;
+        if(!this._players || !user) {
+            return false;
         }
         let playerFound = false;
         this._players.map((player) => {
