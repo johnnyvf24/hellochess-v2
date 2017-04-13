@@ -6,6 +6,7 @@ import Player from '../players/Player';
 import CrazyEngine from '../../engine/CrazyEngine';
 const Notifications = require('react-notification-system-redux');
 import Connection from '../../server/sockets/Connection';
+import Room from '../rooms/Room';
 
 
 function getTimeTypeForTimeControl (time) {
@@ -304,15 +305,27 @@ export default class CrazyHouse extends Game {
             this.io.to(this.roomName).emit('action', Notifications.info(endNotif));
         }
         
-        this.removePlayer('w');
-        this.removePlayer('b');
         this.gameStarted = false;
-        if(this.set_960) {
-            this.gameRulesObj = new Crazyhouse({960: true}); 
-        } else {
-            this.gameRulesObj = new Crazyhouse(); 
-        }
         
+        //wait 3 seconds before resetting the room
+        setTimeout(function() {
+            this.removePlayer('w');
+            this.removePlayer('b');
+            
+            if(this.set_960) {
+                this.gameRulesObj = new Crazyhouse({960: true}); 
+            } else {
+                this.gameRulesObj = new Crazyhouse(); 
+            }
+            
+            let room: Room = this.connection.getRoomByName(this.roomName);
+            
+            if(!room) {
+                return;
+            }
+            
+            this.io.to(this.roomName).emit('update-room', room.getRoom());
+        }.bind(this), 3000);
         
         return true;
     }

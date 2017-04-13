@@ -8,6 +8,7 @@ import Player from '../players/Player';
 import FourEngine from '../../engine/FourEngine';
 import Engine from '../../engine/Engine';
 import AI from '../players/AI';
+import Room from '../rooms/Room';
 
 function mapObject(object, callback) {
     return Object.keys(object).map(function (key) {
@@ -490,12 +491,24 @@ export default class FourGame extends Game {
             }.bind(this), 1000);
         }
         
-        this.removePlayer('w');
-        this.removePlayer('b');
-        this.removePlayer('g');
-        this.removePlayer('r');
         this.gameStarted = false;
-        this.gameRulesObj = new FourChess(); 
+
+        //wait 3 seconds before resetting the room
+        setTimeout(function() {
+            this.removePlayer('w');
+            this.removePlayer('b');
+            this.removePlayer('g');
+            this.removePlayer('r');
+            this.gameRulesObj = new FourChess();  
+            
+            let room: Room = this.connection.getRoomByName(this.roomName);
+            
+            if(!room) {
+                return;
+            }
+            
+            this.io.to(this.roomName).emit('update-room', room.getRoom());
+        }.bind(this), 3000);
         
         return true;
     }

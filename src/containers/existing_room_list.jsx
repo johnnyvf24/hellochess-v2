@@ -67,7 +67,7 @@ class ExistingRoomList extends Component {
                                 <th>Title</th>
                                 <th>Game Type</th>
                                 <th>Time Control</th>
-                                <th>Number of players</th>
+                                <th># Users</th>
                             </tr>
                         </thead>
                         <tbody>

@@ -7,6 +7,7 @@ import Player from '../players/Player';
 import TwoEngine from '../../engine/TwoEngine';
 const Notifications = require('react-notification-system-redux');
 import Connection from '../../server/sockets/Connection';
+import Room from '../rooms/Room';
 
 
 function getTimeTypeForTimeControl (time) {
@@ -251,8 +252,6 @@ export default class Standard extends Game {
                 }
             }
             
-            console.log(data);
-            
             var standard_game = new StandardGame(data);
             standard_game.save().then((game) => {
                 console.log('saved game ', game);
@@ -325,10 +324,22 @@ export default class Standard extends Game {
             this.io.to(this.roomName).emit('action', Notifications.info(endNotif));
         }
         
-        this.removePlayer('w');
-        this.removePlayer('b');
         this.gameStarted = false;
-        this.gameRulesObj = new Chess(); 
+
+        //wait 3 seconds before resetting the room
+        setTimeout(function() {
+            this.removePlayer('w');
+            this.removePlayer('b');
+            this.gameRulesObj = new Chess(); 
+            
+            let room: Room = this.connection.getRoomByName(this.roomName);
+            
+            if(!room) {
+                return;
+            }
+            
+            this.io.to(this.roomName).emit('update-room', room.getRoom());
+        }.bind(this), 3000);
         
         return true;
     }

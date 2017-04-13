@@ -15,7 +15,12 @@ abstract class Engine {
         this.roomName = roomName;
         this.connection = connection;
         this.engine = spawn(path);
-        this.engine.stdout.on('data', this.onBestMove.bind(this));
+        try {
+            this.engine.stdout.on('data', this.onBestMove.bind(this));
+        } catch (err) {
+            console.log(err);
+        }
+        
         this.numOut = 0;
         this.mode = 0;
         this.sendUci();
@@ -62,13 +67,17 @@ abstract class Engine {
     }
     
     sendUci() {
-        this.engine.stdin.write("uci\n");
+        if(this.engine && this.engine.stdin) {
+            this.engine.stdin.write("uci\n");
+        }
     }
     
     setOption(name, value) {
-        this.engine.stdin.write(
-            "setoption name " + name + " value " + value + "\n"
-        );
+        if(this.engine && this.engine.stdin) {
+            this.engine.stdin.write(
+                "setoption name " + name + " value " + value + "\n"
+            );
+        }
     }
 
     kill() {
