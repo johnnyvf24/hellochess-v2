@@ -85,7 +85,7 @@ class Leaderboard extends Component {
                                         <Tab eventKey={1} title="Four player">
                                             <div className="row leaderboard-box">
                                                 <Col xs={12} sm={6} md={3}>
-                                                    <Panel bsStyle="info" header="Bullet">
+                                                    <Panel bsStyle="info" header="Bullet (0 - 4 mins]">
                                                         <ListGroup>
                                                             {mapObject(
                                                                 leaderboard.fourplayerBullet, function (index, user) {
@@ -96,7 +96,7 @@ class Leaderboard extends Component {
                                                     </Panel>
                                                 </Col>
                                                 <Col xs={12} sm={6} md={3}>
-                                                    <Panel bsStyle="info" header="Blitz">
+                                                    <Panel bsStyle="info" header="Blitz (4 - 12 mins]">
                                                         <ListGroup>
                                                             {mapObject(
                                                                 leaderboard.fourplayerBlitz, function (index, user) {
@@ -107,7 +107,7 @@ class Leaderboard extends Component {
                                                     </Panel>
                                                 </Col>
                                                 <Col xs={12} sm={6} md={3}>
-                                                    <Panel bsStyle="info" header="Rapid">
+                                                    <Panel bsStyle="info" header="Rapid (12 -  20 mins]">
                                                         <ListGroup>
                                                             {mapObject(
                                                                 leaderboard.fourplayerRapid, function (index, user) {
@@ -118,7 +118,7 @@ class Leaderboard extends Component {
                                                     </Panel>
                                                 </Col>
                                                 <Col xs={12} sm={6} md={3}>
-                                                    <Panel bsStyle="info" header="Classical">
+                                                    <Panel bsStyle="info" header="Classical ( 20 mins +]">
                                                         <ListGroup>
                                                             {mapObject(
                                                                 leaderboard.fourplayerClassical, function (index, user) {
@@ -133,7 +133,7 @@ class Leaderboard extends Component {
                                         <Tab eventKey={2} title="Standard">
                                             <div className="row leaderboard-box">
                                                 <Col xs={12} sm={6} md={3}>
-                                                    <Panel bsStyle="info" header="Bullet">
+                                                    <Panel bsStyle="info" header="Bullet (0 - 2 mins]">
                                                         <ListGroup>
                                                             {mapObject(
                                                                 leaderboard.standardBullet, function (index, user) {
@@ -144,7 +144,7 @@ class Leaderboard extends Component {
                                                     </Panel>
                                                 </Col>
                                                 <Col xs={12} sm={6} md={3}>
-                                                    <Panel bsStyle="info" header="Blitz">
+                                                    <Panel bsStyle="info" header="Blitz (2 - 8 mins]">
                                                         <ListGroup>
                                                             {mapObject(
                                                                 leaderboard.standardBlitz, function (index, user) {
@@ -155,7 +155,7 @@ class Leaderboard extends Component {
                                                     </Panel>
                                                 </Col>
                                                 <Col xs={12} sm={6} md={3}>
-                                                    <Panel bsStyle="info" header="Rapid">
+                                                    <Panel bsStyle="info" header="Rapid (2 - 15 mins]">
                                                         <ListGroup>
                                                             {mapObject(
                                                                 leaderboard.standardRapid, function (index, user) {
@@ -166,7 +166,7 @@ class Leaderboard extends Component {
                                                     </Panel>
                                                 </Col>
                                                 <Col xs={12} sm={6} md={3}>
-                                                    <Panel bsStyle="info" header="Classical">
+                                                    <Panel bsStyle="info" header="Classical (15 mins +]">
                                                         <ListGroup>
                                                             {mapObject(
                                                                 leaderboard.standardClassical, function (index, user) {
@@ -181,7 +181,7 @@ class Leaderboard extends Component {
                                         <Tab eventKey={3} title="Crazyhouse">
                                             <div className="row leaderboard-box">
                                                 <Col xs={12} sm={6} md={3}>
-                                                    <Panel bsStyle="info" header="Bullet">
+                                                    <Panel bsStyle="info" header="Bullet (0 - 2 mins]">
                                                         <ListGroup>
                                                             {mapObject(
                                                                 leaderboard.zhBullet, function (index, user) {
@@ -192,7 +192,7 @@ class Leaderboard extends Component {
                                                     </Panel>
                                                 </Col>
                                                 <Col xs={12} sm={6} md={3}>
-                                                    <Panel bsStyle="info" header="Blitz">
+                                                    <Panel bsStyle="info" header="Blitz (2 - 8 mins]">
                                                         <ListGroup>
                                                             {mapObject(
                                                                 leaderboard.zhBlitz, function (index, user) {
@@ -203,7 +203,7 @@ class Leaderboard extends Component {
                                                     </Panel>
                                                 </Col>
                                                 <Col xs={12} sm={6} md={3}>
-                                                    <Panel bsStyle="info" header="Rapid">
+                                                    <Panel bsStyle="info" header="Rapid (2 - 15 mins]">
                                                         <ListGroup>
                                                             {mapObject(
                                                                 leaderboard.zhRapid, function (index, user) {
@@ -214,7 +214,7 @@ class Leaderboard extends Component {
                                                     </Panel>
                                                 </Col>
                                                 <Col xs={12} sm={6} md={3}>
-                                                    <Panel bsStyle="info" header="Classical">
+                                                    <Panel bsStyle="info" header="Classical (15 mins +]">
                                                         <ListGroup>
                                                             {mapObject(
                                                                 leaderboard.zhClassical, function (index, user) {
@@ -229,7 +229,7 @@ class Leaderboard extends Component {
                                         <Tab eventKey={4} title="Crazyhouse 960">
                                             <div className="row leaderboard-box">
                                                 <Col xs={12} sm={6} md={3}>
-                                                    <Panel bsStyle="info" header="Bullet">
+                                                    <Panel bsStyle="info" header="Bullet (0 - 2 mins]">
                                                         <ListGroup>
                                                             {mapObject(
                                                                 leaderboard.zh960Bullet, function (index, user) {
@@ -240,7 +240,7 @@ class Leaderboard extends Component {
                                                     </Panel>
                                                 </Col>
                                                 <Col xs={12} sm={6} md={3}>
-                                                    <Panel bsStyle="info" header="Blitz">
+                                                    <Panel bsStyle="info" header="Blitz (2 - 8 mins]">
                                                         <ListGroup>
                                                             {mapObject(
                                                                 leaderboard.zh960Blitz, function (index, user) {
@@ -251,7 +251,7 @@ class Leaderboard extends Component {
                                                     </Panel>
                                                 </Col>
                                                 <Col xs={12} sm={6} md={3}>
-                                                    <Panel bsStyle="info" header="Rapid">
+                                                    <Panel bsStyle="info" header="Rapid (2 - 15 mins]">
                                                         <ListGroup>
                                                             {mapObject(
                                                                 leaderboard.zh960Rapid, function (index, user) {
@@ -262,7 +262,7 @@ class Leaderboard extends Component {
                                                     </Panel>
                                                 </Col>
                                                 <Col xs={12} sm={6} md={3}>
-                                                    <Panel bsStyle="info" header="Classical">
+                                                    <Panel bsStyle="info" header="Classical (15 mins +]">
                                                         <ListGroup>
                                                             {mapObject(
                                                                 leaderboard.zh960Classical, function (index, user) {

@@ -1,5 +1,5 @@
-import Player from '../../models/players/Player';
-import Room from '../../models/rooms/Room';
+import Player from '../game_models/players/Player';
+import Room from '../game_models/rooms/Room';
 
 export default class Connection {
     private players: Player[];

@@ -1,15 +1,15 @@
 const Notifications = require('react-notification-system-redux');
 
-import Player from '../../../models/players/Player';
-import AI from '../../../models/players/AI';
-import Room from '../../../models/rooms/Room';
-import Game from '../../../models/games/Game';
-import Message from '../../../models/rooms/Message';
+import Player from '../../game_models/players/Player';
+import AI from '../../game_models/players/AI';
+import Room from '../../game_models/rooms/Room';
+import Game from '../../game_models/games/Game';
+import Message from '../../game_models/rooms/Message';
 
 //Game Rules
-import FourGame from '../../../models/games/FourGame';
-import Standard from '../../../models/games/Standard';
-import CrazyHouse from '../../../models/games/CrazyHouse';
+import FourGame from '../../game_models/games/FourGame';
+import Standard from '../../game_models/games/Standard';
+import CrazyHouse from '../../game_models/games/CrazyHouse';
 
 //server environment
 const dotenv = require('dotenv').load();
