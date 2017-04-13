@@ -17,6 +17,9 @@ abstract class Engine {
         this.engine = spawn(path);
         try {
             this.engine.stdout.on('data', this.onBestMove.bind(this));
+            this.engine.on('error', function(err) {
+                console.log(err); 
+            });
         } catch (err) {
             console.log(err);
         }
