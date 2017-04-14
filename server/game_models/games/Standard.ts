@@ -172,6 +172,10 @@ export default class Standard extends Game {
         
         let winner, loser, wOldelo, lOldElo;
         
+        if(!this.white || !this.black) {
+            return;
+        }
+        
         //get the loser and the winner
         if(this.white.alive == true) {
             winner = this.white;

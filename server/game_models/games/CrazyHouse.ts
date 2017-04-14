@@ -179,6 +179,10 @@ export default class CrazyHouse extends Game {
         
         let winner, loser, wOldelo, lOldElo;
         
+        if(!this.white || !this.black) {
+            return;
+        }
+        
         //get the loser and the winner
         if(!this.white.alive) {
             loser = this.white;
