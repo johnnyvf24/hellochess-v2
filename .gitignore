@@ -9,6 +9,7 @@ current_errors
 .forever
 engine/bin
 data
+executables
 
 # IntelliJ
 *.iml
