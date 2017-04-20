@@ -764,3 +764,63 @@ tr:hover {
 .leaderboard-username {
     overflow-x: hidden;
 }
+
+/* PGN viewer */
+
+.pgn-viewer {
+    
+}
+
+.pgn-move-list {
+    background-color: white;
+    height: 100px;
+    overflow: auto;
+    display: flex;
+    flex-flow: row wrap;
+    align-content: flex-start;
+    position: relative;
+}
+
+.pgn-move-row {
+    flex: 0 0 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.pgn-move-index {
+    background-color: #AAAAAA;
+    color: black;
+    font-size: 11px;
+    flex: 0 0 10%;
+    height: 25px;
+    line-height: 25px;
+    padding-left: 5px;
+}
+
+.pgn-move {
+    background-color: #DDDDDD;
+    max-width: 50%;
+    flex: 0 0 45%;
+    height: 25px;
+    line-height: 25px;
+    padding-left: 5px;
+    cursor: pointer;
+}
+
+.pgn-move:hover {
+    background-color: #CBCBCB;
+}
+
+.pgn-move.active {
+    background-color: #CBCBCB;
+    font-weight: bold;
+}
+
+.pgn-buttons {
+    display: flex;
+}
+
+.pgn-buttons button {
+    flex: 0 0 25%;
+}

@@ -159,6 +159,15 @@ module.exports = function(io, socket, connection) {
         }
     });
     
+    socket.on('new-move', data => {
+        let roomName = data.thread;
+        let room: Room = connection.getRoomByName(roomName);
+        if(!room) return;
+        let game: Game = room.game;
+        let move = data.move;
+        room.makeMove(move);
+    });
+    
     socket.on('four-new-move', data => {
         let roomName = data.thread;
         let room: Room = connection.getRoomByName(roomName);

@@ -13,15 +13,15 @@ import {generateTokenHeader} from '../utils/index';
 import Notifications from 'react-notification-system-redux';
 
 let initGameOptions = {
-    gameType: 'crazyhouse960',
+    gameType: 'standard',
     room: {
         private: false,
         voiceChat: true,
         maxPlayers: 10000,
     },
     time: {
-        increment: 3,
-        value: 5
+        increment: 1,
+        value: 2
     }
 };
 

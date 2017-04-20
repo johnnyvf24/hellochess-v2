@@ -37,6 +37,7 @@ class TwoBoard extends Component {
             this.cfg.crazyhouse = this.props.crazyhouse;
         }
         this.drag = {from: '', to: ''};
+        this.atOldPosition = false;
 
     }
 
@@ -48,6 +49,10 @@ class TwoBoard extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        if (typeof nextProps.activePly !== "undefined" && nextProps.activePly != this.props.activePly) {
+            // user clicked back or forward button on pgn
+            this.loadPly(nextProps.activePly);
+        }
         if(nextProps.fen) {
             if (this.props.fen != nextProps.fen) {
                 this.game.load(nextProps.fen);
@@ -83,21 +88,71 @@ class TwoBoard extends Component {
                 }
             }
         } else {
-            this.board.clear();
-            this.shadeSquareSource = null
-            this.shadeSquareDest = null;
-            this.game = this.newGameObject();
-            if (this.prevMoveResizeListener) {
-                window.removeEventListener('resize', this.prevMoveResizeListener);
+            this.resetGame();
+        }
+    }
+    
+    resetGame() {
+        this.board.clear();
+        this.shadeSquareSource = null
+        this.shadeSquareDest = null;
+        this.game = this.newGameObject();
+        if (this.prevMoveResizeListener) {
+            window.removeEventListener('resize', this.prevMoveResizeListener);
+        }
+        this.prevMoveResizeListener = null;
+        this.drag = {from: '', to: ''};
+        this.boardRedraw(); // redraw the board to remove square shading
+    }
+    
+    loadPly(ply) {
+        let moves = this.props.pgn;
+        if (moves.length === 0) 
+            return;
+        if (ply === moves.length) {
+            // the game is at the current move
+            this.atOldPosition = false;
+        } else if (ply > moves.length) {
+            // changing to a new incoming move
+            this.atOldPosition = false;
+            return;
+        } else {
+            // set a flag so we know not to load any incoming
+            // fen or overwrite the square highlights
+            this.atOldPosition = true;
+        }
+        // get the position at that move
+        // use a new game object so we don't mess with the game state
+        let moveToDisplay = moves[ply-1];
+        //let temp_game = this.newGameObject();
+        this.game.reset();
+        /*
+        if (this.props.crazyhouse) {
+            // if it's 960, load the starting fen
+            let pos_num = this.game.position_number();
+            console.log("960 pos num:", pos_num);
+            if (pos_num !== -1) {
+                this.game.new_960(pos_num);
             }
-            this.prevMoveResizeListener = null;
-            this.drag = {from: '', to: ''};
-            this.boardRedraw(); // redraw the board to remove square shading
+        }
+        */
+        if (ply) {
+            for (let i = 0; i < ply; i++) {
+                let m = moves[i];
+                this.game.move(m);
+            }
+        }
+        this.setBoardPosition(this.game.fen());
+        if (ply) {
+            this.shadeSquare(moveToDisplay.from);
+            this.shadeSquare(moveToDisplay.to);
         }
     }
     
     updatePosition(fen) {
-        this.setBoardPosition(fen);
+        if (!this.atOldPosition) {
+            this.setBoardPosition(fen);
+        }
         let turn = this.formatTurn(this.game.turn());
         if (this.drag.from && this.props.game[turn].playerId === this.props.profile._id) {
             // if the user is hovering a piece, delete it from the board position
@@ -138,6 +193,9 @@ class TwoBoard extends Component {
             return false;
         }
         if (!this.props.profile || !this.props.game.black || !this.props.game.white) {
+            return false;
+        }
+        if (this.atOldPosition) {
             return false;
         }
         if (source !== 'hand') {
@@ -196,10 +254,12 @@ class TwoBoard extends Component {
             $("#board").css("margin-left", "10%");
             $("#board").css("margin-right", "100px");
         }
-        this.board.resize();
-        this.shadeLastMove();
-        this.renderPremove();
-        this.drawHoverBorders();
+        if (!this.atOldPosition) {
+            this.board.resize();
+            this.shadeLastMove();
+            this.renderPremove();
+            this.drawHoverBorders();
+        }
     }
 
     shadeSquare(square) {
@@ -366,7 +426,7 @@ class TwoBoard extends Component {
 
             //there is a pgn to get the prior moves
             if(this.props.pgn) {
-                this.game.load_pgn(this.props.pgn);
+                //this.game.load_pgn(this.props.pgn);
             }
 
             if(this.props.game.black) {
@@ -409,13 +469,17 @@ function mapStateToProps(state) {
     let game = room.game;
     let move = game.move;
     let fen = game.fen;
+    let pgn = game.pgn;
+    let activePly = room.activePly;
     return {
         profile: profile,
         move: move,
         room: room,
         game: game,
         name: name,
-        fen: fen
+        fen: fen,
+        pgn: pgn,
+        activePly: activePly
     }
 }
 

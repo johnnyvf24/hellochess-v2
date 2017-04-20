@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import OccupiedCard from './occupied_card';
 import EmptyCard from './empty_card';
+import PGNViewer from '../pgn/pgn_viewer';
 
 class PlayerTimes extends Component {
 
@@ -136,7 +137,10 @@ class PlayerTimes extends Component {
         });
         return (
             <div>
-            {renderedCards}
+                {renderedCards}
+                <div className="col-xs-12">
+                    <PGNViewer />
+                </div>
             </div>
         );
     }

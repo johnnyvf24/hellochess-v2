@@ -87,7 +87,7 @@ export default class FourGame extends Game {
             numPlayers: this.numPlayers,
             gameType: this.gameType,
             fen: this.gameRulesObj.fen(),
-            pgn: this.gameRulesObj.pgn(),
+            pgn: this.gameRulesObj.history({verbose:true}),
             move: this._lastMove,
             white: (this.white) ? this.white.getPlayer():false,
             black: (this.black) ? this.black.getPlayer():false,
