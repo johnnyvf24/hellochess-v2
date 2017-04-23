@@ -233,7 +233,7 @@ class Live extends Component {
                             <Alert bsStyle="success" onDismiss={this.handleAlertDismiss.bind(this)}>
                                 <i className="fa fa-wrench fa-lg" aria-hidden="true"></i>
                                 <strong> Please note this site is under active development!</strong>
-                                Check out the new move list!
+                                <span>&nbsp;Check out the new move list!</span>
                             </Alert>
                         </Col> 
                         }
