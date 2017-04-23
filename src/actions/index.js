@@ -13,15 +13,15 @@ import {generateTokenHeader} from '../utils/index';
 import Notifications from 'react-notification-system-redux';
 
 let initGameOptions = {
-    gameType: 'standard',
+    gameType: 'four-player',
     room: {
         private: false,
         voiceChat: true,
         maxPlayers: 10000,
     },
     time: {
-        increment: 1,
-        value: 2
+        increment: 5,
+        value: 5
     }
 };
 

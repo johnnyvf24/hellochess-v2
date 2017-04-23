@@ -21,8 +21,15 @@ class PGNMove extends Component {
         this.props.changeActivePly(this.props.room.room.name, this.props.move.ply);
     }
     
+    colorClass() {
+        if (typeof this.props.move.color !== "undefined") {
+            return " " + this.props.move.color;
+        }
+        return "";
+    }
+    
     render() {
-        let className = "pgn-move";
+        let className = "pgn-move" + this.colorClass();
         if (this.props.move.ply === this.props.activePly) {
             className += " active";
         }

@@ -63,6 +63,7 @@ export default class FourGame extends Game {
     roomName: string;
     time: any;
     connection: Connection;
+    fenHistory: String[] = [];
     
     constructor(io: Object, roomName:string, time: any, connection: Connection) {
         super();
@@ -80,6 +81,30 @@ export default class FourGame extends Game {
         this.gold.alive = true;
         this.red.alive = true;
         this.lastMoveTime = Date.now();
+        this.fenHistory = [];
+    }
+    
+    // parse the pgn string into an array of move objects
+    getMoveHistory() {
+        let pgn: String = this.gameRulesObj.pgn().trim();
+        if (typeof pgn === "undefined" || pgn.trim() === "")
+            return [];
+        let moves: String[] = pgn.split(" ");
+        let moveObjects: any[] = moves.map((move, index) => {
+            let color, san, from, to;
+            [color, san] = move.split(":");
+            [from, to] = san.split("-");
+            let fen: String = this.fenHistory[index];
+            let moveObject: any = {
+                color: color,
+                san: san,
+                from: from,
+                to: to,
+                fen: fen
+            };
+            return moveObject;
+        });
+        return moveObjects;
     }
     
     getGame() {
@@ -87,7 +112,7 @@ export default class FourGame extends Game {
             numPlayers: this.numPlayers,
             gameType: this.gameType,
             fen: this.gameRulesObj.fen(),
-            pgn: this.gameRulesObj.history({verbose:true}),
+            pgn: this.getMoveHistory(),
             move: this._lastMove,
             white: (this.white) ? this.white.getPlayer():false,
             black: (this.black) ? this.black.getPlayer():false,
@@ -248,6 +273,8 @@ export default class FourGame extends Game {
         
         //set the last move made
         this._lastMove = move;
+        // save the fen so it can be attached to this move in the move history
+        this.fenHistory.push(this.gameRulesObj.fen());
         
         if(validMove == null) {
             return;

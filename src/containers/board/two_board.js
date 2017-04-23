@@ -22,7 +22,6 @@ class TwoBoard extends Component {
         this.premove = null;
         this.newGameObject = this.props.newGameObject;
         this.setBoardPosition = this.props.setBoardPosition.bind(this);
-        this.setBoardPosition = this.setBoardPosition.bind(this);
         this.cfg = {
             draggable: true,
             onDragStart: this.onDragStart,
@@ -121,31 +120,20 @@ class TwoBoard extends Component {
             // fen or overwrite the square highlights
             this.atOldPosition = true;
         }
-        // get the position at that move
-        // use a new game object so we don't mess with the game state
-        let moveToDisplay = moves[ply-1];
-        //let temp_game = this.newGameObject();
-        this.game.reset();
-        /*
-        if (this.props.crazyhouse) {
-            // if it's 960, load the starting fen
-            let pos_num = this.game.position_number();
-            console.log("960 pos num:", pos_num);
-            if (pos_num !== -1) {
-                this.game.new_960(pos_num);
+        if (ply === 0) {
+            this.board.resize();
+            this.board.position('start', false);
+        } else {
+            // get the position at that move
+            // use a new game object so we don't mess with the game state
+            let move = moves[ply-1];
+            let fen = move.fen;
+            this.setBoardPosition(fen);
+            if (ply) {
+                this.board.resize();
+                this.shadeSquare(move.from);
+                this.shadeSquare(move.to);
             }
-        }
-        */
-        if (ply) {
-            for (let i = 0; i < ply; i++) {
-                let m = moves[i];
-                this.game.move(m);
-            }
-        }
-        this.setBoardPosition(this.game.fen());
-        if (ply) {
-            this.shadeSquare(moveToDisplay.from);
-            this.shadeSquare(moveToDisplay.to);
         }
     }
     

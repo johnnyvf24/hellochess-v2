@@ -783,6 +783,7 @@ tr:hover {
 
 .pgn-move-row {
     flex: 0 0 100%;
+    /*flex-grow: 1;*/
     box-sizing: border-box;
     display: flex;
     flex-flow: row wrap;
@@ -792,20 +793,57 @@ tr:hover {
     background-color: #AAAAAA;
     color: black;
     font-size: 11px;
-    flex: 0 0 10%;
+    font-weight: bold;
+    flex: 0 0 13%;
     height: 25px;
     line-height: 25px;
-    padding-left: 5px;
+    text-align: center;
 }
 
 .pgn-move {
     background-color: #DDDDDD;
-    max-width: 50%;
-    flex: 0 0 45%;
+    font-size: 14px;
+    font-family: monospace;
+    flex: 1;
+    flex-grow: 1;
     height: 25px;
     line-height: 25px;
-    padding-left: 5px;
+    text-align: center;
     cursor: pointer;
+}
+
+/*
+.pgn-move:nth-child(2) {
+    text-decoration: underline white;
+}
+*/
+
+.pgn-move.w:before {
+    content: "\25CF ";
+    color: white;
+    font-size: 16px;
+    padding-right: 3px;
+}
+
+.pgn-move.g:before {
+    content: "\25CF ";
+    color: gold;
+    font-size: 16px;
+    padding-right: 3px;
+}
+
+.pgn-move.b:before {
+    content: "\25CF ";
+    color: black;
+    font-size: 16px;
+    padding-right: 3px;
+}
+
+.pgn-move.r:before {
+    content: "\25CF ";
+    color: red;
+    font-size: 16px;
+    padding-right: 3px;
 }
 
 .pgn-move:hover {
@@ -815,6 +853,25 @@ tr:hover {
 .pgn-move.active {
     background-color: #CBCBCB;
     font-weight: bold;
+}
+
+.pgn-move.pad {
+    background-color: white;
+    cursor: default;
+}
+
+.pgn-move.out {
+    background-color: #DDDDDD;
+    background: repeating-linear-gradient(
+        -45deg,
+        #BBB 10px,
+        #CCC 18px
+    );
+    cursor: default;
+}
+
+.pgn-move.blank:hover {
+    background-color: white;
 }
 
 .pgn-buttons {

@@ -26,6 +26,7 @@ function openThreads(state = {}, action) {
     let obj = null, newState = null;
     let roomName = null;
     let messages = null, msg_obj = null;
+    let activePly;
     switch(action.type) {
         case 'user-room-left':
             roomName = action.payload.name;
@@ -42,7 +43,7 @@ function openThreads(state = {}, action) {
             //return {...state, [action.payload.room.name]: action.payload };
             newState = {...state, [action.payload.room.name]: action.payload };
             if (state[action.payload.room.name]) {
-                let activePly = state[action.payload.room.name].activePly;
+                activePly = state[action.payload.room.name].activePly;
                 if (typeof activePly !== "undefined") {
                     if (activePly === action.payload.game.pgn.length - 1) {
                         newState[action.payload.room.name].activePly = action.payload.game.pgn.length;
@@ -63,6 +64,7 @@ function openThreads(state = {}, action) {
             return {...state, [action.payload.thread]: obj };
             
         case 'new-move':
+            console.log("new-move");
             newState = Object.assign({}, state);
             newState[action.payload.thread].game.fen = action.payload.fen;
             newState[action.payload.thread].game.turn = action.payload.turn;
@@ -71,7 +73,7 @@ function openThreads(state = {}, action) {
             newState[action.payload.thread].lastMove = action.payload.lastMove;
             newState[action.payload.thread][action.payload.lastTurn].time = action.payload.time;
             // update activePly if the game was already on latest move
-            let activePly = newState[action.payload.thread].activePly;
+            activePly = newState[action.payload.thread].activePly;
             if (typeof activePly !== "undefined") {
                 if (activePly === action.payload.pgn.length - 1) {
                     newState[action.payload.thread].activePly = action.payload.pgn.length;
@@ -79,14 +81,22 @@ function openThreads(state = {}, action) {
             }
             return newState;
         case 'four-new-move':
+            console.log("four-new-move");
             newState = Object.assign({}, state);
             newState[action.payload.thread].game.fen = action.payload.fen;
-            newState[action.payload.thread].turn = action.payload.turn;
+            newState[action.payload.thread].game.turn = action.payload.turn;
             newState[action.payload.thread].move = action.payload.move;
             newState[action.payload.thread].lastMove = action.payload.lastMove;
             newState[action.payload.thread].game[action.payload.lastTurn].time = action.payload.time;
             if (action.payload.outColor)
                 newState[action.payload.thread][action.payload.outColor].alive = false;
+            // update activePly if the game was already on latest move
+            activePly = newState[action.payload.thread].activePly;
+            if (typeof activePly !== "undefined") {
+                if (activePly === action.payload.pgn.length - 1) {
+                    newState[action.payload.thread].activePly = action.payload.pgn.length;
+                }
+            }
             return newState;
         case 'four-resign':
             newState = Object.assign({}, state);
@@ -195,6 +205,7 @@ function openThreads(state = {}, action) {
             newState[action.payload.thread].lastMove = action.payload.room.game.move;
             newState[action.payload.thread].turn = 'w';
             newState[action.payload.thread].paused = false;
+            newState[action.payload.thread].activePly = 0;
             return newState;
         case 'clear-timer':
             newState = Object.assign({}, state);
