@@ -764,8 +764,23 @@ tr:hover {
     overflow-x: hidden;
 }
 
-.mic-status .fa {
-    padding: 17px;
+/*.mic-status .fa {*/
+
+/*}*/
+
+.mic-status .fa-stack {
+    margin-top: 13px;
+    margin-right: 10px;
+}
+
+.mic-status .fa-microphone {
+    color: green;
+}
+
+.mic-status .fa-microphone-slash {
+    color: #cc0000
+;
+    
 }
 
 .mic-status:hover {

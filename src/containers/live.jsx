@@ -189,15 +189,46 @@ class Live extends Component {
         if(this.props.enabledVoice == false || !this.props.enabledVoice)
             return (
                 <a className="mic-status" onClick={(e) => this.props.enableMic(this.props.activeThread)}>
-                    <i className="fa fa-microphone-slash fa-3x" aria-hidden="true"></i>
+                    <span className="fa-stack fa-2x">
+                        <i className="fa fa-circle fa-stack-2x fa-inverse"></i>
+                        <i className="fa fa-microphone-slash fa-stack-1x fa-inverse"></i>
+                    </span>
                 </a>
             ); 
         else {
             return (
             <a className="mic-status" onClick={(e) => this.props.disableMic(this.props.activeThread)}>
-                <i className="fa fa-microphone fa-3x" aria-hidden="true"></i>
+                <span className="fa-stack fa-2x">
+                    <i className="fa fa-circle fa-stack-2x fa-inverse"></i>
+                    <i className="fa fa-microphone fa-stack-1x fa-inverse"></i>
+                </span>
             </a>
         ); 
+        }
+    }
+    
+    renderMicrophoneStatus() {
+        if(!this.props.openThread || !this.props.openThread.room.voiceChat) {
+            return;
+        }
+        if(this.props.enabledVoice == false || !this.props.enabledVoice)
+            return (
+                <a className="mic-status" onClick={(e) => this.props.enableMic(this.props.activeThread)}>
+                    <span className="fa-stack fa-2x">
+                        <i className="fa fa-circle fa-stack-2x"></i>
+                        <i className="fa fa-microphone-slash fa-stack-1x fa-inverse"></i>
+                    </span>
+                </a>
+            ); 
+        else {
+            return (
+                <a className="mic-status" onClick={(e) => this.props.disableMic(this.props.activeThread)}>
+                    <span className="fa-stack fa-2x">
+                        <i className="fa fa-circle fa-stack-2x"></i>
+                        <i className="fa fa-microphone fa-stack-1x fa-inverse"></i>
+                    </span>
+                </a>
+            ); 
         }
     }
 
@@ -253,11 +284,12 @@ class Live extends Component {
                             <Alert bsStyle="success" onDismiss={this.handleAlertDismiss.bind(this)}>
                                 <i className="fa fa-wrench fa-lg" aria-hidden="true"></i>
                                 <strong> Please note this site is under active development!</strong>
-                                <span>&nbsp;Check out the new move list!</span>
+                                <span>&nbsp; We are testing voice chat features, let us know if you like it!</span>
                             </Alert>
                         </Col> 
                         }
                         <div className="pull-right">
+                            
                             
                             <Dropdown id="dropdown-custom-menu">
                                 <CustomToggle bsRole="toggle">
@@ -295,9 +327,12 @@ function mapStateToProps(state) {
         openThread,
         activeThread: state.activeThread,
         enabledVoice,
+        openThread,
+        activeThread: state.activeThread,
+        enabledVoice,
     }
 }
 
 Live = ReactTimeout(Live);
 
-export default connect (mapStateToProps, {logout, saveUsername, clearError, userConnect, enableMic, disableMic}) (Live);
+export default connect (mapStateToProps, {logout, saveUsername, clearError, userConnect, enableMic, disableMic, enableMic, disableMic}) (Live);

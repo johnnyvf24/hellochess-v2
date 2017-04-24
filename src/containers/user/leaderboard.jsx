@@ -52,7 +52,7 @@ class Leaderboard extends Component {
             return (
                 <div className="row">
                     <a href="#"
-                        className="btn"
+                        className="btn btn-warning"
                         onClick={this.back.bind(this)}>
                         <i className="fa fa-chevron-left fa-2x" aria-hidden="true"></i>
                     </a>
