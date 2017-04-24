@@ -78,7 +78,7 @@ export default class Standard extends Game {
             numPlayers: this.numPlayers,
             gameType: this.gameType,
             fen: this.gameRulesObj.fen(),
-            pgn: this.gameRulesObj.pgn(),
+            pgn: this.getMoveHistory(),
             move: this._lastMove,
             white: (this.white) ? this.white.getPlayer():false,
             black: (this.black) ? this.black.getPlayer():false,
@@ -145,6 +145,7 @@ export default class Standard extends Game {
         this.white.alive = true;
         this.black.alive = true;
         this.lastMoveTime = Date.now();
+        this.fenHistory = [];
     }
     
     
@@ -230,7 +231,7 @@ export default class Standard extends Game {
                         "user_id": this.black.playerId,
                         "elo": loserElo
                     },
-                    pgn: this.gameRulesObj.pgn(),
+                    pgn: this.gameRulesObj.history({verbose:true}),
                     final_fen: this.gameRulesObj.fen(),
                     time: this.time,
                     result: result
@@ -249,7 +250,7 @@ export default class Standard extends Game {
                         "user_id": this.black.playerId,
                         "elo": winnerElo
                     },
-                    pgn: this.gameRulesObj.pgn(),
+                    pgn: this.gameRulesObj.history({verbose:true}),
                     final_fen: this.gameRulesObj.fen(),
                     time: this.time,
                     result: result

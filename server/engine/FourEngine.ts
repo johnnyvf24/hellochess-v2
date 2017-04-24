@@ -33,9 +33,15 @@ export default class FourEngine extends Engine {
                     break;
             }
 
+            // move format: e2-e3
+            let moveMatch = str.match(/bestmove ([a-n]\d+\-[a-n]\d+)/i);
+            if (moveMatch == null || typeof moveMatch[1] === "undefined")
+                return;
+            let moveString = moveMatch[1];
+            let moveSplit = moveString.split('-');
             let compMove = {
-                to: str.substr(str.indexOf("bestmove") + 9, str.length).split('-')[1].replace('\n', ''),
-                from: str.substr(str.indexOf("bestmove") + 9, str.length).split('-')[0],
+                from: moveSplit[0],
+                to: moveSplit[1],
                 promotion: 'q'
             };
 

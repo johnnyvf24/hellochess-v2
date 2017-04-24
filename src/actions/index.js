@@ -20,7 +20,7 @@ let initGameOptions = {
         maxPlayers: 10000,
     },
     time: {
-        increment: 3,
+        increment: 5,
         value: 5
     }
 };

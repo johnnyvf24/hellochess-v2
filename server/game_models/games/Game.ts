@@ -38,6 +38,7 @@ abstract class Game {
     roomName: string;
     time: any;
     connection: Connection;
+    fenHistory: String[] = [];
     
     abstract addPlayer(player: Player, color: string): boolean;
     abstract removePlayer(color: string): boolean;
@@ -164,6 +165,8 @@ abstract class Game {
         
         //set the last move made
         this._lastMove = move;
+        // save the fen so it can be attached to this move in the move history
+        this.fenHistory.push(this.gameRulesObj.fen());
         
         if(validMove == null) {
             return;
@@ -211,6 +214,15 @@ abstract class Game {
         } else if(this.red && playerId == this.red.playerId) {
             this.red = null;
         }
+    }
+    
+    getMoveHistory() {
+        let history = this.gameRulesObj.history({verbose: true});
+        history = history.map((move, index) => {
+            move.fen = this.fenHistory[index];
+            return move;
+        });
+        return history;
     }
     
 }

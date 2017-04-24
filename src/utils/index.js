@@ -19,6 +19,8 @@ export function millisToMinutesAndSeconds(millis) {
         minutes++;
         seconds = 0;
     }
+    minutes = Math.max(0, minutes);
+    seconds = Math.max(0, seconds);
     return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
 }
 

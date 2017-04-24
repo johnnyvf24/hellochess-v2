@@ -17,9 +17,10 @@ export default class TwoEngine extends Engine {
             this.setupOptions();
         }
         if(str.indexOf("bestmove") !== -1) {
-            let startIndex = str.indexOf("bestmove");
-            let from = str.substring(startIndex + 9, startIndex + 11);
-            let to = str.substring(startIndex + 11, startIndex + 13);
+            // move format: e2e3
+            let startIndex = str.indexOf("bestmove") + 9;
+            let from = str.substring(startIndex, startIndex + 2);
+            let to = str.substring(startIndex + 2, startIndex + 4);
             let compMove = {
                 to: to,
                 from: from,

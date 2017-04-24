@@ -33,7 +33,7 @@ export function socketIoMiddleware(store) {
                 socket.emit('sit-down-board', action.payload);
                 break;
             case 'server/new-move':
-                socket.emit('four-new-move', action.payload);
+                socket.emit('new-move', action.payload);
                 break;
             case 'server/four-new-move':
                 socket.emit('four-new-move', action.payload);

@@ -28,6 +28,7 @@ class FourBoard extends Component {
             onMouseoverSquare: this.onMouseoverSquare
         };
         this.drag = {from: '', to: ''};
+        this.atOldPosition = false;
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -38,6 +39,10 @@ class FourBoard extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        if (typeof nextProps.activePly !== "undefined" && nextProps.activePly != this.props.activePly) {
+            // user clicked back or forward button on pgn
+            this.loadPly(nextProps.activePly);
+        }
         if (nextProps.fen) {
             if (this.props.fen != nextProps.fen) {
                 this.game.position(nextProps.fen);
@@ -98,8 +103,42 @@ class FourBoard extends Component {
         }
     }
     
+    loadPly(ply) {
+        let moves = this.props.pgn;
+        if (moves.length === 0) 
+            return;
+        if (ply === moves.length) {
+            // the game is at the current move
+            this.atOldPosition = false;
+        } else if (ply > moves.length) {
+            // changing to a new incoming move
+            this.atOldPosition = false;
+            return;
+        } else {
+            // set a flag so we know not to load any incoming
+            // fen or overwrite the square highlights
+            this.atOldPosition = true;
+        }
+        if (ply === 0) {
+            this.board.resize();
+            this.board.position('start', false);
+        } else {
+            // get the position at that move
+            let move = moves[ply-1];
+            let fen = move.fen;
+            this.board.position(fen, false);
+            if (ply) {
+                this.board.resize();
+                this.shadeSquare(move.from);
+                this.shadeSquare(move.to);
+            }
+        }
+    }
+    
     updatePosition(fen) {
-        this.board.position(fen);
+        if (!this.atOldPosition) {
+            this.board.position(fen);
+        }
         let turn = this.formatTurn(this.game.turn());
         if (this.drag.from && this.props.room[turn].playerId === this.props.profile._id) {
             // if the user is hovering a piece, delete it from the board position
@@ -116,6 +155,10 @@ class FourBoard extends Component {
         }
         
         if(!this.props.game.gameStarted) {
+            return false;
+        }
+        
+        if (this.atOldPosition) {
             return false;
         }
         
@@ -141,7 +184,7 @@ class FourBoard extends Component {
                piece.search(/^r/) !== -1) {
                 return false;
             }
-            return true;
+            return this.props.game.black.alive;
 
         } else if(this.props.profile._id === this.props.game.white.playerId) {
             //this is the white player
@@ -150,7 +193,7 @@ class FourBoard extends Component {
                piece.search(/^r/) !== -1) {
                 return false;
             }
-            return true;
+            return this.props.game.white.alive;
         } else if(this.props.profile._id === this.props.game.gold.playerId) {
             //this is the white player
             if(piece.search(/^b/) !== -1 ||
@@ -158,7 +201,7 @@ class FourBoard extends Component {
                piece.search(/^r/) !== -1) {
                 return false;
             }
-            return true;
+            return this.props.game.gold.alive;
         } else if(this.props.profile._id === this.props.game.red.playerId) {
             //this is the white player
             if(piece.search(/^b/) !== -1 ||
@@ -166,7 +209,7 @@ class FourBoard extends Component {
                piece.search(/^w/) !== -1) {
                 return false;
             }
-            return true;
+            return this.props.game.red.alive;
         } else {
             return false;
         }
@@ -183,10 +226,12 @@ class FourBoard extends Component {
     }
     
     boardRedraw() {
-        this.board.resize();
-        this.shadeLastMove();
-        this.renderPremove();
-        this.drawHoverBorders();
+        if (!this.atOldPosition) {
+            this.board.resize();
+            this.shadeLastMove();
+            this.renderPremove();
+            this.drawHoverBorders();
+        }
     }
 
     formatTurn(turn) {
@@ -403,13 +448,17 @@ function mapStateToProps(state) {
     let game = room.game;
     let move = game.move;
     let fen = game.fen;
+    let pgn = game.pgn;
+    let activePly = room.activePly;
     return {
         profile: profile,
         move: move,
         room: room,
         game: game,
         name: name,
-        fen: fen
+        fen: fen,
+        pgn: pgn,
+        activePly: activePly
     }
 }
 

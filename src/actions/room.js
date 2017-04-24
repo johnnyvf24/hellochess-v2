@@ -110,3 +110,13 @@ export function killAIs(roomName) {
         payload: roomName
     }
 }
+
+export function changeActivePly(roomName, activePly) {
+    return {
+        type: 'change-active-ply',
+        payload: {
+            roomName: roomName,
+            activePly: activePly
+        }
+    }
+}
