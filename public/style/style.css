@@ -492,7 +492,6 @@ tr:hover {
 
 .voice-chat-enable-disable {
     padding-top: 15px;
-    padding-left: 30px;
 }
 
 .voice-chat-enable-disable .fa-stack {
@@ -763,4 +762,12 @@ tr:hover {
 
 .leaderboard-username {
     overflow-x: hidden;
+}
+
+.mic-status .fa {
+    padding: 17px;
+}
+
+.mic-status:hover {
+    cursor: pointer;
 }

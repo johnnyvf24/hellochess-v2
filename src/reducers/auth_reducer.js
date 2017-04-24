@@ -27,7 +27,8 @@ if (token && !isTokenExpired(token)) {
 }
 const INITIAL_STATE = {
     profile: getProfile(),
-    isAuthenticated: authenticated
+    isAuthenticated: authenticated,
+    voice: false
 }
 
 //The auth reducer

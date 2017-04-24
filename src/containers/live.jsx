@@ -14,6 +14,7 @@ import NewGame from './new_game';
 import PlayerTimes from './player_card/player_times';
 import GameButtons from './game_btns';
 import { logout, saveUsername, clearError, userConnect} from '../actions';
+import {enableMic, disableMic } from '../actions/room';
 
 import {Grid, Row, Col, Button, Dropdown, MenuItem, Alert} from 'react-bootstrap';
 
@@ -180,6 +181,25 @@ class Live extends Component {
     handleAlertDismiss() {
         this.setState({alertVisible: false});
     }
+    
+    renderMicrophoneStatus() {
+        if(!this.props.openThread || !this.props.openThread.room.voiceChat) {
+            return;
+        }
+        if(this.props.enabledVoice == false || !this.props.enabledVoice)
+            return (
+                <a className="mic-status" onClick={(e) => this.props.enableMic(this.props.activeThread)}>
+                    <i className="fa fa-microphone-slash fa-3x" aria-hidden="true"></i>
+                </a>
+            ); 
+        else {
+            return (
+            <a className="mic-status" onClick={(e) => this.props.disableMic(this.props.activeThread)}>
+                <i className="fa fa-microphone fa-3x" aria-hidden="true"></i>
+            </a>
+        ); 
+        }
+    }
 
     render() {
         if(this.props.connection.error) {
@@ -236,6 +256,7 @@ class Live extends Component {
                         </Col> 
                         }
                         <div className="pull-right">
+                            
                             <Dropdown id="dropdown-custom-menu">
                                 <CustomToggle bsRole="toggle">
                                     <img id="profile-pic" className="img-responsive img-circle" src={this.props.profile.picture} alt="" />
@@ -246,6 +267,9 @@ class Live extends Component {
                                     <MenuItem onClick={this.logout.bind(this)} eventKey="2">Logout</MenuItem>
                                 </CustomMenu>
                             </Dropdown>
+                        </div>
+                        <div className="pull-right">
+                        {this.renderMicrophoneStatus() }
                         </div>
                     </Row>
                     { this.renderInputUsername() }
@@ -258,12 +282,20 @@ class Live extends Component {
     }
 }
 function mapStateToProps(state) {
+    let openThread = state.openThreads[state.activeThread];
+    let enabledVoice = false, streamingVoice = false;
+    if(openThread) {
+        enabledVoice = openThread.enabledVoice;
+    }
     return {
         profile: state.auth.profile,
         connection: state.connection,
+        openThread,
+        activeThread: state.activeThread,
+        enabledVoice,
     }
 }
 
 Live = ReactTimeout(Live);
 
-export default connect (mapStateToProps, {logout, saveUsername, clearError, userConnect}) (Live);
+export default connect (mapStateToProps, {logout, saveUsername, clearError, userConnect, enableMic, disableMic}) (Live);

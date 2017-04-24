@@ -1,8 +1,8 @@
 import {combineReducers} from 'redux';
 import {reducer as notifications} from 'react-notification-system-redux';
 import { reducer as formReducer } from 'redux-form';
-import Chess from 'chess.js';
 
+import {mabObject} from '../utils';
 import FourChess from '../../common/fourchess';
 import rooms from './rooms_reducer';
 import AuthReducer from './auth_reducer';
@@ -27,6 +27,16 @@ function openThreads(state = {}, action) {
     let roomName = null;
     let messages = null, msg_obj = null;
     switch(action.type) {
+        case 'voice/enable-voice':
+            newState = Object.assign({}, state);
+            console.log(newState);
+            newState[action.payload].enabledVoice = true;
+            return newState;
+            
+        case 'voice/disable-voice':
+            newState = Object.assign({}, state);
+            newState[action.payload].enabledVoice = false;
+            return newState;
         case 'user-room-left':
             roomName = action.payload.name;
             const user = action.payload.user;

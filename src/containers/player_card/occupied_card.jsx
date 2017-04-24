@@ -75,7 +75,14 @@ class OccupiedCard extends Component {
     removeAi(player, roomName) {
         this.props.removeComputer(player, roomName);
     }
-
+    
+    enableMic(player, roomName) {
+        this.props.enableMic(roomName);
+    }
+    
+    disableMic(player, roomName) {
+        this.props.disableMic(roomName);
+    }
     renderLeaveSeat(player, roomName) {
         if(player.type == "computer") {
             return (
@@ -86,6 +93,32 @@ class OccupiedCard extends Component {
                     </a>
                 </div>
             );
+        }
+    }
+    
+    renderEnableMicrophone(player, roomName) {
+        
+        if(player.playerId == this.props.profile._id) {
+            if(!this.props.voice) {
+                return (
+                    <div className="pull-right">
+                        <a href="#"
+                            onClick={(event) => this.enableMic(player, roomName)}>
+                            <i className="fa fa-microphone-slash" aria-hidden="true"></i> 
+                        </a>
+                    </div>
+                );
+            } else {
+                return (
+                    <div className="pull-right">
+                        <a href="#"
+                            onClick={(event) => this.disableMic(player, roomName)}>
+                            <i className="fa fa-microphone" aria-hidden="true"></i> 
+                        </a>
+                    </div>
+                );
+            }
+            
         }
     }
 
@@ -115,7 +148,6 @@ class OccupiedCard extends Component {
             <div className={"player-card-border" + this.renderActiveBorder()}>
                 <Panel className={"player-card occupied " + this.renderAliveIndicator() + " " + this.props.colorClass}>
                     { !gameStarted && this.renderLeaveSeat(player, activeThread)}
-
                     <Row>
                         <a href="#"
                             onClick={(e) => browserHistory.push(`/profile/${player.playerId}`)}

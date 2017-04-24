@@ -13,7 +13,7 @@ import {generateTokenHeader} from '../utils/index';
 import Notifications from 'react-notification-system-redux';
 
 let initGameOptions = {
-    gameType: 'crazyhouse960',
+    gameType: 'four-player',
     room: {
         private: false,
         voiceChat: true,

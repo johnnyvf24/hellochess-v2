@@ -12,6 +12,20 @@ export function sitDownComputer(details) {
     }
 }
 
+export function enableMic(thread) {
+    return {
+        type: 'voice/enable-voice',
+        payload: thread
+    }
+}
+
+export function disableMic(thread) {
+    return {
+        type: 'voice/disable-voice',
+        payload: thread
+    }
+}
+
 export function removeComputer(player, thread) {
     return {
         type: 'server/remove-ai-player',

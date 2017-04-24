@@ -48,7 +48,7 @@ class CreateGameRoom extends Component {
             return (
                 <div className="row"
                     onClick={(event) => this.props.enableVoiceChat()}>
-                    <div className="center voice-chat-enable-disable">
+                    <div className="text-center voice-chat-enable-disable">
                         <span className="fa-stack fa-2x">
                             <i className="fa fa-circle fa-stack-2x"></i>
                             <i className="fa fa-microphone fa-inverse fa-stack-1x"></i>
@@ -63,7 +63,7 @@ class CreateGameRoom extends Component {
         return (
             <div className="row"
                 onClick={(event) => this.props.enableVoiceChat()}>
-                <div className="center voice-chat-enable-disable">
+                <div className="text-center voice-chat-enable-disable">
                     <span className="fa-stack fa-2x">
                         <i className="fa fa-circle fa-stack-2x"></i>
                         <i className="fa fa-microphone fa-inverse fa-stack-1x"></i>
@@ -94,8 +94,8 @@ class CreateGameRoom extends Component {
                         onChange={this.onInputChange.bind(this)}
                     />
                 </div>
-                <div hidden className="form-group">
-                    <div className="row">
+                <div className="form-group">
+                    <div hidden className="row">
                         <div className="col-xs-6">
                             <label>
                                 Maximum # Players

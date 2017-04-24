@@ -9,16 +9,19 @@ import Notifications from 'react-notification-system-redux';
 
 import {socketIoMiddleware} from './middleware/socketio';
 import startSocketListeners, {socket} from './middleware/socketio';
+import {voiceMiddleware} from './middleware/voice';
+import startVoiceListeners from './middleware/voice';
 import reducers from './reducers';
 import routes from './routes';
 import {LOGIN_SUCCESS} from './actions/types';
 
-const middleware = [ReduxPromise, thunkMiddleware, socketIoMiddleware];
+const middleware = [ReduxPromise, thunkMiddleware, socketIoMiddleware, voiceMiddleware];
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(reducers, composeEnhancers(
     applyMiddleware(...middleware)
 ));
 startSocketListeners(store);
+startVoiceListeners(store);
 
 //Get the authentication token and user profile if available
 const token = localStorage.getItem('token');
@@ -30,34 +33,6 @@ if(token && profile) {
         type: LOGIN_SUCCESS
     });
 }
-
-
-
-// socket.on('connect_timeout', () => store.dispatch({ type: 'disconnect' }));
-// socket.on('connect_error', () => store.dispatch({ type: 'disconnect' }));
-// socket.on('reconnect_error', () => store.dispatch({ type: 'disconnect' }));
-// socket.on('reconnect', () => store.dispatch({ type: 'reconnect' }));
-
-// socket.on('draw-request', (data) => {
-//     let notif = {
-//         title: 'Your opponent has offered a draw',
-//         position: 'tc',
-//         autoDismiss: 6,
-//         action: {
-//             label: 'Accept',
-//             callback: () => {
-//                 socket.emit('action', {
-//                     type: 'server/accept-draw',
-//                     payload: {
-//                         roomName: data.thread
-//                     }
-//                 });
-//             }
-//         }
-//     };
-//     store.dispatch(Notifications.info(notif));
-// });
-
 ReactDOM.render(
     <Provider store={store}>
     <Router history={browserHistory} routes={routes}/>
