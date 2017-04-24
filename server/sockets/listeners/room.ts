@@ -142,6 +142,22 @@ module.exports = function(io, socket, connection) {
             //TODO error
             return;
         }
+        
+        if(room.voiceChat && room.getNumberOfPlayers() == 10) {
+            
+            //Tell the player that this is a voice chat room and
+            //there are too many players
+            let notificationOpts = {
+                title: `There are too many players`,
+                message: 'voice chat enabled rooms are limited to 10 users',
+                position: 'tr',
+                autoDismiss: 5,
+            };
+            
+            socket.emit('action', Notifications.info(notificationOpts));
+            return;
+        } 
+        
         //remove previous instances of this player
         room.removePlayer(player)
         

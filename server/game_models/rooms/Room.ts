@@ -96,6 +96,10 @@ export default class Room {
         };
     }
     
+    getNumberOfPlayers() {
+        return this._players.length;
+    }
+    
     getLast30Messages() {
         let mess = [];
         let tmp = this._messages.slice(Math.max(this._messages.length - 30, 1));
@@ -176,6 +180,10 @@ export default class Room {
     
     get time() {
         return this._time;
+    }
+    
+    get voiceChat() {
+        return this._voiceChat;
     }
     
     emitMessage(messageObj) {

@@ -2,7 +2,7 @@ import {combineReducers} from 'redux';
 import {reducer as notifications} from 'react-notification-system-redux';
 import { reducer as formReducer } from 'redux-form';
 
-import {mabObject} from '../utils';
+import {mapObject} from '../utils';
 import FourChess from '../../common/fourchess';
 import rooms from './rooms_reducer';
 import AuthReducer from './auth_reducer';
@@ -30,7 +30,12 @@ function openThreads(state = {}, action) {
     switch(action.type) {
         case 'voice/enable-voice':
             newState = Object.assign({}, state);
-            console.log(newState);
+            //TODO figure out how to make this nicer
+            mapObject(newState, function (key, obj) {
+                if(newState[key].voiceChat == true) {
+                     newState[key].enabledVoice = false;
+                }
+            });
             newState[action.payload].enabledVoice = true;
             return newState;
             
