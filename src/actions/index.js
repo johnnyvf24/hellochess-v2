@@ -16,7 +16,7 @@ let initGameOptions = {
     gameType: 'four-player',
     room: {
         private: false,
-        voiceChat: true,
+        voiceChat: false,
         maxPlayers: 10000,
     },
     time: {
