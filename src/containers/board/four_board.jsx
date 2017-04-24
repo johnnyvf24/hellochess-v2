@@ -184,7 +184,7 @@ class FourBoard extends Component {
                piece.search(/^r/) !== -1) {
                 return false;
             }
-            return true;
+            return this.props.game.black.alive;
 
         } else if(this.props.profile._id === this.props.game.white.playerId) {
             //this is the white player
@@ -193,7 +193,7 @@ class FourBoard extends Component {
                piece.search(/^r/) !== -1) {
                 return false;
             }
-            return true;
+            return this.props.game.white.alive;
         } else if(this.props.profile._id === this.props.game.gold.playerId) {
             //this is the white player
             if(piece.search(/^b/) !== -1 ||
@@ -201,7 +201,7 @@ class FourBoard extends Component {
                piece.search(/^r/) !== -1) {
                 return false;
             }
-            return true;
+            return this.props.game.gold.alive;
         } else if(this.props.profile._id === this.props.game.red.playerId) {
             //this is the white player
             if(piece.search(/^b/) !== -1 ||
@@ -209,7 +209,7 @@ class FourBoard extends Component {
                piece.search(/^w/) !== -1) {
                 return false;
             }
-            return true;
+            return this.props.game.red.alive;
         } else {
             return false;
         }
