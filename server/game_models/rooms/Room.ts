@@ -60,23 +60,7 @@ export default class Room {
         
         if(this._game) {
             
-            let times = JSON.parse(JSON.stringify(this._game.times));
-            if(this._game.gameStarted) {
-                let timeElapsed = Date.now() - this._game.lastMoveTime;
-                if(times.w && this._game.getTurn() == 'w') {
-                    times.w -= timeElapsed;
-                }
-                if(times.b && this._game.getTurn() == 'b') {
-                    times.b -= timeElapsed;
-                }
-                if(times.g && this._game.getTurn() == 'g') {
-                    times.g -= timeElapsed;
-                }
-                if(times.r && this._game.getTurn() == 'r') {
-                    times.r -= timeElapsed
-                }
-            }
-            
+            let times = this._game.times;
             game = this._game.getGame();
             return {
                 id: this._id,

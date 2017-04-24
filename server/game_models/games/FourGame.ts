@@ -284,7 +284,6 @@ export default class FourGame extends Game {
             }
             
             if(this.gameRulesObj.inCheckMate()) { //this player is in checkmate
-                console.log(this.roomName);
                 if(this.roomName) {
                     let currentPlayer = this.currentTurnPlayer();
                     
@@ -353,13 +352,11 @@ export default class FourGame extends Game {
             
             let winnerColor = this.gameRulesObj.getWinnerColor(); //player that won
             
-            console.log(winnerColor);
             
             let winner = this.getPlayer(winnerColor);
             
             //order in which losers lost
             let loserOrder = this.gameRulesObj.getLoserOrder(); 
-            console.log('loserorder ', loserOrder);
             delete loserOrder[winnerColor]; //remove the winner from the loser order
             
             let firstOut : Player, secondOut : Player, thirdOut : Player;
@@ -583,7 +580,7 @@ export default class FourGame extends Game {
             if(this.roomName) {
                 this.io.to(this.roomName).emit('action', Notifications.info(notificationOpts));
             }
-            
+            this.lastMoveTime = Date.now();
         }
     }
     
