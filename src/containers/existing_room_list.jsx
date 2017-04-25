@@ -21,8 +21,8 @@ class ExistingRoomList extends Component {
         this.renderRoomItems = this.renderRoomItems.bind(this);
     }
 
-    onClickRoom(key, event) {
-        this.props.joinRoom(key);
+    onClickRoom(room, event) {
+        this.props.joinRoom(room.room.name, room);
     }
 
     renderRoomItems(room) {
@@ -30,7 +30,7 @@ class ExistingRoomList extends Component {
             return;
         }
         return (
-            <tr key={room.id} onClick={this.onClickRoom.bind(this, room.room.name)}>
+            <tr key={room.id} onClick={this.onClickRoom.bind(this, room)}>
                 <td>{room.room.name}</td>
                 <td>{room.gameType}</td>
                 <td>{`${room.time.value}mins/${room.time.increment}secs` }</td>

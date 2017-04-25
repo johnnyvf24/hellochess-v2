@@ -11,18 +11,27 @@ export function voiceMiddleware(store) {
         switch(action.type) {
             case 'voice/enable-voice': 
                 let profile = store.getState().auth.profile;
+                webrtc.leaveRoom(action.payload);
                 webrtc.joinRoom(action.payload);
                 webrtc.startLocalVideo();
                 return action;
+                
             case 'voice/disable-voice':
-                webrtc.leaveRoom(action.payload)
+                // webrtc.leaveRoom(action.payload)
                 webrtc.stopLocalVideo();
                 return action;
             case 'server/join-room':
-                break;
+                console.log(action.payload);
+                if(action.payload.room.voiceChat == true) {
+                    console.log("joining voice room: ", action.payload.room.name);
+                    webrtc.leaveRoom(action.payload.room.name);
+                    webrtc.joinRoom(action.payload.room.name);
+                    return action;
+                }
             case 'server/leave-room':
                 webrtc.leaveRoom(action.payload);
-                break;
+                webrtc.stopLocalVideo();
+                return action;
         } 
      
         return result;

@@ -32,9 +32,7 @@ function openThreads(state = {}, action) {
             newState = Object.assign({}, state);
             //TODO figure out how to make this nicer
             mapObject(newState, function (key, obj) {
-                if(newState[key].voiceChat == true) {
-                     newState[key].enabledVoice = false;
-                }
+                newState[key].enabledVoice = false;
             });
             newState[action.payload].enabledVoice = true;
             return newState;
@@ -42,6 +40,13 @@ function openThreads(state = {}, action) {
         case 'voice/disable-voice':
             newState = Object.assign({}, state);
             newState[action.payload].enabledVoice = false;
+            return newState;
+        case 'server/join-room':
+            newState = Object.assign({}, state);
+            //TODO figure out how to make this nicer
+            mapObject(newState, function (key, obj) {
+                newState[key].enabledVoice = false;
+            });
             return newState;
         case 'user-room-left':
             roomName = action.payload.name;

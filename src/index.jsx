@@ -15,7 +15,7 @@ import reducers from './reducers';
 import routes from './routes';
 import {LOGIN_SUCCESS} from './actions/types';
 
-const middleware = [ReduxPromise, thunkMiddleware, socketIoMiddleware, voiceMiddleware];
+const middleware = [ReduxPromise, thunkMiddleware, voiceMiddleware, socketIoMiddleware];
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(reducers, composeEnhancers(
     applyMiddleware(...middleware)
