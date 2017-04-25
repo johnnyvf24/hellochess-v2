@@ -206,31 +206,6 @@ class Live extends Component {
         ); 
         }
     }
-    
-    renderMicrophoneStatus() {
-        if(!this.props.openThread || !this.props.openThread.room.voiceChat) {
-            return;
-        }
-        if(this.props.enabledVoice == false || !this.props.enabledVoice)
-            return (
-                <a className="mic-status" onClick={(e) => this.props.enableMic(this.props.activeThread)}>
-                    <span className="fa-stack fa-2x">
-                        <i className="fa fa-circle fa-stack-2x"></i>
-                        <i className="fa fa-microphone-slash fa-stack-1x fa-inverse"></i>
-                    </span>
-                </a>
-            ); 
-        else {
-            return (
-                <a className="mic-status" onClick={(e) => this.props.disableMic(this.props.activeThread)}>
-                    <span className="fa-stack fa-2x">
-                        <i className="fa fa-circle fa-stack-2x"></i>
-                        <i className="fa fa-microphone fa-stack-1x fa-inverse"></i>
-                    </span>
-                </a>
-            ); 
-        }
-    }
 
     render() {
         if(this.props.connection.error) {
@@ -324,9 +299,6 @@ function mapStateToProps(state) {
     return {
         profile: state.auth.profile,
         connection: state.connection,
-        openThread,
-        activeThread: state.activeThread,
-        enabledVoice,
         openThread,
         activeThread: state.activeThread,
         enabledVoice,

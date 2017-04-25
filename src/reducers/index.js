@@ -59,6 +59,7 @@ function openThreads(state = {}, action) {
             newState = {...state, [action.payload.room.name]: action.payload };
             if (state[action.payload.room.name]) {
                 activePly = state[action.payload.room.name].activePly;
+                let enabledVoice = state[action.payload.room.name].enabledVoice;
                 if (typeof activePly !== "undefined") {
                     if (activePly === action.payload.game.pgn.length - 1) {
                         newState[action.payload.room.name].activePly = action.payload.game.pgn.length;
@@ -66,6 +67,7 @@ function openThreads(state = {}, action) {
                         newState[action.payload.room.name].activePly = activePly;
                     }
                 }
+                newState[action.payload.room.name].enabledVoice = enabledVoice;
             }
             return newState;
         case 'left-room':
