@@ -967,5 +967,6 @@ tr:hover {
 }
 
 .picture-recent-games {
+    max-height: 40px;
     display: inline;
 }
