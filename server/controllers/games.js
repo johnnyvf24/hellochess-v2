@@ -14,7 +14,8 @@ exports.getRecentGames = (req, res, next) => {
     StandardGame.find({ $or : [ { "white.user_id": ObjectID(id)}, { "black.user_id": ObjectID(id) } ] } )
         .populate('black.user_id')
         .populate('white.user_id')
-        .limit(10)
+        .sort({$natural: -1})
+        .limit(9)
         .then((games) => {
             res.send(games);
         })

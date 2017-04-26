@@ -5,7 +5,7 @@ import Room from '../components/room/room';
 import {mapObject} from '../utils/';
 import {getRecentGames} from '../actions/user';
 
-import {Panel, ListGroup, ListGroupItem, Col, Row} from 'react-bootstrap';
+import {Panel, ListGroup, ListGroupItem, Col, Row, Popover, OverlayTrigger} from 'react-bootstrap';
 
 class GameHistory extends Component {
 
@@ -26,9 +26,14 @@ class GameHistory extends Component {
     }
     
     renderGame(game) {
-        console.log(game);
+        const popoverLeft = (
+            <Popover id="popover-positioned-left" title="PGN">
+                {game.pgn}
+            </Popover>
+        );
         return (
             <ListGroupItem key={game._id} className="recent-games-list-group-item">
+                <OverlayTrigger trigger="click" placement="left" overlay={popoverLeft}>
                 <Row>
                     <Col xs={5} className="game-result-white">
                         <img className="img-responsive img-circle picture-recent-games" src={game.white.user_id.picture} />
@@ -50,6 +55,7 @@ class GameHistory extends Component {
                         </div>
                     </Col>
                 </Row>
+                </OverlayTrigger>
             </ListGroupItem>
         );
     }

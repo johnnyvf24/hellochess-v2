@@ -231,7 +231,7 @@ export default class Standard extends Game {
                         "user_id": this.black.playerId,
                         "elo": loserElo
                     },
-                    pgn: this.gameRulesObj.history({verbose:true}),
+                    pgn: this.gameRulesObj.pgn(),
                     final_fen: this.gameRulesObj.fen(),
                     time: this.time,
                     result: result
@@ -250,7 +250,7 @@ export default class Standard extends Game {
                         "user_id": this.black.playerId,
                         "elo": winnerElo
                     },
-                    pgn: this.gameRulesObj.history({verbose:true}),
+                    pgn: this.gameRulesObj.pgn(),
                     final_fen: this.gameRulesObj.fen(),
                     time: this.time,
                     result: result
