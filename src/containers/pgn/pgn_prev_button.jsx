@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {changeActivePly} from '../../actions/room';
+import {Button} from 'react-bootstrap';
 
 class PGNPrevButton extends Component {
     constructor(props) {
@@ -18,13 +19,21 @@ class PGNPrevButton extends Component {
         let prevPly = Math.max(0, activePly - 1);
         this.props.changeActivePly(roomName, prevPly);
     }
+    disabled() {
+        return (
+            typeof this.props.activePly === "undefined" ||
+            this.props.activePly === 0
+        );
+    }
     render() {
         return (
-            <button
+            <Button
                 className="pgn-prev-button"
+                bsSize="xsmall"
+                disabled={this.disabled()}
                 onClick={this.onClick.bind(this)}>
                 {'<'}
-            </button>
+            </Button>
         );
     }
     

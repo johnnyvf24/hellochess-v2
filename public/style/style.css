@@ -954,6 +954,30 @@ tr:hover {
     flex: 0 0 25%;
 }
 
+.pgn-buttons button:focus {
+    outline: 0;
+    background-color: #fff;
+    border-color: #ccc;
+}
+
+.pgn-buttons button:hover {
+    background-color: #cff7fc;
+}
+
+.pgn-buttons button:focus:active {
+    background-color: #afeff7;
+    border-color: #ccc;
+}
+
+.pgn-buttons button:disabled {
+    background-color: #c4c4c4;
+}
+
+.pgn-buttons button:disabled:hover {
+    cursor: default;
+    background-color: #c4c4c4;
+}
+
 .recent-games-heading {
     color: white;
 }

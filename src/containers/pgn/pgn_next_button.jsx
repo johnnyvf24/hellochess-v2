@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {changeActivePly} from '../../actions/room';
+import {Button} from 'react-bootstrap';
 
 class PGNNextButton extends Component {
     constructor(props) {
@@ -21,13 +22,21 @@ class PGNNextButton extends Component {
         let nextPly = Math.min(lastPly, activePly + 1);
         this.props.changeActivePly(roomName, nextPly);
     }
+    disabled() {
+        return (
+            typeof this.props.activePly === "undefined" ||
+            this.props.activePly === this.props.pgn.length
+        );
+    }
     render() {
         return (
-            <button
+            <Button
                 className="pgn-next-button"
+                bsSize="xsmall"
+                disabled={this.disabled()}
                 onClick={this.onClick.bind(this)}>
                 {'>'}
-            </button>
+            </Button>
         );
     }
     
