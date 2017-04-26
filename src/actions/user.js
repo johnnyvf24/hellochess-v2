@@ -4,8 +4,33 @@ import {generateTokenHeader} from '../utils/index';
 import {
     ROOT_URL,
     VIEW_PROFILE,
-    VIEW_LEADERBOARD
+    VIEW_LEADERBOARD,
+    RECENT_GAMES
 } from './types'
+
+export function getRecentGames(profileId) {
+    return (dispatch) => {
+        const tokenHeader = generateTokenHeader();
+        axios.get(`${ROOT_URL}/api/games/recentgames/${profileId}`, tokenHeader)
+        .then((res) => {
+            dispatch({type: RECENT_GAMES, payload: res.data});
+        })
+        .catch(function (error) {
+            const notificationOpts = {
+                // uid: 'once-please', // you can specify your own uid if required
+                title: 'Error could not get recent Games!',
+                message: `${error}`,
+                position: 'tc',
+                autoDismiss: 0
+            };
+
+            //Show failed log in
+            dispatch(
+                Notifications.error(notificationOpts)
+            );
+        });
+    };
+}
 
 export function getUserProfile (id) {
     return (dispatch) => {

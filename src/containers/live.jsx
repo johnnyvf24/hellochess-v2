@@ -7,6 +7,7 @@ import ReactTimeout from 'react-timeout';
 import {LinkContainer} from 'react-router-bootstrap';
 var Loading = require('react-loading');
 
+import GameHistory from './game_history';
 import SearchBar from '../components/search_bar';
 import BoardWrapper from './board/board_wrapper';
 import RoomViewer from '../containers/room_viewer';
@@ -131,26 +132,40 @@ class Live extends Component {
         if(!this.props.profile.username) {
             return <div></div>
         } else {
-            return (
-                <Row id="wrapper">
-                    <Col id="chatbox-wrapper" xs={0} sm={4} md={4} lg={5}>
-                        <RoomViewer />
-                    </Col>
-                    <Col xs={12} sm={6} md={6} lg={5}>
-                        <Row id="start-game-btns">
-                            <div className="text-center">
-                                <NewGame/>
-                            </div>
-                        </Row>
-
-                        <BoardWrapper />
-                        <GameButtons />
-                    </Col>
-                    <div id="time-ads-column" className="col-xs-12 col-sm-2 col-md-2 col-lg-2">
-                        <PlayerTimes />
-                    </div>
-                </Row>
-            );
+            if(this.props.activeThread != "200")
+                return (
+                    <Row id="wrapper">
+                        <Col id="chatbox-wrapper" xs={0} sm={4} md={4} lg={5}>
+                            <RoomViewer />
+                        </Col>
+                        <Col xs={12} sm={6} md={6} lg={5}>
+                            <Row id="start-game-btns">
+                                <div className="text-center">
+                                    <NewGame/>
+                                </div>
+                            </Row>
+    
+                            <BoardWrapper />
+                            <GameButtons />
+                        </Col>
+                        <div id="time-ads-column" className="col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                            <PlayerTimes />
+                        </div>
+                    </Row>
+                );
+                
+            else {
+                return (
+                    <Row id="wrapper">
+                        <Col id="chatbox-wrapper" xs={0} sm={4} md={4} lg={5}>
+                            <RoomViewer />
+                        </Col>
+                        <Col xs={12} sm={8} md={8} lg={7}>
+                            <GameHistory />
+                        </Col>
+                    </Row>
+                );
+            }
         }
     }
 

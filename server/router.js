@@ -1,5 +1,6 @@
 const Authentication = require('./controllers/authentication');
 const User = require('./controllers/user');
+const Games = require('./controllers/games');
 const passportService = require('./services/passport');
 const passport = require('passport');
 const path = require('path');
@@ -39,5 +40,6 @@ module.exports = function(app) {
     app.patch('/api/users/:id', requireAuth, User.updateUser);
     app.get('/api/users/:id', requireAuth, User.getUserProfile);
     app.get('/api/leaderboard', User.getLeaderboard);
+    app.get('/api/games/recentgames/:id', requireAuth, Games.getRecentGames);
 
 }

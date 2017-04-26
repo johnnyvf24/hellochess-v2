@@ -760,6 +760,57 @@ tr:hover {
  border-width: 1em 1em 0 0;
 }
 
+
+.ribbon-small {
+ font-size: 14px !important;
+ font-family: Verdana, Geneva, sans-serif;
+ /* This ribbon is based on a 16px font side and a 24px vertical rhythm. I've used em's to position each element for scalability. If you want to use a different font size you may have to play with the position of the ribbon elements */
+
+ width: 50%;
+ position: relative;
+ background: #f0ad4e;
+ border-radius: 5px;
+ color: white;
+ text-align: center;
+ padding: 1em 2em; /* Adjust to suit */
+ margin: 1em auto 3em; /* Based on 24px vertical rhythm. 48px bottom margin - normally 24 but the ribbon 'graphics' take up 24px themselves so we double it. */
+}
+.ribbon-small:before, .ribbon-small:after {
+ content: "";
+ position: absolute;
+ display: block;
+ bottom: -1em;
+ border: 1.5em solid #d38312;
+ z-index: -1;
+}
+.ribbon-small:before {
+ left: -2em;
+ border-right-width: 1.5em;
+ border-left-color: transparent;
+}
+.ribbon-small:after {
+ right: -2em;
+ border-left-width: 1.5em;
+ border-right-color: transparent;
+}
+.ribbon-small .ribbon-content:before, .ribbon-small .ribbon-content:after {
+ content: "";
+ position: absolute;
+ display: block;
+ border-style: solid;
+ border-color: #bc7410 transparent transparent transparent;
+ bottom: -1em;
+}
+.ribbon-small .ribbon-content:before {
+ left: 0;
+ border-width: 1em 0 0 1em;
+}
+.ribbon-small .ribbon-content:after {
+ right: 0;
+ border-width: 1em 1em 0 0;
+}
+
+
 .leaderboard-username {
     overflow-x: hidden;
 }
@@ -901,4 +952,20 @@ tr:hover {
 
 .pgn-buttons button {
     flex: 0 0 25%;
+}
+
+.recent-games-heading {
+    color: white;
+}
+
+.recent-games-list-group-item {
+    margin-top: -2px;
+    padding: 10px;
+    /*background: -webkit-linear-gradient(top, #aadeee, #c0e6f2);*/
+    /*background-color: #c0e6f2;*/
+    text-align: center;
+}
+
+.picture-recent-games {
+    display: inline;
 }

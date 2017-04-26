@@ -76,9 +76,6 @@ app.use(bodyParser.json());
 //serve up static public folder
 app.use(express.static(path.join(__dirname, '../public')));
 
-
-
-
 if(env == "production") {
     httpapp.listen(httpapp.get('httpport'), function() {
         console.log(`http redirecting from port ${httpapp.get('httpport')}`);
