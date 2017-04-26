@@ -37,6 +37,7 @@
   "dependencies": {
     "async": "^2.3.0",
     "axios": "^0.15.3",
+    "babel-polyfill": "^6.23.0",
     "babel-preset-stage-1": "^6.1.18",
     "bcryptjs": "^2.4.0",
     "body-parser": "^1.15.2",
