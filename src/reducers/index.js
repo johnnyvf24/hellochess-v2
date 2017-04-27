@@ -60,7 +60,6 @@ function openThreads(state = {}, action) {
             obj = {...newState[roomName], messages};
             return {...newState, [roomName]: obj};
         case 'update-room':
-            //return {...state, [action.payload.room.name]: action.payload };
             newState = {...state, [action.payload.room.name]: action.payload };
             if (state[action.payload.room.name]) {
                 activePly = state[action.payload.room.name].activePly;
@@ -71,8 +70,12 @@ function openThreads(state = {}, action) {
                     } else {
                         newState[action.payload.room.name].activePly = activePly;
                     }
+                } else {
+                    newState[action.payload.room.name].activePly = action.payload.game.pgn.length;
                 }
                 newState[action.payload.room.name].enabledVoice = enabledVoice;
+            } else {
+                newState[action.payload.room.name].activePly = action.payload.game.pgn.length;
             }
             return newState;
         case 'left-room':
@@ -86,7 +89,6 @@ function openThreads(state = {}, action) {
             return {...state, [action.payload.thread]: obj };
             
         case 'new-move':
-            console.log("new-move");
             newState = Object.assign({}, state);
             newState[action.payload.thread].game.fen = action.payload.fen;
             newState[action.payload.thread].game.turn = action.payload.turn;
@@ -103,7 +105,6 @@ function openThreads(state = {}, action) {
             }
             return newState;
         case 'four-new-move':
-            console.log("four-new-move");
             newState = Object.assign({}, state);
             newState[action.payload.thread].game.fen = action.payload.fen;
             newState[action.payload.thread].game.turn = action.payload.turn;

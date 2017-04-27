@@ -383,7 +383,7 @@ export default class FourGame extends Game {
                 this.removePlayer('r');
                 this.gameStarted = false;
                 this.gameRulesObj = new FourChess();
-                console.log("One of the player's is null");
+                console.log("One of the players is null");
                 return;
         
             }
@@ -523,7 +523,6 @@ export default class FourGame extends Game {
             this.removePlayer('b');
             this.removePlayer('g');
             this.removePlayer('r');
-            this.gameRulesObj = new FourChess();  
             
             let room: Room = this.connection.getRoomByName(this.roomName);
             

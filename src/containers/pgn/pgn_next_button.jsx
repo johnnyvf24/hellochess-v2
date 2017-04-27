@@ -10,6 +10,16 @@ class PGNNextButton extends Component {
     shouldComponentUpdate(nextProps) {
         return true;
     }
+    componentDidMount() {
+        $(document).on('keydown', this.onArrowKey.bind(this));
+    }
+    onArrowKey(event) {
+        let keyCode = '39'; // right arrow
+        let tag = event.target.tagName.toLowerCase();
+        if (event.which == keyCode && tag !== 'input') {
+            this.onClick();
+        }
+    }
     onClick() {
         let roomName = this.props.room.room.name;
         let lastPly = this.props.pgn.length;

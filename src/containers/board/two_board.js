@@ -122,7 +122,11 @@ class TwoBoard extends Component {
         }
         if (ply === 0) {
             this.board.resize();
-            this.board.position('start', false);
+            if (typeof this.props.game.startPos !== "undefined") {
+                this.setBoardPosition(this.props.game.startPos);
+            } else {
+                this.board.position('start', false);
+            }
         } else {
             // get the position at that move
             // use a new game object so we don't mess with the game state
@@ -331,10 +335,14 @@ class TwoBoard extends Component {
             piece: this.premove.piece,
             promotion: 'q'
         };
-        //this.game.move(action);
-        //this.board.position(this.game.fen(), false);
+        // see if the move is legal
+        let move = this.makeMove(action);
         this.resetPremove();
-        this.props.newMove(action, this.props.name);
+        if (move === null) {
+            this.game.undo();
+        } else {
+            this.props.newMove(action, this.props.name);
+        }
     }
     
     resetPremove() {

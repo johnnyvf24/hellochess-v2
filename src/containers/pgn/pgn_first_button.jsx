@@ -7,6 +7,16 @@ class PGNFirstButton extends Component {
     constructor(props) {
         super(props);
     }
+    componentDidMount() {
+        $(document).on('keydown', this.onArrowKey.bind(this));
+    }
+    onArrowKey(event) {
+        let keyCode = '38'; // up arrow
+        let tag = event.target.tagName.toLowerCase();
+        if (event.which == keyCode && tag !== 'input') {
+            this.onClick();
+        }
+    }
     onClick() {
         let roomName = this.props.room.room.name;
         this.props.changeActivePly(roomName, 0);

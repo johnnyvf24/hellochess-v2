@@ -322,10 +322,14 @@ class FourBoard extends Component {
             piece: this.premove.piece,
             promotion: 'q'
         };
-        //this.game.move(action);
-        //this.board.position(this.game.fen(), false);
+        // see if the move is legal
+        let move = this.game.move(action);
         this.resetPremove();
-        this.props.fourNewMove(action, this.props.name);
+        if (move === null) {
+            //this.game.undo();
+        } else {
+            this.props.fourNewMove(action, this.props.name);
+        }
     }
     
     resetPremove() {

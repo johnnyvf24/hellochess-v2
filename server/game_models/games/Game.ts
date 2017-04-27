@@ -166,7 +166,8 @@ abstract class Game {
         //set the last move made
         this._lastMove = move;
         // save the fen so it can be attached to this move in the move history
-        this.fenHistory.push(this.gameRulesObj.fen());
+        let newFen = this.gameRulesObj.fen();
+        this.fenHistory.push(newFen);
         
         if(validMove == null) {
             return;

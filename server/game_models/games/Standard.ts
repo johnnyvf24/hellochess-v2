@@ -335,7 +335,6 @@ export default class Standard extends Game {
         setTimeout(function() {
             this.removePlayer('w');
             this.removePlayer('b');
-            this.gameRulesObj = new Chess(); 
             
             let room: Room = this.connection.getRoomByName(this.roomName);
             

@@ -138,18 +138,20 @@ class Live extends Component {
                         <Col id="chatbox-wrapper" xs={0} sm={4} md={4} lg={5}>
                             <RoomViewer />
                         </Col>
-                        <Col xs={12} sm={6} md={6} lg={5}>
-                            <Row id="start-game-btns">
-                                <div className="text-center">
-                                    <NewGame/>
-                                </div>
-                            </Row>
-    
-                            <BoardWrapper />
-                            <GameButtons />
-                        </Col>
-                        <div id="time-ads-column" className="col-xs-12 col-sm-2 col-md-2 col-lg-2">
-                            <PlayerTimes />
+                        <div id="game-area">
+                            <Col xs={12} sm={6} md={6} lg={5}>
+                                <Row id="start-game-btns">
+                                    <div className="text-center">
+                                        <NewGame/>
+                                    </div>
+                                </Row>
+        
+                                <BoardWrapper />
+                                <GameButtons />
+                            </Col>
+                            <div id="time-ads-column" className="col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                                <PlayerTimes />
+                            </div>
                         </div>
                     </Row>
                 );

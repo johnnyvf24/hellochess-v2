@@ -43,6 +43,7 @@ function getTimeTypeForTimeControl (time) {
 export default class CrazyHouse extends Game {
     gameType: string = 'crazyhouse';
     gameRulesObj: any = new Crazyhouse();
+    startPos: String;
     numPlayers: number = 2;
     io: any;
     times: any = {
@@ -56,7 +57,6 @@ export default class CrazyHouse extends Game {
     constructor(io: Object, roomName:string, time: any, set_960: boolean, connection: Connection) {
         super();
         this.io = io;
-        this.gameRulesObj = new Crazyhouse();
         this.roomName = roomName;
         this.time = time;
         this.connection = connection;
@@ -64,6 +64,7 @@ export default class CrazyHouse extends Game {
         if(set_960) {
             this.gameType = 'crazyhouse960';
             this.gameRulesObj = new Crazyhouse({960: true});
+            this.startPos = this.gameRulesObj.fen();
         } else {
             this.gameRulesObj = new Crazyhouse(); 
         }
@@ -91,6 +92,7 @@ export default class CrazyHouse extends Game {
             black: (this.black) ? this.black.getPlayer():false,
             turn: this.gameRulesObj.turn(),
             gameStarted: this.gameStarted,
+            startPos: this.startPos
         };
     }
     
@@ -316,12 +318,6 @@ export default class CrazyHouse extends Game {
         setTimeout(function() {
             this.removePlayer('w');
             this.removePlayer('b');
-            
-            if(this.set_960) {
-                this.gameRulesObj = new Crazyhouse({960: true}); 
-            } else {
-                this.gameRulesObj = new Crazyhouse(); 
-            }
             
             let room: Room = this.connection.getRoomByName(this.roomName);
             
