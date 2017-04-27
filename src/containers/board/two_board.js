@@ -182,12 +182,15 @@ class TwoBoard extends Component {
     onDragStart(source, piece, position, orientation) {
         let pieceType = piece.charAt(1).toLowerCase();
         if(!this.props.game.gameStarted) {
+            console.log('game not started');
             return false;
         }
         if (!this.props.profile || !this.props.game.black || !this.props.game.white) {
+            console.log('not white or not black');
             return false;
         }
         if (this.atOldPosition) {
+            console.log('old position')
             return false;
         }
         if (source !== 'hand') {
@@ -218,6 +221,7 @@ class TwoBoard extends Component {
             }
             return true;
         } else {
+            console.log("IN ELSE!");
             return false;
         }
     }

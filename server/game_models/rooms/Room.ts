@@ -371,11 +371,12 @@ export default class Room {
             }
         );
         
+        this.game.startGame();
         // if white is an AI, start the engine
         if (this._game.white instanceof AI) {
             this._game.engineGo();
         }
-        this.game.startGame();
+        
         this.startTimer();
     }
     

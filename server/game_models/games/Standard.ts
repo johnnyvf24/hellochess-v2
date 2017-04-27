@@ -145,6 +145,7 @@ export default class Standard extends Game {
         this.white.alive = true;
         this.black.alive = true;
         this.lastMoveTime = Date.now();
+        this.gameRulesObj = new Chess();
         this.fenHistory = [];
     }
     

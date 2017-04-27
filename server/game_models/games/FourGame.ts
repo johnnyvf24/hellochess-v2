@@ -81,6 +81,7 @@ export default class FourGame extends Game {
         this.gold.alive = true;
         this.red.alive = true;
         this.lastMoveTime = Date.now();
+        this.gameRulesObj = new FourChess();
         this.fenHistory = [];
     }
     
