@@ -39,6 +39,9 @@ class FourBoard extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        if (this.props.game.gameStarted === false && nextProps.game.gameStarted === true) {
+            this.resetGame();
+        }
         if (typeof nextProps.activePly !== "undefined" && nextProps.activePly != this.props.activePly) {
             // user clicked back or forward button on pgn
             this.loadPly(nextProps.activePly);
@@ -90,17 +93,22 @@ class FourBoard extends Component {
                 //TODO fourchess still doesn't have a load pgn feature
             }
         } else {
-            this.board.clear();
-            this.shadeSquareSource = null
-            this.shadeSquareDest = null;
-            this.game = new FourChess();
-            if (this.prevMoveResizeListener) {
-                window.removeEventListener('resize', this.prevMoveResizeListener);
-            }
-            this.prevMoveResizeListener = null;
-            this.drag = {from: '', to: ''};
-            this.boardRedraw(); // redraw the board to remove square shading
+            this.resetGame();
         }
+    }
+    
+    resetGame() {
+        this.board.position('start', false);
+        this.shadeSquareSource = null
+        this.shadeSquareDest = null;
+        this.game = new FourChess();
+        if (this.prevMoveResizeListener) {
+            window.removeEventListener('resize', this.prevMoveResizeListener);
+        }
+        this.prevMoveResizeListener = null;
+        this.drag = {from: '', to: ''};
+        this.boardRedraw(); // redraw the board to remove square shading
+        this.atOldPosition = false;
     }
     
     loadPly(ply) {

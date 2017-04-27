@@ -48,6 +48,9 @@ class TwoBoard extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        if (this.props.game.gameStarted === false && nextProps.game.gameStarted === true) {
+            this.resetGame();
+        }
         if (typeof nextProps.activePly !== "undefined" && nextProps.activePly != this.props.activePly) {
             // user clicked back or forward button on pgn
             this.loadPly(nextProps.activePly);
@@ -92,7 +95,7 @@ class TwoBoard extends Component {
     }
     
     resetGame() {
-        this.board.clear();
+        this.resetBoard();
         this.shadeSquareSource = null
         this.shadeSquareDest = null;
         this.game = this.newGameObject();
@@ -102,6 +105,16 @@ class TwoBoard extends Component {
         this.prevMoveResizeListener = null;
         this.drag = {from: '', to: ''};
         this.boardRedraw(); // redraw the board to remove square shading
+        this.atOldPosition = false;
+    }
+    
+    resetBoard() {
+        this.board.resize();
+        if (typeof this.props.game.startPos !== "undefined") {
+            this.setBoardPosition(this.props.game.startPos);
+        } else {
+            this.board.position('start', false);
+        }
     }
     
     loadPly(ply) {
@@ -121,12 +134,7 @@ class TwoBoard extends Component {
             this.atOldPosition = true;
         }
         if (ply === 0) {
-            this.board.resize();
-            if (typeof this.props.game.startPos !== "undefined") {
-                this.setBoardPosition(this.props.game.startPos);
-            } else {
-                this.board.position('start', false);
-            }
+            this.resetBoard();
         } else {
             // get the position at that move
             // use a new game object so we don't mess with the game state
@@ -182,15 +190,12 @@ class TwoBoard extends Component {
     onDragStart(source, piece, position, orientation) {
         let pieceType = piece.charAt(1).toLowerCase();
         if(!this.props.game.gameStarted) {
-            console.log('game not started');
             return false;
         }
         if (!this.props.profile || !this.props.game.black || !this.props.game.white) {
-            console.log('not white or not black');
             return false;
         }
         if (this.atOldPosition) {
-            console.log('old position')
             return false;
         }
         if (source !== 'hand') {
@@ -221,7 +226,6 @@ class TwoBoard extends Component {
             }
             return true;
         } else {
-            console.log("IN ELSE!");
             return false;
         }
     }
