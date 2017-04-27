@@ -11,6 +11,12 @@ class PGNNextButton extends Component {
         return true;
     }
     componentDidMount() {
+        this.bindArrowKey();
+    }
+    componentWillUnmount() {
+        $(document).off('keydown');
+    }
+    bindArrowKey() {
         $(document).on('keydown', this.onArrowKey.bind(this));
     }
     onArrowKey(event) {
@@ -18,6 +24,9 @@ class PGNNextButton extends Component {
         let tag = event.target.tagName.toLowerCase();
         if (event.which == keyCode && tag !== 'input') {
             this.onClick();
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            return false;
         }
     }
     onClick() {
