@@ -10,13 +10,17 @@ export default class MessageList extends Component {
         super(props);
     }
 
-
-    componentDidUpdate (prevProps) {
+    scrollToBottom() {
         const msgList = this.refs.msgList;
-
         msgList.scrollTop = msgList.scrollHeight;
-        
-        
+    }
+
+    componentDidUpdate(prevProps) {
+        this.scrollToBottom();
+    }
+    
+    componentDidMount() {
+        this.scrollToBottom();
     }
 
     renderChatListItem(index, message) {
