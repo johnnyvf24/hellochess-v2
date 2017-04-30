@@ -72,7 +72,7 @@ export default class Room {
                 },
                 gameType: this._game.gameType,
                 users: this.getAllRoomPlayersWithoutSockets(),
-                messages: this.getLast30Messages(),
+                messages: this.getLastNMessages(30),
                 numMessages: this._messages.length,
                 time: this._time,
                 times: times,
@@ -100,23 +100,12 @@ export default class Room {
         return this._players.length;
     }
     
-    getLast30Messages() {
-        let mess = [];
-        let tmp = this._messages.slice(Math.max(this._messages.length - 30, 1));
-        tmp.map(message => {
-            mess.push(message.getMessage());
-        });
-        
-        return mess;
+    getLastNMessages(n) {
+        return this.getAllMessages().slice(-n);
     }
     
     getAllMessages() {
-        let mess = [];
-        this._messages.map(message => {
-            mess.push(message.getMessage()); 
-        });
-        
-        return mess;
+        return this._messages.map(m => m.getMessage());
     }
     
     addPlayer(playerObj: Player) {
