@@ -21,7 +21,6 @@ export function voiceMiddleware(store) {
                 webrtc.stopLocalVideo();
                 return action;
             case 'server/join-room':
-                console.log(action.payload);
                 if(action.payload.room.voiceChat == true) {
                     console.log("joining voice room: ", action.payload.room.name);
                     webrtc.leaveRoom(action.payload.room.name);

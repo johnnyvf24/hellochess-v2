@@ -14,6 +14,7 @@ import RoomViewer from '../containers/room_viewer';
 import NewGame from './new_game';
 import PlayerTimes from './player_card/player_times';
 import GameButtons from './game_btns';
+import NotificationHandler from './notification_handler';
 import { logout, saveUsername, clearError, userConnect} from '../actions';
 import {enableMic, disableMic } from '../actions/room';
 
@@ -153,6 +154,7 @@ class Live extends Component {
                                 <PlayerTimes />
                             </div>
                         </div>
+                        <NotificationHandler />
                     </Row>
                 );
                 

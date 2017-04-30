@@ -50,7 +50,6 @@ function auth(state = INITIAL_STATE, action) {
             newState.profile = getProfile();
             return newState;
         case 'update-user':
-            console.log(action.payload);
             setProfile(action.payload);
             newState = Object.assign({}, state)
             newState.profile = getProfile();
