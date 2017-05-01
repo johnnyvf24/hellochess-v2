@@ -73,10 +73,10 @@ module.exports = function(io, socket, connection) {
     });
     
     //Handle error event
-    socket.on("error", (err) =>
+    socket.on("error", (err) => {
         console.log("Caught flash policy server socket error: ")
         console.log(err.stack);
-    )
+    });
     
     socket.on('logout', data=> {disconnect()})
     
