@@ -24,6 +24,7 @@ class FourBoard extends Component {
             onDragMove: this.onDragMove,
             onDrop: this.onDrop,
             moveSpeed: 'fast',
+            onSnapbackEnd: this.onSnapbackEnd.bind(this),
             onMouseoutSquare: this.onMouseoutSquare,
             onMouseoverSquare: this.onMouseoverSquare
         };
@@ -148,7 +149,7 @@ class FourBoard extends Component {
             this.board.position(fen);
         }
         let turn = this.formatTurn(this.game.turn());
-        if (this.drag.from && this.props.room[turn].playerId === this.props.profile._id) {
+        if (this.drag.from) {
             // if the user is hovering a piece, delete it from the board position
             let pos = this.board.position();
             delete pos[this.drag.from];
@@ -281,7 +282,6 @@ class FourBoard extends Component {
         if (this.drag.from && this.drag.to) {
             $('#board .square-'+this.drag.from).addClass("highlight1-32417");
             $('#board .square-'+this.drag.to).addClass("highlight2-9c5d2");
-            this.drag = {from: '', to: ''};
         }
     }
     
@@ -350,9 +350,7 @@ class FourBoard extends Component {
     }
     
     onSnapbackEnd(piece, square, position, orientation) {
-        if (!this.drag.from) {
-            this.board.position(this.props.fen);
-        }
+        this.board.position(this.props.fen, false);
     }
     
     onDrop(source, target, piece) {

@@ -30,7 +30,7 @@ class TwoBoard extends Component {
             moveSpeed: 'fast',
             onMouseoutSquare: this.onMouseoutSquare,
             onMouseoverSquare: this.onMouseoverSquare,
-            onSnapbackEnd: this.onSnapbackEnd
+            onSnapbackEnd: this.onSnapbackEnd.bind(this)
         };
         if (this.props.crazyhouse) {
             this.cfg.crazyhouse = this.props.crazyhouse;
@@ -154,7 +154,7 @@ class TwoBoard extends Component {
             this.setBoardPosition(fen);
         }
         let turn = this.formatTurn(this.game.turn());
-        if (this.drag.from && this.props.game[turn].playerId === this.props.profile._id) {
+        if (this.drag.from) {
             // if the user is hovering a piece, delete it from the board position
             let pos = this.board.position();
             delete pos[this.drag.from];
@@ -288,7 +288,6 @@ class TwoBoard extends Component {
         if (this.drag.from && this.drag.to) {
             $('#board .square-'+this.drag.from).addClass("highlight1-32417");
             $('#board .square-'+this.drag.to).addClass("highlight2-9c5d2");
-            this.drag = {from: '', to: ''};
         }
     }
     
@@ -370,9 +369,7 @@ class TwoBoard extends Component {
     }
     
     onSnapbackEnd(piece, square, position, orientation) {
-        if (!this.drag.from) {
-            this.setBoardPosition(this.props.fen);
-        }
+        this.setBoardPosition(this.props.fen);
     }
 
     onDrop(source, target, piece) {
