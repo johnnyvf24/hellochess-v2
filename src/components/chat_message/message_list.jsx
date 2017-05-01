@@ -14,9 +14,11 @@ export default class MessageList extends Component {
         const msgList = this.refs.msgList;
         msgList.scrollTop = msgList.scrollHeight;
     }
-
+    
     componentDidUpdate(prevProps) {
-        this.scrollToBottom();
+        if (prevProps.messages.length !== this.props.messages.length) {
+            this.scrollToBottom();
+        }
     }
     
     componentDidMount() {
