@@ -92,7 +92,6 @@ module.exports = function(io, socket, connection) {
         if(!data || !data.room || !data.room.name) {
             return;
         }
-        
         let roomName = data.room.name;
         let room: Room = connection.getRoomByName(roomName);
         

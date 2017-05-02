@@ -175,6 +175,10 @@ export default class Room {
         return this._voiceChat;
     }
     
+    get id() {
+        return this._id;
+    }
+    
     emitMessage(messageObj) {
         this.addMessage(messageObj);
         this.io.to(messageObj.thread).emit('action', {
@@ -291,7 +295,6 @@ export default class Room {
             }
             
             //get the player that lost and remove them from the game
-            console.log('turn ', turn);
             let loser = this.game.getPlayer(turn);
             
             if(!loser) return;

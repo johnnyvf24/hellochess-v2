@@ -1,16 +1,5 @@
 import * as ActionTypes from '../actions/types';
 
-function makeid()
-{
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-    for( var i=0; i < 5; i++ )
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-    return text;
-}
-
 const initialState = {
     gameType: "four-player",
     time: {
@@ -19,7 +8,6 @@ const initialState = {
     },
     isMakingGameRoom: false,
     room: {
-        name: 'random' + makeid(),
         voiceChat: false,
         maxPlayers: 50,
         private: false
@@ -42,7 +30,6 @@ export default function newGameOptions (state=initialState, action) {
             return {...state, room: { ...state.room, voiceChat: !state.room.voiceChat}}
         }
         case ActionTypes.RESET_NEW_GAME_MODAL:
-            initialState.room.name = 'random' + makeid();
             return initialState;
         case ActionTypes.SET_MAX_PLAYERS:
             return {...state, room: {...state.room, maxPlayers: action.payload}}

@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import Select from 'react-select';
 
-import CreateGameRoom from '../components/create_game/create_game_room';
 import NewGameModalContent from '../components/create_game/new_game_modal_content';
 
 import {Button, Modal} from 'react-bootstrap';
@@ -34,39 +33,31 @@ class NewGame extends Component {
     }
 
     renderModalContent() {
-        if(this.props.makingGameRoom) {
-            return <CreateGameRoom />
-        } else {
-            return <NewGameModalContent />
-        }
+        return (
+            <NewGameModalContent
+                roomNameRef={(input) => this.roomNameInput = input}
+                />
+        );
     }
     
     submitRoom() {
-        this.props.resetNewGameModal()
+        this.props.resetNewGameModal();
+        this.props.room.name = this.roomNameInput.value;
         this.props.finalizeGameRoom(this.props.game, this.props.profile);
         this.close();
     }
     
     renderModalFooter() {
-
-        if(this.props.makingGameRoom) {
-            return (
-                <div>
-                    <Button onClick={this.close.bind(this)}>
-                        Cancel
-                    </Button>
-                    <Button bsStyle="warning" onClick={this.submitRoom.bind(this)}>
-                        Create Game
-                    </Button>
-                </div>
-            );
-        } else {
-            return (
-                <Button bsStyle="warning" onClick={this.onCreateGame.bind(this)}>
-                    Host Game
+        return (
+            <div>
+                <Button onClick={this.close.bind(this)}>
+                    Cancel
                 </Button>
-            );
-        }
+                <Button bsStyle="warning" onClick={this.submitRoom.bind(this)}>
+                    Create Room
+                </Button>
+            </div>
+        );
     }
 
     renderModal() {
@@ -74,7 +65,7 @@ class NewGame extends Component {
         return (
             <Modal show={this.state.showModal} onHide={this.close.bind(this)} id="new-game-modal">
                 <Modal.Header closeButton>
-                    <Modal.Title>New Game</Modal.Title>
+                    <Modal.Title>New Game Room</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     {this.renderModalContent()}
@@ -92,7 +83,7 @@ class NewGame extends Component {
                 <Button
                     bsStyle="warning"
                     onClick={this.open.bind(this)}>
-                    Play
+                    New Room
                 </Button>
 
                 {this.renderModal()}
