@@ -84,10 +84,11 @@ class NewGameModalContent extends Component {
     renderVoiceChatBtn(voiceChat) {
         if(!voiceChat) {
             return (
-                <div className="row"
-                    onClick={(event) => this.props.enableVoiceChat()}>
+                <div className="row">
                     <div className="text-center voice-chat-enable-disable">
-                        <span className="fa-stack fa-2x">
+                        <span onClick={(event) => this.props.enableVoiceChat()}
+                            className="fa-stack fa-2x"
+                            title="Allow voice chat in this room">
                             <i className="fa fa-circle fa-stack-2x"></i>
                             <i className="fa fa-microphone fa-inverse fa-stack-1x"></i>
                             <i className="fa fa-ban fa-stack-2x text-danger"></i>
@@ -97,10 +98,11 @@ class NewGameModalContent extends Component {
             );
         }
         return (
-            <div className="row"
-                onClick={(event) => this.props.enableVoiceChat()}>
+            <div className="row">
                 <div className="text-center voice-chat-enable-disable">
-                    <span className="fa-stack fa-2x">
+                    <span onClick={(event) => this.props.enableVoiceChat()}
+                        className="fa-stack fa-2x"
+                        title="Disable voice chat in this room">
                         <i className="fa fa-circle fa-stack-2x"></i>
                         <i className="fa fa-microphone fa-inverse fa-stack-1x"></i>
                     </span>
