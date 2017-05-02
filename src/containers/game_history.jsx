@@ -41,10 +41,10 @@ class GameHistory extends Component {
                             <strong>{game.white.user_id.username}</strong> {game.white.elo}
                         </div>
                     </Col>
-                    <Col xs={2} classname="game-result-middle">
+                    <Col xs={2} className="game-result-middle">
                     <span className="fa-stack fa-2x">
                         <i className="fa fa-shield fa-stack-2x" style={{color: "#f0ad4e"}} ></i>
-                        <strong className="fa-stack-1x" style={{"font-size": "18px", "color": "#196880", "padding-right": "2px"}}>{game.result.replace("-", " ")}</strong>
+                        <strong className="fa-stack-1x" style={{"fontSize": "18px", "color": "#196880", "paddingRight": "2px"}}>{game.result.replace("-", " ")}</strong>
                     </span>
                     </Col>
                     
