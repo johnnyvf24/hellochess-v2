@@ -23,6 +23,9 @@ class NotificationHandler extends Component {
     
     userIsPlaying(props) {
         let colors = ['white', 'black', 'gold', 'red'];
+        if (typeof props.game === "undefined") {
+            return false;
+        }
         return colors.some((color) => {
             if (typeof props.game[color] !== "undefined") {
                 if (props.game[color].playerId === props.profile._id) {
