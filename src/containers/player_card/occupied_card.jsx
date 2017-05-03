@@ -30,29 +30,40 @@ class OccupiedCard extends Component {
         
         return false;
     }
+    
+    setTickTimer(props) {
+        clearInterval(this.countDown);
+        let updateInterval;
+        if (props.playerTime < 10000) {
+            updateInterval = 100;
+        } else {
+            updateInterval = 1000;
+        }
+        this.countDown = setInterval( () => {
+            this.props.tick(this.props.room.room.name, props.turn)
+        }, updateInterval);
+    }
 
     componentWillReceiveProps(nextProps) {
-        if(((nextProps.turn != this.props.turn) || (this.props.gameStarted != nextProps.gameStarted))
-            && nextProps.gameStarted == true) {
-            if(nextProps.turn == this.props.color) {
-                clearInterval(this.countDown);
-                this.countDown = setInterval( () => {
-                    this.props.tick(this.props.room.room.name, nextProps.turn)
-                }, 1000);
+        let gameJustStarted = !this.props.gameStarted && nextProps.gameStarted === true;
+        let newTurnStarted = (this.props.turn !== nextProps.turn) && nextProps.gameStarted;;
+        let isOurTurn = nextProps.turn === this.props.color;
+        if (nextProps.gameStarted === false) {
+            clearInterval(this.countDown);
+        } else if (gameJustStarted || newTurnStarted) {
+            if(isOurTurn) {
+                this.setTickTimer(nextProps);
             } else {
                 clearInterval(this.countDown);
             }
-        } else if(nextProps.gameStarted == false) {
-            clearInterval(this.countDown);
+        } else if (nextProps.playerTime < 10000) {
+            this.setTickTimer(nextProps);
         }
     }
 
     componentWillMount() {
         if(this.props.turn == this.props.color && this.props.gameStarted == true) {
-            clearInterval(this.countDown);
-            this.countDown = setInterval( () => {
-                this.props.tick(this.props.room.room.name, this.props.turn)
-            }, 1000);
+            this.setTickTimer(this.props);
         } else if(this.props.gameStarted == false){
             clearInterval(this.countDown);
         }

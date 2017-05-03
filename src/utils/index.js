@@ -14,14 +14,20 @@ export function generateTokenHeader() {
 
 export function millisToMinutesAndSeconds(millis) {
     let minutes = Math.floor(millis / 60000);
-    let seconds = ((millis % 60000) / 1000).toFixed(0);
-    if(seconds == 60) {
+    let seconds = ((millis % 60000) / 1000);
+    if(seconds.toFixed(0) == 60) {
         minutes++;
         seconds = 0;
     }
     minutes = Math.max(0, minutes);
     seconds = Math.max(0, seconds);
-    return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
+    if (millis < 10000) {
+        seconds = seconds.toFixed(1);
+    } else {
+        seconds = seconds.toFixed(0);
+    }
+    let timeString = minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
+    return timeString;
 }
 
 export function formatTurn(turn) {

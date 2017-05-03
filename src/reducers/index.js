@@ -154,19 +154,14 @@ function openThreads(state = {}, action) {
             delete newState[action.payload].move;
             delete newState[action.payload].fen;
             return newState;
-        case 'timer-sync':
-            newState = Object.assign({}, state);
-            if(newState[action.payload.thread][action.payload.turn]) {
-                newState[action.payload.thread][action.payload.turn].time = action.payload.timeLeft;
-                newState[action.payload.thread].turn = action.payload.turn.charAt(0);
-                newState[action.payload.thread].fen = action.payload.fen;
-                return newState;
-            }
-            return state;
         case 'TICK':
             if(state[action.payload.thread].times[action.payload.turn]) {
                 newState = Object.assign({}, state);
-                newState[action.payload.thread].times[action.payload.turn] -= 1000;
+                if (state[action.payload.thread].times[action.payload.turn] < 10000) {
+                    newState[action.payload.thread].times[action.payload.turn] -= 100;
+                } else {
+                    newState[action.payload.thread].times[action.payload.turn] -= 1000;
+                }
                 return newState
             }
             return state;
