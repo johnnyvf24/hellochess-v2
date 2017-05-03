@@ -28,7 +28,6 @@ abstract class Game {
     numPlayers: number;
     gameType: string;
     gameRulesObj: any;
-    timeControl: any;
     times: any;
     _lastMove: any;
     _lastMoveTime: any;
@@ -78,6 +77,18 @@ abstract class Game {
     
     getColorTime(color: string): number {
         return this.times[color];
+    }
+    
+    getCurrentTimes() {
+        let times = {...this.times};
+        if (this.lastMoveTime) {
+            let currentTurn = this.gameRulesObj.turn();
+            let currentTime = times[currentTurn];
+            let timeElapsed = Date.now() - this.lastMoveTime;
+            let updatedTime = currentTime - timeElapsed;
+            times[this.gameRulesObj.turn()] = updatedTime;
+        }
+        return times;
     }
     
     get fen(): string {

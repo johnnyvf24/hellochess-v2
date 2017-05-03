@@ -60,7 +60,7 @@ export default class Room {
         
         if(this._game) {
             
-            let times = this._game.times;
+            let times = this._game.getCurrentTimes();
             game = this._game.getGame();
             return {
                 id: this._id,
