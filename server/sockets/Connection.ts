@@ -1,5 +1,9 @@
 import Player from '../game_models/players/Player';
 import Room from '../game_models/rooms/Room';
+//Game Rules
+import FourGame from '../game_models/games/FourGame';
+import Standard from '../game_models/games/Standard';
+import CrazyHouse from '../game_models/games/CrazyHouse';
 
 export default class Connection {
     private players: Player[];
@@ -8,6 +12,43 @@ export default class Connection {
     constructor(private io) {
         this.players = [];
         this.rooms = [];
+    }
+    
+    createNewRoom(roomName: string, gameType: string, time: any, roomObj: any): Room {
+        let newRoomName;
+        let roomCopyCounter = 1;
+        let room: Room = this.getRoomByName(roomName);
+        while (room) {
+            // if a room with this name already exists,
+            // add a (1) to the end of the name, then try (2), etc.
+            if (roomCopyCounter > 1) {
+                roomName = roomName.slice(0, -4);
+            }
+            newRoomName = `${roomName} (${roomCopyCounter++})`;
+            roomName = newRoomName;
+            room = this.getRoomByName(newRoomName);
+        }
+        roomObj.name = roomName;
+        switch(gameType) {
+            case 'standard':
+                room = new Room(this.io, new Standard(this.io, roomName, time, this));
+                break;
+            case 'four-player':
+                room = new Room(this.io, new FourGame(this.io, roomName, time, this));
+                break;
+            case 'crazyhouse':
+                room = new Room(this.io, new CrazyHouse(this.io, roomName, time, false, this));
+                break;
+            case 'crazyhouse960':
+                room = new Room(this.io, new CrazyHouse(this.io, roomName, time, true, this));
+                break;
+        }
+        if (time) {
+            room.time = time;
+        }
+        room.setRoomAttributes(roomObj);
+        this.addRoom(room);
+        return room;
     }
     
     addRoom(roomObj: Room): void {
@@ -55,36 +96,11 @@ export default class Connection {
         if(!this.rooms) {
             return null;
         }
-        let tempRooms = [];
-        
-        this.rooms.map((room) => {
-             tempRooms.push(room.getRoomCondensed());
-        });
-        
-        return tempRooms;
+        return this.rooms.map(room => room.getRoomCondensed());
     }
     
     getPlayerRoomsByPlayer(player: Player): Room[]{
-        let rooms: Room[] = [];
-        this.rooms.map((room) => {
-            if(room.isPlayerInRoom(player)) {
-                rooms.push(room);
-            }
-        });
-        
-        return rooms;
-    }
-    
-    //get all the rooms a player is connected to
-    getPlayerRoomsByPlayerSocket(playerSocket) {
-        let rooms = [];
-        this.rooms.map((room) => {
-            if(room.isPlayerInRoom(playerSocket)) {
-                rooms.push(room);
-            }
-        });
-        
-        return rooms;
+        return this.rooms.filter(room => room.isPlayerInRoom(player));
     }
     
     addPlayer(player: Player):void {
@@ -97,30 +113,14 @@ export default class Connection {
         if(!socket || !this.players) {
             return null;
         }
-        
-        let p: Player = null;        
-        this.players.map((player) => {
-            if(player.socket.id == socket.id) {
-                p =  player;
-            }
-        });
-        
-        return p;
+        return this.players.find(player => player.socket.id === socket.id);
     }
     
     duplicateUser(playerId: string) {
         if(!this.players) {
             return false;
         }
-        
-        let found = false;       
-        this.players.map((player) => {
-            if(player.playerId == playerId) {
-                found = true;
-            }
-        });
-        
-        return found;
+        return this.players.some(player => player.playerId === playerId);
     }
     
     updatePlayer(data) {

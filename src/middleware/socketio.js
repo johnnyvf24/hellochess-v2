@@ -20,6 +20,9 @@ export function socketIoMiddleware(store) {
             case 'server/update-user':
                 socket.emit('update-user', action.payload);
                 break;
+            case 'server/create-room':
+                socket.emit('create-room', action.payload);
+                break;
             case 'server/join-room':
                 socket.emit('join-room', action.payload);
                 break;

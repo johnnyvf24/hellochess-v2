@@ -88,45 +88,60 @@ module.exports = function(io, socket, connection) {
         connection.emitAllRooms();
     });
     
+    socket.on('create-room', data => {
+        if (!data || !data.room || !data.room.name) {
+            return;
+        }
+        let roomName = data.room.name;
+        let room: Room = connection.createNewRoom(roomName, data.gameType, data.time, data.room);
+        if(!data.gameType) {
+            //TODO error
+            return;
+        }
+        let player: Player = connection.getPlayerBySocket(socket);
+        if(!player) {
+            return;
+        }
+        
+        if(room.isPlayerInRoom(player) == true) {
+            return;
+        }
+        
+        if(!player) {
+            //TODO error
+            return;
+        }
+        
+        if(room.voiceChat && room.getNumberOfPlayers() == 10) {
+            
+            //Tell the player that this is a voice chat room and
+            //there are too many players
+            let notificationOpts = {
+                title: `There are too many players`,
+                message: 'voice chat enabled rooms are limited to 10 users',
+                position: 'tr',
+                autoDismiss: 5,
+            };
+            
+            socket.emit('action', Notifications.info(notificationOpts));
+            return;
+        } 
+        
+        //remove previous instances of this player
+        room.removePlayer(player)
+        
+        room.addPlayer(player);
+        connection.emitAllRooms();
+    });
+    
     socket.on('join-room', data => {
         if(!data || !data.room || !data.room.name) {
             return;
         }
         let roomName = data.room.name;
         let room: Room = connection.getRoomByName(roomName);
-        
-        if(!room) { //the room did not previously exist
-        
-            if(!data.gameType) {
-                //TODO error
-                return;
-            }
-            
-            switch(data.gameType) {
-                case 'standard':
-                    room = new Room(io, new Standard(io, roomName, data.time, connection));
-                    break;
-                case 'four-player':
-                    room = new Room(io, new FourGame(io, roomName, data.time, connection));
-                    break;
-                case 'crazyhouse':
-                    room = new Room(io, new CrazyHouse(io, roomName, data.time, false, connection));
-                    break;
-                case 'crazyhouse960':
-                    room = new Room(io, new CrazyHouse(io, roomName, data.time, true, connection));
-                    break;
-            }
-            
-            if(!room.setRoomAttributes(data.room)) {
-                //TODO error
-                return;
-            }
-            
-            if(data.time) { //user has specified a time control
-                room.time = data.time;
-            }
-            
-            connection.addRoom(room);
+        if (!room) {
+            room = connection.createNewRoom(roomName, data.gameType, data.time, data.room);
         }
         let player: Player = connection.getPlayerBySocket(socket);
         if(!player) {

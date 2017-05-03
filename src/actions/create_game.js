@@ -37,13 +37,6 @@ export function createGameRoom() {
     }
 }
 
-export function gameRoomNameChange(roomName) {
-    return {
-        type: GAME_ROOM_NAME,
-        payload: roomName
-    }
-}
-
 export function enableVoiceChat() {
     return {
         type: ENABLE_VOICE_CHAT
@@ -76,7 +69,7 @@ export function finalizeGameRoom(game, host) {
     game.host = host;
     return (dispatch) => {
         return dispatch({
-            type: 'server/join-room',
+            type: 'server/create-room',
             payload: game
         });
     }
