@@ -3,6 +3,7 @@ import Player from '../players/Player';
 import Engine from '../../engine/Engine';
 import AI from '../players/AI';
 import Connection from '../../sockets/Connection';
+import Room from '../rooms/Room';
 
 abstract class Game {
     public static COLOR_SHORT_TO_LONG: any =
@@ -235,6 +236,23 @@ abstract class Game {
             return move;
         });
         return history;
+    }
+    
+    abort() {
+        if(this.engineInstance && typeof this.engineInstance.kill == 'function') {
+            this.engineInstance.kill(); //stop any active engine
+        }
+        this.gameStarted = false;
+        this.white = null;
+        this.black = null;
+        this.gold = null;
+        this.red = null;
+        let room: Room = this.connection.getRoomByName(this.roomName);
+        
+        if(!room) {
+            return;
+        }
+        this.io.to(this.roomName).emit('update-room', room.getRoom());
     }
     
 }

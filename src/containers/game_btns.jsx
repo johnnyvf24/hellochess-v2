@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import {resign, draw, fourResign, killAIs} from '../actions/room';
+import {resign, draw, fourResign, killAIs, abort} from '../actions/room';
 
 class GameButtons extends Component {
 
@@ -41,6 +41,10 @@ class GameButtons extends Component {
         this.props.draw(this.props.activeThread);
     }
     
+    onAbort(event) {
+        this.props.abort(this.props.activeThread);
+    }
+    
     killAIs(event) {
         this.props.killAIs(this.props.activeThread);
     }
@@ -60,89 +64,89 @@ class GameButtons extends Component {
         }
         return true;
     }
+    
+    renderResignButton() {
+        let resignAction;
+        if (this.props.room.gameType === "four-player") {
+            resignAction = this.onFourResign.bind(this);
+        } else {
+            resignAction = this.onResign.bind(this);
+        }
+        return (
+            <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={resignAction}>
+                Resign
+            </button>
+        );
+    }
+    
+    renderDrawButton() {
+        let room = this.props.room;
+        if(room.gameType == 'standard' ||
+           room.gameType == 'crazyhouse' ||
+           room.gameType == 'crazyhouse960') {
+            return (
+                <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={this.onDraw.bind(this)}>
+                    Send Draw Request
+                </button>
+            );
+        } else {
+            return null;
+        }
+    }
+    
+    renderAbortButton() {
+        // only allow aborting the game before everyone
+        // has made a move
+        if (this.props.room.game.pgn.length < this.props.room.game.numPlayers) {
+            return (
+                <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={this.onAbort.bind(this)}>
+                    Abort
+                </button>
+            );
+        } else {
+            return null;
+        }
+    }
 
     render() {
         const {activeThread, openThreads, profile} = this.props;
-
-        if(!activeThread || !openThreads[activeThread]) {
+        if (!activeThread || !openThreads[activeThread]) {
             return <div></div>
         }
-
         const room = openThreads[activeThread];
-        
-        if(room.game.gameStarted == false) {
+        if (room.game.gameStarted == false) {
             return <div></div>
         }
-
-        if(this.onlyAIs(room.game)) {
+        if (this.onlyAIs(room.game)) {
             return (<div><button type="button"
                     className="btn btn-secondary"
                     onClick={this.killAIs.bind(this)}>
                     Stop AI Game
                 </button></div>);
         }
-        
-        if(!this.userIsPlaying(profile, room)) {
+        if (!this.userIsPlaying(profile, room)) {
             return <div></div>
         }
-        
-        if(room.gameType == 'standard' ||
-           room.gameType == 'crazyhouse' ||
-           room.gameType == 'crazyhouse960') {
-            return (
-                <div className="row">
-                    <div className="center">
-                        <div className="btn-group" role="group" aria-label="Basic example">
-                            <button
-                                type="button"
-                                className="btn btn-secondary"
-                                onClick={this.onResign.bind(this)}>
-                                Resign
-                            </button>
-                            <button
-                                type="button"
-                                className="btn btn-secondary"
-                                onClick={this.onDraw.bind(this)}>
-                                Send Draw Request
-                            </button>
-                        </div>
+        return (
+            <div className="row">
+                <div className="center">
+                    <div className="btn-group" role="group">
+                        {this.renderResignButton()}
+                        {this.renderDrawButton()}
+                        {this.renderAbortButton()}
                     </div>
                 </div>
-            );
-        } else if(room.gameType == 'four-player') {
-            
-            if(room.game.white && room.game.white.playerId == profile._id) {
-                if(!room.game.gameStarted || !room.game.white.alive) {
-                    return <div></div>
-                }
-            } else if( room.game.black && room.game.black.playerId == profile._id) {
-                if( !room.game.gameStarted || !room.game.black.alive) {
-                    return <div></div>
-                }
-            } else if( room.game.gold && room.game.gold.playerId == profile._id) {
-                if(!room.game.gameStarted || !room.game.gold.alive) {
-                    return <div></div>
-                }
-            } else if( room.game.red && room.game.red.playerId == profile._id) {
-                if(!room.game.gameStarted || !room.game.red.alive) {
-                    return <div></div>
-                }
-            }
-            return (
-                <div className="row">
-                    <div className="center">
-                        <div className="btn-group" role="group" aria-label="Basic example">
-                            <button
-                                type="button"
-                                className="btn btn-secondary"
-                                onClick={this.onFourResign}>
-                                Resign
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            );
-        }
+            </div>
+        );
     }
 }
 
@@ -151,9 +155,10 @@ function mapStateToProps(state) {
     return  {
         activeThread: state.activeThread,
         openThreads: state.openThreads,
+        room: state.openThreads[state.activeThread],
         profile: state.auth.profile
     }
 
 }
 
-export default connect(mapStateToProps, {resign, draw, fourResign, killAIs}) (GameButtons)
+export default connect(mapStateToProps, {resign, draw, fourResign, killAIs, abort}) (GameButtons)

@@ -111,6 +111,13 @@ export function killAIs(roomName) {
     }
 }
 
+export function abort(roomName) {
+    return {
+        type: 'server/abort',
+        payload: roomName
+    }
+}
+
 export function changeActivePly(roomName, activePly) {
     return {
         type: 'change-active-ply',

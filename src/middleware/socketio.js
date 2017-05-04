@@ -53,6 +53,9 @@ export function socketIoMiddleware(store) {
             case 'server/resign':
                 socket.emit('resign', action.payload);
                 break;
+            case 'server/abort':
+                socket.emit('abort', action.payload);
+                break;
             case 'server/logout':
                 socket.emit('logout', action.payload);
                 break;

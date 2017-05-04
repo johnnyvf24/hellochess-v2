@@ -286,6 +286,30 @@ module.exports = function(io, socket, connection) {
         io.to(room.name).emit('update-room', room.getRoom());
     });
     
+    socket.on('abort', data => {
+        let roomName = data;
+        let room: Room = connection.getRoomByName(roomName);
+        if (!room) {
+            return;
+        }
+        let player: Player = connection.getPlayerBySocket(socket);
+        if(!room.game || !player) {
+            return;
+        }
+        room.clearTimer();
+        room.game.abort();
+        
+        let notificationOpts = {
+            title: `${player.username} aborted the game.`,
+            position: 'tr',
+            autoDismiss: 5,
+        };
+        
+        io.to(room.name).emit('action', Notifications.info(notificationOpts));
+        
+        io.to(room.name).emit('update-room', room.getRoom());
+    });
+    
     socket.on('draw', data => {
         let roomName = data.roomName;
         let room: Room = connection.getRoomByName(roomName);
