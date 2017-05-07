@@ -72,12 +72,33 @@ class BoardWrapper extends Component {
                 setBoardPosition = function(fen) {
                     if (fen) {
                         fen = fen.split(' ')[0];
-                        // remove hand from end
-                        fen = fen.split('/').slice(0, 8).join('/');
+                        // separate position and hand
+                        let fenParts = fen.split('/');
+                        let position = fenParts.slice(0,8).join('/');
+                        let hand = fenParts[8];
+                        // convert hand to format board expects
+                        // 'Pp' -> {wP:1,bP:1}
+                        let handConverted = {
+                            wP: 0, wN: 0, wB: 0, wR: 0, wQ: 0,
+                            bP: 0, bN: 0, bB: 0, bR: 0, bQ: 0
+                        };
+                        if (hand.length > 0) {
+                            let pieceLetters = 'pnbrq';
+                            for (let i = 0, len = pieceLetters.length; i < len; i++) {
+                                let blackPiece = pieceLetters.charAt(i);
+                                let whitePiece = blackPiece.toUpperCase();
+                                let numWhite = hand.split(whitePiece).length - 1;
+                                let numBlack = hand.split(blackPiece).length - 1;
+                                let whiteKey = 'w' + whitePiece;
+                                let blackKey = 'b' + whitePiece; // use whitePiece for uppercase
+                                handConverted[whiteKey] = numWhite;
+                                handConverted[blackKey] = numBlack;
+                            }
+                        }
                         // remove fake piece indicators
-                        fen = fen.replace(/~/g, '');
-                        this.board.position(fen, false);
-                        this.board.setHand(this.getBoardHand());
+                        position = position.replace(/~/g, '');
+                        this.board.position(position, false);
+                        this.board.setHand(handConverted);
                     }
                 };
                 return (

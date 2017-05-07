@@ -492,6 +492,10 @@ function expandConfig() {
   if (cfg.hasOwnProperty('position') === true) {
     if (cfg.position === 'start') {
       CURRENT_POSITION = deepCopy(START_POSITION);
+      ZH_HAND_PIECES = {
+        wP: 0, wN: 0, wB: 0, wR: 0, wQ: 0,
+        bP: 0, bN: 0, bB: 0, bR: 0, bQ: 0
+      };
     }
 
     else if (validFen(cfg.position) === true) {
@@ -1554,6 +1558,10 @@ widget.position = function(position, useAnimation) {
   // start position
   if (typeof position === 'string' && position.toLowerCase() === 'start') {
     position = deepCopy(START_POSITION);
+    ZH_HAND_PIECES = {
+        wP: 0, wN: 0, wB: 0, wR: 0, wQ: 0,
+        bP: 0, bN: 0, bB: 0, bR: 0, bQ: 0
+    };
   }
 
   // convert FEN to position object
