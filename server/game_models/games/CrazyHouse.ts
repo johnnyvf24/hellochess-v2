@@ -64,7 +64,6 @@ export default class CrazyHouse extends Game {
         if(set_960) {
             this.gameType = 'crazyhouse960';
             this.gameRulesObj = new Crazyhouse({960: true});
-            this.startPos = this.gameRulesObj.fen();
         } else {
             this.gameRulesObj = new Crazyhouse(); 
         }
@@ -155,6 +154,9 @@ export default class CrazyHouse extends Game {
         this.black.alive = true;
         this.lastMoveTime = Date.now();
         this.gameRulesObj = new Crazyhouse({960: this.set_960});
+        if (this.set_960) {
+            this.startPos = this.gameRulesObj.fen();
+        }
         this.fenHistory = [];
     }
     
