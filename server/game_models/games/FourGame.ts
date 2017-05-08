@@ -271,7 +271,6 @@ export default class FourGame extends Game {
     makeMove(move: any, increment: number): void {
         this._lastTurn = this.gameRulesObj.turn();
         let validMove = this.gameRulesObj.move(move);
-        
         //set the last move made
         this._lastMove = move;
         // save the fen so it can be attached to this move in the move history

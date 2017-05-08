@@ -38,7 +38,7 @@ abstract class Game {
     roomName: string;
     time: any;
     connection: Connection;
-    fenHistory: String[] = [];
+    moveHistory: any[] = [];
     
     abstract addPlayer(player: Player, color: string): boolean;
     abstract removePlayer(color: string): boolean;
@@ -177,13 +177,14 @@ abstract class Game {
         
         //set the last move made
         this._lastMove = move;
-        // save the fen so it can be attached to this move in the move history
-        let newFen = this.gameRulesObj.fen();
-        this.fenHistory.push(newFen);
         
         if(validMove == null) {
             return;
-        } 
+        }
+        
+        // save the move to move history
+        validMove.fen = this.gameRulesObj.fen();
+        this.moveHistory.push(validMove);
         
         //calculate the time difference between the last move
         let timeElapsed = Date.now() - this.lastMoveTime;
@@ -215,8 +216,6 @@ abstract class Game {
         }
     }
     
-    
-    
     removePlayerByPlayerId(playerId: string) {
         if(this.white && playerId == this.white.playerId) {
             this.white = null;
@@ -230,12 +229,7 @@ abstract class Game {
     }
     
     getMoveHistory() {
-        let history = this.gameRulesObj.history({verbose: true});
-        history = history.map((move, index) => {
-            move.fen = this.fenHistory[index];
-            return move;
-        });
-        return history;
+        return this.moveHistory;
     }
     
     abort() {

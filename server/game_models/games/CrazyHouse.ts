@@ -157,7 +157,7 @@ export default class CrazyHouse extends Game {
         if (this.set_960) {
             this.startPos = this.gameRulesObj.fen();
         }
-        this.fenHistory = [];
+        this.moveHistory = [];
     }
     
     
