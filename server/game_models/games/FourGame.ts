@@ -9,6 +9,7 @@ import FourEngine from '../../engine/FourEngine';
 import Engine from '../../engine/Engine';
 import AI from '../players/AI';
 import Room from '../rooms/Room';
+import {EliminationMessage, WinnerMessage} from '../rooms/Message';
 
 function mapObject(object, callback) {
     return Object.keys(object).map(function (key) {
@@ -335,10 +336,14 @@ export default class FourGame extends Game {
         let gold : Player = this.gold;
         let red : Player = this.red;
         
-        let finished = false;
-        
         if(!white || !black || !red || !gold) {
             return;
+        }
+        let room = this.connection.getRoomByName(this.roomName);
+        let winnerColor = this.gameRulesObj.getWinnerColor(); //player that won
+        let winner = this.getPlayer(winnerColor);
+        if (this.gameStarted) {
+            room.addMessage(new WinnerMessage(winner, null, this.roomName));
         }
         
         if( white.type == 'computer' || black.type == 'computer'
@@ -346,14 +351,8 @@ export default class FourGame extends Game {
             //Dont save computer games
             console.log("no ratings! Computer in game");
         } else {
-            
             //update all player's elos
             let elo = new Elo();
-            
-            let winnerColor = this.gameRulesObj.getWinnerColor(); //player that won
-            
-            
-            let winner = this.getPlayer(winnerColor);
             
             //order in which losers lost
             let loserOrder = this.gameRulesObj.getLoserOrder(); 
@@ -387,7 +386,6 @@ export default class FourGame extends Game {
                 return;
         
             }
-            
             let timeType = getTimeTypeForTimeControl(this.time);
             
             if(!timeType) {
@@ -427,8 +425,6 @@ export default class FourGame extends Game {
             //send new ratings to each individual player
             setTimeout( function() {
                 try {
-                    
-                
                 //save winner
                 User.findById({_id: winner.playerId})
                 .then( function (user) {
@@ -467,7 +463,6 @@ export default class FourGame extends Game {
                     }.bind(this));
                 }.bind(this)).catch(e => console.log(e));
                 
-                
                 //save third
                 User.findById({_id: secondOut.playerId})
                 .then( function(user) {
@@ -487,7 +482,6 @@ export default class FourGame extends Game {
                     }.bind(this));
                 }.bind(this)).catch(e => console.log(e));
                 
-                
                 //save last
                 User.findById({_id: firstOut.playerId})
                 .then( function(user) {
@@ -496,25 +490,20 @@ export default class FourGame extends Game {
                         if(err) {
                             return;
                         }
-                        
                         let eloNotif = {
                             title: `${firstOut.username}'s elo is now ${newFirstOutElo} ${newFirstOutElo - firstOutElo}`,
                             position: 'tr',
                             autoDismiss: 6,
                         };
-                        
                         firstOut.socket.emit('action', Notifications.error(eloNotif));
                         firstOut.socket.emit('update-user', updatedUser);
                     }.bind(this));
                 }.bind(this)).catch(e => console.log(e));
-                
                 } catch(err) {
                     console.log(err);
                 }
-                
             }.bind(this), 1000);
         }
-        
         this.gameStarted = false;
 
         //wait 3 seconds before resetting the room
@@ -523,8 +512,6 @@ export default class FourGame extends Game {
             this.removePlayer('b');
             this.removePlayer('g');
             this.removePlayer('r');
-            
-            let room: Room = this.connection.getRoomByName(this.roomName);
             
             if(!room) {
                 return;
@@ -535,7 +522,6 @@ export default class FourGame extends Game {
         
         return true;
     }
-    
     
     gameOver(): boolean {
         return this.gameRulesObj.game_over();
@@ -570,6 +556,8 @@ export default class FourGame extends Game {
                 break;
         }
         if(playerOut) {
+            let room = this.connection.getRoomByName(this.roomName);
+            room.addMessage(new EliminationMessage(playerOut, null, this.roomName));
             const notificationOpts = {
                 title: 'Player Elimination',
                 message: `${playerOut.username} has been eliminated!`,

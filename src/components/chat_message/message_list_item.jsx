@@ -80,14 +80,14 @@ export default (props) => {
                     </Row>
                 </ListGroupItem>;
             break;
-        case 'user-joined':
-        case 'user-left':
+        default:
             message_item =
-                <ListGroupItem className="join-leave-message">
+                <ListGroupItem className={"game-event " + event_type}>
                     <div>
-                        <small className={"list-group-item-heading " + event_type}>
+                        <small className={"list-group-item-heading game-event " + event_type}>
                             {text}
                         </small>
+                        <span className="pull-right last-message-time">{time}</span>
                     </div>
                 </ListGroupItem>;
             break;

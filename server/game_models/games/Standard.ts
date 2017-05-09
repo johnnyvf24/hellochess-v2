@@ -8,7 +8,7 @@ import TwoEngine from '../../engine/TwoEngine';
 const Notifications = require('react-notification-system-redux');
 import Connection from '../../sockets/Connection';
 import Room from '../rooms/Room';
-
+import {DrawMessage, WinnerMessage} from '../rooms/Message';
 
 function getTimeTypeForTimeControl (time) {
     let tcIndex;
@@ -187,11 +187,11 @@ export default class Standard extends Game {
             loser = this.white;
         }
         
+        let room = this.connection.getRoomByName(this.roomName);
         
         if(winner.type == 'computer' || loser.type == 'computer') {
              console.log("no ratings! Computer in game");
         } else {
-            
             let timeType = getTimeTypeForTimeControl(this.time);
             
             if(!timeType) {
@@ -313,12 +313,13 @@ export default class Standard extends Game {
         if(draw) {
             let drawNotif = {
                 title: 'Game Over',
-                message: 'The game has eneded in a draw!',
+                message: 'The game has ended in a draw!',
                 position: 'tr',
                 autoDismiss: 5
             }
             
             this.io.to(this.roomName).emit('action', Notifications.warning(drawNotif));
+            room.addMessage(new DrawMessage(null, null, this.roomName));
         } else {
             let endNotif = {
                 title: 'Game Over',
@@ -328,6 +329,7 @@ export default class Standard extends Game {
             }
             
             this.io.to(this.roomName).emit('action', Notifications.info(endNotif));
+            room.addMessage(new WinnerMessage(winner, null, this.roomName));
         }
         
         this.gameStarted = false;
@@ -336,8 +338,6 @@ export default class Standard extends Game {
         setTimeout(function() {
             this.removePlayer('w');
             this.removePlayer('b');
-            
-            let room: Room = this.connection.getRoomByName(this.roomName);
             
             if(!room) {
                 return;

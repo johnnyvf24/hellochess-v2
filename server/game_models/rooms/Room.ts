@@ -3,7 +3,7 @@ import Connection from '../../sockets/Connection';
 import Player from '../players/Player';
 import AI from '../players/AI';
 import Game from '../games/Game';
-import Message from './Message';
+import {Message, JoinMessage, LeaveMessage, GameStartedMessage, TimeForfeitMessage} from './Message';
 
 export default class Room {
     private _players: Player [];
@@ -112,8 +112,7 @@ export default class Room {
         playerObj.socket.join(this._name);
         
         this._players.push(playerObj);
-        let joinMsg: Message = new Message(playerObj, null, this._name);
-        joinMsg.setToJoinMessage();
+        let joinMsg: JoinMessage = new JoinMessage(playerObj, null, this._name);
         
         this.addMessage(joinMsg);
         
@@ -135,26 +134,21 @@ export default class Room {
         if(!playerThatLeft) {
             return false;
         }
-        let foundPlayer = false;
-        this._players = this._players.filter((player) => {
-            if(player.playerId !== playerThatLeft.playerId) {
-                return player;
-            } else {
-                let leftMsg: Message = new Message(playerThatLeft, null, this._name);
-                leftMsg.setToLeaveMessage();
-                this.addMessage(leftMsg);
-                playerThatLeft.socket.leave(this._name);
-                playerThatLeft.socket.emit('left-room', this._name);
-                foundPlayer = true;
-                //Tell everyone in a room that a user has left
-                this.io.to(this._name).emit('user-room-left', {
-                    name: this._name,
-                    user: player.getPlayer(),
-                    message: leftMsg.getMessage()
-                });
-            }
-        })
-        
+        let foundPlayer = this._players.some(
+            player => player.playerId === playerThatLeft.playerId
+        );
+        if (foundPlayer) {
+            let leftMsg: LeaveMessage = new LeaveMessage(playerThatLeft, null, this._name);
+            this.addMessage(leftMsg);
+            playerThatLeft.socket.leave(this._name);
+            playerThatLeft.socket.emit('left-room', this._name);
+            //Tell everyone in a room that a user has left
+            this.io.to(this._name).emit('user-room-left', {
+                name: this._name,
+                user: playerThatLeft.getPlayer(),
+                message: leftMsg.getMessage()
+            });
+        }
         return foundPlayer;
     }
     
@@ -300,6 +294,7 @@ export default class Room {
             if(!loser) return;
             this.game.setPlayerOutByColor(turn);
             
+            this.addMessage(new TimeForfeitMessage(loser, null, this._name));
             //Notify all players that a player has lost on time
             let notificationOpts = {
                 title: `${loser.username} has lost on time!`,
@@ -343,6 +338,12 @@ export default class Room {
     
     //begin the game
     startGame(connection: Connection) {
+        let players: Player[] = [];
+        if (this._game.white !== null) players.push(this._game.white);
+        if (this._game.gold !== null) players.push(this._game.gold);
+        if (this._game.black !== null) players.push(this._game.black);
+        if (this._game.red !== null) players.push(this._game.red);
+        this.addMessage(new GameStartedMessage(players, null, this._name));
         //Notify all players that the game is ready to be played
         const notificationOpts = {
             title: 'The game has begun',

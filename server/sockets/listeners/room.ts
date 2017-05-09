@@ -4,7 +4,7 @@ import Player from '../../game_models/players/Player';
 import AI from '../../game_models/players/AI';
 import Room from '../../game_models/rooms/Room';
 import Game from '../../game_models/games/Game';
-import Message from '../../game_models/rooms/Message';
+import {Message, ResignMessage, AbortMessage} from '../../game_models/rooms/Message';
 
 //Game Rules
 import FourGame from '../../game_models/games/FourGame';
@@ -28,7 +28,7 @@ module.exports = function(io, socket, connection) {
         room.addMessage(new Message(player, data.msg, roomName));
         
         // tell everyone there is a new message
-        io.to(room.name).emit('update-room', room.getRoom())
+        io.to(room.name).emit('update-room', room.getRoom());
     });
     
     socket.on('sit-down-board', data => {
@@ -233,10 +233,6 @@ module.exports = function(io, socket, connection) {
             return;
         }
         
-        room.game.setPlayerResignByPlayerObj(player);
-        room.clearTimer();
-        room.game.endAndSaveGame(false);
-        
         //Notify all players that a player has resigned
         let notificationOpts = {
             title: `${player.username} has resigned!`,
@@ -244,7 +240,15 @@ module.exports = function(io, socket, connection) {
             autoDismiss: 5,
         };
         
+        //add resign message to the room
+        room.addMessage(new ResignMessage(player, data.msg, roomName));
+        
         io.to(room.name).emit('action', Notifications.info(notificationOpts));
+        
+        room.game.setPlayerResignByPlayerObj(player);
+        room.clearTimer();
+        room.game.endAndSaveGame(false);
+        
         
         io.to(room.name).emit('update-room', room.getRoom());
     });
@@ -262,17 +266,8 @@ module.exports = function(io, socket, connection) {
             return;
         }
         
-        room.clearTimer();
-        room.game.setPlayerResignByPlayerObj(player);
-        
-        
-        if(room.game.gameStarted == true) {
-            room.startTimer();
-            if(room.game.currentTurnPlayer() instanceof AI) {
-                room.game.engineGo();
-            }
-        }
-        
+        //add resign message to the room
+        room.addMessage(new ResignMessage(player, data.msg, roomName));
         
         //Notify all players that a player has resigned
         let notificationOpts = {
@@ -282,6 +277,16 @@ module.exports = function(io, socket, connection) {
         };
         
         io.to(room.name).emit('action', Notifications.info(notificationOpts));
+        
+        room.clearTimer();
+        room.game.setPlayerResignByPlayerObj(player);
+        
+        if(room.game.gameStarted == true) {
+            room.startTimer();
+            if(room.game.currentTurnPlayer() instanceof AI) {
+                room.game.engineGo();
+            }
+        }
         
         io.to(room.name).emit('update-room', room.getRoom());
     });
@@ -298,6 +303,8 @@ module.exports = function(io, socket, connection) {
         }
         room.clearTimer();
         room.game.abort();
+        
+        room.addMessage(new AbortMessage(player, null, roomName));
         
         let notificationOpts = {
             title: `${player.username} aborted the game.`,

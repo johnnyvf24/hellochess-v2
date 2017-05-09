@@ -36,6 +36,7 @@ abstract class Game {
     _currentTurn: string;
     gameStarted: boolean = false;
     roomName: string;
+    room: Room;
     time: any;
     connection: Connection;
     moveHistory: any[] = [];

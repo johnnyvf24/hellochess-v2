@@ -1,40 +1,141 @@
 import Player from '../players/Player';
 
-export default class Message {
-    private _picture: string;
-    private _username: string;
-    private _playerId: string;
-    private _eventType: string = 'chat-message';
-    private _time = new Date();
+export class Message {
+    protected picture: string;
+    protected username: string;
+    protected playerId: string;
+    protected eventType: string = 'chat-message';
+    protected timeSent = new Date();
     
     constructor(player: Player, 
-                private _message: string,
-                private _thread: string) {
-        this._picture = player.picture;
-        this._username = player.username;
-        this._playerId = player.playerId;
+                protected messageBody: string,
+                protected roomName: string) {
+        if (player) {
+            this.picture = player.picture;
+            this.username = player.username;
+            this.playerId = player.playerId;
+        }
     }
     
     getMessage() {
         return {
-            user: this._username,
-            msg: this._message,
-            picture: this._picture,
-            event_type: this._eventType,
-            time: this._time,
-            playerId: this._playerId
+            user: this.username,
+            msg: this.messageBody,
+            picture: this.picture,
+            event_type: this.eventType,
+            time: this.timeSent,
+            playerId: this.playerId
         };
     }
-    
-    setToJoinMessage() {
-        let leftMessage = `${this._username} has joined the room.`;
-        this._message = leftMessage;
-        this._eventType = 'user-joined';
-    }
-    
-    setToLeaveMessage() {
-        let leftMessage = `${this._username} has left the room.`;
-        this._message = leftMessage;
-        this._eventType = 'user-left';
-    }
+}
+
+export class JoinMessage extends Message {
+    constructor(player: Player,
+                messageBody: string,
+                roomName: string) {
+            super(player, messageBody, roomName);
+            this.messageBody = `${this.username} has joined the room.`;
+            this.eventType = 'user-joined';
+        }
+}
+
+export class LeaveMessage extends Message {
+    constructor(player: Player,
+                messageBody: string,
+                roomName: string) {
+            super(player, messageBody, roomName);
+            this.messageBody = `${this.username} has left the room.`;
+            this.eventType = 'user-left';
+        }
+}
+
+export class ResignMessage extends Message {
+    constructor(player: Player,
+                messageBody: string,
+                roomName: string) {
+            super(player, messageBody, roomName);
+            this.messageBody = `${this.username} has resigned.`;
+            this.eventType = 'player-resigned';
+        }
+}
+
+export class CheckmateMessage extends Message {
+    constructor(player: Player,
+                messageBody: string,
+                roomName: string) {
+            super(player, messageBody, roomName);
+            this.messageBody = `${this.username} was checkmated.`;
+            this.eventType = 'player-checkmated';
+        }
+}
+
+export class TimeForfeitMessage extends Message {
+    constructor(player: Player,
+                messageBody: string,
+                roomName: string) {
+            super(player, messageBody, roomName);
+            this.messageBody = `${this.username} forfeits on time.`;
+            this.eventType = 'player-time-forfeit';
+        }
+}
+
+export class WinnerMessage extends Message {
+    constructor(player: Player,
+                messageBody: string,
+                roomName: string) {
+            super(player, messageBody, roomName);
+            this.messageBody = `${this.username} is the winner!`;
+            this.eventType = 'player-winner';
+        }
+}
+
+export class DrawMessage extends Message {
+    constructor(player: Player,
+                messageBody: string,
+                roomName: string) {
+            super(player, messageBody, roomName);
+            this.messageBody = `The game ended in a draw.`;
+            this.eventType = 'game-draw';
+        }
+}
+
+export class DrawOfferMessage extends Message {
+    constructor(player: Player,
+                messageBody: string,
+                roomName: string) {
+            super(player, messageBody, roomName);
+            this.messageBody = `${this.username} offered a draw.`;
+            this.eventType = 'draw-offer';
+        }
+}
+
+export class EliminationMessage extends Message {
+    constructor(player: Player,
+                messageBody: string,
+                roomName: string) {
+            super(player, messageBody, roomName);
+            this.messageBody = `${this.username} has been eliminated.`;
+            this.eventType = 'player-eliminated';
+        }
+}
+
+export class AbortMessage extends Message {
+    constructor(player: Player,
+                messageBody: string,
+                roomName: string) {
+            super(player, messageBody, roomName);
+            this.messageBody = `${this.username} aborted the game.`;
+            this.eventType = 'game-aborted';
+        }
+}
+
+export class GameStartedMessage extends Message {
+    constructor(players: Player[],
+                messageBody: string,
+                roomName: string) {
+            super(null, messageBody, roomName);
+            this.messageBody =
+                `The game has begun: ${players.map(p => p.username).join(' vs. ')}`;
+            this.eventType = 'game-started';
+        }
 }

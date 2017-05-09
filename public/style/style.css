@@ -334,20 +334,39 @@ body .container-fluid {
 
 .chatbox-message-list .list-group-item {
     padding: 5px 4px;
-    min-height: 50px;
     background-color: #fff;
 }
 
-.chatbox-message-list .list-group-item.join-leave-message {
-    min-height: inherit;
+.game-event .last-message-time {
+    line-height: 23px;
 }
 
-.chatbox-message-list .list-group-item .user-joined {
+.chatbox-message-list .list-group-item .game-event.user-joined {
     color: #2BA95A;
 }
 
-.chatbox-message-list .list-group-item .user-left {
+.chatbox-message-list .list-group-item .game-event.user-left {
     color: #818a91;
+}
+
+.chatbox-message-list .list-group-item.game-event.user-joined {
+    background-color: #fff;
+    border: 1px solid black;
+}
+
+.chatbox-message-list .list-group-item.game-event.user-left {
+    background-color: #fff;
+    border: 1px solid black;
+}
+
+.chatbox-message-list .list-group-item .game-event {
+    font-weight: bold;
+    color: #333;
+}
+
+.chatbox-message-list .list-group-item.game-event {
+    background-color: #ddd;
+    border: 1px solid black;
 }
 
 .chatbox-message-list .float-xs-left{
