@@ -59,6 +59,11 @@ export default class CrazyHouse extends Game {
         this.io = io;
         this.roomName = roomName;
         this.time = time;
+        let initialTime = time.value * 60 * 1000;
+        this.times = {
+            w: initialTime,
+            b: initialTime
+        };
         this.connection = connection;
         this.set_960 = set_960;
         if(set_960) {

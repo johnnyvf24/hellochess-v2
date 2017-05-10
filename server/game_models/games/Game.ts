@@ -172,7 +172,8 @@ abstract class Game {
         return this.times[this.gameRulesObj.turn()];
     }
     
-    makeMove(move: any, increment: number): void {
+    makeMove(move: any, increment: number, moveTime: number): void {
+        console.log("move lag:", (Date.now()-moveTime)/1000);
         this._lastTurn = this.gameRulesObj.turn();
         let validMove = this.gameRulesObj.move(move);
         
@@ -189,7 +190,7 @@ abstract class Game {
         
         //calculate the time difference between the last move
         let timeElapsed = Date.now() - this.lastMoveTime;
-        this.lastMoveTime = Date.now();
+        this.lastMoveTime = moveTime;
         
         //calculate the time increment and add it to the current players time
         let timeIncrement = increment * 1000;

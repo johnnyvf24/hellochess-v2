@@ -154,15 +154,11 @@ function openThreads(state = {}, action) {
             delete newState[action.payload].move;
             delete newState[action.payload].fen;
             return newState;
-        case 'TICK':
+        case 'update-time':
             if(state[action.payload.thread].times[action.payload.turn]) {
                 newState = Object.assign({}, state);
-                if (state[action.payload.thread].times[action.payload.turn] < 10000) {
-                    newState[action.payload.thread].times[action.payload.turn] -= 100;
-                } else {
-                    newState[action.payload.thread].times[action.payload.turn] -= 1000;
-                }
-                return newState
+                newState[action.payload.thread].times[action.payload.turn] = action.payload.time;
+                return newState;
             }
             return state;
         case 'sit-down-w':

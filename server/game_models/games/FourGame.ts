@@ -72,6 +72,13 @@ export default class FourGame extends Game {
         this.gameRulesObj = new FourChess();
         this.roomName = roomName;
         this.time = time;
+        let initialTime = time.value * 60 * 1000;
+        this.times = {
+            w: initialTime,
+            b: initialTime,
+            g: initialTime,
+            r: initialTime
+        };
         this.connection = connection;
     }
     
@@ -269,7 +276,7 @@ export default class FourGame extends Game {
         this.engineInstance = new FourEngine(roomName, connection);
     }
     
-    makeMove(move: any, increment: number): void {
+    makeMove(move: any, increment: number, moveTime: number): void {
         this._lastTurn = this.gameRulesObj.turn();
         let validMove = this.gameRulesObj.move(move);
         //set the last move made
@@ -303,7 +310,7 @@ export default class FourGame extends Game {
         
         //calculate the time difference between the last move
         let timeElapsed = Date.now() - this.lastMoveTime;
-        this.lastMoveTime = Date.now();
+        this.lastMoveTime = moveTime;
         
         //calculate the time increment and add it to the current players time
         let timeIncrement = increment * 1000;
@@ -342,7 +349,7 @@ export default class FourGame extends Game {
         let room = this.connection.getRoomByName(this.roomName);
         let winnerColor = this.gameRulesObj.getWinnerColor(); //player that won
         let winner = this.getPlayer(winnerColor);
-        if (this.gameStarted) {
+        if (this.gameStarted && winner) {
             room.addMessage(new WinnerMessage(winner, null, this.roomName));
         }
         

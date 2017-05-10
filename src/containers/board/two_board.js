@@ -348,7 +348,7 @@ class TwoBoard extends Component {
         if (move === null) {
             this.game.undo();
         } else {
-            this.props.newMove(action, this.props.name);
+            this.props.newMove(action, this.props.name, Date.now());
         }
     }
     
@@ -402,7 +402,7 @@ class TwoBoard extends Component {
         if (move === null) return 'snapback';
         this.game.undo();
 
-        this.props.newMove(action, this.props.name);
+        this.props.newMove(action, this.props.name, Date.now());
         this.shadeSquareSource = source;
         this.shadeSquareDest = target;
         this.shadeLastMove();

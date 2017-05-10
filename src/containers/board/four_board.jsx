@@ -336,7 +336,7 @@ class FourBoard extends Component {
         if (move === null) {
             //this.game.undo();
         } else {
-            this.props.fourNewMove(action, this.props.name);
+            this.props.fourNewMove(action, this.props.name, Date.now());
         }
     }
     
@@ -380,7 +380,7 @@ class FourBoard extends Component {
         // illegal move
         if (move === null) return 'snapback';
 
-        this.props.fourNewMove(action, this.props.name);
+        this.props.fourNewMove(action, this.props.name, Date.now());
         this.shadeSquareSource = source;
         this.shadeSquareDest = target;
         this.shadeLastMove();

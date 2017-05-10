@@ -195,7 +195,7 @@ module.exports = function(io, socket, connection) {
         if(!room) return;
         let game: Game = room.game;
         let move = data.move;
-        room.makeMove(move);
+        room.makeMove(move, data.time);
     });
     
     socket.on('four-new-move', data => {
@@ -204,7 +204,7 @@ module.exports = function(io, socket, connection) {
         if(!room) return;
         let game: Game = room.game;
         let move = data.move;
-        room.makeMove(move);
+        room.makeMove(move, data.time);
     });
     
     socket.on('remove-ai-player', data => {

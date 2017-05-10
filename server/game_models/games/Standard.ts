@@ -59,6 +59,11 @@ export default class Standard extends Game {
         this.gameRulesObj = new Chess();
         this.roomName = roomName;
         this.time = time;
+        let initialTime = time.value * 60 * 1000;
+        this.times = {
+            w: initialTime,
+            b: initialTime
+        };
         this.connection = connection;
     }
     

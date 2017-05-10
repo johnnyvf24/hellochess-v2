@@ -4,6 +4,7 @@ import Player from '../players/Player';
 import AI from '../players/AI';
 import Game from '../games/Game';
 import {Message, JoinMessage, LeaveMessage, GameStartedMessage, TimeForfeitMessage} from './Message';
+import Clock from '../../../common/Clock';
 
 export default class Room {
     private _players: Player [];
@@ -16,7 +17,7 @@ export default class Room {
     private _time: any;
     private gameStartAction: string;
     private newMoveAction: string;
-    private timer: any = null;
+    private clock: Clock = null;
     
     static numRooms: number = 0;
     
@@ -25,6 +26,8 @@ export default class Room {
         this._players = []; //a list of all players in the room
         Room.numRooms++;
         this._id = Room.numRooms;
+        this.clock = new Clock();
+        this.clock.onTimeUp(this.timeUpFunction.bind(this));
         // set up the action string depending on game type
         switch (this.getGameType()) {
             case "four-player":
@@ -246,6 +249,59 @@ export default class Room {
         return this._game.gameReady();
     }
     
+    timeUpFunction() {
+        if(!this._name || !this.game) {
+            return;
+        }
+        let turn = this.game.getTurn();
+        
+        //get the player that lost and remove them from the game
+        let loser = this.game.getPlayer(turn);
+        
+        if(!loser) return;
+        this.game.setPlayerOutByColor(turn);
+        
+        this.addMessage(new TimeForfeitMessage(loser, null, this._name));
+        //Notify all players that a player has lost on time
+        let notificationOpts = {
+            title: `${loser.username} has lost on time!`,
+            position: 'tr',
+            autoDismiss: 5,
+        };
+        this.io.to(this._name).emit('action', Notifications.info(notificationOpts));
+        
+        //Check to see if the game has ended
+        if(this.game.gameOver()) {
+            this.game.endAndSaveGame(false);
+            
+            //Notify all players that the game is over
+            let notificationOpts = {
+                title: `${this._name}'s game is over`,
+                position: 'tr',
+                autoDismiss: 5,
+            };
+            this.io.to(this._name).emit('action', Notifications.success(notificationOpts));
+            
+            //sync the room again
+            this.io.to(this.name).emit('update-room', this.getRoom());
+        } else {
+            //set the next turn
+            this.game.setNextTurn();
+            
+            // if white is an AI, start the engine
+            if (this.game.currentTurnPlayer() instanceof AI) {
+                this.game.engineGo();
+            }
+            
+            //sync the room again
+            this.io.to(this.name).emit('update-room', this.getRoom());
+            
+            //start the next players timer
+            this.startTimer();
+        }
+        
+    }
+    
     //initialize the timers
     startTimer() {
         
@@ -257,12 +313,8 @@ export default class Room {
             return;
         }
         
-        if(this.timer) {
-           clearTimeout(this.timer); 
-        }
-        
-        if(!this.game.gameStarted) {
-            clearTimeout(this.timer); 
+        if (this.clock) {
+            this.clock.pause();
         }
         
         //get players turn
@@ -280,60 +332,8 @@ export default class Room {
         
         //calculate how much time the current player has left
         let timeLeft = this.game.times[turn];
-        let time = timeLeft - timeElapsed;
-        
         //start timing this person to check if they flag
-        this.timer = setTimeout(function() {
-            if(!this._name || !this.game) {
-                return;
-            }
-            
-            //get the player that lost and remove them from the game
-            let loser = this.game.getPlayer(turn);
-            
-            if(!loser) return;
-            this.game.setPlayerOutByColor(turn);
-            
-            this.addMessage(new TimeForfeitMessage(loser, null, this._name));
-            //Notify all players that a player has lost on time
-            let notificationOpts = {
-                title: `${loser.username} has lost on time!`,
-                position: 'tr',
-                autoDismiss: 5,
-            };
-            this.io.to(this._name).emit('action', Notifications.info(notificationOpts));
-            
-            //Check to see if the game has ended
-            if(this.game.gameOver()) {
-                this.game.endAndSaveGame();
-                
-                //Notify all players that the game is over
-                let notificationOpts = {
-                    title: `${this._name}'s game is over`,
-                    position: 'tr',
-                    autoDismiss: 5,
-                };
-                this.io.to(this._name).emit('action', Notifications.success(notificationOpts));
-                
-                //sync the room again
-                this.io.to(this.name).emit('update-room', this.getRoom());
-            } else {
-                //set the next turn
-                this.game.setNextTurn();
-                
-                // if white is an AI, start the engine
-                if (this.game.currentTurnPlayer() instanceof AI) {
-                    this.game.engineGo();
-                }
-                
-                //sync the room again
-                this.io.to(this.name).emit('update-room', this.getRoom());
-                
-                //start the next players timer
-                this.startTimer();
-            }
-            
-        }.bind(this), timeLeft);
+        this.clock.start(timeLeft);
     }
     
     //begin the game
@@ -383,11 +383,10 @@ export default class Room {
         this.io.to(this._name).emit(this.newMoveAction, message);
     }
     
-    makeMove(move: any): void {
+    makeMove(move: any, moveTime: number): void {
         // make the move in the game logic
-        this._game.makeMove(move, this.time.increment);
+        this._game.makeMove(move, this.time.increment, moveTime);
         
-        clearTimeout(this.timer);
         if(this._game.gameStarted == true) {
             this.startTimer();
         }
@@ -420,6 +419,6 @@ export default class Room {
     }
     
     clearTimer() {
-        clearTimeout(this.timer);
+        this.clock.pause();
     }
 }

@@ -55,7 +55,7 @@ export default class FourEngine extends Engine {
             let game: Game = room.game;
             let move = data.move;
             setTimeout(() => {
-                room.makeMove(compMove);
+                room.makeMove(compMove, Date.now());
             }, 400);
             
             

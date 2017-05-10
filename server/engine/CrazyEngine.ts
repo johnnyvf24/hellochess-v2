@@ -41,7 +41,7 @@ export default class CrazyEngine extends Engine {
             }
             let game: Game = room.game;
             let move = data.move;
-            room.makeMove(compMove);
+            room.makeMove(compMove, Date.now());
         }
     }
     

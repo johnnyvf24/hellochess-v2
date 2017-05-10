@@ -36,32 +36,35 @@ export function removeComputer(player, thread) {
     }
 }
 
-export function tick(roomName, turn) {
+export function updateTime(roomName, turn, time) {
     return {
-        type: 'TICK',
+        type: 'update-time',
         payload: {
             thread: roomName,
-            turn: turn
+            turn: turn,
+            time: time
         }
-    }
+    };
 }
 
-export function fourNewMove(move, roomName) {
+export function fourNewMove(move, roomName, moveTime) {
     return {
         type: 'server/four-new-move',
         payload: {
             thread: roomName,
-            move: move
+            move: move,
+            time: moveTime
         }
     }
 }
 
-export function newMove(move, roomName) {
+export function newMove(move, roomName, moveTime) {
     return {
         type: 'server/new-move',
         payload: {
             thread: roomName,
-            move: move
+            move: move,
+            time: moveTime
         }
     }
 

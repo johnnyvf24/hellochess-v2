@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {tick, removeComputer} from '../../actions/room';
+import {updateTime, removeComputer} from '../../actions/room';
 import {millisToMinutesAndSeconds, formatTurn, showElo} from '../../utils/index';
 import { browserHistory } from 'react-router';
+import Clock from '../../../common/Clock';
 
 import {Panel, Row} from 'react-bootstrap';
 
@@ -10,7 +11,6 @@ class OccupiedCard extends Component {
 
     constructor(props) {
         super(props);
-        this.countDown = null;
     };
     
     shouldComponentUpdate(nextProps) {
@@ -31,46 +31,43 @@ class OccupiedCard extends Component {
         return false;
     }
     
-    setTickTimer(props) {
-        clearInterval(this.countDown);
-        let updateInterval;
-        if (props.playerTime < 10000) {
-            updateInterval = 100;
-        } else {
-            updateInterval = 1000;
-        }
-        this.countDown = setInterval( () => {
-            this.props.tick(this.props.room.room.name, props.turn)
-        }, updateInterval);
-    }
-
     componentWillReceiveProps(nextProps) {
         let gameJustStarted = !this.props.gameStarted && nextProps.gameStarted === true;
-        let newTurnStarted = (this.props.turn !== nextProps.turn) && nextProps.gameStarted;;
+        let newTurnStarted = (this.props.turn !== nextProps.turn) && nextProps.gameStarted;
         let isOurTurn = nextProps.turn === this.props.color;
         if (nextProps.gameStarted === false) {
-            clearInterval(this.countDown);
-        } else if (gameJustStarted || newTurnStarted) {
+            this.clock.pause();
+        } else {
             if(isOurTurn) {
-                this.setTickTimer(nextProps);
+                this.clock.start(this.props.playerTime);
             } else {
-                clearInterval(this.countDown);
+                this.clock.pause();
             }
-        } else if (nextProps.playerTime < 10000) {
-            this.setTickTimer(nextProps);
         }
+    }
+    
+    updateTime(timeLeft) {
+        this.props.updateTime(this.props.room.room.name, this.props.playerColor.charAt(0), timeLeft);
     }
 
     componentWillMount() {
+        let initialTime;
+        if (this.props.gameStarted) {
+            initialTime = this.props.playerTime;
+        } else {
+            initialTime = this.props.time.value * 60 * 1000;
+        }
+        this.clock = new Clock(initialTime, this.props.time.increment);
+        this.clock.onTick(this.updateTime.bind(this));
         if(this.props.turn == this.props.color && this.props.gameStarted == true) {
-            this.setTickTimer(this.props);
+            this.clock.start();
         } else if(this.props.gameStarted == false){
-            clearInterval(this.countDown);
+            this.clock.pause();
         }
     }
 
     componentWillUnmount() {
-        clearInterval(this.countDown);
+        this.clock.pause();
     }
 
     renderActiveBorder() {
@@ -180,8 +177,6 @@ class OccupiedCard extends Component {
 function mapStateToProps(state, props) {
     let cardPlayer = props.longColor;
     return {
-        fourplayer_ratings: state.auth.profile.fourplayer_ratings,
-        standard_ratings: state.auth.profile.standard_ratings,
         profile: state.auth.profile,
         room: state.openThreads[state.activeThread],
         game: state.openThreads[state.activeThread].game,
@@ -195,4 +190,4 @@ function mapStateToProps(state, props) {
     }
 }
 
-export default connect(mapStateToProps, {tick, removeComputer})(OccupiedCard);
+export default connect(mapStateToProps, {updateTime, removeComputer})(OccupiedCard);
