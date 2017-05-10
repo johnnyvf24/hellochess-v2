@@ -190,7 +190,7 @@ abstract class Game {
         
         //calculate the time difference between the last move
         let timeElapsed = Date.now() - this.lastMoveTime;
-        this.lastMoveTime = moveTime;
+        this.lastMoveTime = Date.now();//moveTime;
         
         //calculate the time increment and add it to the current players time
         let timeIncrement = increment * 1000;
