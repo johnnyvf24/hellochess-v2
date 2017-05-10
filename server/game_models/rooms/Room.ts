@@ -141,6 +141,9 @@ export default class Room {
             player => player.playerId === playerThatLeft.playerId
         );
         if (foundPlayer) {
+            this._players = this._players.filter(
+                player => player.playerId !== playerThatLeft.playerId
+            );
             let leftMsg: LeaveMessage = new LeaveMessage(playerThatLeft, null, this._name);
             this.addMessage(leftMsg);
             playerThatLeft.socket.leave(this._name);
