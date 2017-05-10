@@ -38,7 +38,7 @@ class OccupiedCard extends Component {
         if (nextProps.gameStarted === false) {
             this.clock.pause();
         } else {
-            if(isOurTurn) {
+            if(isOurTurn && nextProps.gameStarted === true) {
                 this.clock.start(this.props.playerTime);
             } else {
                 this.clock.pause();
@@ -47,10 +47,12 @@ class OccupiedCard extends Component {
     }
     
     updateTime(timeLeft) {
+        console.log("updateTime:", timeLeft);
         this.props.updateTime(this.props.room.room.name, this.props.playerColor.charAt(0), timeLeft);
     }
 
-    componentWillMount() {
+    componentDidMount() {
+        console.log("componentDidMount");
         let initialTime;
         if (this.props.gameStarted) {
             initialTime = this.props.playerTime;
@@ -60,6 +62,7 @@ class OccupiedCard extends Component {
         this.clock = new Clock(initialTime, this.props.time.increment);
         this.clock.onTick(this.updateTime.bind(this));
         if(this.props.turn == this.props.color && this.props.gameStarted == true) {
+            console.log("starting clock on mount");
             this.clock.start();
         } else if(this.props.gameStarted == false){
             this.clock.pause();
@@ -149,7 +152,7 @@ class OccupiedCard extends Component {
 
     render() {
         const {profile, room, game, player, time, playerTime, activeThread, gameStarted} = this.props;
-        if(!profile || !room || !player || !game || !time || !playerTime || !activeThread) {
+        if(!profile || !room || !player || !game || !time || !activeThread) {
             return <div></div>
         }
         return (

@@ -53,7 +53,7 @@ export function fourNewMove(move, roomName, moveTime) {
         payload: {
             thread: roomName,
             move: move,
-            time: moveTime
+            moveTime: moveTime
         }
     }
 }
@@ -64,7 +64,7 @@ export function newMove(move, roomName, moveTime) {
         payload: {
             thread: roomName,
             move: move,
-            time: moveTime
+            moveTime: moveTime
         }
     }
 

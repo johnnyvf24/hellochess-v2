@@ -157,6 +157,7 @@ export default class CrazyHouse extends Game {
         this.gameStarted = true;
         this.white.alive = true;
         this.black.alive = true;
+        this.resetClocks();
         this.lastMoveTime = Date.now();
         this.gameRulesObj = new Crazyhouse({960: this.set_960});
         if (this.set_960) {
@@ -206,7 +207,7 @@ export default class CrazyHouse extends Game {
         let room = this.connection.getRoomByName(this.roomName);
         
         if(winner.type == 'computer' || loser.type == 'computer') {
-             console.log("no ratings! Computer in game");
+             //console.log("no ratings! Computer in game");
         } else {
             let timeType = getTimeTypeForTimeControl(this.time);
             
@@ -309,7 +310,8 @@ export default class CrazyHouse extends Game {
             }
             
             this.io.to(this.roomName).emit('action', Notifications.warning(drawNotif));
-            room.addMessage(new DrawMessage(null, null, this.roomName));
+            if (room)
+                room.addMessage(new DrawMessage(null, null, this.roomName));
         } else {
             let endNotif = {
                 title: 'Game Over',
@@ -319,7 +321,8 @@ export default class CrazyHouse extends Game {
             }
             
             this.io.to(this.roomName).emit('action', Notifications.info(endNotif));
-            room.addMessage(new WinnerMessage(winner, null, this.roomName));
+            if (room)
+                room.addMessage(new WinnerMessage(winner, null, this.roomName));
         }
         
         this.gameStarted = false;

@@ -53,6 +53,16 @@ abstract class Game {
     abstract removePlayerFromAllSeats(player: Player);
     abstract setPlayerOutByColor(color: string);
     
+    resetClocks() {
+        let initialTime = this.time.value * 60 * 1000;
+        this.times = {
+            w: initialTime,
+            b: initialTime,
+            g: initialTime,
+            r: initialTime
+        };
+    }
+    
     setColorTime(color: string, time: number): void {
         this.times[color] = time;
     }
@@ -83,7 +93,7 @@ abstract class Game {
     
     getCurrentTimes() {
         let times = {...this.times};
-        if (this.lastMoveTime) {
+        if (this.lastMoveTime && this.gameStarted) {
             let currentTurn = this.gameRulesObj.turn();
             let currentTime = times[currentTurn];
             let timeElapsed = Date.now() - this.lastMoveTime;
@@ -174,6 +184,10 @@ abstract class Game {
     
     makeMove(move: any, increment: number, moveTime: number): void {
         this._lastTurn = this.gameRulesObj.turn();
+        if (this.times[this._lastTurn] <= 0) {
+            this.setPlayerOutByColor(this._lastTurn);
+            return;
+        }
         let validMove = this.gameRulesObj.move(move);
         
         //set the last move made

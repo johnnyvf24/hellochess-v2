@@ -88,9 +88,20 @@ export default class FourGame extends Game {
         this.black.alive = true;
         this.gold.alive = true;
         this.red.alive = true;
+        this.resetClocks();
         this.lastMoveTime = Date.now();
         this.gameRulesObj = new FourChess();
         this.fenHistory = [];
+    }
+    
+    resetClocks() {
+        let initialTime = this.time.value * 60 * 1000;
+        this.times = {
+            w: initialTime,
+            b: initialTime,
+            g: initialTime,
+            r: initialTime
+        };
     }
     
     // parse the pgn string into an array of move objects
@@ -278,6 +289,10 @@ export default class FourGame extends Game {
     
     makeMove(move: any, increment: number, moveTime: number): void {
         this._lastTurn = this.gameRulesObj.turn();
+        if (this.times[this._lastTurn] <= 0) {
+            this.setPlayerOutByColor(this._lastTurn);
+            return;
+        }
         let validMove = this.gameRulesObj.move(move);
         //set the last move made
         this._lastMove = move;
@@ -354,14 +369,14 @@ export default class FourGame extends Game {
         let room = this.connection.getRoomByName(this.roomName);
         let winnerColor = this.gameRulesObj.getWinnerColor(); //player that won
         let winner = this.getPlayer(winnerColor);
-        if (this.gameStarted && winner) {
+        if (this.gameStarted && winner && room) {
             room.addMessage(new WinnerMessage(winner, null, this.roomName));
         }
         
         if( white.type == 'computer' || black.type == 'computer'
             || gold.type == 'computer' || red.type == 'computer') {
             //Dont save computer games
-            console.log("no ratings! Computer in game");
+            //console.log("no ratings! Computer in game");
         } else {
             //update all player's elos
             let elo = new Elo();
@@ -569,7 +584,8 @@ export default class FourGame extends Game {
         }
         if(playerOut) {
             let room = this.connection.getRoomByName(this.roomName);
-            room.addMessage(new EliminationMessage(playerOut, null, this.roomName));
+            if (room)
+                room.addMessage(new EliminationMessage(playerOut, null, this.roomName));
             const notificationOpts = {
                 title: 'Player Elimination',
                 message: `${playerOut.username} has been eliminated!`,

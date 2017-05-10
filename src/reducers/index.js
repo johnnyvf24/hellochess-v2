@@ -155,7 +155,7 @@ function openThreads(state = {}, action) {
             delete newState[action.payload].fen;
             return newState;
         case 'update-time':
-            if(state[action.payload.thread].times[action.payload.turn]) {
+            if(state[action.payload.thread].times) {
                 newState = Object.assign({}, state);
                 newState[action.payload.thread].times[action.payload.turn] = action.payload.time;
                 return newState;
