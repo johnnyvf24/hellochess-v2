@@ -278,7 +278,13 @@ class Live extends Component {
                             <Alert bsStyle="success" onDismiss={this.handleAlertDismiss.bind(this)}>
                                 <i className="fa fa-wrench fa-lg" aria-hidden="true"></i>
                                 <strong> Please note this site is under active development!</strong>
-                                <span>&nbsp; We are testing voice chat features, let us know if you like it!</span>
+                                <p>
+                                    What feature should we add to Hellochess next?
+                                    &nbsp;
+                                    <a href="https://strawpoll.com/54cd271">
+                                        Vote here!
+                                    </a>
+                                </p>
                             </Alert>
                         </Col> 
                         }
