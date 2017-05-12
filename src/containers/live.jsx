@@ -281,7 +281,7 @@ class Live extends Component {
                                 <p>
                                     What feature should we add to Hellochess next?
                                     &nbsp;
-                                    <a href="https://strawpoll.com/54cd271">
+                                    <a href="https://strawpoll.com/54cd271" target="_blank">
                                         Vote here!
                                     </a>
                                 </p>
