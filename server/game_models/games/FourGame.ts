@@ -323,14 +323,16 @@ export default class FourGame extends Game {
             }
         }
         
+        /*
         // calculate the lag between the time the player moved
         // and the time the server received the move
         let lag = Date.now() - moveTime;
         lag = Math.max(0, lag);
         lag = Math.min(lag, 1000);
         //calculate the time difference between the last move
-        let timeElapsed = Date.now() - this.lastMoveTime - lag;
-        this.lastMoveTime = moveTime;
+        */
+        let timeElapsed = Date.now() - this.lastMoveTime;// - lag;
+        this.lastMoveTime = Date.now();//moveTime;
         
         //calculate the time increment and add it to the current players time
         let timeIncrement = increment * 1000;

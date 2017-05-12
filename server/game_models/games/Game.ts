@@ -201,6 +201,7 @@ abstract class Game {
         validMove.fen = this.gameRulesObj.fen();
         this.moveHistory.push(validMove);
         
+        /*
         // calculate the lag between the time the player moved
         // and the time the server received the move
         let lag = Date.now() - moveTime;
@@ -208,8 +209,9 @@ abstract class Game {
         lag = Math.min(lag, 1000);
         // calculate the time difference between the last move.
         // subtract any lag up to 1 second.
-        let timeElapsed = Date.now() - this.lastMoveTime - lag;
-        this.lastMoveTime = moveTime;
+        */
+        let timeElapsed = Date.now() - this.lastMoveTime;// - lag;
+        this.lastMoveTime = Date.now();//moveTime;
         
         //calculate the time increment and add it to the current players time
         let timeIncrement = increment * 1000;
