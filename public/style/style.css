@@ -1013,3 +1013,8 @@ tr:hover {
     max-height: 40px;
     display: inline;
 }
+
+#room-user-list-modal-body {
+    height: 400px;
+    overflow-y: auto;
+}

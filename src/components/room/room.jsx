@@ -55,7 +55,7 @@ export default class Room extends Component {
                             <Modal.Header closeButton>
                                 <Modal.Title>Room Members</Modal.Title>
                             </Modal.Header>
-                            <Modal.Body>
+                            <Modal.Body id="room-user-list-modal-body">
                                 <RoomUserList users={value.users}/>
                             </Modal.Body>
                             <Modal.Footer>
