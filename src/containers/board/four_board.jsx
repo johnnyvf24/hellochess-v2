@@ -96,7 +96,15 @@ class FourBoard extends Component {
                 this.prevMoveResizeListener = shadeOnResize;
                 // execute premove if it's our turn
                 if (nextProps.room.game.turn === usColor) {
-                    this.executePremove();
+                    // make sure we're not moving another player's piece
+                    // (this can happen when the premoved piece is captured;
+                    // it then turns into the other player's piece and that
+                    // piece would get moved)
+                    if (this.premove && this.premove.piece.charAt(0) === usColor) {
+                        this.executePremove();
+                    } else {
+                        this.resetPremove();
+                    }
                 }
             }
 
