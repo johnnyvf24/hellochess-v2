@@ -86,7 +86,10 @@ class Live extends Component {
             errorMessage: '',
             alertVisible: true
         }
-
+        let enableSounds = JSON.parse(localStorage.getItem('enableSounds'));
+        if (typeof enableSounds === "undefined" || enableSounds === null)
+            enableSounds = true;
+        this.state.enableSounds = enableSounds;
         this.onInputChange = this.onInputChange.bind(this);
         this.saveUsername = this.saveUsername.bind(this);
         this.saveUsername = this.saveUsername.bind(this);
@@ -127,6 +130,17 @@ class Live extends Component {
 
     onInputChange(event) {
         this.setState({usernameInput: event.target.value})
+    }
+    
+    toggleSounds() {
+        let enableSounds = JSON.parse(localStorage.getItem('enableSounds'));
+        if (typeof enableSounds === "undefined" || enableSounds === null) {
+            enableSounds = false;
+        } else {
+            enableSounds = !enableSounds;
+        }
+        this.setState({enableSounds});
+        localStorage.setItem('enableSounds', enableSounds);
     }
 
     renderLiveContent() {
@@ -261,6 +275,8 @@ class Live extends Component {
         else {
         
             let {activeThread} = this.props;
+            let enableSounds = this.state.enableSounds;
+            let soundMenuString = `Move sounds ${enableSounds ? '✔' : ''}`;
 
             return (
                 <div id="main-panel">
@@ -289,16 +305,17 @@ class Live extends Component {
                         </Col> 
                         }
                         <div className="pull-right">
-                            
-                            
                             <Dropdown id="dropdown-custom-menu">
                                 <CustomToggle bsRole="toggle">
                                     <img id="profile-pic" className="img-responsive img-circle" src={this.props.profile.picture} alt="" />
                                 </CustomToggle>
                                 <CustomMenu bsRole="menu">
                                     <MenuItem onClick={this.onProfileClick.bind(this)} eventKey="1">Profile</MenuItem>
+                                    <MenuItem onClick={this.toggleSounds.bind(this)} eventKey="2">
+                                        {soundMenuString}
+                                    </MenuItem>
                                     <MenuItem divider />
-                                    <MenuItem onClick={this.logout.bind(this)} eventKey="2">Logout</MenuItem>
+                                    <MenuItem onClick={this.logout.bind(this)} eventKey="3">Log out</MenuItem>
                                 </CustomMenu>
                             </Dropdown>
                         </div>
@@ -332,4 +349,9 @@ function mapStateToProps(state) {
 
 Live = ReactTimeout(Live);
 
-export default connect (mapStateToProps, {logout, saveUsername, clearError, userConnect, enableMic, disableMic, enableMic, disableMic}) (Live);
+export default connect (mapStateToProps,
+    {logout, saveUsername, clearError,
+     userConnect, enableMic, disableMic,
+     enableMic, disableMic
+    }
+) (Live);

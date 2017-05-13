@@ -99,11 +99,16 @@ class TwoBoard extends Component {
                 }
             }
             if (this.props.pgn.length === nextProps.pgn.length - 1) {
-                let lastMove = nextProps.pgn[nextProps.pgn.length-1];
-                if (lastMove.captured) {
-                    this.captureSound.play();
-                } else {
-                    this.moveSound.play();
+                let enableSounds = JSON.parse(localStorage.getItem('enableSounds'));
+                if (typeof enableSounds === "undefined" || enableSounds === null)
+                    enableSounds = true;
+                if (enableSounds) {
+                    let lastMove = nextProps.pgn[nextProps.pgn.length-1];
+                    if (lastMove.captured) {
+                        this.captureSound.play();
+                    } else {
+                        this.moveSound.play();
+                    }
                 }
             }
         } else {
