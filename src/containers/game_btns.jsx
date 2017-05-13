@@ -13,16 +13,24 @@ class GameButtons extends Component {
     }
 
     userIsPlaying(userObj, roomObj) {
-        if(roomObj.game.white && userObj._id === roomObj.game.white.playerId) {
+        if(roomObj.game.white &&
+            userObj._id === roomObj.game.white.playerId &&
+            roomObj.game.white.alive) {
             return true;
         }
-        if(roomObj.game.black && userObj._id === roomObj.game.black.playerId) {
+        if(roomObj.game.black &&
+            userObj._id === roomObj.game.black.playerId &&
+            roomObj.game.black.alive) {
             return true;
         }
-        if(roomObj.game.gold && userObj._id === roomObj.game.gold.playerId) {
+        if(roomObj.game.gold &&
+            userObj._id === roomObj.game.gold.playerId &&
+            roomObj.game.gold.alive) {
             return true;
         }
-        if(roomObj.game.red && userObj._id === roomObj.game.red.playerId) {
+        if(roomObj.game.red &&
+            userObj._id === roomObj.game.red.playerId &&
+            roomObj.game.red.alive) {
             return true;
         }
 
