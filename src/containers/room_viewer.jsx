@@ -22,6 +22,14 @@ class RoomViewer extends Component {
             }
         }
     }
+    
+    componentDidMount() {
+        this.removeHrefs();
+    }
+    
+    componentDidUpdate() {
+        this.removeHrefs();
+    }
 
     onSelectTab(chatName, event) {
         event.preventDefault();
@@ -34,6 +42,14 @@ class RoomViewer extends Component {
         event.stopPropagation();
         this.props.leaveRoom(chatName);
         this.props.selectedRoom("Games");
+    }
+    
+    // remove hrefs from tab links so it doesn't show
+    // the useless '#' link on hover
+    removeHrefs() {
+        let tabsContainer = $("ul[role='tablist']")
+        let tabs = tabsContainer.find('li a');
+        tabs.removeAttr('href');
     }
 
     renderNavTab(chats, active) {

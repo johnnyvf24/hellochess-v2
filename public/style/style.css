@@ -201,6 +201,11 @@ body .container-fluid {
     background: -webkit-linear-gradient(top, #aadeee, #c0e6f2);
 }
 
+#left-chatbox li, #left-chatbox li.active,
+#left-chatbox li a {
+    cursor: pointer;
+}
+
 #left-chatbox li a {
     background: -webkit-linear-gradient(top, #aadeee, #cccccc);
     color: black;
