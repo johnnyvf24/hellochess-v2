@@ -113,7 +113,13 @@ export default class FourGame extends Game {
         let moveObjects: any[] = moves.map((move, index) => {
             let color, san, from, to;
             [color, san] = move.split(":");
-            [from, to] = san.split("-");
+            let captureMove = false;
+            if (san.indexOf("-") > -1) {
+                [from, to] = san.split("-");
+            } else if (san.indexOf("x") > -1) {
+                [from, to] = san.split("x");
+                captureMove = true;
+            }
             let fen: String = this.fenHistory[index];
             let moveObject: any = {
                 color: color,
@@ -122,6 +128,9 @@ export default class FourGame extends Game {
                 to: to,
                 fen: fen
             };
+            if (captureMove) {
+                moveObject.captured = true;
+            }
             return moveObject;
         });
         return moveObjects;
