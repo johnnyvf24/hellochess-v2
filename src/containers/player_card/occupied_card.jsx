@@ -47,12 +47,10 @@ class OccupiedCard extends Component {
     }
     
     updateTime(timeLeft) {
-        console.log("updateTime:", timeLeft);
         this.props.updateTime(this.props.room.room.name, this.props.playerColor.charAt(0), timeLeft);
     }
 
     componentDidMount() {
-        console.log("componentDidMount");
         let initialTime;
         if (this.props.gameStarted) {
             initialTime = this.props.playerTime;
@@ -62,7 +60,6 @@ class OccupiedCard extends Component {
         this.clock = new Clock(initialTime, this.props.time.increment);
         this.clock.onTick(this.updateTime.bind(this));
         if(this.props.turn == this.props.color && this.props.gameStarted == true) {
-            console.log("starting clock on mount");
             this.clock.start();
         } else if(this.props.gameStarted == false){
             this.clock.pause();

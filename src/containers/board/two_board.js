@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 
 import Chess from 'chess.js'; //game rules
+import {Howl} from 'howler'; // sound library
 
 import {newMove} from '../../actions/room';
 import {DARK_SQUARE_HIGHLIGHT_COLOR, LIGHT_SQUARE_HIGHLIGHT_COLOR} from './board_wrapper.jsx'
@@ -37,7 +38,15 @@ class TwoBoard extends Component {
         }
         this.drag = {from: '', to: ''};
         this.atOldPosition = false;
-
+        let soundVolume = 0.75;
+        this.moveSound = new Howl({
+            src: ['../audio/move.ogg'],
+            volume: soundVolume
+        });
+        this.captureSound = new Howl({
+            src: ['../audio/capture.ogg'],
+            volume: soundVolume
+        });
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -87,6 +96,14 @@ class TwoBoard extends Component {
                 // execute premove if it's our turn
                 if (nextProps.game.turn === usColor) {
                     this.executePremove();
+                }
+            }
+            if (this.props.pgn.length === nextProps.pgn.length - 1) {
+                let lastMove = nextProps.pgn[nextProps.pgn.length-1];
+                if (lastMove.captured) {
+                    this.captureSound.play();
+                } else {
+                    this.moveSound.play();
                 }
             }
         } else {

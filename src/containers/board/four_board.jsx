@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {fourNewMove} from '../../actions/room';
 import FourChess from '../../../common/fourchess';
+import {Howl} from 'howler'; // sound library
 import {DARK_SQUARE_HIGHLIGHT_COLOR, LIGHT_SQUARE_HIGHLIGHT_COLOR} from './board_wrapper.jsx'
 import {DARK_SQUARE_PREMOVE_COLOR, LIGHT_SQUARE_PREMOVE_COLOR} from './board_wrapper.jsx'
 
@@ -30,6 +31,15 @@ class FourBoard extends Component {
         };
         this.drag = {from: '', to: ''};
         this.atOldPosition = false;
+        let soundVolume = 0.75;
+        this.moveSound = new Howl({
+            src: ['../audio/move.ogg'],
+            volume: soundVolume
+        });
+        this.captureSound = new Howl({
+            src: ['../audio/capture.ogg'],
+            volume: soundVolume
+        });
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -90,8 +100,13 @@ class FourBoard extends Component {
                 }
             }
 
-            if(nextProps.game.pgn) {
-                //TODO fourchess still doesn't have a load pgn feature
+            if (this.props.pgn.length === nextProps.pgn.length - 1) {
+                let lastMove = nextProps.pgn[nextProps.pgn.length-1];
+                if (lastMove.captured) {
+                    this.captureSound.play();
+                } else {
+                    this.moveSound.play();
+                }
             }
         } else {
             this.resetGame();
