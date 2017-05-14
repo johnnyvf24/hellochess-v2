@@ -18,17 +18,28 @@ class RoomViewer extends Component {
         if(this.props.connection.status) {
             if(!this.props.activeProfile._id) {
                 this.props.updateLiveUser(this.props.profile);
-                this.props.joinRoom('Global');                  //join the default chatroom
+                this.props.joinRoom('Global'); //join the default chatroom
             }
         }
+    }
+    
+    shouldComponentUpdate(nextProps) {
+        let thisOpenThreadNames = Object.keys(this.props.openThreads);
+        let nextOpenThreadNames = Object.keys(nextProps.openThreads);
+        if (nextProps.activeThread !== this.props.activeThread ||
+            thisOpenThreadNames.length !== nextOpenThreadNames.length) {
+            return true;
+        }
+        return false;
     }
     
     componentDidMount() {
         this.removeHrefs();
     }
     
-    componentDidUpdate() {
+    componentDidUpdate(prevProps) {
         this.removeHrefs();
+        
     }
 
     onSelectTab(chatName, event) {
@@ -41,7 +52,20 @@ class RoomViewer extends Component {
         event.preventDefault();
         event.stopPropagation();
         this.props.leaveRoom(chatName);
-        this.props.selectedRoom("Games");
+        if (this.props.activeThread === chatName) {
+            let openThreadNames =
+                Object.keys(this.props.openThreads).filter(name => name !== chatName);
+            let numThreads = openThreadNames.length;
+            if (numThreads > 0) {
+                try {
+                    this.props.selectedRoom(openThreadNames[numThreads-1]);
+                } catch (e) {
+                    this.props.selectedRoom(200);
+                }
+            } else {
+                this.props.selectedRoom(200);
+            }
+        }
     }
     
     // remove hrefs from tab links so it doesn't show
@@ -82,11 +106,16 @@ class RoomViewer extends Component {
         }
 
         return (
-            <Tabs defaultActiveKey={this.props.activeThread}
+            <Tabs
+                defaultActiveKey={this.props.activeThread}
+                activeKey={this.props.activeThread}
                 onSelect={this.onSelectTab.bind(this)}
                 animation={false}
                 id="left-chatbox">
-                <Tab eventKey={200} title="Games">
+                <Tab
+                    eventKey={200}
+                    title="Games"
+                    ref={(tab) => {this.gamesTab = tab;}}>
                     <ExistingRoomList />
                 </Tab>
                 {this.renderNavTab(openThreads, activeThread)}
