@@ -89,7 +89,11 @@ class Live extends Component {
         let enableSounds = JSON.parse(localStorage.getItem('enableSounds'));
         if (typeof enableSounds === "undefined" || enableSounds === null)
             enableSounds = true;
+        let showDevAlert = JSON.parse(localStorage.getItem('showDevAlert'));
+        if (typeof showDevAlert === "undefined" || showDevAlert === null)
+            showDevAlert = true;
         this.state.enableSounds = enableSounds;
+        this.state.alertVisible = showDevAlert;
         this.onInputChange = this.onInputChange.bind(this);
         this.saveUsername = this.saveUsername.bind(this);
         this.saveUsername = this.saveUsername.bind(this);
@@ -212,6 +216,7 @@ class Live extends Component {
     }
     
     handleAlertDismiss() {
+        localStorage.setItem('showDevAlert', false);
         this.setState({alertVisible: false});
     }
     
@@ -291,7 +296,17 @@ class Live extends Component {
                         </Col>
                         {this.state.alertVisible && 
                         <Col xs={12} sm={10} md={8} lg={6}>
-                            <Alert bsStyle="success" onDismiss={this.handleAlertDismiss.bind(this)}>
+                            <Alert
+                                bsStyle="success"
+                                onDismiss={this.handleAlertDismiss.bind(this)}
+                                style={{
+                                    position: 'absolute',
+                                    width: '100%',
+                                    textAlign: 'center',
+                                    zIndex: '999',
+                                    paddingBottom: '10px',
+                                    paddingTop: '10px'
+                                }}>
                                 <i className="fa fa-wrench fa-lg" aria-hidden="true"></i>
                                 <strong> Please note this site is under active development!</strong>
                                 <p>
