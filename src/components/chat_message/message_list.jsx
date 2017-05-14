@@ -11,12 +11,12 @@ export default class MessageList extends Component {
     }
 
     scrollToBottom() {
-        const msgList = this.refs.msgList;
-        msgList.scrollTop = msgList.scrollHeight;
+        this.refs.msgList.scrollTop = 99999;
     }
     
     componentDidUpdate(prevProps) {
-        if (prevProps.messages.length !== this.props.messages.length) {
+        if (prevProps.messages.length !== this.props.messages.length ||
+            prevProps.thread != this.props.thread) {
             this.scrollToBottom();
         }
     }
