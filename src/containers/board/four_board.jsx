@@ -451,18 +451,16 @@ class FourBoard extends Component {
                 else if(this.props.game.red.playerId === this.props.profile._id) {
                     this.board.orientation('red');
                 }
-    
-                if(this.props.game.lastMove) {
-                    this.shadeSquare(this.props.move.from);
-                    this.shadeSquare(this.props.move.to);
-                }
             }
-            
         }
         window.addEventListener('resize', (event) => {
             this.boardRedraw();
         });
         this.boardRedraw();
+        if(this.props.move) {
+            this.shadeSquare(this.props.move.from);
+            this.shadeSquare(this.props.move.to);
+        }
     }
 
     render() {

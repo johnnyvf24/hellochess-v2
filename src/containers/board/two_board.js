@@ -457,19 +457,15 @@ class TwoBoard extends Component {
                     this.board.orientation('black');
                 }
             }
-            
-
-            if(this.props.move) {
-                this.game.move(this.props.move);
-                this.shadeSquare(this.props.move.from);
-                this.shadeSquare(this.props.move.to);
-            }
         }
-
         window.addEventListener('resize', (event) => {
             this.boardRedraw();
         });
         this.boardRedraw();
+        if(this.props.move) {
+            this.shadeSquare(this.props.move.from);
+            this.shadeSquare(this.props.move.to);
+        }
     }
 
     render() {
