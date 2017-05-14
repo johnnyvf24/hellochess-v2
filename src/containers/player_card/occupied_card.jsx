@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {updateTime, removeComputer} from '../../actions/room';
-import {millisToMinutesAndSeconds, formatTurn, showElo} from '../../utils/index';
+import {formatTurn, showElo} from '../../utils/index';
 import { browserHistory } from 'react-router';
 import Clock from '../../../common/Clock';
 
@@ -131,7 +131,7 @@ class OccupiedCard extends Component {
     }
 
     renderTime(time) {
-        return millisToMinutesAndSeconds(time);
+        return Clock.parse(time);
     }
 
     // Alive = still playing

@@ -27,26 +27,19 @@ export default class Clock {
         let that = this;
         (function timer() {
             diff = that.duration - (Date.now() - that.startTime);
-            if (diff > 0) {
-                if (diff < 10) {
-                    that.timeUpCallbacks.forEach(function(callback) {
-                        callback.call(this, diff);
-                    }, that);
-                    that.pause();
-                    return;
-                }
-                if (diff <= 5000) {
-                    that.granularity = 10;
-                } else if (diff <= 11000) {
-                    that.granularity = 100;
-                } else {
-                    that.granularity = 1000;
-                }
-                that.timer = setTimeout(timer, that.granularity);
-            } else {
-                diff = 0;
-                that.running = false;
+            if (diff < 10) {
+                that.timeUpCallbacks.forEach(function(callback) {
+                    callback.call(this, diff);
+                }, that);
+                that.pause();
+                return;
             }
+            if (diff <= 2000) {
+                that.granularity = 10;
+            } else {
+                that.granularity = 100;
+            }
+            that.timer = setTimeout(timer, that.granularity);
             that.tickCallbacks.forEach(function(callback) {
               callback.call(this, diff);
             }, that);
@@ -79,10 +72,10 @@ export default class Clock {
         this.duration -= Date.now() - this.startTime;
     }
     
-    parse(millis) {
+    static parse(millis) {
         let minutes = Math.floor(millis / 60000);
         let seconds = ((millis % 60000) / 1000);
-        if(seconds.toFixed(0) == 60) {
+        if(Math.floor(seconds) == 60) {
             minutes++;
             seconds = 0;
         }
@@ -91,7 +84,7 @@ export default class Clock {
         if (millis < 10000) {
             seconds = seconds.toFixed(1);
         } else {
-            seconds = seconds.toFixed(0);
+            seconds = Math.floor(seconds);
         }
         let timeString = minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
         return timeString;
