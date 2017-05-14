@@ -83,6 +83,7 @@ class Live extends Component {
 
         this.state = {
             usernameInput: '',
+            usernameValid: false,
             errorMessage: '',
             alertVisible: true
         }
@@ -126,14 +127,21 @@ class Live extends Component {
 
     saveUsername(event) {
         const username = this.state.usernameInput;
-        if(username.length > 1) {
+        if(this.usernameValid(username)) {
             this.props.saveUsername(this.props.profile._id, username);
         }
         event.preventDefault();
     }
+    
+    usernameValid(username) {
+        return username.length > 3;
+    }
 
     onInputChange(event) {
-        this.setState({usernameInput: event.target.value})
+        this.setState({
+            usernameInput: event.target.value,
+            usernameValid: this.usernameValid(event.target.value)
+        });
     }
     
     toggleSounds() {
@@ -201,11 +209,11 @@ class Live extends Component {
                           <input
                               value={this.state.usernameInput}
                               onChange={this.onInputChange}
-                              className="form-control"
-                              placeholder="Type here..."/>
+                              className="form-control"/>
                           <button
                               type="submit"
-                              className="btn btn-warning btn-save-username float-xs-right">
+                              className="btn btn-warning btn-save-username float-xs-right"
+                              disabled={!this.state.usernameValid}>
                               Save
                          </button>
                      </form>
