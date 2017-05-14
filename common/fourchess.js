@@ -1808,12 +1808,12 @@ var FourChess = function (fen) {
             if(move == undefined) {
                 return;
             }
-            if (move.piece.charAt(0).toLowerCase() !== TURN) {
+            if (move.piece && move.piece.charAt(0).toLowerCase() !== TURN) {
                 return null;
             }
             // make sure the piece that is being moved is
             // on the correct square
-            if (SQUARE_STATUS[move.piece] !== BOARD[SQUARES[move.from]]) {
+            if (move.piece && SQUARE_STATUS[move.piece] !== BOARD[SQUARES[move.from]]) {
                 return null;
             }
             var options = generateMovesForSquare(move.from);
