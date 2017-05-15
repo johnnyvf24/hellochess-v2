@@ -104,6 +104,9 @@ if(env == "production") {
     });
 }
 
+process.on("uncaughtException", function(err) {
+    console.log("uncaughtException:", err);
+});
 
 require('./sockets/sockets').socketServer(io);
 router(app);
