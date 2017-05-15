@@ -23,16 +23,6 @@ class RoomViewer extends Component {
         }
     }
     
-    shouldComponentUpdate(nextProps) {
-        let thisOpenThreadNames = Object.keys(this.props.openThreads);
-        let nextOpenThreadNames = Object.keys(nextProps.openThreads);
-        if (nextProps.activeThread !== this.props.activeThread ||
-            thisOpenThreadNames.length !== nextOpenThreadNames.length) {
-            return true;
-        }
-        return false;
-    }
-    
     componentDidMount() {
         this.removeHrefs();
     }
