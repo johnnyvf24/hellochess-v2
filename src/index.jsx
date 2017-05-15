@@ -16,7 +16,12 @@ import routes from './routes';
 import {LOGIN_SUCCESS} from './actions/types';
 
 const middleware = [ReduxPromise, thunkMiddleware, voiceMiddleware, socketIoMiddleware];
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const composeEnhancers =
+  typeof window === 'object' &&
+  window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?   
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
+        actionsBlacklist: ['update-time']
+    }) : compose;
 const store = createStore(reducers, composeEnhancers(
     applyMiddleware(...middleware)
 ));
