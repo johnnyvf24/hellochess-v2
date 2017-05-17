@@ -70,7 +70,7 @@ class TwoBoard extends Component {
                 this.updatePosition(nextProps.fen);
             }
             let usColor = 'w';
-            if(this.props.game.black) {
+            if(nextProps.game.black) {
                 if(nextProps.game.black.playerId === nextProps.profile._id) {
                     this.board.orientation('black');
                     usColor = 'b';
