@@ -272,10 +272,6 @@ class TwoBoard extends Component {
     }
     
     boardRedraw() {
-        if (this.props.crazyhouse === true) {
-            $("#board").css("margin-left", "10%");
-            $("#board").css("margin-right", "100px");
-        }
         if (!this.atOldPosition) {
             this.board.resize();
             this.shadeLastMove();
@@ -475,9 +471,15 @@ class TwoBoard extends Component {
             && this.props.move.to == this.shadeSquareDest) {
                 this.shadeLastMove();
         }
-        return (
-            <div id="board"></div>
-        );
+        if (this.props.crazyhouse) {
+            return (
+                <div id="board" className="crazyhouse"></div>
+            );
+        } else {
+            return (
+                <div id="board"></div>
+            );
+        }
     }
 }
 

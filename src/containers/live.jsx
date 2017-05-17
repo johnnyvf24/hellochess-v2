@@ -289,14 +289,7 @@ class Live extends Component {
             return (
                 <div id="main-panel">
                     <Row>
-                        
-                        <Col xs={0} sm={1} md={2} lg={3}>
-                            <LinkContainer to={{pathname: '/leaderboard'}}>
-                                <Button>
-                                    Leaderboard
-                                </Button>
-                            </LinkContainer>
-                        </Col>
+                        <NewGame/>
                         {this.state.alertVisible && 
                         <Col xs={12} sm={10} md={8} lg={6}>
                             <Alert
@@ -323,7 +316,15 @@ class Live extends Component {
                         </Col> 
                         }
                         <div className="pull-right">
-                                <NewGame/>
+                            <div id="leaderboard-button-wrapper">
+                                <LinkContainer
+                                    id="leaderboard-button"
+                                    to={{pathname: '/leaderboard'}}>
+                                    <Button>
+                                        Leaderboard
+                                    </Button>
+                                </LinkContainer>
+                            </div>
                             <Dropdown id="dropdown-custom-menu">
                                 <CustomToggle bsRole="toggle">
                                     <img id="profile-pic" className="img-responsive img-circle" src={this.props.profile.picture} alt="" />

@@ -145,13 +145,11 @@ class GameButtons extends Component {
             return <div></div>
         }
         return (
-            <div className="row">
-                <div className="center">
-                    <div className="btn-group" role="group">
-                        {this.renderResignButton()}
-                        {this.renderDrawButton()}
-                        {this.renderAbortButton()}
-                    </div>
+            <div className="game-buttons-wrapper">
+                <div className="game-buttons btn-group" role="group">
+                    {this.renderResignButton()}
+                    {this.renderDrawButton()}
+                    {this.renderAbortButton()}
                 </div>
             </div>
         );

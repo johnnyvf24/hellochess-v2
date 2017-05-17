@@ -691,6 +691,12 @@ tr:hover {
 
 #board {
     max-width: 76vh;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#board.crazyhouse {
+    max-width: 63vh;
 }
 
 .outer-notation {
@@ -1026,5 +1032,20 @@ tr:hover {
 
 #new-game-button-wrapper {
     display: inline-block;
-    padding-right: 30px;
+    padding: 15px;
+}
+
+#leaderboard-button-wrapper {
+    padding-right: 25px;
+    display: inline-block;
+}
+
+.game-buttons-wrapper {
+    width: 100%;
+}
+
+.game-buttons {
+    display: table;
+    margin: 0 auto;
+    padding: 15px;
 }

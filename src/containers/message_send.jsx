@@ -50,7 +50,7 @@ class MessageSend extends Component {
                         className="form-control"
                         placeholder="Write a Message" />
                     <span className="input-group-btn">
-                        <Button bsStyle="warning"
+                        <Button bsStyle="default"
                             onClick={this.onMessageSend}>
                             Send
                         </Button>
