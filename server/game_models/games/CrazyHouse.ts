@@ -191,6 +191,11 @@ export default class CrazyHouse extends Game {
         
         let winner, loser, wOldelo, lOldElo;
         
+        let ratingType = "crazyhouse_ratings";
+        if (this.set_960) {
+            ratingType = "crazyhouse960_ratings";
+        }
+        
         if(!this.white || !this.black) {
             return;
         }
@@ -202,6 +207,15 @@ export default class CrazyHouse extends Game {
         } else {
             loser = this.black;
             winner = this.white;
+        }
+        
+        let winnerRatings, loserRatings;
+        if (this.set_960) {
+            winnerRatings = winner.crazyhouse960_ratings;
+            loserRatings = loser.crazyhouse960_ratings;
+        } else {
+            winnerRatings = winner.crazyhouse_ratings;
+            loserRatings = loser.crazyhouse_ratings;
         }
         
         let room = this.connection.getRoomByName(this.roomName);
@@ -220,14 +234,8 @@ export default class CrazyHouse extends Game {
             
             let winnerElo, loserElo;
             
-            if(this.set_960) {
-                winnerElo = winner.crazyhouse960_ratings[timeType];
-                loserElo = loser.crazyhouse_ratings[timeType];
-            } else {
-                winnerElo = winner.crazyhouse960_ratings[timeType];
-                loserElo = loser.crazyhouse_ratings[timeType];
-            }
-            
+            winnerElo = winnerRatings[timeType];
+            loserElo = loserRatings[timeType];
 
             let newWinnerElo = elo.ifWins(winnerElo, loserElo);
             let newLoserElo = elo.ifLoses(loserElo, winnerElo);
@@ -237,8 +245,8 @@ export default class CrazyHouse extends Game {
                 newLoserElo = elo.ifTies(loserElo, winnerElo);
             }
             
-            winner.crazyhouse_ratings[timeType] = newWinnerElo;
-            loser.crazyhouse_ratings[timeType] = newLoserElo;
+            winnerRatings[timeType] = newWinnerElo;
+            loserRatings[timeType] = newLoserElo;
             
             this.connection.updatePlayer(winner);
             this.connection.updatePlayer(loser);
@@ -250,7 +258,7 @@ export default class CrazyHouse extends Game {
                     //save winner
                     User.findById({_id: winner.playerId})
                     .then( function (user) {
-                        if(this.set_960) {
+                        if (this.set_960) {
                             user.crazyhouse960_ratings[timeType] = newWinnerElo;
                         } else {
                             user.crazyhouse_ratings[timeType] = newWinnerElo;
@@ -274,11 +282,10 @@ export default class CrazyHouse extends Game {
                     //save loser
                     User.findById({_id: loser.playerId})
                     .then( function (user) {
-                        if(this.set_960) {
+                        if (this.set_960) {
                             user.crazyhouse960_ratings[timeType] = newLoserElo;
                         } else {
                             user.crazyhouse_ratings[timeType] = newLoserElo;
-                            
                         }
                         
                         user.save( function(err, updatedUser) {
