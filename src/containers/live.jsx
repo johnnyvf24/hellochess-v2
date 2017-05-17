@@ -167,11 +167,6 @@ class Live extends Component {
                         </Col>
                         <div id="game-area">
                             <Col xs={12} sm={6} md={6} lg={5}>
-                                <Row id="start-game-btns">
-                                    <div className="text-center">
-                                        <NewGame/>
-                                    </div>
-                                </Row>
         
                                 <BoardWrapper />
                                 <GameButtons />
@@ -328,6 +323,7 @@ class Live extends Component {
                         </Col> 
                         }
                         <div className="pull-right">
+                                <NewGame/>
                             <Dropdown id="dropdown-custom-menu">
                                 <CustomToggle bsRole="toggle">
                                     <img id="profile-pic" className="img-responsive img-circle" src={this.props.profile.picture} alt="" />

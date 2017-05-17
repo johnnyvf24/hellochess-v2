@@ -53,7 +53,7 @@ class NewGame extends Component {
                 <Button onClick={this.close.bind(this)}>
                     Cancel
                 </Button>
-                <Button bsStyle="warning" onClick={this.submitRoom.bind(this)}>
+                <Button bsStyle="primary" onClick={this.submitRoom.bind(this)}>
                     Create Room
                 </Button>
             </div>
@@ -79,9 +79,9 @@ class NewGame extends Component {
 
     render() {
         return (
-            <div>
+            <div id="new-game-button-wrapper">
                 <Button
-                    bsStyle="warning"
+                    bsStyle="primary"
                     onClick={this.open.bind(this)}>
                     New Room
                 </Button>
