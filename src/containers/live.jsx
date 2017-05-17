@@ -183,7 +183,7 @@ class Live extends Component {
             else {
                 return (
                     <Row id="wrapper">
-                        <Col id="chatbox-wrapper" xs={0} sm={4} md={4} lg={5}>
+                        <Col xs={0} sm={4} md={4} lg={5} style={{"height":"100%"}}>
                             <RoomViewer />
                         </Col>
                         <Col xs={12} sm={8} md={8} lg={7}>
