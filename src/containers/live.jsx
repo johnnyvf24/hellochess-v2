@@ -162,19 +162,20 @@ class Live extends Component {
             if(this.props.activeThread != "200")
                 return (
                     <Row id="wrapper">
-                        <Col id="chatbox-wrapper" xs={0} sm={4} md={4} lg={5}>
-                            <RoomViewer />
+                        <Col className="chat-board-wrapper" xs={0} sm={10} md={10} lg={10}>
+                            <Row className="chat-board-wrapper">
+                                <Col id="chatbox-wrapper" xs={6} sm={6} md={6} lg={6}>
+                                    <RoomViewer />
+                                </Col>
+                                <Col id="board-column-wrapper" xs={6} sm={6} md={6} lg={6}>
+                                    <BoardWrapper />
+                                </Col>
+                            </Row>
                         </Col>
-                        <div id="game-area">
-                            <Col xs={12} sm={6} md={6} lg={5}>
-        
-                                <BoardWrapper />
-                                <GameButtons />
-                            </Col>
-                            <div id="time-ads-column" className="col-xs-12 col-sm-2 col-md-2 col-lg-2">
-                                <PlayerTimes />
-                            </div>
-                        </div>
+                        <Col id="time-ads-column" xs={12} sm={2} md={2} lg={2}>
+                            <PlayerTimes />
+                            <GameButtons />
+                        </Col>
                         <NotificationHandler />
                     </Row>
                 );

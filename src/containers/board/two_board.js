@@ -477,7 +477,7 @@ class TwoBoard extends Component {
             );
         } else {
             return (
-                <div id="board"></div>
+                <div id="board" className="standard"></div>
             );
         }
     }

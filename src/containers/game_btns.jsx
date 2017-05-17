@@ -100,7 +100,7 @@ class GameButtons extends Component {
                     type="button"
                     className="btn btn-secondary"
                     onClick={this.onDraw.bind(this)}>
-                    Send Draw Request
+                    Offer Draw
                 </button>
             );
         } else {
@@ -109,19 +109,23 @@ class GameButtons extends Component {
     }
     
     renderAbortButton() {
-        // only allow aborting the game before everyone
-        // has made a move
+        return (
+            <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={this.onAbort.bind(this)}>
+                Abort
+            </button>
+        );
+    }
+    
+    renderAbortResignButton() {
+        // render the abort button until the game can no longer
+        // be aborted, then render the resign button
         if (this.props.room.game.pgn.length < this.props.room.game.numPlayers) {
-            return (
-                <button
-                    type="button"
-                    className="btn btn-secondary"
-                    onClick={this.onAbort.bind(this)}>
-                    Abort
-                </button>
-            );
+            return this.renderAbortButton();
         } else {
-            return null;
+            return this.renderResignButton();
         }
     }
 
@@ -135,11 +139,16 @@ class GameButtons extends Component {
             return <div></div>
         }
         if (this.onlyAIs(room.game)) {
-            return (<div><button type="button"
-                    className="btn btn-secondary"
-                    onClick={this.killAIs.bind(this)}>
-                    Stop AI Game
-                </button></div>);
+            return (
+                <div className="game-buttons-wrapper">
+                    <div className="game-buttons btn-group" role="group">
+                        <button type="button"
+                            className="btn btn-secondary"
+                            onClick={this.killAIs.bind(this)}>
+                            Stop AI Game
+                        </button>
+                    </div>
+                </div>);
         }
         if (!this.userIsPlaying(profile, room)) {
             return <div></div>
@@ -147,9 +156,8 @@ class GameButtons extends Component {
         return (
             <div className="game-buttons-wrapper">
                 <div className="game-buttons btn-group" role="group">
-                    {this.renderResignButton()}
+                    {this.renderAbortResignButton()}
                     {this.renderDrawButton()}
-                    {this.renderAbortButton()}
                 </div>
             </div>
         );

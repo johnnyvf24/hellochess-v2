@@ -176,10 +176,6 @@ body .container-fluid {
     margin-top: 15px;
 }
 
-#chatbox-wrapper {
-    height: 100%;
-}
-
 #left-chatbox {
     height: 100%;
 }
@@ -690,13 +686,17 @@ tr:hover {
 }
 
 #board {
-    max-width: 76vh;
+    max-width: 88vh;
     margin-left: auto;
     margin-right: auto;
 }
 
 #board.crazyhouse {
-    max-width: 63vh;
+    max-width: 67vh;
+}
+
+#board.standard {
+    max-width: 82vh;
 }
 
 .outer-notation {
@@ -1048,4 +1048,18 @@ tr:hover {
     display: table;
     margin: 0 auto;
     padding: 15px;
+}
+
+.chat-board-wrapper {
+    height: 100%;
+}
+
+#chatbox-wrapper {
+    height: 100%;
+    width: 44%;
+}
+
+#board-column-wrapper {
+    height: 100%;
+    width: 56%;
 }
