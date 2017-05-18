@@ -64,6 +64,9 @@ class TwoBoard extends Component {
             // user clicked back or forward button on pgn
             this.loadPly(nextProps.activePly);
         }
+        if (this.props.zoomLevel !== nextProps.zoomLevel) {
+            this.boardRedraw();
+        }
         if(nextProps.fen) {
             if (this.props.fen != nextProps.fen) {
                 this.game.load(nextProps.fen);
@@ -500,7 +503,8 @@ function mapStateToProps(state) {
         name: name,
         fen: fen,
         pgn: pgn,
-        activePly: activePly
+        activePly: activePly,
+        zoomLevel: state.settings.zoomLevel
     }
 }
 

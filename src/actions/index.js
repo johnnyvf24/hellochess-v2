@@ -259,3 +259,12 @@ export function showError(error) {
         );
     }
 }
+
+export function changeZoom(zoomLevel) {
+    return (dispatch) =>{
+        return dispatch({
+            type: "change-zoom",
+            payload: zoomLevel
+        });
+    }
+}

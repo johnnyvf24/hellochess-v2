@@ -285,6 +285,17 @@ function recentGames(state = [], action) {
     }
 }
 
+function settings(state = {}, action) {
+    let newState = null;
+    switch (action.type) {
+        case 'change-zoom':
+            newState = Object.assign({}, state);
+            newState.zoomLevel = action.payload;
+            return newState;
+        default:
+            return state;
+    }
+}
 
 const rootReducer = combineReducers({
     connection,
@@ -297,7 +308,8 @@ const rootReducer = combineReducers({
     leaderboard,
     auth: AuthReducer,
     form: formReducer,
-    recentGames
+    recentGames,
+    settings
 });
 
 export default rootReducer;

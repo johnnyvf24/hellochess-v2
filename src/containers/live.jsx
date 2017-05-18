@@ -15,8 +15,9 @@ import NewGame from './new_game';
 import PlayerTimes from './player_card/player_times';
 import GameButtons from './game_btns';
 import NotificationHandler from './notification_handler';
-import { logout, saveUsername, clearError, userConnect} from '../actions';
+import { logout, saveUsername, clearError, userConnect, changeZoom} from '../actions';
 import {enableMic, disableMic } from '../actions/room';
+import Slider, { Range } from 'rc-slider';
 
 import {Grid, Row, Col, Button, Dropdown, MenuItem, Alert} from 'react-bootstrap';
 
@@ -64,7 +65,7 @@ class CustomMenu extends React.Component {
     const { value } = this.state;
 
     return (
-      <div className="dropdown-menu dropdown-menu-right" style={{ padding: '' }}>
+      <div className="dropdown-menu dropdown-menu-right" id="profile-menu">
          {React.Children.toArray(children).filter(child => (
             !value.trim() || child.props.children.indexOf(value) !== -1
             ))}
@@ -93,8 +94,15 @@ class Live extends Component {
         let showDevAlert = JSON.parse(localStorage.getItem('showDevAlert'));
         if (typeof showDevAlert === "undefined" || showDevAlert === null)
             showDevAlert = true;
+        let zoomLevel = JSON.parse(localStorage.getItem('zoomLevel'));
+        if (typeof zoomLevel === "undefined" || zoomLevel === null)
+            zoomLevel = 100;
         this.state.enableSounds = enableSounds;
         this.state.alertVisible = showDevAlert;
+        this.props.changeZoom(zoomLevel);
+        let widths = this.zoomLevelToWidths(zoomLevel);
+        this.state.boardZoom = widths.boardZoom;
+        this.state.chatZoom = widths.chatZoom;
         this.onInputChange = this.onInputChange.bind(this);
         this.saveUsername = this.saveUsername.bind(this);
         this.saveUsername = this.saveUsername.bind(this);
@@ -159,15 +167,23 @@ class Live extends Component {
         if(!this.props.profile.username) {
             return <div></div>
         } else {
-            if(this.props.activeThread != "200")
+            if(this.props.activeThread != "200") {
+                let chatWidth = this.state.chatZoom + '%';
+                let boardWidth = this.state.boardZoom + '%';
                 return (
                     <Row id="wrapper">
                         <Col className="chat-board-wrapper" xs={0} sm={10} md={10} lg={10}>
                             <Row className="chat-board-wrapper">
-                                <Col id="chatbox-wrapper" xs={6} sm={6} md={6} lg={6}>
+                                <Col
+                                    id="chatbox-wrapper"
+                                    xs={6} sm={6} md={6} lg={6}
+                                    style={{"width": chatWidth}}>
                                     <RoomViewer />
                                 </Col>
-                                <Col id="board-column-wrapper" xs={6} sm={6} md={6} lg={6}>
+                                <Col
+                                    id="board-column-wrapper"
+                                    xs={6} sm={6} md={6} lg={6}
+                                    style={{"width": boardWidth}}>
                                     <BoardWrapper />
                                 </Col>
                             </Row>
@@ -179,8 +195,7 @@ class Live extends Component {
                         <NotificationHandler />
                     </Row>
                 );
-                
-            else {
+            } else {
                 return (
                     <Row id="wrapper">
                         <Col xs={0} sm={4} md={4} lg={5} style={{"height":"100%"}}>
@@ -248,6 +263,56 @@ class Live extends Component {
         ); 
         }
     }
+    
+    zoomLevelToWidths(zoomLevel) {
+        const defaultChat = 44;
+        const defaultBoard = 56;
+        let boardZoom = defaultBoard * (zoomLevel / 100);
+        let chatZoom = 100 - boardZoom;
+        return {boardZoom, chatZoom};
+    }
+    
+    onChangeZoom(value) {
+        let {boardZoom, chatZoom} = this.zoomLevelToWidths(value);
+        this.props.changeZoom(value);
+        this.setState({
+            boardZoom,
+            chatZoom
+        });
+        localStorage.setItem("zoomLevel", value);
+    }
+    
+    renderProfileMenu() {
+        let enableSounds = this.state.enableSounds;
+        let soundMenuString = `Move sounds ${enableSounds ? '✔' : ''}`;
+        return (
+            <Dropdown id="dropdown-custom-menu">
+                <CustomToggle bsRole="toggle">
+                    <img
+                        id="profile-pic"
+                        className="img-responsive img-circle"
+                        src={this.props.profile.picture} alt="" />
+                </CustomToggle>
+                <CustomMenu bsRole="menu" id="profile-menu">
+                    <MenuItem onClick={this.onProfileClick.bind(this)} eventKey="1">Profile</MenuItem>
+                    <MenuItem onClick={this.toggleSounds.bind(this)} eventKey="2">
+                        {soundMenuString}
+                    </MenuItem>
+                    <MenuItem eventKey="3">
+                        <div id="zoom-text">Board zoom: {this.props.zoomLevel}%</div>
+                        <Slider
+                            value={this.props.zoomLevel}
+                            onChange={this.onChangeZoom.bind(this)}
+                            step={5}
+                            max={125}
+                            min={20} />
+                    </MenuItem>
+                    <MenuItem divider />
+                    <MenuItem onClick={this.logout.bind(this)} eventKey="4">Log out</MenuItem>
+                </CustomMenu>
+            </Dropdown>
+        );
+    }
 
     render() {
         if(this.props.connection.error) {
@@ -284,8 +349,6 @@ class Live extends Component {
         else {
         
             let {activeThread} = this.props;
-            let enableSounds = this.state.enableSounds;
-            let soundMenuString = `Move sounds ${enableSounds ? '✔' : ''}`;
 
             return (
                 <div id="main-panel">
@@ -327,19 +390,7 @@ class Live extends Component {
                                     </Button>
                                 </LinkContainer>
                             </div>
-                            <Dropdown id="dropdown-custom-menu">
-                                <CustomToggle bsRole="toggle">
-                                    <img id="profile-pic" className="img-responsive img-circle" src={this.props.profile.picture} alt="" />
-                                </CustomToggle>
-                                <CustomMenu bsRole="menu">
-                                    <MenuItem onClick={this.onProfileClick.bind(this)} eventKey="1">Profile</MenuItem>
-                                    <MenuItem onClick={this.toggleSounds.bind(this)} eventKey="2">
-                                        {soundMenuString}
-                                    </MenuItem>
-                                    <MenuItem divider />
-                                    <MenuItem onClick={this.logout.bind(this)} eventKey="3">Log out</MenuItem>
-                                </CustomMenu>
-                            </Dropdown>
+                            {this.renderProfileMenu()}
                         </div>
                         <div className="pull-right">
                         {this.renderMicrophoneStatus() }
@@ -366,6 +417,7 @@ function mapStateToProps(state) {
         openThread,
         activeThread: state.activeThread,
         enabledVoice,
+        zoomLevel: state.settings.zoomLevel
     }
 }
 
@@ -374,6 +426,6 @@ Live = ReactTimeout(Live);
 export default connect (mapStateToProps,
     {logout, saveUsername, clearError,
      userConnect, enableMic, disableMic,
-     enableMic, disableMic
+     enableMic, disableMic, changeZoom
     }
 ) (Live);

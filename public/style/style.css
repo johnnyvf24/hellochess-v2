@@ -690,17 +690,18 @@ tr:hover {
 }
 
 #board {
-    max-width: 88vh;
+    max-width: 95%;
     margin-left: auto;
     margin-right: auto;
+    padding-bottom: 10px;
 }
 
 #board.crazyhouse {
-    max-width: 67vh;
+    max-width: 73%;
 }
 
 #board.standard {
-    max-width: 82vh;
+    max-width: 92%;
 }
 
 .outer-notation {
@@ -1066,4 +1067,13 @@ tr:hover {
 #board-column-wrapper {
     height: 100%;
     width: 56%;
+}
+
+#profile-menu {
+    padding: 0px;
+    width: 200px;
+    right: 30px;
+}
+
+#zoom-text {
 }
