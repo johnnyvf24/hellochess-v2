@@ -289,33 +289,34 @@ class Live extends Component {
 
             return (
                 <div id="main-panel">
+                    {this.state.alertVisible && 
+                    <Alert
+                        bsStyle="success"
+                        onDismiss={this.handleAlertDismiss.bind(this)}
+                        style={{
+                            position: 'absolute',
+                            width: '600px',
+                            textAlign: 'center',
+                            zIndex: '999',
+                            paddingBottom: '10px',
+                            paddingTop: '10px',
+                            margin: '0 auto',
+                            left: '25%',
+                            right: '25%'
+                        }}>
+                        <i className="fa fa-wrench fa-lg" aria-hidden="true"></i>
+                        <strong> Please note this site is under active development!</strong>
+                        <p>
+                            What feature should we add to Hellochess next?
+                            &nbsp;
+                            <a href="https://strawpoll.com/54cd271" target="_blank">
+                                Vote here!
+                            </a>
+                        </p>
+                    </Alert>
+                    }
                     <Row>
                         <NewGame/>
-                        {this.state.alertVisible && 
-                        <Col xs={12} sm={10} md={8} lg={6}>
-                            <Alert
-                                bsStyle="success"
-                                onDismiss={this.handleAlertDismiss.bind(this)}
-                                style={{
-                                    position: 'absolute',
-                                    width: '100%',
-                                    textAlign: 'center',
-                                    zIndex: '999',
-                                    paddingBottom: '10px',
-                                    paddingTop: '10px'
-                                }}>
-                                <i className="fa fa-wrench fa-lg" aria-hidden="true"></i>
-                                <strong> Please note this site is under active development!</strong>
-                                <p>
-                                    What feature should we add to Hellochess next?
-                                    &nbsp;
-                                    <a href="https://strawpoll.com/54cd271" target="_blank">
-                                        Vote here!
-                                    </a>
-                                </p>
-                            </Alert>
-                        </Col> 
-                        }
                         <div className="pull-right">
                             <div id="leaderboard-button-wrapper">
                                 <LinkContainer

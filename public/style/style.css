@@ -370,6 +370,10 @@ body .container-fluid {
     border: 1px solid black;
 }
 
+.game-event {
+    overflow: auto;
+}
+
 .chatbox-message-list .float-xs-left{
     width: 55px;
     text-align: center;
