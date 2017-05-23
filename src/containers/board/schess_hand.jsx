@@ -12,14 +12,19 @@ class Piece extends Component {
         let id = "schess-" + this.props.type + '-' + this.props.color;
         if (this.props.interactive) {
             return (
-                <label>
+                <div className="schess-piece-wrapper">
                     <input
                         type="checkbox"
-                        className="schess-piece checkbox"
+                        className="schess-piece"
                         disabled={!this.props.enabled}
+                        name={id}
                         id={id} />
-                    {this.props.type}
-                </label>
+                    <label
+                        className="schess-piece-label"
+                        htmlFor={id}>
+                        {this.props.type}
+                    </label>
+                </div>
             );
         } else {
             return (
@@ -46,7 +51,9 @@ class SChessHand extends Component {
         } else {
             if (this.props.profile._id === this.props.game.white.playerId ||
                 this.props.profile._id === this.props.game.black.playerId) {
-                interactive = true;
+                if (this.props.game.gameStarted) {
+                    interactive = true;
+                }
             }
             hand = this.props.bottom_hand;
         }

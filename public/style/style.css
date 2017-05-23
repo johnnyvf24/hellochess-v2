@@ -1092,13 +1092,50 @@ tr:hover {
     padding: 15px;
 }
 
-#schess-hand label {
-    background-color: #ddd;
-    padding: 10px;
+.schess-piece-wrapper {
+    display: inline-block;
+    background-color: #777;
+    color: #ddd;
+    padding: 8px;
+    margin: 0px 10px;
+    border-radius: 10px;
 }
 
-/*.schess-piece {*/
-/*    display: table;*/
-/*    margin: 0 auto;*/
-/*    padding: 15px;*/
-/*}*/
+input[type=checkbox].schess-piece {
+    position:absolute;
+    z-index:-1000;
+    left:-1000px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    width: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+}
+
+input[type=checkbox].schess-piece + label.schess-piece-label {
+    padding-left: 45px;
+    height: 40px; 
+    display: inline-block;
+    line-height: 40px;
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    font-size: 40px;
+    vertical-align: middle;
+    cursor: pointer;
+
+}
+
+input[type=checkbox].schess-piece:checked + label.schess-piece-label {
+    background-position: 0 -40px;
+}
+label.schess-piece-label {
+    background-image:url(http://csscheckbox.com/checkboxes/u/csscheckbox_1795311a987e53018946f8d62574d70e.png);
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
