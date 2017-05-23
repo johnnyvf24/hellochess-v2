@@ -53,7 +53,9 @@ module.exports = function(io, socket, connection) {
         let p = new Player(
             socket, data._id, data.username, data.picture,
             data.social, data.email,
-            data.standard_ratings, data.fourplayer_ratings,
+            data.standard_ratings,
+            data.schess_ratings,
+            data.fourplayer_ratings,
             data.crazyhouse_ratings, data.crazyhouse960_ratings);
             
         //check to see if the player is already connected elsewhere

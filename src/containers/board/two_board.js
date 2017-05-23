@@ -1,12 +1,13 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 
-import Chess from 'chess.js'; //game rules
 import {Howl} from 'howler'; // sound library
 
 import {newMove} from '../../actions/room';
 import {DARK_SQUARE_HIGHLIGHT_COLOR, LIGHT_SQUARE_HIGHLIGHT_COLOR} from './board_wrapper.jsx'
 import {DARK_SQUARE_PREMOVE_COLOR, LIGHT_SQUARE_PREMOVE_COLOR} from './board_wrapper.jsx'
+
+import SChessHand from './schess_hand';
 
 class TwoBoard extends Component {
 
@@ -386,6 +387,28 @@ class TwoBoard extends Component {
         if (action.from === 'hand') {
             action.from = '@';
         }
+        if (this.props.gameType === "schess") {
+            let elephantId = "#schess-elephant-";
+            let hawkId = "#schess-hawk-";
+            if (this.props.profile._id === this.props.game.white.playerId) {
+                elephantId += "w";
+                hawkId += "w";
+            } else if (this.props.profile._id === this.props.game.black.playerId) {
+                elephantId += "b";
+                hawkId += "b";
+            }
+            let elephantCheckbox = $(elephantId);
+            let hawkCheckbox = $(hawkId);
+            if (elephantCheckbox.is(":checked")) {
+                action.s_piece = "e";
+                elephantCheckbox.prop("checked", false);
+            }
+            if (hawkCheckbox.is(":checked")) {
+                action.s_piece = "h";
+                hawkCheckbox.prop("checked", false);
+            }
+        }
+        console.log("making move:", action);
         return this.game.move(action);
     }
     
@@ -420,9 +443,12 @@ class TwoBoard extends Component {
         let move = this.makeMove(action);
 
         // illegal move
-        if (move === null) return 'snapback';
+        if (move === null) {
+            console.log("move is null");
+            return 'snapback';
+        }
         this.game.undo();
-
+        console.log("making move:", action);
         this.props.newMove(action, this.props.name, Date.now());
         this.shadeSquareSource = source;
         this.shadeSquareDest = target;
@@ -474,6 +500,15 @@ class TwoBoard extends Component {
             && this.props.move.to == this.shadeSquareDest) {
                 this.shadeLastMove();
         }
+        if (this.props.gameType === "schess") {
+            return (
+                <div>
+                    <SChessHand location="top" />
+                    <div id="board" className="schess"></div>
+                    <SChessHand location="bottom" />
+                </div>
+            );
+        }
         if (this.props.crazyhouse) {
             return (
                 <div id="board" className="crazyhouse"></div>
@@ -503,6 +538,7 @@ function mapStateToProps(state) {
         name: name,
         fen: fen,
         pgn: pgn,
+        gameType: game.gameType,
         activePly: activePly,
         zoomLevel: state.settings.zoomLevel
     }

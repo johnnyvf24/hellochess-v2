@@ -704,6 +704,10 @@ tr:hover {
     max-width: 92%;
 }
 
+#board.schess {
+    max-width: 85%;
+}
+
 .outer-notation {
     color: #AAAAAA;
 }
@@ -1077,3 +1081,24 @@ tr:hover {
 
 #zoom-text {
 }
+
+#schess-hand-wrapper {
+    width: 100%;
+}
+
+#schess-hand {
+    display: table;
+    margin: 0 auto;
+    padding: 15px;
+}
+
+#schess-hand label {
+    background-color: #ddd;
+    padding: 10px;
+}
+
+/*.schess-piece {*/
+/*    display: table;*/
+/*    margin: 0 auto;*/
+/*    padding: 15px;*/
+/*}*/

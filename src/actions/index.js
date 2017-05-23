@@ -13,7 +13,7 @@ import {generateTokenHeader} from '../utils/index';
 import Notifications from 'react-notification-system-redux';
 
 let initGameOptions = {
-    gameType: 'four-player',
+    gameType: 'schess',
     room: {
         private: false,
         voiceChat: false,

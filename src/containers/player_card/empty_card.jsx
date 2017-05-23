@@ -36,6 +36,9 @@ class EmptyCard extends Component {
             case "two-player":
                 ratings = "standard_ratings";
                 break;
+            case 'schess':
+                ratings = "schess_ratings";
+                break;
             case "four-player":
                 ratings = "fourplayer_ratings";
                 break;

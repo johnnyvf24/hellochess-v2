@@ -286,14 +286,14 @@ class Live extends Component {
         let enableSounds = this.state.enableSounds;
         let soundMenuString = `Move sounds ${enableSounds ? '✔' : ''}`;
         return (
-            <Dropdown id="dropdown-custom-menu">
-                <CustomToggle bsRole="toggle">
+            <Dropdown id="dropdown-custom-menu" pullRight={true} rootCloseEvent="mousedown">
+                <CustomToggle bsRole="toggle" id="profile-toggle" rootCloseEvent="mousedown">
                     <img
                         id="profile-pic"
                         className="img-responsive img-circle"
                         src={this.props.profile.picture} alt="" />
                 </CustomToggle>
-                <CustomMenu bsRole="menu" id="profile-menu">
+                <CustomMenu bsRole="menu" id="profile-menu" rootCloseEvent="click">
                     <MenuItem onClick={this.onProfileClick.bind(this)} eventKey="1">Profile</MenuItem>
                     <MenuItem onClick={this.toggleSounds.bind(this)} eventKey="2">
                         {soundMenuString}

@@ -60,6 +60,24 @@ var UserSchema = new Schema({
             default: 1200
         }
     },
+    schess_ratings: {
+        bullet: {
+            type: Number,
+            default: 1200
+        },
+        blitz: {
+            type: Number,
+            default: 1200
+        },
+        rapid: {
+            type: Number,
+            default: 1200
+        },
+        classic: {
+            type: Number,
+            default: 1200
+        }
+    },
     fourplayer_ratings: {
         bullet: {
             type: Number,
@@ -145,6 +163,7 @@ UserSchema.methods.toJSON = function() {
         'username',
         'social',
         'standard_ratings',
+        'schess_ratings',
         'fourplayer_ratings',
         'crazyhouse_ratings',
         'crazyhouse960_ratings'

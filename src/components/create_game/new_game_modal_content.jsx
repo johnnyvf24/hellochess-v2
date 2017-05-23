@@ -22,6 +22,7 @@ import {
 const gameTypeOptions = [
     { value: 'standard', label: 'Standard'},
     { value: 'four-player', label: 'Four Player'},
+    { value: 'schess', label: 'S-Chess'},
     { value: 'crazyhouse', label: 'Crazyhouse'},
     { value: 'crazyhouse960', label: 'Crazyhouse 960'},
     // { value: 'four-player-team', label: 'Four Player Teams'}

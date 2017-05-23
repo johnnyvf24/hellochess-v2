@@ -5,6 +5,7 @@ import FourBoard from './four_board';
 
 import Chess from 'chess.js';
 import Crazyhouse from 'crazyhouse.js';
+import SChess from 'schess.js';
 
 export const DARK_SQUARE_HIGHLIGHT_COLOR = '#d2dd9b';
 export const LIGHT_SQUARE_HIGHLIGHT_COLOR = '#f2ffb2';
@@ -37,6 +38,21 @@ class BoardWrapper extends Component {
             case 'standard':
                 newGameObject = function() {
                     return new Chess();
+                };
+                setBoardPosition = function(fen) {
+                    this.board.position(fen, false);
+                };
+                return (
+                    <div id="board-wrapper">
+                        <TwoBoard
+                            setBoardPosition={setBoardPosition}
+                            newGameObject={newGameObject}
+                            key={roomName}/>
+                    </div>
+                );
+            case 'schess':
+                newGameObject = function() {
+                    return new SChess();
                 };
                 setBoardPosition = function(fen) {
                     this.board.position(fen, false);

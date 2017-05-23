@@ -48,6 +48,9 @@ export function showElo(game, time, player) {
         case 'standard':
             ratings = "standard_ratings";
             break;
+        case 'schess':
+            ratings = "schess_ratings";
+            break;
         case 'crazyhouse':
             ratings = "crazyhouse_ratings";
             break;
@@ -60,6 +63,7 @@ export function showElo(game, time, player) {
     }
     switch(game.gameType) {
         case 'standard':
+        case 'schess':
         case 'crazyhouse':
         case 'crazyhouse960':
             if( totalTimeMs <= twoMins) {

@@ -4,6 +4,7 @@ import Room from '../game_models/rooms/Room';
 import FourGame from '../game_models/games/FourGame';
 import Standard from '../game_models/games/Standard';
 import CrazyHouse from '../game_models/games/CrazyHouse';
+import SChess from '../game_models/games/SChess';
 
 export default class Connection {
     private players: Player[];
@@ -32,6 +33,9 @@ export default class Connection {
         switch(gameType) {
             case 'standard':
                 room = new Room(this.io, new Standard(this.io, roomName, time, this));
+                break;
+            case 'schess':
+                room= new Room(this.io, new SChess(this.io, roomName, time, this));
                 break;
             case 'four-player':
                 room = new Room(this.io, new FourGame(this.io, roomName, time, this));

@@ -13,12 +13,14 @@ export default class Player {
         private _social: boolean,
         private _email: string,
         private _standard_ratings: Ratings,
+        private _schess_ratings: Ratings,
         private _fourplayer_ratings: Ratings,
         private _crazyhouse_ratings: Ratings,
         private _crazyhouse960_ratings: Ratings) {
     }
     
     get standard_ratings(): Ratings { return this._standard_ratings; }
+    get schess_ratings(): Ratings { return this._schess_ratings; }
     get fourplayer_ratings(): Ratings { return this._fourplayer_ratings; }
     get crazyhouse_ratings(): Ratings { return this._crazyhouse_ratings; }
     get crazyhouse960_ratings(): Ratings { return this._crazyhouse960_ratings; }
@@ -26,6 +28,7 @@ export default class Player {
     get playerLevel(): number { return this._playerLevel; }
     
     set standard_ratings(ratings: Ratings) { this._standard_ratings = ratings; }
+    set schess_ratings(ratings: Ratings) { this._schess_ratings = ratings; }
     set fourplayer_ratings(ratings: Ratings) { this._fourplayer_ratings = ratings; }
     set crazyhouse_ratings(ratings: Ratings) { this._crazyhouse_ratings = ratings; }
     set crazyhouse960_ratings(ratings: Ratings) { this._crazyhouse960_ratings = ratings; }
@@ -38,6 +41,7 @@ export default class Player {
             playerId: this._playerId,
             picture: this._picture,
             standard_ratings: this._standard_ratings,
+            schess_ratings: this._schess_ratings,
             fourplayer_ratings: this._fourplayer_ratings,
             crazyhouse_ratings: this._crazyhouse_ratings,
             crazyhouse960_ratings: this._crazyhouse960_ratings,
