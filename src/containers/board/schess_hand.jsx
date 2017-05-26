@@ -9,13 +9,14 @@ class Piece extends Component {
     }
     
     render() {
-        let id = "schess-" + this.props.type + '-' + this.props.color;
+        let id = "schess-" + this.props.type + '-' + this.props.location;
+        let gone = this.props.enabled ? "" : " gone";
         if (this.props.interactive) {
             return (
                 <div className="schess-piece-wrapper">
                     <input
                         type="checkbox"
-                        className="schess-piece"
+                        className={"schess-piece" + gone}
                         disabled={!this.props.enabled}
                         name={id}
                         id={id} />
@@ -28,12 +29,50 @@ class Piece extends Component {
             );
         } else {
             return (
-                <label
-                    className="schess-piece"
-                    >
-                    {this.props.type}
-                </label>
+                <div className="schess-piece-wrapper">
+                    <input
+                        type="checkbox"
+                        className={"schess-piece" + gone}
+                        disabled={true}
+                        name={id}
+                        id={id} />
+                    <label
+                        className="schess-piece-label"
+                        htmlFor={id}>
+                        {this.props.type}
+                    </label>
+                </div>
             );
+        }
+    }
+}
+
+class RookToggle extends Component {
+    constructor() {
+        super();
+        this.rook_img_src = "./img/chesspieces/wikipedia/wR.png";
+    }
+    
+    render() {
+        if (this.props.location === "bottom" && this.props.interactive) {
+            return (
+                <div className="schess-rook-toggle pull-right">
+                    <input
+                        type="checkbox"
+                        className="schess-rook-toggle"
+                        disabled={!this.props.enabled}
+                        id="schess-rook-toggle" />
+                    <label
+                        className="schess-rook-toggle-label"
+                        htmlFor="schess-rook-toggle"
+                        title="Place the elephant/hawk on the rook's square when castling.">
+                        <img
+                            src={this.rook_img_src} />
+                    </label>
+                </div>
+            );
+        } else {
+            return null;
         }
     }
 }
@@ -41,6 +80,15 @@ class Piece extends Component {
 class SChessHand extends Component {
     constructor() {
         super();
+    }
+    
+    componentDidMount() {
+        $(".schess-piece-wrapper input[type=checkbox]").click(function() {
+            let checkedState = $(this).prop("checked");
+            $(".schess-piece-wrapper input[type=checkbox]")
+                .prop("checked", false);
+            $(this).prop("checked", checkedState);
+        })
     }
     
     render() {
@@ -67,15 +115,19 @@ class SChessHand extends Component {
                 <div id="schess-hand">
                     <Piece
                         type="elephant"
-                        color={this.props.color}
+                        location={this.props.location}
                         interactive={interactive}
                         enabled={elephantEnabled} />
                     <Piece
                         type="hawk"
-                        color={this.props.color}
+                        location={this.props.location}
                         interactive={interactive}
                         enabled={hawkEnabled} />
                 </div>
+                <RookToggle
+                    location={this.props.location}
+                    interactive={interactive}
+                    enabled={elephantEnabled || hawkEnabled}/>
             </div>
         );
     }
@@ -88,7 +140,6 @@ function mapStateToProps(state) {
     let game = room.game;
     let fen = game.fen;
     let top_hand = null, bottom_hand = null;
-    let color = 'w';
     let hand = new SChess(fen).get_hand();
     if (hand) {
         top_hand = hand.b;
@@ -96,12 +147,10 @@ function mapStateToProps(state) {
         if (profile._id === game.black.playerId) {
             top_hand = hand.w;
             bottom_hand = hand.b;
-            color = 'b';
         }
     }
     return {
         profile,
-        color,
         game,
         top_hand,
         bottom_hand

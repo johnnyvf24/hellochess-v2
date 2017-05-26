@@ -693,7 +693,6 @@ tr:hover {
     max-width: 95%;
     margin-left: auto;
     margin-right: auto;
-    padding-bottom: 10px;
 }
 
 #board.crazyhouse {
@@ -1063,6 +1062,10 @@ tr:hover {
     height: 100%;
 }
 
+#board-wrapper {
+    margin-bottom: 10px;
+}
+
 #chatbox-wrapper {
     height: 100%;
     width: 44%;
@@ -1089,16 +1092,11 @@ tr:hover {
 #schess-hand {
     display: table;
     margin: 0 auto;
-    padding: 15px;
+    padding: 5px;
 }
 
 .schess-piece-wrapper {
     display: inline-block;
-    background-color: #777;
-    color: #ddd;
-    padding: 8px;
-    margin: 0px 10px;
-    border-radius: 10px;
 }
 
 input[type=checkbox].schess-piece {
@@ -1115,27 +1113,94 @@ input[type=checkbox].schess-piece {
 }
 
 input[type=checkbox].schess-piece + label.schess-piece-label {
-    padding-left: 45px;
-    height: 40px; 
+    line-height: 16px;
+    font-size: 16px;
     display: inline-block;
-    line-height: 40px;
-    background-repeat: no-repeat;
-    background-position: 0 0;
-    font-size: 40px;
     vertical-align: middle;
-    cursor: pointer;
+    padding: 4px 18px;
+    margin: 0px 10px;
+    border-radius: 10px;
+    background-color: #777;
+    color: #ddd;
+    box-shadow: 4px 3px 0px 0px black;
+}
 
+input[type=checkbox].schess-piece:hover:not([disabled]) + label.schess-piece-label {
+    cursor: pointer;
+    color: #fff;
+}
+
+input[type=checkbox].schess-piece.gone + label.schess-piece-label {
+    color: #aaa;
 }
 
 input[type=checkbox].schess-piece:checked + label.schess-piece-label {
-    background-position: 0 -40px;
+    color: #fff;
+    box-shadow: inset 2px 2px 2px 1px black;
 }
 label.schess-piece-label {
-    background-image:url(http://csscheckbox.com/checkboxes/u/csscheckbox_1795311a987e53018946f8d62574d70e.png);
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+}
+
+input[type=checkbox].schess-rook-toggle {
+    position:absolute;
+    z-index:-1000;
+    left:-1000px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    width: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+}
+
+input[type=checkbox].schess-rook-toggle + label.schess-rook-toggle-label {
+    display: inline-block;
+    vertical-align: middle;
+    padding: 2px 8px;
+    margin: 0px 10px;
+    border-radius: 10px;
+    background-color: #777;
+    color: #ddd;
+    box-shadow: 4px 3px 0px 0px black;
+}
+
+input[type=checkbox].schess-rook-toggle:hover:not([disabled]) + label.schess-rook-toggle-label {
+    cursor: pointer;
+    color: #fff;
+}
+
+input[type=checkbox].schess-rook-toggle[disabled] + label.schess-rook-toggle-label {
+    color: #aaa;
+}
+
+input[type=checkbox].schess-rook-toggle:checked + label.schess-rook-toggle-label {
+    color: #fff;
+    box-shadow: inset 2px 2px 2px 1px black;
+}
+label.schess-rook-toggle-label {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.schess-rook-toggle-label img {
+    height: 18px;
+    width: 18px;
+}
+
+div.schess-rook-toggle {
+    display: inline-block;
+    position: relative;
+    top: -28px;
+    right: 66px;
 }

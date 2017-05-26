@@ -370,7 +370,7 @@ class TwoBoard extends Component {
         if (move === null) {
             this.game.undo();
         } else {
-            this.props.newMove(action, this.props.name, Date.now());
+            this.props.newMove(move, this.props.name, Date.now());
         }
     }
     
@@ -384,32 +384,65 @@ class TwoBoard extends Component {
     }
     
     makeMove(action) {
-        if (action.from === 'hand') {
-            action.from = '@';
+        function isCastlingMove(a) {
+            return (
+                a.piece === "k" &&
+                (["e1", "e8"].includes(a.from)) &&
+                (["g1", "g8", "c1", "c8"].includes(a.to))
+            );
+        }
+        function castlingRookSquare(a) {
+            switch(a.to) {
+                case 'g1':
+                    return 'h1';
+                case 'g8':
+                    return 'h8';
+                case 'c1':
+                    return 'a1';
+                case 'c8':
+                    return 'a8';
+            }
+        }
+        let newAction = {...action};
+        if (newAction.from === 'hand') {
+            newAction.from = '@';
         }
         if (this.props.gameType === "schess") {
-            let elephantId = "#schess-elephant-";
-            let hawkId = "#schess-hawk-";
-            if (this.props.profile._id === this.props.game.white.playerId) {
-                elephantId += "w";
-                hawkId += "w";
-            } else if (this.props.profile._id === this.props.game.black.playerId) {
-                elephantId += "b";
-                hawkId += "b";
-            }
+            let elephantId = "#schess-elephant-bottom";
+            let hawkId = "#schess-hawk-bottom";
             let elephantCheckbox = $(elephantId);
             let hawkCheckbox = $(hawkId);
             if (elephantCheckbox.is(":checked")) {
-                action.s_piece = "e";
+                newAction.s_piece = "e";
                 elephantCheckbox.prop("checked", false);
             }
             if (hawkCheckbox.is(":checked")) {
-                action.s_piece = "h";
+                newAction.s_piece = "h";
                 hawkCheckbox.prop("checked", false);
             }
+            // if castling, if the rook-toggle button is selected,
+            // place e/h on rook's square, else place it on
+            // the king's square (e1/e8)
+            if (isCastlingMove(newAction)) {
+                let rookToggle = $("#schess-rook-toggle");
+                if(rookToggle.is(":checked")) {
+                    newAction.s_square = castlingRookSquare(newAction);
+                } else {
+                    newAction.s_square = newAction.from;
+                }
+                rookToggle.prop("checked", false);
+            }
         }
-        console.log("making move:", action);
-        return this.game.move(action);
+        let move = this.game.move(newAction);
+        // for schess, perform the move without
+        // the e/h if it was illegal with e/h
+        if (this.props.gameType === "schess" && move === null) {
+            this.game.undo();
+            delete newAction.s_square;
+            delete newAction.s_piece;
+            move = this.game.move(newAction);
+        }
+        return move;
     }
     
     onSnapbackEnd(piece, square, position, orientation) {
@@ -444,12 +477,10 @@ class TwoBoard extends Component {
 
         // illegal move
         if (move === null) {
-            console.log("move is null");
             return 'snapback';
         }
         this.game.undo();
-        console.log("making move:", action);
-        this.props.newMove(action, this.props.name, Date.now());
+        this.props.newMove(move, this.props.name, Date.now());
         this.shadeSquareSource = source;
         this.shadeSquareDest = target;
         this.shadeLastMove();
