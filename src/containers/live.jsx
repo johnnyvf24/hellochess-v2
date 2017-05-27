@@ -368,7 +368,7 @@ class Live extends Component {
                             right: '25%'
                         }}>
                         <i className="fa fa-wrench fa-lg" aria-hidden="true"></i>
-                        <strong> Please note this site is under active development!</strong>
+                        <strong> Please note this site is under active development.</strong>
                         <p>
                             Check out our new variant: <b>S-Chess</b>! 
                             Learn the rules&nbsp;
