@@ -4,9 +4,12 @@ import {connect} from 'react-redux';
 import {Howl} from 'howler'; // sound library
 
 import {newMove} from '../../actions/room';
+import {openPromotionSelector} from '../../actions/room';
+import {closePromotionSelector} from '../../actions/room';
 import {DARK_SQUARE_HIGHLIGHT_COLOR, LIGHT_SQUARE_HIGHLIGHT_COLOR} from './board_wrapper.jsx'
 import {DARK_SQUARE_PREMOVE_COLOR, LIGHT_SQUARE_PREMOVE_COLOR} from './board_wrapper.jsx'
 
+import PromotionSelector from './promotion_selector';
 import SChessHand from './schess_hand';
 
 class TwoBoard extends Component {
@@ -386,9 +389,9 @@ class TwoBoard extends Component {
     makeMove(action) {
         function isCastlingMove(a) {
             return (
-                a.piece === "k" &&
-                (["e1", "e8"].includes(a.from)) &&
-                (["g1", "g8", "c1", "c8"].includes(a.to))
+                a.piece === 'k' &&
+                (['e1', 'e8'].includes(a.from)) &&
+                (['g1', 'g8', 'c1', 'c8'].includes(a.to))
             );
         }
         function castlingRookSquare(a) {
@@ -402,6 +405,18 @@ class TwoBoard extends Component {
                 case 'c8':
                     return 'a8';
             }
+        }
+        function isPawnPromotion(a) {
+            let re = /[a-n]+(\d+)/ig;
+            let to_rank = re.exec(a.to)[1];
+            return (
+                a.piece === 'p' &&
+                (to_rank === '1' || to_rank === '8')
+            );
+        }
+        if (isPawnPromotion(action)) {
+            this.makePromotionMove(action);
+            return null;
         }
         let newAction = {...action};
         if (newAction.from === 'hand') {
@@ -443,6 +458,28 @@ class TwoBoard extends Component {
             move = this.game.move(newAction);
         }
         return move;
+    }
+    
+    async makePromotionMove(action) {
+        let piece = await this.promotionPrompt();
+        action.promotion = piece;
+        let move = this.game.move(action);
+        if (move !== null) {
+            this.props.newMove(move, this.props.name, Date.now());
+            this.shadeSquareSource = action.from;
+            this.shadeSquareDest = action.to;
+            this.shadeLastMove();
+        }
+    }
+    
+    async promotionPrompt() {
+        return new Promise(resolve => {
+            this.props.openPromotionSelector(this.props.name, resolve);
+        });
+    }
+    
+    onPromotionClose() {
+        this.props.closePromotionSelector(this.props.name);
     }
     
     onSnapbackEnd(piece, square, position, orientation) {
@@ -536,17 +573,27 @@ class TwoBoard extends Component {
                 <div>
                     <SChessHand location="top" />
                     <div id="board" className="schess"></div>
+                    <PromotionSelector
+                        onPromotionClose={this.onPromotionClose.bind(this)}/>
                     <SChessHand location="bottom" />
                 </div>
             );
         }
         if (this.props.crazyhouse) {
             return (
-                <div id="board" className="crazyhouse"></div>
+                <div>
+                    <div id="board" className="crazyhouse"></div>
+                    <PromotionSelector
+                        onPromotionClose={this.onPromotionClose.bind(this)}/>
+                </div>
             );
         } else {
             return (
-                <div id="board" className="standard"></div>
+                <div>
+                    <div id="board" className="standard"></div>
+                    <PromotionSelector
+                        onPromotionClose={this.onPromotionClose.bind(this)}/>
+                </div>
             );
         }
     }
@@ -575,4 +622,7 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps, {newMove}) (TwoBoard)
+export default connect(
+    mapStateToProps,
+    {newMove, openPromotionSelector, closePromotionSelector}
+) (TwoBoard)

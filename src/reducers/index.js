@@ -64,6 +64,8 @@ function openThreads(state = {}, action) {
             if (state[action.payload.room.name]) {
                 activePly = state[action.payload.room.name].activePly;
                 let enabledVoice = state[action.payload.room.name].enabledVoice;
+                let promotionVisible = state[action.payload.room.name].promotionVisible;
+                let promotionCallback = state[action.payload.room.name].promotionCallback;
                 if (typeof activePly !== "undefined") {
                     if (activePly === action.payload.game.pgn.length - 1) {
                         newState[action.payload.room.name].activePly = action.payload.game.pgn.length;
@@ -74,6 +76,8 @@ function openThreads(state = {}, action) {
                     newState[action.payload.room.name].activePly = action.payload.game.pgn.length;
                 }
                 newState[action.payload.room.name].enabledVoice = enabledVoice;
+                newState[action.payload.room.name].promotionVisible = promotionVisible;
+                newState[action.payload.room.name].promotionCallback = promotionCallback;;
             } else {
                 newState[action.payload.room.name].activePly = action.payload.game.pgn.length;
             }
@@ -246,6 +250,15 @@ function openThreads(state = {}, action) {
         case 'change-active-ply':
             newState = Object.assign({}, state);
             newState[action.payload.roomName].activePly = action.payload.activePly;
+            return newState;
+        case 'open-promotion-selector':
+            newState = Object.assign({}, state);
+            newState[action.payload.roomName].promotionVisible = true;
+            newState[action.payload.roomName].promotionCallback = action.payload.callback;
+            return newState;
+        case 'close-promotion-selector':
+            newState = Object.assign({}, state);
+            newState[action.payload.roomName].promotionVisible = false;
             return newState;
         default:
             return state;

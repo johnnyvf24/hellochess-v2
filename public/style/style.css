@@ -1064,6 +1064,7 @@ tr:hover {
 
 #board-wrapper {
     margin-bottom: 10px;
+    position: relative;
 }
 
 #chatbox-wrapper {
@@ -1203,4 +1204,48 @@ div.schess-rook-toggle {
     position: relative;
     top: -28px;
     right: 66px;
+}
+
+#promotion-selector {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0px;
+    background-color: rgba(50, 50, 50, 0.7);
+    border-radius: 20px;
+}
+
+#promotion-selector.hidden {
+    display: none;
+}
+
+#promotion-pieces-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.promotion-button {
+    background-color: rgba(180, 180, 180, 0.7);
+    transition: 0.2s;
+    border-radius: 25px;
+    margin: 0 5px;
+    border: 2px solid white;
+}
+
+.promotion-button img {
+    width: 100%;
+    height: 100%;
+    transition: 0.2s;
+    transform: scale(0.8);
+}
+
+.promotion-button:focus {
+    outline: 0;
+}
+
+.promotion-button:hover img {
+    transform: scale(1.0);
 }

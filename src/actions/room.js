@@ -130,3 +130,22 @@ export function changeActivePly(roomName, activePly) {
         }
     }
 }
+
+export function openPromotionSelector(roomName, callback) {
+    return {
+        type: 'open-promotion-selector',
+        payload: {
+            roomName,
+            callback
+        }
+    };
+}
+
+export function closePromotionSelector(roomName) {
+    return {
+        type: 'close-promotion-selector',
+        payload: {
+            roomName
+        }
+    };
+}
