@@ -93,9 +93,18 @@ class SChessHand extends Component {
     
     render() {
         let interactive = false;
-        let hand;
+        let top_hand = null, bottom_hand = null;
+        let hand = new SChess(this.props.fen).get_hand();
+        if (hand) {
+            top_hand = hand.b;
+            bottom_hand = hand.w;
+            if (this.props.profile._id === this.props.game.black.playerId) {
+                top_hand = hand.w;
+                bottom_hand = hand.b;
+            }
+        }
         if (this.props.location === "top") {
-            hand = this.props.top_hand;
+            hand = top_hand;
         } else {
             if (this.props.profile._id === this.props.game.white.playerId ||
                 this.props.profile._id === this.props.game.black.playerId) {
@@ -103,7 +112,7 @@ class SChessHand extends Component {
                     interactive = true;
                 }
             }
-            hand = this.props.bottom_hand;
+            hand = bottom_hand;
         }
         let elephantEnabled = false, hawkEnabled = false;
         if (hand) {
@@ -139,21 +148,10 @@ function mapStateToProps(state) {
     let room = state.openThreads[name];
     let game = room.game;
     let fen = game.fen;
-    let top_hand = null, bottom_hand = null;
-    let hand = new SChess(fen).get_hand();
-    if (hand) {
-        top_hand = hand.b;
-        bottom_hand = hand.w;
-        if (profile._id === game.black.playerId) {
-            top_hand = hand.w;
-            bottom_hand = hand.b;
-        }
-    }
     return {
         profile,
         game,
-        top_hand,
-        bottom_hand
+        fen
     }
 }
 
