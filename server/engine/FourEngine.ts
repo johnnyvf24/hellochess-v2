@@ -7,7 +7,7 @@ const {ab2str} = require('../utils/utils');
 
 export default class FourEngine extends Engine {
     constructor(roomName: string, connection: Connection) {
-        super('fourengine', roomName, connection);
+        super('fourengine', roomName, connection, false);
         this.setDepth(6);
         this.turn = 'w';
     }

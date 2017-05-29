@@ -6,7 +6,7 @@ const {ab2str} = require('../utils/utils');
 
 export default class CrazyEngine extends Engine {
     constructor(roomName, increment, connection : Connection, private set_960: boolean) {
-        super('stockfish_variant', roomName, connection);
+        super('stockfish_variant', roomName, connection, false);
         this.setDepth(15);
         this.increment = increment * 1000; // s -> ms
     }

@@ -7,7 +7,7 @@ import Game from '../game_models/games/Game';
 
 export default class TwoEngine extends Engine {
     constructor(roomName, increment, connection) {
-        super('stockfish_8_x64', roomName, connection);
+        super('stockfish_8_x64', roomName, connection, false);
         this.setDepth(15);
         this.increment = increment * 1000; // s -> ms
     }
