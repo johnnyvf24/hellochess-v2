@@ -274,6 +274,54 @@ class Leaderboard extends Component {
                                                 </Col>
                                             </div>
                                         </Tab>
+                                        <Tab eventKey={5} title="S-Chess (Seirawan Chess)">
+                                            <div className="row leaderboard-box">
+                                                <Col xs={12} sm={6} md={3}>
+                                                    <Panel bsStyle="info" header="Bullet (0 - 2 mins]">
+                                                        <ListGroup>
+                                                            {mapObject(
+                                                                leaderboard.schessBullet, function (index, user) {
+                                                                    return this.renderLeaderBoardList(index, user, 'schess_ratings', 'bullet');
+                                                                }.bind(this)
+                                                            )}
+                                                        </ListGroup>
+                                                    </Panel>
+                                                </Col>
+                                                <Col xs={12} sm={6} md={3}>
+                                                    <Panel bsStyle="info" header="Blitz (2 - 8 mins]">
+                                                        <ListGroup>
+                                                            {mapObject(
+                                                                leaderboard.schessBlitz, function (index, user) {
+                                                                    return this.renderLeaderBoardList(index, user, 'schess_ratings', 'blitz');
+                                                                }.bind(this)
+                                                            )}
+                                                        </ListGroup>
+                                                    </Panel>
+                                                </Col>
+                                                <Col xs={12} sm={6} md={3}>
+                                                    <Panel bsStyle="info" header="Rapid (2 - 15 mins]">
+                                                        <ListGroup>
+                                                            {mapObject(
+                                                                leaderboard.schessRapid, function (index, user) {
+                                                                    return this.renderLeaderBoardList(index, user, 'schess_ratings', 'rapid');
+                                                                }.bind(this)
+                                                            )}
+                                                        </ListGroup>
+                                                    </Panel>
+                                                </Col>
+                                                <Col xs={12} sm={6} md={3}>
+                                                    <Panel bsStyle="info" header="Classical (15 mins +]">
+                                                        <ListGroup>
+                                                            {mapObject(
+                                                                leaderboard.schessClassical, function (index, user) {
+                                                                    return this.renderLeaderBoardList(index, user, 'schess_ratings', 'classic');
+                                                                }.bind(this)
+                                                            )}
+                                                        </ListGroup>
+                                                    </Panel>
+                                                </Col>
+                                            </div>
+                                        </Tab>
                                     </Tabs>
                                 </Panel>
                             </Col>

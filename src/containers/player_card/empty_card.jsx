@@ -92,10 +92,12 @@ class EmptyCard extends Component {
         } else {
             return (
                 <Row>
-                    <Button id={"player-button-" + this.props.colorClass} 
+                    <SplitButton id={"player-button-" + this.props.colorClass} 
                         onClick={this.onSit} title="Play" bsStyle="info">
-                        Play
-                    </Button>
+                        <MenuItem eventKey="1" onClick={this.aiSit.bind(this, 1)} >
+                            Computer
+                        </MenuItem>
+                    </SplitButton>
                 </Row>
             );
         }

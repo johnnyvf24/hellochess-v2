@@ -101,6 +101,13 @@ class Profile extends Component {
                                           <td>{this.props.profile.crazyhouse960_ratings.rapid}</td>
                                           <td>{this.props.profile.crazyhouse960_ratings.classic}</td>
                                         </tr>
+                                        <tr>
+                                          <th scope="row">S-Chess</th>
+                                          <td>{this.props.profile.schess_ratings.bullet}</td>
+                                          <td>{this.props.profile.schess_ratings.blitz}</td>
+                                          <td>{this.props.profile.schess_ratings.rapid}</td>
+                                          <td>{this.props.profile.schess_ratings.classic}</td>
+                                        </tr>
                                       </tbody>
                                     </table>
 

@@ -5,6 +5,7 @@ const {StandardGame} = require('../../models/standard');
 const Elo = require('elo-js');
 import Player from '../players/Player';
 import TwoEngine from '../../engine/TwoEngine';
+import SChessEngine from '../../engine/SChessEngine';
 const Notifications = require('react-notification-system-redux');
 import Connection from '../../sockets/Connection';
 import Room from '../rooms/Room';
@@ -142,7 +143,7 @@ export default class SChess extends Game {
     outColor(): string { return null; }
     
     newEngineInstance(roomName: string, io: any) {
-        this.engineInstance = new TwoEngine(roomName, this.time.increment, this.connection);
+        this.engineInstance = new SChessEngine(roomName, this.time.increment, this.connection);
     }
     
     startGame() {

@@ -73,6 +73,35 @@ exports.getLeaderboard = (req, res, next) => {
             });
         },
         
+        schessBullet: function(cb) {
+            User.find({}).sort({"schess_ratings.bullet": -1}).limit(10).then((data) => {
+                cb(null, data)
+            }).catch((e) => {
+                cb(e); 
+            });
+        },
+        schessBlitz: function(cb) {
+            User.find({}).sort({"schess_ratings.blitz": -1}).limit(10).then((data) => {
+                cb(null, data)
+            }).catch((e) => {
+                cb(e); 
+            });
+        },
+        schessRapid: function(cb) {
+            User.find({}).sort({"schess_ratings.rapid": -1}).limit(10).then((data) => {
+                cb(null, data)
+            }).catch((e) => {
+                cb(e); 
+            });
+        },
+        schessClassical: function(cb) {
+            User.find({}).sort({"schess_ratings.classical": -1}).limit(10).then((data) => {
+                cb(null, data)
+            }).catch((e) => {
+                cb(e); 
+            });
+        },
+        
         zhBullet: function(cb) {
             User.find({}).sort({"crazyhouse_ratings.bullet": -1}).limit(10).then((data) => {
                 cb(null, data)

@@ -1,6 +1,6 @@
 {
   "name": "Hello_Chess",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Live Chess Server",
   "main": "public/index.jsx",
   "repository": "",
@@ -11,7 +11,7 @@
     "test": "mocha --compilers js:babel-core/register --require ./test/test_helper.js --recursive ./test",
     "test:watch": "npm run test -- --watch"
   },
-  "author": "John V. Flickinger",
+  "author": "John V. Flickinger, Joe Ksiazek",
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^7.0.22",
@@ -38,6 +38,7 @@
   "dependencies": {
     "async": "^2.4.1",
     "axios": "^0.15.3",
+    "babel-polyfill": "^6.23.0",
     "babel-preset-stage-1": "^6.1.18",
     "bcryptjs": "^2.4.0",
     "body-parser": "^1.17.2",

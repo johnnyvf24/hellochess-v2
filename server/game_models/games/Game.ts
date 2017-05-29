@@ -153,7 +153,14 @@ abstract class Game {
             return;
         }
         if(playerTimeLeft && currentPlayer.playerLevel) {
-            this.engineInstance.go(playerTimeLeft, currentPlayer.playerLevel);
+
+            if(this.white instanceof AI && this.black instanceof AI && this.gameType === 'schess') {
+                this.engineInstance.go(playerTimeLeft, currentPlayer.playerLevel, true);
+            }
+            else {
+                this.engineInstance.go(playerTimeLeft, currentPlayer.playerLevel, false);
+            }
+            
         }
     }
     

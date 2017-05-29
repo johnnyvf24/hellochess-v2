@@ -1,5 +1,6 @@
 /node_modules
 bundle.js
+bundle.js.map
 npm-debug.log
 config.js
 /playground

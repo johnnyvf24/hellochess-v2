@@ -12,14 +12,14 @@ abstract class Engine {
     protected timeLeft;
     protected increment;
 
-    constructor(public executableName, public roomName, public connection) {
+    constructor(public executableName, public roomName, public connection, public windowsExe: Boolean) {
         this.roomName = roomName;
         this.connection = connection;
         
         let enginePath = path.join(__dirname, '../../executables/' + executableName);
         
         try {
-            this.engine = spawn(enginePath);
+            this.engine = spawn((windowsExe === true) ? 'wine': enginePath, (windowsExe === true) ? [enginePath] : []);
             this.engine.stdout.on('data', this.onBestMove.bind(this));
             this.engine.on('error', function(err) {
                 console.log(err); 
@@ -30,10 +30,10 @@ abstract class Engine {
         
         this.numOut = 0;
         this.mode = 0;
-        this.sendUci();
+        if (windowsExe === false) {this.sendUci();}
     }
     
-    abstract go(timeLeft: number, depth: number): void;
+    abstract go(timeLeft: number, depth: number, engineMatch: boolean): void;
     abstract adjustDepth(timeLeft: number, level: number): void;
     abstract onBestMove(data: any): void;
     abstract setPosition(fen): void;
@@ -82,6 +82,33 @@ abstract class Engine {
         if(this.engine && this.engine.stdin) {
             this.engine.stdin.write(
                 "setoption name " + name + " value " + value + "\n"
+            );
+        }
+    }
+    
+    setWinboardForceMode() {
+        if(this.engine && this.engine.stdin) {
+            this.engine.stdin.write(
+                "force\n"
+            );
+        }
+    }
+    
+    //Set the time for search on winboard protocol (in seconds)
+    setWinboardTime(time) {
+        if(this.engine && this.engine.stdin) {
+            this.engine.stdin.write(
+                "st " + time + "\n"
+            );
+        }
+    }
+    
+    setTurnWinboard(turn) {
+        if(this.engine && this.engine.stdin) {
+            if (turn === 'w') { turn = 'white'}
+            if (turn === 'b') { turn = 'black'}
+            this.engine.stdin.write(
+                turn + "\n"
             );
         }
     }
