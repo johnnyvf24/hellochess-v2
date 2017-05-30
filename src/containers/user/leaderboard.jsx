@@ -155,7 +155,7 @@ class Leaderboard extends Component {
                                                     </Panel>
                                                 </Col>
                                                 <Col xs={12} sm={6} md={3}>
-                                                    <Panel bsStyle="info" header="Rapid (2 - 15 mins]">
+                                                    <Panel bsStyle="info" header="Rapid (8 - 15 mins]">
                                                         <ListGroup>
                                                             {mapObject(
                                                                 leaderboard.standardRapid, function (index, user) {
@@ -203,7 +203,7 @@ class Leaderboard extends Component {
                                                     </Panel>
                                                 </Col>
                                                 <Col xs={12} sm={6} md={3}>
-                                                    <Panel bsStyle="info" header="Rapid (2 - 15 mins]">
+                                                    <Panel bsStyle="info" header="Rapid (8 - 15 mins]">
                                                         <ListGroup>
                                                             {mapObject(
                                                                 leaderboard.zhRapid, function (index, user) {
@@ -251,7 +251,7 @@ class Leaderboard extends Component {
                                                     </Panel>
                                                 </Col>
                                                 <Col xs={12} sm={6} md={3}>
-                                                    <Panel bsStyle="info" header="Rapid (2 - 15 mins]">
+                                                    <Panel bsStyle="info" header="Rapid (8 - 15 mins]">
                                                         <ListGroup>
                                                             {mapObject(
                                                                 leaderboard.zh960Rapid, function (index, user) {
@@ -299,7 +299,7 @@ class Leaderboard extends Component {
                                                     </Panel>
                                                 </Col>
                                                 <Col xs={12} sm={6} md={3}>
-                                                    <Panel bsStyle="info" header="Rapid (2 - 15 mins]">
+                                                    <Panel bsStyle="info" header="Rapid (8 - 15 mins]">
                                                         <ListGroup>
                                                             {mapObject(
                                                                 leaderboard.schessRapid, function (index, user) {
