@@ -20,7 +20,11 @@ abstract class Engine {
         
         try {
             this.engine = spawn((windowsExe === true) ? 'wine': enginePath, (windowsExe === true) ? [enginePath] : []);
+            this.engine.stdin.setEncoding('utf-8');
             this.engine.stdout.on('data', this.onBestMove.bind(this));
+            this.engine.stderr.on("data", (err) => {
+               console.log("Child process output error: " + err); 
+            });
             this.engine.on('error', function(err) {
                 console.log(err); 
             });
@@ -98,7 +102,7 @@ abstract class Engine {
     setWinboardTime(time) {
         if(this.engine && this.engine.stdin) {
             this.engine.stdin.write(
-                "st " + time + "\n"
+                "st " + time + "\r\n"
             );
         }
     }

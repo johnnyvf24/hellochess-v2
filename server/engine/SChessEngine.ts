@@ -158,7 +158,7 @@ export default class SChessEngine extends Engine {
         console.log('after FEN ', fen);
         if(this.engine) {
             this.engine.stdin.write(
-                "setboard " + fen + "\n"
+                "setboard " + fen.trim() + "\r\n"
             );
         }
     }
@@ -179,7 +179,7 @@ export default class SChessEngine extends Engine {
     go(timeLeft: number, depth: number, engineMatch: boolean) {
         if(this.mode === 0 && (this.firstRun || engineMatch === true)) {
             if(this.engine) {
-                this.engine.stdin.write('go' + "\n");
+                this.engine.stdin.write('go' + "\r\n");
                 this.firstRun = false;
             }
         }
