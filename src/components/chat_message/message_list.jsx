@@ -16,7 +16,8 @@ export default class MessageList extends Component {
     
     componentDidUpdate(prevProps) {
         if (prevProps.messages.length !== this.props.messages.length ||
-            prevProps.thread != this.props.thread) {
+            prevProps.thread != this.props.thread ||
+            new Date(_.last(prevProps.messages).time) !== new Date(_.last(this.props.messages).time)) {
             this.scrollToBottom();
         }
     }
