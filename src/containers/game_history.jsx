@@ -4,6 +4,7 @@ import ExistingRoomList from './existing_room_list';
 import Room from '../components/room/room';
 import {mapObject} from '../utils/';
 import {getRecentGames} from '../actions/user';
+import {joinAnalysisRoom} from '../actions/index';
 
 import {Panel, ListGroup, ListGroupItem, Col, Row, Popover, OverlayTrigger} from 'react-bootstrap';
 
@@ -25,16 +26,15 @@ class GameHistory extends Component {
 
     }
     
+    onViewGame(game) {
+        this.props.joinAnalysisRoom(game);
+    }
+    
     renderGame(game) {
-        const popoverLeft = (
-            <Popover id="popover-positioned-left" title="PGN">
-                {game.pgn}
-            </Popover>
-        );
+
         return (
             <ListGroupItem key={game._id} className="recent-games-list-group-item">
-                <OverlayTrigger trigger="click" placement="left" overlay={popoverLeft}>
-                <Row>
+                <Row onClick={this.onViewGame.bind(this, game)}>
                     <Col xs={5} className="game-result-white">
                         <img className="img-responsive img-circle picture-recent-games" src={game.white.user_id.picture} />
                         <div>
@@ -55,28 +55,59 @@ class GameHistory extends Component {
                         </div>
                     </Col>
                 </Row>
-                </OverlayTrigger>
             </ListGroupItem>
         );
     }
     
     render() {
-        if(!this.props.profile || this.props.recentGames.length === 0) {
+        if(!this.props.profile || !this.props.recentGames.standard 
+            || !this.props.recentGames.schess || !this.props.recentGames.crazyhouse
+            || !this.props.recentGames.crazyhouse960) {
             return <div>
             </div>
         }
 
         return (
             <div>
+                {/*-------------STANDARD------------------*/}
                 <h5 className="ribbon-small">
                     <strong className="ribbon-content">
-                        YOUR RECENT STANDARD GAMES
+                        RECENT STANDARD GAMES
                     </strong>
                 </h5>
-
-                    <ListGroup>
-                        { this.props.recentGames.map(this.renderGame) }
-                    </ListGroup>
+                <ListGroup>
+                    { this.props.recentGames.standard.map(this.renderGame.bind(this)) }
+                </ListGroup>
+                
+                {/*-------------SChess------------------*/}
+                <h5 className="ribbon-small">
+                    <strong className="ribbon-content">
+                        RECENT S-CHESS GAMES
+                    </strong>
+                </h5>
+                <ListGroup>
+                    { this.props.recentGames.schess.map(this.renderGame.bind(this)) }
+                </ListGroup>
+                
+                {/*-------------Crazyhouse------------------*/}
+                <h5 className="ribbon-small">
+                    <strong className="ribbon-content">
+                        RECENT CRAZYHOUSE GAMES
+                    </strong>
+                </h5>
+                <ListGroup>
+                    { this.props.recentGames.crazyhouse.map(this.renderGame.bind(this)) }
+                </ListGroup>
+                
+                {/*-------------Crazyhouse960------------------*/}
+                <h5 className="ribbon-small">
+                    <strong className="ribbon-content">
+                        RECENT CRAZYHOUSE960 GAMES
+                    </strong>
+                </h5>
+                <ListGroup>
+                    { this.props.recentGames.crazyhouse960.map(this.renderGame.bind(this)) }
+                </ListGroup>
 
             </div>
         );

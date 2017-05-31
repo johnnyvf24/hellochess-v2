@@ -1,7 +1,7 @@
 import Game from './Game';
 import {SChess as SChessGame} from 'schess.js';
 const {User} = require('../../models/user');
-const {StandardGame} = require('../../models/standard');
+const {SChessDB} = require('../../models/schess');
 const Elo = require('elo-js');
 import Player from '../players/Player';
 import TwoEngine from '../../engine/TwoEngine';
@@ -265,12 +265,12 @@ export default class SChess extends Game {
                 }
             }
             
-            /*
-            var standard_game = new StandardGame(data);
-            standard_game.save().then((game) => {
-                console.log('saved game ', game);
+            
+            var schess_game = new SChessDB(data);
+            schess_game.save().then((game) => {
+                console.log('saved schess game ', game);
             }).catch(e => console.log(e));
-            */
+            
             
             //send new ratings to each individual player
             setTimeout( function() {

@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const {ObjectID} = require('mongodb');
 const {User} = require('../models/user');
-var Async = require('async');
+const Async = require('async');
 
 exports.updateUser = (req, res, next) => {
     const id = req.params.id;

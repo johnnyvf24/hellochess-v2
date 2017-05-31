@@ -233,6 +233,24 @@ export function joinRoom(name, gameOptions = initGameOptions) {
     }
 }
 
+export function joinAnalysisRoom(game) {
+    return {
+        type: 'update-room',
+        payload: {
+            gameType: 'four-player',
+            room: {
+                private: false,
+                voiceChat: false,
+                maxPlayers: 10000,
+            },
+            time: {
+                increment: 5,
+                value: 5
+            }
+        }
+    }
+}
+
 
 export function leaveRoom(name) {
     return (dispatch) => {
