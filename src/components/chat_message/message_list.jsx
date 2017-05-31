@@ -15,9 +15,12 @@ export default class MessageList extends Component {
     }
     
     componentDidUpdate(prevProps) {
+        function lastMessageTime(props) {
+            return (new Date(_.last(props.messages).time)).getTime();
+        }
         if (prevProps.messages.length !== this.props.messages.length ||
             prevProps.thread != this.props.thread ||
-            new Date(_.last(prevProps.messages).time) !== new Date(_.last(this.props.messages).time)) {
+            lastMessageTime(prevProps) !== lastMessageTime(this.props)) {
             this.scrollToBottom();
         }
     }
