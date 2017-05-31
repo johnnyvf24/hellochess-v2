@@ -1,6 +1,8 @@
 import Game from './Game';
 const {Crazyhouse} = require('crazyhouse.js');
 const {User} = require('../../models/user');
+const {CrazyhouseGame} = require('../../models/crazyhouse');
+const {Crazyhouse960Game} = require('../../models/crazyhouse960');
 const Elo = require('elo-js');
 import Player from '../players/Player';
 import CrazyEngine from '../../engine/CrazyEngine';
@@ -251,7 +253,54 @@ export default class CrazyHouse extends Game {
             this.connection.updatePlayer(winner);
             this.connection.updatePlayer(loser);
             
-                        //send new ratings to each individual player
+            let data;
+            if(winner.playerId === this.white.playerId) {
+                let result = (draw) ? "1/2-1/2" : "1-0";
+                data = {
+                    white: {
+                        "user_id": this.white.playerId, 
+                        "elo": winnerElo
+                        
+                    },
+                    black: {
+                        "user_id": this.black.playerId,
+                        "elo": loserElo
+                    },
+                    pgn: this.gameRulesObj.pgn(),
+                    final_fen: this.gameRulesObj.fen(),
+                    time: this.time,
+                    result: result
+                }
+                
+                
+            } else {
+                let result = (draw) ? "1/2-1/2" : "0-1";
+                data = {
+                    white: {
+                        "user_id": this.white.playerId, 
+                        "elo": loserElo
+                        
+                    },
+                    black: {
+                        "user_id": this.black.playerId,
+                        "elo": winnerElo
+                    },
+                    pgn: this.gameRulesObj.pgn(),
+                    final_fen: this.gameRulesObj.fen(),
+                    time: this.time,
+                    result: result
+                }
+            }
+            
+            let crazy_game = (this.set_960) ? new Crazyhouse960Game(data) : new CrazyhouseGame(data);
+            if(crazy_game !== null) {
+                crazy_game.save().then((game) => {
+                    console.log('saved crazyhouse game ', game);
+                }).catch(e => console.log(e));
+            }
+            
+            
+            //send new ratings to each individual player
             setTimeout( function() {
                 try {
                     
