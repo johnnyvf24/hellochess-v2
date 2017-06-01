@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import ExistingRoomList from './existing_room_list';
-import Room from '../components/room/room';
-import {mapObject} from '../utils/';
-import {getRecentGames} from '../actions/user';
-import {joinAnalysisRoom} from '../actions/room';
+import { browserHistory } from 'react-router';
+import Room from '../../components/room/room';
+import {mapObject} from '../../utils/';
+import {getRecentGames} from '../../actions/user';
+import {joinAnalysisRoom} from '../../actions/room';
+import {selectedRoom} from '../../actions/index';
 
 import {PanelGroup, Panel, ListGroup, ListGroupItem, Col, Row, Popover, OverlayTrigger} from 'react-bootstrap';
 
@@ -29,7 +30,10 @@ class GameHistory extends Component {
     }
     
     onViewGame(game, gameType) {
-        this.props.joinAnalysisRoom(game, gameType);
+        let roomName = gameType + game._id.slice(0, 5);
+        this.props.joinAnalysisRoom(game, gameType, roomName);
+        this.props.selectedRoom(roomName);
+        browserHistory.goBack();
     }
     
     renderGame(game, gameType) {
@@ -74,7 +78,7 @@ class GameHistory extends Component {
                 {/*-------------STANDARD------------------*/}
                 <h5 className="ribbon-small">
                     <strong className="ribbon-content">
-                       MY RECENT GAMES
+                       {this.props.profile.username}'s RECENT GAMES
                     </strong>
                 </h5>
                 <PanelGroup defaultActiveKey="1" accordion>
@@ -110,9 +114,8 @@ function mapStateToProps(state) {
         connection: state.connection,
         activeThread: state.activeThread,
         openThreads: state.openThreads,
-        profile: state.auth.profile,
         recentGames: state.recentGames,
     };
 }
 
-export default connect(mapStateToProps, {getRecentGames, joinAnalysisRoom}) (GameHistory);
+export default connect(mapStateToProps, {getRecentGames, joinAnalysisRoom, selectedRoom}) (GameHistory);

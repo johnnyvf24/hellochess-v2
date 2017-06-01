@@ -10,7 +10,7 @@ export function sitDownBoard(details) {
     }
 }
 
-export function joinAnalysisRoom(game, gameType) {
+export function joinAnalysisRoom(game, gameType, roomName) {
     game.gameType = gameType;
     game.fen = game.final_fen;
     game.numPlayers = 2;
@@ -61,7 +61,7 @@ export function joinAnalysisRoom(game, gameType) {
                 private: true,
                 voiceChat: false,
                 maxPlayers: 10000,
-                name: gameType + game._id.slice(0, 5),
+                name: roomName,
 
             },
             times: {

@@ -7,7 +7,6 @@ import ReactTimeout from 'react-timeout';
 import {LinkContainer} from 'react-router-bootstrap';
 var Loading = require('react-loading');
 
-import GameHistory from './game_history';
 import SearchBar from '../components/search_bar';
 import BoardWrapper from './board/board_wrapper';
 import RoomViewer from '../containers/room_viewer';
@@ -202,7 +201,6 @@ class Live extends Component {
                             <RoomViewer />
                         </Col>
                         <Col xs={12} sm={8} md={8} lg={7}>
-                            <GameHistory />
                         </Col>
                     </Row>
                 );

@@ -297,7 +297,8 @@ function recentGames(state = [], action) {
     switch (action.type) {
         case RECENT_GAMES:
             return action.payload;
-        
+        case 'CLEAR_RECENT_GAMES':
+            return [];
         default:
             return state;
     }

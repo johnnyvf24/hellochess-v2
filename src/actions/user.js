@@ -6,7 +6,19 @@ import {
     VIEW_PROFILE,
     VIEW_LEADERBOARD,
     RECENT_GAMES
-} from './types'
+} from './types';
+
+export function clearRecentGames() {
+    return {
+        type: 'CLEAR_RECENT_GAMES'
+    };
+}
+
+export function clearCurrentProfile() {
+    return {
+        type: 'CLEAR_CURRENT_PROFILE'
+    }
+}
 
 export function getRecentGames(profileId) {
     return (dispatch) => {

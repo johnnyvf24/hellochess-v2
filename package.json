@@ -87,6 +87,7 @@
     "react-router": "^2.8.1",
     "react-router-bootstrap": "^0.23.3",
     "react-select": "^1.0.0-rc.5",
+    "react-slick": "^0.14.11",
     "react-timeout": "^1.0.1",
     "react-toggle-button": "^2.1.0",
     "react-web-notification": "^0.2.4",

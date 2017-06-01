@@ -2,8 +2,9 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
 
-import { getUserProfile } from '../../actions/user';
-import {Panel, Button} from 'react-bootstrap'
+import { getUserProfile, clearRecentGames, clearCurrentProfile } from '../../actions/user';
+import { Panel, Button } from 'react-bootstrap'
+import GameHistory from './game_history';
 
 class Profile extends Component {
 
@@ -14,6 +15,11 @@ class Profile extends Component {
     componentWillMount() {
         let user_id = this.props.params.id;
         this.props.getUserProfile(user_id);
+    }
+    
+    componentWillUnmount() {
+        this.props.clearRecentGames();
+        this.props.clearCurrentProfile();
     }
 
     back(e) {
@@ -113,6 +119,8 @@ class Profile extends Component {
 
                                 </div>
                             </Panel>
+                            
+                            <GameHistory profile={this.props.profile}/>
                         </div>
                         <div className="col-xs-3">
                         </div>
@@ -129,4 +137,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect (mapStateToProps, {getUserProfile}) (Profile);
+export default connect (mapStateToProps, {getUserProfile, clearRecentGames, clearCurrentProfile}) (Profile);
