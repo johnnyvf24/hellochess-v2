@@ -21,7 +21,7 @@ exports.getRecentGames = (req, res, next) => {
                 .populate('black.user_id')
                 .populate('white.user_id')
                 .sort({$natural: -1})
-                .limit(3)
+                .limit(5)
                 .then((games) => {
                     cb(null, games);
                 })
@@ -35,7 +35,7 @@ exports.getRecentGames = (req, res, next) => {
                 .populate('black.user_id')
                 .populate('white.user_id')
                 .sort({$natural: -1})
-                .limit(3)
+                .limit(5)
                 .then((games) => {
                     cb(null, games);
                 })
@@ -49,7 +49,7 @@ exports.getRecentGames = (req, res, next) => {
                 .populate('black.user_id')
                 .populate('white.user_id')
                 .sort({$natural: -1})
-                .limit(3)
+                .limit(5)
                 .then((games) => {
                     cb(null, games);
                 })
@@ -63,7 +63,7 @@ exports.getRecentGames = (req, res, next) => {
                 .populate('black.user_id')
                 .populate('white.user_id')
                 .sort({$natural: -1})
-                .limit(3)
+                .limit(5)
                 .then((games) => {
                     cb(null, games);
                 })

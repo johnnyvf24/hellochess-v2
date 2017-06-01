@@ -4,6 +4,7 @@ import ExistingRoomList from './existing_room_list';
 import Room from '../components/room/room';
 import {mapObject} from '../utils/';
 import { selectedRoom, joinRoom, leaveRoom, updateLiveUser } from '../actions';
+import { closeAnalysisRoom } from '../actions/room';
 
 import {Tabs, Tab, TabContainer, TabContent, TabPane} from 'react-bootstrap';
 
@@ -38,10 +39,15 @@ class RoomViewer extends Component {
         this.props.selectedRoom(chatName);
     }
 
-    onCloseChatTab(chatName, event) {
+    onCloseChatTab(chatName, event, chatValue) {
         event.preventDefault();
         event.stopPropagation();
-        this.props.leaveRoom(chatName);
+        if(chatValue.mode === 'analysis') {
+            this.props.closeAnalysisRoom(chatName);
+        } else {
+            this.props.leaveRoom(chatName);
+        }
+        
         if (this.props.activeThread === chatName) {
             let openThreadNames =
                 Object.keys(this.props.openThreads).filter(name => name !== chatName);
@@ -69,7 +75,7 @@ class RoomViewer extends Component {
     renderNavTab(chats, active) {
         return mapObject(chats, (key, value) => {
             let title = <span>
-                            <button onClick={(e) =>this.onCloseChatTab(key, e)}
+                            <button onClick={(e) =>this.onCloseChatTab(key, e, value)}
                                 className="close closeTab" 
                                 type="button" >×</button>{key}
                             </span>;
@@ -124,4 +130,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, {selectedRoom, joinRoom, leaveRoom, updateLiveUser}) (RoomViewer);
+export default connect(mapStateToProps, {selectedRoom, joinRoom, leaveRoom, updateLiveUser, closeAnalysisRoom}) (RoomViewer);

@@ -9,7 +9,7 @@ import AuthReducer from './auth_reducer';
 import newGameOptions from './new_game_reducer';
 import currentProfile from './profile_reducer';
 
-import {SELECTED_ROOM,LOGOUT_SUCCESS, VIEW_LEADERBOARD, RECENT_GAMES} from '../actions/types';
+import {SELECTED_ROOM,LOGOUT_SUCCESS, VIEW_LEADERBOARD, RECENT_GAMES, CLOSE_ANALYSIS} from '../actions/types';
 
 function activeThread (state = 'Global', action) {
     switch(action.type) {
@@ -48,6 +48,11 @@ function openThreads(state = {}, action) {
                 newState[key].enabledVoice = false;
             });
             return newState;
+        case CLOSE_ANALYSIS:
+            newState = Object.assign({}, state);
+            delete newState[action.payload];
+            return newState;
+            
         case 'user-room-left':
             roomName = action.payload.name;
             const user = action.payload.user;
@@ -291,7 +296,7 @@ function recentGames(state = [], action) {
 
     switch (action.type) {
         case RECENT_GAMES:
-            return action.payload
+            return action.payload;
         
         default:
             return state;

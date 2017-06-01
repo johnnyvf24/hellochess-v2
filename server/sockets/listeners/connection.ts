@@ -49,6 +49,10 @@ module.exports = function(io, socket, connection) {
         if(!data || !data._id || !data.picture) {
             return;
         }
+        
+        let IP = socket.request.connection.remoteAddress;
+        console.log('client connected IP is ', IP);
+        
         //TODO get player data from database instead of client
         let p = new Player(
             socket, data._id, data.username, data.picture,
@@ -56,10 +60,11 @@ module.exports = function(io, socket, connection) {
             data.standard_ratings,
             data.schess_ratings,
             data.fourplayer_ratings,
-            data.crazyhouse_ratings, data.crazyhouse960_ratings);
+            data.crazyhouse_ratings, data.crazyhouse960_ratings,
+            IP);
             
         //check to see if the player is already connected elsewhere
-        if(connection.duplicateUser(data._id) == true) {
+        if(connection.duplicateUser(data._id, IP) == true) {
             console.log('duplicate login');
             return socket.emit('duplicate-login');
         }

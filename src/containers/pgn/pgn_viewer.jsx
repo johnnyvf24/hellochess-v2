@@ -37,6 +37,7 @@ class PGNViewer extends Component {
 
     render() {
         let moves = this.props.pgn;
+        
         /*
         moves = ['e4', 'e5',
                  'Nf3', 'Nc6',
