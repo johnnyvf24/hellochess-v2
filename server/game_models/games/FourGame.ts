@@ -2,6 +2,7 @@ const Notifications = require('react-notification-system-redux');
 import Connection from '../../sockets/Connection';
 import Game from './Game';
 const {User} = require('../../models/user');
+const {FourGameDB} = require('../../models/fourgame');
 const Elo = require('elo-js');
 const {FourChess} = require('../../../common/fourchess');
 import Player from '../players/Player';
@@ -381,7 +382,6 @@ export default class FourGame extends Game {
         let winnerColor = this.gameRulesObj.getWinnerColor(); //player that won
         let winner = this.getPlayer(winnerColor);
         
-        console.log(this.gameRulesObj.getLoserOrder());
         if (this.gameStarted && winner && room) {
             room.addMessage(new WinnerMessage(winner, null, this.roomName));
         }
@@ -459,50 +459,38 @@ export default class FourGame extends Game {
             this.connection.updatePlayer(thirdOut);
             this.connection.updatePlayer(winner);
             
-            // let data;
-            // if(winner.playerId === this.white.playerId) {
-            //     let result = (draw) ? "1/2-1/2" : "1-0";
-            //     data = {
-            //         white: {
-            //             "user_id": this.white.playerId, 
-            //             "elo": winnerElo
-                        
-            //         },
-            //         black: {
-            //             "user_id": this.black.playerId,
-            //             "elo": loserElo
-            //         },
-            //         pgn: this.gameRulesObj.pgn(),
-            //         final_fen: this.gameRulesObj.fen(),
-            //         time: this.time,
-            //         result: result
-            //     }
-                
-                
-            // } else {
-            //     let result = (draw) ? "1/2-1/2" : "0-1";
-            //     data = {
-            //         white: {
-            //             "user_id": this.white.playerId, 
-            //             "elo": loserElo
-                        
-            //         },
-            //         black: {
-            //             "user_id": this.black.playerId,
-            //             "elo": winnerElo
-            //         },
-            //         pgn: this.gameRulesObj.pgn(),
-            //         final_fen: this.gameRulesObj.fen(),
-            //         time: this.time,
-            //         result: result
-            //     }
-            // }
+            let whiteElo = this.getPlayer('w').fourplayer_ratings[timeType];
+            let blackElo = this.getPlayer('b').fourplayer_ratings[timeType];
+            let goldElo = this.getPlayer('g').fourplayer_ratings[timeType];
+            let redElo = this.getPlayer('r').fourplayer_ratings[timeType];
             
-            
-            // var schess_game = new SChessDB(data);
-            // schess_game.save().then((game) => {
-            //     console.log('saved schess game ', game);
-            // }).catch(e => console.log(e));
+            let data = {
+                white: {
+                    "user_id": this.white.playerId, 
+                    "elo": whiteElo
+                    
+                },
+                black: {
+                    "user_id": this.black.playerId,
+                    "elo": blackElo
+                },
+                gold: {
+                    "user_id": this.gold.playerId,
+                    "elo": goldElo, 
+                },
+                red: {
+                    "user_id": this.red.playerId,
+                    "elo": redElo, 
+                },
+                loser_order: loserOrderClone,
+                pgn: this.gameRulesObj.pgn(),
+                final_fen: this.gameRulesObj.fen(),
+                time: this.time,
+            };
+            let fourway_game = new FourGameDB(data);
+            fourway_game.save().then((game) => {
+                console.log('saved four player game ', game);
+            }).catch(e => console.log(e));
             
             //send new ratings to each individual player
             setTimeout( function() {
