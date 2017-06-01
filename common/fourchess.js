@@ -49,8 +49,6 @@ var FourChess = function (fen) {
         'gN,gP,10,rP,rN/gR,gP,10,rP,rR/14/3,wP,wP,wP,wP,wP,wP,wP,wP,3/3,wR,wN,wB,wQ,wK,wB,wN,wR,3-w wr wl '+
         'gr gl br bl rr rl';
 
-    var POSSIBLE_RESULTS = ['1-0', '0-1', '1/2-1/2', '*'];
-
     var white_moved_king = false;
     var white_moved_rt = false;
     var white_moved_lt = false;
@@ -1625,6 +1623,20 @@ var FourChess = function (fen) {
         moves = moves.concat(worseMoves);
         return moves;
     }
+    
+    function getWinColor() {
+        if(goldOut && blackOut && redOut) {
+            return 'w';
+        } else if(blackOut && redOut && whiteOut) {
+            return 'g';
+        } else if(redOut && whiteOut && goldOut) {
+            return 'b';
+        } else if(whiteOut && goldOut && blackOut) {
+            return 'r';
+        } else {
+            return null;
+        }
+    }
 
     function search(state, alpha, beta, depth, maximizingPlayer) {
         if(depth == 0) {
@@ -1948,34 +1960,42 @@ var FourChess = function (fen) {
                         case SQUARE_STATUS['wK']:
                             BOARD[SQUARES[move.to]] = piece;
                             // status.opponentOut = kickWhiteOutOfGame();
-                            numOut++;
-                            whiteOut = true;
-                            nWhiteOut = numOut;
-                            status.color = 'w';
+                            if(whiteOut === false) {
+                                numOut++;
+                                whiteOut = true;
+                                nWhiteOut = numOut;
+                                status.color = 'w';
+                            }
                             break;
                         case SQUARE_STATUS['bK']:
                             BOARD[SQUARES[move.to]] = piece;
                             // status.opponentOut = kickBlackOutOfGame();
-                            numOut++;
-                            blackOut = true;
-                            nBlackOut = numOut;
-                            status.color = 'b';
+                            if(blackOut === false) {
+                                numOut++;
+                                blackOut = true;
+                                nBlackOut = numOut;
+                                status.color = 'b';
+                            }
                             break;
                         case SQUARE_STATUS['gK']:
                             BOARD[SQUARES[move.to]] = piece;
                             // status.opponentOut = kickGoldOutOfGame();
-                            numOut++;
-                            goldOut = true;
-                            nGoldOut = numOut;
-                            status.color = 'g';
+                            if(goldOut === false) {
+                                numOut++;
+                                goldOut = true;
+                                nGoldOut = numOut;
+                                status.color = 'g';
+                            }
                             break;
                         case SQUARE_STATUS['rK']:
                             BOARD[SQUARES[move.to]] = piece;
                             // status.opponentOut = kickRedOutOfGame();
-                            numOut++;
-                            redOut = true;
-                            nRedOut = numOut;
-                            status.color = 'r';
+                            if(redOut === false) {
+                                numOut++;
+                                redOut = true;
+                                nRedOut = numOut;
+                                status.color = 'r';
+                            }
                             break;
                         default:
                             BOARD[SQUARES[move.to]] = piece;
@@ -2031,24 +2051,32 @@ var FourChess = function (fen) {
             return kickRedOutOfGame();
         },
         setWhiteOut: function() {
-            numOut++;
-            whiteOut = true;
-            nWhiteOut = numOut;
+            if(whiteOut === false) {
+                numOut++;
+                whiteOut = true;
+                nWhiteOut = numOut;   
+            }
         },
         setGoldOut: function() {
-            numOut++;
-            goldOut = true;
-            nGoldOut = numOut;
+            if(goldOut === false) {
+                numOut++;
+                goldOut = true;
+                nGoldOut = numOut;
+            }
         },
         setBlackOut: function() {
-            numOut++;
-            blackOut = true;
-            nBlackOut = numOut;
+            if(blackOut === false) {
+                numOut++;
+                blackOut = true;
+                nBlackOut = numOut;
+            }
         },
         setRedOut: function() {
-            numOut++;
-            redOut = true;
-            nRedOut = numOut;
+            if(redOut === false) {
+                numOut++;
+                redOut = true;
+                nRedOut = numOut;
+            }
         },
         isWhiteOut: function() {
             return whiteOut;
@@ -2069,25 +2097,20 @@ var FourChess = function (fen) {
             boardToStringRep();
         },
         getLoserOrder: function() {
-            return {
+            let loserOrder =  {
                 w: nWhiteOut,
                 b: nBlackOut,
                 g: nGoldOut,
                 r: nRedOut
+            };
+            let winColor = getWinColor();
+            if(winColor !== null) {
+                loserOrder[winColor] = 4;
             }
+            return loserOrder;
         },
         getWinnerColor: function() {
-            if(goldOut && blackOut && redOut) {
-                return 'w';
-            } else if(blackOut && redOut && whiteOut) {
-                return 'g';
-            } else if(redOut && whiteOut && goldOut) {
-                return 'b';
-            } else if(whiteOut && goldOut && blackOut) {
-                return 'r';
-            } else {
-                return null;
-            }
+            return getWinColor();
         },
         inCheckMate: function() {
             return inCheckMate();

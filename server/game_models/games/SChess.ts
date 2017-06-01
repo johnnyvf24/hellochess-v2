@@ -226,7 +226,6 @@ export default class SChess extends Game {
             this.connection.updatePlayer(loser);
             
             let data;
-            
             if(winner.playerId === this.white.playerId) {
                 let result = (draw) ? "1/2-1/2" : "1-0";
                 data = {

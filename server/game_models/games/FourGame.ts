@@ -380,6 +380,8 @@ export default class FourGame extends Game {
         let room = this.connection.getRoomByName(this.roomName);
         let winnerColor = this.gameRulesObj.getWinnerColor(); //player that won
         let winner = this.getPlayer(winnerColor);
+        
+        console.log(this.gameRulesObj.getLoserOrder());
         if (this.gameStarted && winner && room) {
             room.addMessage(new WinnerMessage(winner, null, this.roomName));
         }
@@ -394,6 +396,8 @@ export default class FourGame extends Game {
             
             //order in which losers lost
             let loserOrder = this.gameRulesObj.getLoserOrder(); 
+            //Used to store in the DB
+            let loserOrderClone = JSON.parse(JSON.stringify(loserOrder)); 
             delete loserOrder[winnerColor]; //remove the winner from the loser order
             
             let firstOut : Player, secondOut : Player, thirdOut : Player;
@@ -407,11 +411,6 @@ export default class FourGame extends Game {
                     thirdOut = this.getPlayer(key);
                 }
             }.bind(this));
-            
-            // console.log('firsOut ', firstOut.getPlayer());
-            // console.log('secondOut', secondOut.getPlayer());
-            // console.log('thirdOut', thirdOut.getPlayer());
-            // console.log('winner', winner.getPlayer());
             
             if(!firstOut || !secondOut || !thirdOut || !winner) {
                 this.removePlayer('w');
@@ -459,6 +458,51 @@ export default class FourGame extends Game {
             this.connection.updatePlayer(secondOut);
             this.connection.updatePlayer(thirdOut);
             this.connection.updatePlayer(winner);
+            
+            // let data;
+            // if(winner.playerId === this.white.playerId) {
+            //     let result = (draw) ? "1/2-1/2" : "1-0";
+            //     data = {
+            //         white: {
+            //             "user_id": this.white.playerId, 
+            //             "elo": winnerElo
+                        
+            //         },
+            //         black: {
+            //             "user_id": this.black.playerId,
+            //             "elo": loserElo
+            //         },
+            //         pgn: this.gameRulesObj.pgn(),
+            //         final_fen: this.gameRulesObj.fen(),
+            //         time: this.time,
+            //         result: result
+            //     }
+                
+                
+            // } else {
+            //     let result = (draw) ? "1/2-1/2" : "0-1";
+            //     data = {
+            //         white: {
+            //             "user_id": this.white.playerId, 
+            //             "elo": loserElo
+                        
+            //         },
+            //         black: {
+            //             "user_id": this.black.playerId,
+            //             "elo": winnerElo
+            //         },
+            //         pgn: this.gameRulesObj.pgn(),
+            //         final_fen: this.gameRulesObj.fen(),
+            //         time: this.time,
+            //         result: result
+            //     }
+            // }
+            
+            
+            // var schess_game = new SChessDB(data);
+            // schess_game.save().then((game) => {
+            //     console.log('saved schess game ', game);
+            // }).catch(e => console.log(e));
             
             //send new ratings to each individual player
             setTimeout( function() {
