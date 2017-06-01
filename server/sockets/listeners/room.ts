@@ -69,6 +69,8 @@ module.exports = function(io, socket, connection) {
         
         if(!room || !player || !room.removePlayer(player)) {
             //TODO error
+            // io.to(room.name).emit('update-room', {room {name: roomName}};
+            connection.emitAllRooms();
             return;
         }
         

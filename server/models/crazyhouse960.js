@@ -31,6 +31,10 @@ var Crazyhouse960Schema = new Schema({
         type: String,
         rquired: true
     },
+    initial_fen: {
+        type: String,
+        required: true
+    },
     time: {
         value: {
             type: Number,

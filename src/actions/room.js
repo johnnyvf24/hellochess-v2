@@ -1,9 +1,89 @@
+import Chess from 'chess.js';
+import Crazyhouse from 'crazyhouse.js';
+import SChess from 'schess.js';
+import {CLOSE_ANALYSIS} from './types';
+
 export function sitDownBoard(details) {
     return {
         type: 'server/sit-down-board',
         payload: details
     }
 }
+
+export function joinAnalysisRoom(game, gameType) {
+    game.gameType = gameType;
+    game.fen = game.final_fen;
+    game.numPlayers = 2;
+    if(gameType === 'standard') {
+        let g = new Chess();
+        g.load_pgn(game.pgn);
+        game.pgn = g.history({ verbose: true});
+        g.reset();
+        game.pgn.map((move) => {
+           g.move(move);
+           move.fen = g.fen();
+        });
+    } else if(gameType === 'schess') {
+        let g = new SChess();
+        g.load_pgn(game.pgn);
+        game.pgn = g.history({ verbose: true});
+        g.reset();
+        game.pgn.map((move) => {
+           g.move(move);
+           move.fen = g.fen();
+        });
+    } else if(gameType === 'crazyhouse')  {
+        let g = new Crazyhouse();
+        g.load_pgn(game.pgn);
+        game.pgn = g.history({ verbose: true});
+        g.reset();
+        game.pgn.map((move) => {
+           g.move(move);
+           move.fen = g.fen();
+        });
+    } else if(gameType === 'crazyhouse960') {
+        let g = new Crazyhouse();
+        g.load_pgn(game.pgn);
+        game.pgn = g.history({ verbose: true});
+        game.pgn[0].fen = game.initial_fen;
+        g.reset();
+        g.load(game.initial_fen);
+        game.pgn.map((move) => {
+           g.move(move);
+           move.fen = g.fen();
+        });
+    }
+    return {
+        type: 'update-room',
+        payload: {
+            gameType,
+            room: {
+                private: true,
+                voiceChat: false,
+                maxPlayers: 10000,
+                name: gameType + game._id.slice(0, 5),
+
+            },
+            times: {
+                b: 2,
+                w: 2,
+            },
+            activePly: 0,
+            mode: 'analysis',
+            time: game.time,
+            game,
+            
+        }
+    }
+}
+
+export function closeAnalysisRoom(roomName) {
+    return {
+        type: CLOSE_ANALYSIS,
+        payload: roomName
+    }
+}
+
 
 export function sitDownComputer(details) {
     return {

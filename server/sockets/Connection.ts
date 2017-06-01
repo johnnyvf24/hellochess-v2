@@ -120,11 +120,12 @@ export default class Connection {
         return this.players.find(player => player.socket.id === socket.id);
     }
     
-    duplicateUser(playerId: string) {
+    duplicateUser(playerId: string, ipaddress) {
         if(!this.players) {
             return false;
         }
-        return this.players.some(player => player.playerId === playerId);
+        
+        return this.players.some(player => (player.playerId === playerId || player.ipaddress === ipaddress) );
     }
     
     updatePlayer(data) {

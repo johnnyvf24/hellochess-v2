@@ -16,7 +16,8 @@ export default class Player {
         private _schess_ratings: Ratings,
         private _fourplayer_ratings: Ratings,
         private _crazyhouse_ratings: Ratings,
-        private _crazyhouse960_ratings: Ratings) {
+        private _crazyhouse960_ratings: Ratings,
+        private _IP: any) {
     }
     
     get standard_ratings(): Ratings { return this._standard_ratings; }
@@ -26,6 +27,7 @@ export default class Player {
     get crazyhouse960_ratings(): Ratings { return this._crazyhouse960_ratings; }
     get alive(): boolean { return this._alive; }
     get playerLevel(): number { return this._playerLevel; }
+    get ipaddress(): any { return this._IP; }
     
     set standard_ratings(ratings: Ratings) { this._standard_ratings = ratings; }
     set schess_ratings(ratings: Ratings) { this._schess_ratings = ratings; }

@@ -135,7 +135,7 @@ class GameButtons extends Component {
             return <div></div>
         }
         const room = openThreads[activeThread];
-        if (room.game.gameStarted == false) {
+        if (room.game.gameStarted == false || room.game.mode === 'analysis') {
             return <div></div>
         }
         if (this.onlyAIs(room.game)) {

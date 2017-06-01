@@ -167,7 +167,7 @@ class Live extends Component {
         if(!this.props.profile.username) {
             return <div></div>
         } else {
-            if(this.props.activeThread != "200") {
+            if(this.props.activeThread !== 200) {
                 let chatWidth = this.state.chatZoom + '%';
                 let boardWidth = this.state.boardZoom + '%';
                 return (

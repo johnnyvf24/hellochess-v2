@@ -4,14 +4,16 @@ import ExistingRoomList from './existing_room_list';
 import Room from '../components/room/room';
 import {mapObject} from '../utils/';
 import {getRecentGames} from '../actions/user';
-import {joinAnalysisRoom} from '../actions/index';
+import {joinAnalysisRoom} from '../actions/room';
 
-import {Panel, ListGroup, ListGroupItem, Col, Row, Popover, OverlayTrigger} from 'react-bootstrap';
+import {PanelGroup, Panel, ListGroup, ListGroupItem, Col, Row, Popover, OverlayTrigger} from 'react-bootstrap';
 
 class GameHistory extends Component {
 
     constructor(props) {
         super(props);
+        this.onViewGame = this.onViewGame.bind(this);
+        this.renderGame = this.renderGame.bind(this);
     }
 
     componentWillMount() {
@@ -26,15 +28,14 @@ class GameHistory extends Component {
 
     }
     
-    onViewGame(game) {
-        this.props.joinAnalysisRoom(game);
+    onViewGame(game, gameType) {
+        this.props.joinAnalysisRoom(game, gameType);
     }
     
-    renderGame(game) {
-
+    renderGame(game, gameType) {
         return (
             <ListGroupItem key={game._id} className="recent-games-list-group-item">
-                <Row onClick={this.onViewGame.bind(this, game)}>
+                <Row onClick={(e) => {this.onViewGame(game, gameType)}}>
                     <Col xs={5} className="game-result-white">
                         <img className="img-responsive img-circle picture-recent-games" src={game.white.user_id.picture} />
                         <div>
@@ -60,54 +61,44 @@ class GameHistory extends Component {
     }
     
     render() {
+        let room = this.props.openThreads[this.props.activeThread];
         if(!this.props.profile || !this.props.recentGames.standard 
             || !this.props.recentGames.schess || !this.props.recentGames.crazyhouse
             || !this.props.recentGames.crazyhouse960) {
             return <div>
             </div>
         }
-
+        
         return (
             <div>
                 {/*-------------STANDARD------------------*/}
                 <h5 className="ribbon-small">
                     <strong className="ribbon-content">
-                        RECENT STANDARD GAMES
+                        RECENT GAMES
                     </strong>
                 </h5>
-                <ListGroup>
-                    { this.props.recentGames.standard.map(this.renderGame.bind(this)) }
-                </ListGroup>
-                
-                {/*-------------SChess------------------*/}
-                <h5 className="ribbon-small">
-                    <strong className="ribbon-content">
-                        RECENT S-CHESS GAMES
-                    </strong>
-                </h5>
-                <ListGroup>
-                    { this.props.recentGames.schess.map(this.renderGame.bind(this)) }
-                </ListGroup>
-                
-                {/*-------------Crazyhouse------------------*/}
-                <h5 className="ribbon-small">
-                    <strong className="ribbon-content">
-                        RECENT CRAZYHOUSE GAMES
-                    </strong>
-                </h5>
-                <ListGroup>
-                    { this.props.recentGames.crazyhouse.map(this.renderGame.bind(this)) }
-                </ListGroup>
-                
-                {/*-------------Crazyhouse960------------------*/}
-                <h5 className="ribbon-small">
-                    <strong className="ribbon-content">
-                        RECENT CRAZYHOUSE960 GAMES
-                    </strong>
-                </h5>
-                <ListGroup>
-                    { this.props.recentGames.crazyhouse960.map(this.renderGame.bind(this)) }
-                </ListGroup>
+                <PanelGroup defaultActiveKey="1" accordion>
+                    <Panel bsStyle="info" header="Standard" eventKey="1">
+                        <ListGroup>
+                            { this.props.recentGames.standard.map( (g) => this.renderGame(g, 'standard')) }
+                        </ListGroup>
+                    </Panel>
+                    <Panel bsStyle="info" header="S-Chess" eventKey="2">
+                        <ListGroup>
+                            { this.props.recentGames.schess.map( (g) => this.renderGame(g, 'schess')) }
+                        </ListGroup>
+                    </Panel>
+                    <Panel bsStyle="info" header="Crazyhouse" eventKey="3">
+                        <ListGroup>
+                            { this.props.recentGames.crazyhouse.map( (g) => this.renderGame(g, 'crazyhouse')) }
+                        </ListGroup>
+                    </Panel>
+                    <Panel bsStyle="info" header="Crazyhouse 960" eventKey="4">
+                        <ListGroup>
+                            { this.props.recentGames.crazyhouse960.map( (g) => this.renderGame(g, 'crazyhouse960')) }
+                        </ListGroup>
+                    </Panel>
+                </PanelGroup>
 
             </div>
         );
@@ -120,8 +111,8 @@ function mapStateToProps(state) {
         activeThread: state.activeThread,
         openThreads: state.openThreads,
         profile: state.auth.profile,
-        recentGames: state.recentGames
+        recentGames: state.recentGames,
     };
 }
 
-export default connect(mapStateToProps, {getRecentGames}) (GameHistory);
+export default connect(mapStateToProps, {getRecentGames, joinAnalysisRoom}) (GameHistory);

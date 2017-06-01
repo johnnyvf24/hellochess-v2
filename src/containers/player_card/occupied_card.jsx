@@ -148,9 +148,14 @@ class OccupiedCard extends Component {
     }
 
     render() {
-        const {profile, room, game, player, time, playerTime, activeThread, gameStarted} = this.props;
+        const {profile, room, game, time, playerTime, activeThread, gameStarted} = this.props;
+        let {player} = this.props;
         if(!profile || !room || !player || !game || !time || !activeThread) {
             return <div></div>
+        }
+        if(room.mode === 'analysis') {
+            player = player.user_id;
+            player.playerId = player._id;
         }
         return (
             <div className={"player-card-border" + this.renderActiveBorder()}>

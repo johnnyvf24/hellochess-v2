@@ -39,38 +39,43 @@ export default class Room extends Component {
 
     render() {
         const {index, value, active} = this.props;
-        return (
-            <div
-                id={"room-chat-" + value.id}
-                key={index} role="tabpanel"
-                className= {index === active ? "tab-pane active" : "tab-pane"}>
-                <Row className="chatbox-top-stats-wrapper">
-                    <span className="chatbox-top-stats">
-                        <RoomSettings value={value}/>
-                        <a  className="pull-right num-user-modal-link"
-                            href="#" onClick={this.openUserModal.bind(this)}>
-                            {value.users.length} users
-                        </a>
-                        <Modal show={this.state.showModal} onHide={this.closeUserModal.bind(this)}>
-                            <Modal.Header closeButton>
-                                <Modal.Title>Room Members</Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body id="room-user-list-modal-body">
-                                <RoomUserList users={value.users}/>
-                            </Modal.Body>
-                            <Modal.Footer>
-                                <Button onClick={this.closeUserModal.bind(this)}>Close</Button>
-                            </Modal.Footer>
-                        </Modal>
-                    </span>
-                </Row>
-                <Row className="chatbox-message-list-wrapper">
-                    <MessageList messages={value.messages} thread={active} />
-                </Row>
-                <Row className="chatbox-input-send-wrapper">
-                    <MessageSend />
-                </Row>
-            </div>
-        )
+        if(value.mode === 'analysis') {
+            return <div>In Analysis Mode!</div>
+        } else {
+            return (
+                <div
+                    id={"room-chat-" + value.id}
+                    key={index} role="tabpanel"
+                    className= {index === active ? "tab-pane active" : "tab-pane"}>
+                    <Row className="chatbox-top-stats-wrapper">
+                        <span className="chatbox-top-stats">
+                            <RoomSettings value={value}/>
+                            <a  className="pull-right num-user-modal-link"
+                                href="#" onClick={this.openUserModal.bind(this)}>
+                                {value.users.length} users
+                            </a>
+                            <Modal show={this.state.showModal} onHide={this.closeUserModal.bind(this)}>
+                                <Modal.Header closeButton>
+                                    <Modal.Title>Room Members</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body id="room-user-list-modal-body">
+                                    <RoomUserList users={value.users}/>
+                                </Modal.Body>
+                                <Modal.Footer>
+                                    <Button onClick={this.closeUserModal.bind(this)}>Close</Button>
+                                </Modal.Footer>
+                            </Modal>
+                        </span>
+                    </Row> 
+                    <Row className="chatbox-message-list-wrapper">
+                        <MessageList messages={value.messages} thread={active} />
+                    </Row>
+                    <Row className="chatbox-input-send-wrapper">
+                        <MessageSend />
+                    </Row>
+                </div>
+            );
+        }
+        
     }
 }

@@ -292,6 +292,10 @@ export default class CrazyHouse extends Game {
                 }
             }
             
+            if(this.set_960) {
+                data.initial_fen = this.startPos;
+            }
+            
             let crazy_game = (this.set_960) ? new Crazyhouse960Game(data) : new CrazyhouseGame(data);
             if(crazy_game !== null) {
                 crazy_game.save().then((game) => {
