@@ -74,7 +74,7 @@ class GameHistory extends Component {
                 {/*-------------STANDARD------------------*/}
                 <h5 className="ribbon-small">
                     <strong className="ribbon-content">
-                        RECENT GAMES
+                       MY RECENT GAMES
                     </strong>
                 </h5>
                 <PanelGroup defaultActiveKey="1" accordion>
