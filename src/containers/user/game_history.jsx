@@ -33,7 +33,7 @@ class GameHistory extends Component {
         let roomName = gameType + game._id.slice(0, 5);
         this.props.joinAnalysisRoom(game, gameType, roomName);
         this.props.selectedRoom(roomName);
-        browserHistory.goBack();
+        browserHistory.push('/live');
     }
     
     renderGame(game, gameType) {
