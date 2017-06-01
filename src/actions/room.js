@@ -42,7 +42,7 @@ export function joinAnalysisRoom(game, gameType) {
            move.fen = g.fen();
         });
     } else if(gameType === 'crazyhouse960') {
-        let g = new Crazyhouse();
+        let g = new Crazyhouse({960: true});
         g.load_pgn(game.pgn);
         game.pgn = g.history({ verbose: true});
         game.pgn[0].fen = game.initial_fen;
