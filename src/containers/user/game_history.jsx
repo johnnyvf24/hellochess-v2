@@ -36,6 +36,18 @@ class GameHistory extends Component {
         browserHistory.push('/live');
     }
     
+    renderFourGame(game, gameType) {
+        return (
+            <ListGroupItem key={game._id} className="recent-games-list-group-item">
+                <Row onClick={(e) => {this.onViewGame(game, gameType)}}>
+                    <Col xs={12} className="game-result-white">
+                        {game.white.user_id.username}[{game.white.elo}] vs {game.black.user_id.username}[{game.black.elo}] vs {game.gold.user_id.username}[{game.gold.elo}] vs {game.red.user_id.username}[{game.red.elo}] 
+                    </Col>
+                </Row>
+            </ListGroupItem>
+        );
+    }
+    
     renderGame(game, gameType) {
         return (
             <ListGroupItem key={game._id} className="recent-games-list-group-item">
@@ -81,10 +93,15 @@ class GameHistory extends Component {
                        {this.props.profile.username}'s RECENT GAMES
                     </strong>
                 </h5>
-                <PanelGroup defaultActiveKey="1" accordion>
+                <PanelGroup accordion>
                     <Panel bsStyle="info" header="Standard" eventKey="1">
                         <ListGroup>
                             { this.props.recentGames.standard.map( (g) => this.renderGame(g, 'standard')) }
+                        </ListGroup>
+                    </Panel>
+                    <Panel bsStyle="info" header="Four player chess" eventKey="4">
+                        <ListGroup>
+                            { this.props.recentGames.four_player.map( (g) => this.renderFourGame(g, 'four-player')) }
                         </ListGroup>
                     </Panel>
                     <Panel bsStyle="info" header="S-Chess" eventKey="2">

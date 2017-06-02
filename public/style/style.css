@@ -1028,6 +1028,10 @@ tr:hover {
     text-align: center;
 }
 
+.recent-games-list-group-item:hover {
+    cursor:pointer;
+}
+
 .picture-recent-games {
     max-height: 40px;
     display: inline;

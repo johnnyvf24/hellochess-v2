@@ -1,5 +1,6 @@
 import Chess from 'chess.js';
 import Crazyhouse from 'crazyhouse.js';
+import FourChess from '../../common/fourchess';
 import SChess from 'schess.js';
 import {CLOSE_ANALYSIS} from './types';
 
@@ -52,6 +53,28 @@ export function joinAnalysisRoom(game, gameType, roomName) {
            g.move(move);
            move.fen = g.fen();
         });
+    } else if(gameType === 'four-player') {
+        let g = new FourChess();
+        
+        game.pgn = game.pgn.trim();
+        let moves = game.pgn.split(' ');
+        moves.map((move) => {
+            console.log(move);
+            if(move.length > 1) {
+                let fromTo = move.split(':')[1];
+                let from = fromTo.split('-')[0];
+                let to = fromTo.split('-')[1];
+                g.move({
+                    from: from,
+                    to: to,
+                    promotion: 'q'
+                });
+            }
+            
+        });
+        
+        game.numPlayers = 4;
+        game.pgn = g.history();
     }
     return {
         type: 'update-room',
@@ -67,6 +90,8 @@ export function joinAnalysisRoom(game, gameType, roomName) {
             times: {
                 b: 2,
                 w: 2,
+                g: 2,
+                r: 2,
             },
             activePly: 0,
             mode: 'analysis',

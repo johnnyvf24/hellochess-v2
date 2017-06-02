@@ -15,6 +15,8 @@ var FourChess = function (fen) {
     var blackOut = false;
     var goldOut = false;
     var redOut = false;
+    
+    var moveHistory = [];
 
     var numOut = 0;
     var nWhiteOut = 0;
@@ -2000,11 +2002,20 @@ var FourChess = function (fen) {
                         default:
                             BOARD[SQUARES[move.to]] = piece;
                     }
+                    
+                    moveHistory.push({
+                       color: TURN,
+                       san: move.from + '-' + move.to,
+                       from: move.from,
+                       to: move.to,
+                       fen: generateFen()
+                    });
 
                     setImmediateTurn();
                     // setNextTurn();
 
                     status.turn = TURN;
+                    
 
                     return status;
                 }
@@ -2020,6 +2031,9 @@ var FourChess = function (fen) {
         game_over: function() {
             return gameOver();
         },
+        history: function() {
+            return moveHistory;
+        },
         reset: function() {
             loadFen(DEFAULT_POSITION);
             TURN= WHITE;
@@ -2027,6 +2041,7 @@ var FourChess = function (fen) {
             blackOut = false;
             goldOut = false;
             redOut = false;
+            moveHistory = [];
         },
         getPieceCount: function() {
             var count = 0;
