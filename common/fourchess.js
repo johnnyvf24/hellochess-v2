@@ -1863,14 +1863,7 @@ var FourChess = function (fen) {
                     var piece = BOARD[SQUARES[move.from]];
                     BOARD[SQUARES[move.from]] = EMPTY;
                     
-                    var moveString;
-                    if (BOARD[SQUARES[move.to]] !== EMPTY) {
-                        // add a capture move to the pgn
-                        moveString = TURN + ":" + move.from + "x" + move.to;
-                    } else {
-                        // add a non-capture move to the pgn
-                        moveString = TURN + ":" + move.from + "-" + move.to;
-                    }
+                    var moveString = moveString = TURN + ":" + move.from + "-" + move.to;
                     pgn += moveString + " ";
 
                     //a castle occurred
