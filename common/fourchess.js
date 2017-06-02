@@ -1825,6 +1825,11 @@ var FourChess = function (fen) {
             if (move.piece && move.piece.charAt(0).toLowerCase() !== TURN) {
                 return null;
             }
+            
+            if(inCheckMate()) {
+                setImmediateTurn();
+            }
+            
             // make sure the piece that is being moved is
             // on the correct square
             if (move.piece && SQUARE_STATUS[move.piece] !== BOARD[SQUARES[move.from]]) {
@@ -1863,7 +1868,8 @@ var FourChess = function (fen) {
                     var piece = BOARD[SQUARES[move.from]];
                     BOARD[SQUARES[move.from]] = EMPTY;
                     
-                    var moveString = moveString = TURN + ":" + move.from + "-" + move.to;
+                    var moveString = TURN + ":" + move.from + "-" + move.to;
+                    
                     pgn += moveString + " ";
 
                     //a castle occurred
@@ -2003,8 +2009,9 @@ var FourChess = function (fen) {
                        to: move.to,
                        fen: generateFen()
                     });
-
+                    
                     setImmediateTurn();
+                    
                     // setNextTurn();
 
                     status.turn = TURN;
