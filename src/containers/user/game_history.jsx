@@ -87,12 +87,6 @@ class GameHistory extends Component {
         
         return (
             <div>
-                {/*-------------STANDARD------------------*/}
-                <h5 className="ribbon-small">
-                    <strong className="ribbon-content">
-                       {this.props.profile.username}'s RECENT GAMES
-                    </strong>
-                </h5>
                 <PanelGroup accordion>
                     <Panel bsStyle="info" header="Standard" eventKey="1">
                         <ListGroup>

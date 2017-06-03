@@ -172,10 +172,6 @@ body .container-fluid {
     display: block;
 }
 
-.rating-card {
-    margin-top: 15px;
-}
-
 #left-chatbox {
     height: 100%;
 }
@@ -1252,4 +1248,14 @@ div.schess-rook-toggle {
 
 .promotion-button:hover img {
     transform: scale(1.0);
+}
+
+#profile-tabs-container {
+    padding-top: 30px;
+}
+
+#profile-tabs-panel {
+    padding: 0;
+    background-color: white;
+    border-radius: 5px;
 }

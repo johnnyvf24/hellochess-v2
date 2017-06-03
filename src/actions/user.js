@@ -28,18 +28,18 @@ export function getRecentGames(profileId) {
             dispatch({type: RECENT_GAMES, payload: res.data});
         })
         .catch(function (error) {
-            const notificationOpts = {
-                // uid: 'once-please', // you can specify your own uid if required
-                title: 'Error could not get recent Games!',
-                message: `${error}`,
-                position: 'tc',
-                autoDismiss: 0
-            };
+            // const notificationOpts = {
+            //     // uid: 'once-please', // you can specify your own uid if required
+            //     title: 'Error could not get recent Games!',
+            //     message: `${error}`,
+            //     position: 'tc',
+            //     autoDismiss: 0
+            // };
 
-            //Show failed log in
-            dispatch(
-                Notifications.error(notificationOpts)
-            );
+            // //Show failed log in
+            // dispatch(
+            //     Notifications.error(notificationOpts)
+            // );
         });
     };
 }

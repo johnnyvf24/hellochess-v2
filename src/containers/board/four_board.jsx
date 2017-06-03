@@ -24,6 +24,7 @@ class FourBoard extends Component {
             onDragStart: this.onDragStart,
             onDragMove: this.onDragMove,
             onDrop: this.onDrop,
+            pieceTheme: '/img/chesspieces/wikipedia/{piece}.png',
             moveSpeed: 'fast',
             onSnapbackEnd: this.onSnapbackEnd.bind(this),
             onMouseoutSquare: this.onMouseoutSquare,
@@ -456,6 +457,9 @@ class FourBoard extends Component {
                 }
             }
         }
+        if(this.props.fen) {
+            this.board.position(this.props.fen);
+        }
         window.addEventListener('resize', (event) => {
             this.boardRedraw();
         });
@@ -473,6 +477,7 @@ class FourBoard extends Component {
             && this.props.move.to == this.shadeSquareDest) {
                 this.shadeLastMove();
         }
+        
         return (
             <div id="board"></div>
         );
