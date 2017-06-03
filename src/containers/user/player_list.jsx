@@ -7,6 +7,7 @@ import { getPlayerList } from '../../actions/user';
 import {Panel, Button, Thumbnail, Col, Row, Grid} from 'react-bootstrap';
 import InfiniteScroll from 'react-infinite-scroller';
 
+
 class PlayerList extends Component {
 
     constructor(props) {
@@ -36,7 +37,12 @@ class PlayerList extends Component {
                         <h3>{player.username ? player.username : "unknown"}</h3>
                         <p>...</p>
                         <p>
-                            <Button bsStyle="primary">View Profile</Button>
+                            <Button 
+                                bsStyle="primary"
+                                onClick={(e) => browserHistory.push(`/profile/${player._id}`)}>
+                                >
+                            View Profile
+                            </Button>
                         </p>
                     </div>
                 </div>
