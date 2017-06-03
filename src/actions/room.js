@@ -68,6 +68,7 @@ export function joinAnalysisRoom(game, gameType, roomName) {
                     from: from,
                     to: to,
                     promotion: 'q',
+                    color: move.split(':')[0]
                 });
             }
             

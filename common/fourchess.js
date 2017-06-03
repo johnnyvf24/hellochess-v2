@@ -1868,7 +1868,7 @@ var FourChess = function (fen) {
                     var piece = BOARD[SQUARES[move.from]];
                     BOARD[SQUARES[move.from]] = EMPTY;
                     
-                    var moveString = TURN + ":" + move.from + "-" + move.to;
+                    var moveString = move.color ? move.color : TURN + ":" + move.from + "-" + move.to;
                     
                     pgn += moveString + " ";
 
@@ -2003,7 +2003,7 @@ var FourChess = function (fen) {
                     }
                     
                     moveHistory.push({
-                       color: TURN,
+                       color: move.color ? move.color : TURN,
                        san: move.from + '-' + move.to,
                        from: move.from,
                        to: move.to,
