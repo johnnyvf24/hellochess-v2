@@ -1830,6 +1830,10 @@ var FourChess = function (fen) {
                 setImmediateTurn();
             }
             
+            if(move.color) {
+                TURN = move.color;
+            }
+            
             // make sure the piece that is being moved is
             // on the correct square
             if (move.piece && SQUARE_STATUS[move.piece] !== BOARD[SQUARES[move.from]]) {
@@ -1868,7 +1872,7 @@ var FourChess = function (fen) {
                     var piece = BOARD[SQUARES[move.from]];
                     BOARD[SQUARES[move.from]] = EMPTY;
                     
-                    var moveString = move.color ? move.color : TURN + ":" + move.from + "-" + move.to;
+                    var moveString = TURN + ":" + move.from + "-" + move.to;
                     
                     pgn += moveString + " ";
 
@@ -2003,7 +2007,7 @@ var FourChess = function (fen) {
                     }
                     
                     moveHistory.push({
-                       color: move.color ? move.color : TURN,
+                       color: TURN,
                        san: move.from + '-' + move.to,
                        from: move.from,
                        to: move.to,
