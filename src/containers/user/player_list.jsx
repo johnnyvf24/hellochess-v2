@@ -19,7 +19,6 @@ class PlayerList extends Component {
     }
     
     loadMore(i) {
-        console.log('here');
         this.props.getPlayerList(i);
     }
 
@@ -40,8 +39,7 @@ class PlayerList extends Component {
                             <Button 
                                 bsStyle="primary"
                                 onClick={(e) => browserHistory.push(`/profile/${player._id}`)}>
-                                >
-                            View Profile
+                                View Profile
                             </Button>
                         </p>
                     </div>
@@ -80,7 +78,7 @@ class PlayerList extends Component {
                                 </h1>
                             </div>
                             <InfiniteScroll
-                                pageStart={0}
+                                pageStart={playerList/24}
                                 hasMore={hasMore}
                                 loadMore={this.loadMore.bind(this)}
                                 loader={<div className="loader">Loading ...</div>}
