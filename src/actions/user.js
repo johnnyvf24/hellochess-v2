@@ -99,7 +99,7 @@ export function getPlayerList (n) {
         const tokenHeader = generateTokenHeader();
         axios.get(`${ROOT_URL}/api/playerlist/${n}`, tokenHeader)
         .then((res) => {
-            if(res.data.length < 24) {
+            if(res.data.length < 12) {
                 dispatch({type: PLAYERLIST_DONE});   
             }
             return dispatch({type: PLAYERLIST_SUCCESS, payload: res.data});

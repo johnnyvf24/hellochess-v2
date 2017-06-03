@@ -48,7 +48,7 @@ exports.getPlayers = (req, res) => {
         return res.status(404).send("start/end is not a number");
     }
     
-    User.paginate({ "username": { $regex: /[A-Za-z0-9]+/ } }, { offset: n, limit: 48} )
+    User.paginate({ "username": { $regex: /[A-Za-z0-9]+/ } }, { offset: n, limit: 24, sort: {updated_at: -1}} )
         .then((users) => {
             res.send(users.docs);
         })
