@@ -59,7 +59,6 @@ export function joinAnalysisRoom(game, gameType, roomName) {
         game.pgn = game.pgn.trim();
         let moves = game.pgn.split(' ');
         moves.map((move) => {
-            console.log(move);
             if(move.length > 1) {
                 let fromTo = move.split(':')[1];
                 let from = fromTo.split('-')[0];

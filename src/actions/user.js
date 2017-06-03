@@ -5,7 +5,9 @@ import {
     ROOT_URL,
     VIEW_PROFILE,
     VIEW_LEADERBOARD,
-    RECENT_GAMES
+    RECENT_GAMES,
+    PLAYERLIST_SUCCESS,
+    PLAYERLIST_DONE
 } from './types';
 
 export function clearRecentGames() {
@@ -79,6 +81,34 @@ export function getLeaderboard () {
             const notificationOpts = {
                 // uid: 'once-please', // you can specify your own uid if required
                 title: 'Error could not get leaderboard!',
+                message: `${error}`,
+                position: 'tc',
+                autoDismiss: 0
+            };
+
+            //Show failed log in
+            dispatch(
+                Notifications.error(notificationOpts)
+            );
+        });
+    };
+}
+
+export function getPlayerList (n) {
+    return (dispatch) => {
+        const tokenHeader = generateTokenHeader();
+        axios.get(`${ROOT_URL}/api/playerlist/${n}`, tokenHeader)
+        .then((res) => {
+            if(res.data.length < 24) {
+                dispatch({type: PLAYERLIST_DONE});   
+            }
+            return dispatch({type: PLAYERLIST_SUCCESS, payload: res.data});
+            
+        })
+        .catch(function (error) {
+            const notificationOpts = {
+                // uid: 'once-please', // you can specify your own uid if required
+                title: 'Error could not get players!',
                 message: `${error}`,
                 position: 'tc',
                 autoDismiss: 0

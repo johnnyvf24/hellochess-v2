@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate');
 const Schema = mongoose.Schema;
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
@@ -220,6 +221,9 @@ UserSchema.post('findOne', function(next) {
     delete user.password;
 });
 
+UserSchema.plugin(mongoosePaginate);
+
 var User = mongoose.model('User', UserSchema);
+
 
 module.exports = {User};

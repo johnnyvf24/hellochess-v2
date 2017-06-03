@@ -18,7 +18,7 @@ import { logout, saveUsername, clearError, userConnect, changeZoom} from '../act
 import {enableMic, disableMic } from '../actions/room';
 import Slider, { Range } from 'rc-slider';
 
-import {Grid, Row, Col, Button, Dropdown, MenuItem, Alert} from 'react-bootstrap';
+import {Grid, Row, Col, Button, Dropdown, MenuItem, Alert, ButtonGroup} from 'react-bootstrap';
 
 class CustomToggle extends React.Component {
   constructor(props, context) {
@@ -385,6 +385,7 @@ class Live extends Component {
                         <NewGame/>
                         <div className="pull-right">
                             <div id="leaderboard-button-wrapper">
+                            <ButtonGroup>
                                 <LinkContainer
                                     id="leaderboard-button"
                                     to={{pathname: '/leaderboard'}}>
@@ -392,6 +393,16 @@ class Live extends Component {
                                         Leaderboard
                                     </Button>
                                 </LinkContainer>
+                                <LinkContainer
+                                    to={{pathname: '/players'}}>
+                                    <Button bsStyle="info">
+                                        Players
+                                    </Button>
+                                </LinkContainer>
+                             </ButtonGroup>
+                            
+                                
+                                
                             </div>
                             {this.renderProfileMenu()}
                         </div>

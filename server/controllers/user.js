@@ -41,6 +41,23 @@ exports.getUserProfile = (req, res, next) => {
         });
 }
 
+exports.getPlayers = (req, res) => {
+    const n = parseInt(req.params.n, 10);
+    
+    if(typeof(n) !== "number") {
+        return res.status(404).send("start/end is not a number");
+    }
+    
+    User.paginate({ "username": { $regex: /[A-Za-z0-9]+/ } }, { offset: n, limit: 48} )
+        .then((users) => {
+            res.send(users.docs);
+        })
+        .catch((e) => {
+            console.log(e);
+            res.status(400).send();
+        });
+}
+
 exports.getLeaderboard = (req, res, next) => {
 
     let leaderboard = {
@@ -201,3 +218,4 @@ exports.getLeaderboard = (req, res, next) => {
 
     });
 }
+

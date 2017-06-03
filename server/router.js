@@ -20,6 +20,10 @@ module.exports = function(app) {
         res.sendFile(path.join(__dirname, "../public/index.html"));
     });
     
+    app.get("/players", (req, res) => {
+        res.sendFile(path.join(__dirname, "../public/index.html"));
+    });
+    
     app.get("/leaderboard", (req, res) => {
         res.sendFile(path.join(__dirname, "../public/index.html"));
     });
@@ -44,6 +48,7 @@ module.exports = function(app) {
     app.patch('/api/users/:id', requireAuth, User.updateUser);
     app.get('/api/users/:id', requireAuth, User.getUserProfile);
     app.get('/api/leaderboard', User.getLeaderboard);
+    app.get('/api/playerlist/:n/', User.getPlayers);
     app.get('/api/games/recentgames/:id', requireAuth, Games.getRecentGames);
 
 }

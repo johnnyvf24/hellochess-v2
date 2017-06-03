@@ -8,6 +8,7 @@ import Profile from './containers/user/profile';
 import RequireAuth from './components/auth/require_auth';
 import Leaderboard from './containers/user/leaderboard';
 import TosPrivacy from './components/terms_of_service_privacy';
+import PlayerList from './containers/user/player_list';
 
 export default (
     <Route path="/" component={App} >
@@ -16,5 +17,6 @@ export default (
         <Route path="/profile/:id" component={Profile}  />
         <Route path="/leaderboard" component={Leaderboard} />
         <Route path="/tosandprivacy" component={TosPrivacy} />
+        <Route path="/players" component={PlayerList} />
     </Route>
 );
