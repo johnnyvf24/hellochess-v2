@@ -84,6 +84,10 @@ class AuthCard extends Component {
                                     className="landing-video"
                                 />
                             </div>
+                            
+                            <div className="text-center tos-privacy-container">
+                                <Link to="/tosandprivacy" >Terms of Service and Privacy Policy</Link>
+                            </div>
                         </Col>
                     </Col>
                     <Col xs={12} sm={3} md={3} lg={3} >

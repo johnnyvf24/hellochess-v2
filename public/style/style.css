@@ -1259,3 +1259,7 @@ div.schess-rook-toggle {
     background-color: white;
     border-radius: 5px;
 }
+
+.tos-privacy-container {
+    padding-top: 10px;
+}

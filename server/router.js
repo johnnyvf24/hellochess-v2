@@ -31,6 +31,10 @@ module.exports = function(app) {
     app.get("/robots.txt", (req, res) => {
         res.sendFile(path.join(__dirname, "../public/robots.txt"));
     });
+    
+    app.get("/tosandprivacy", (req, res) => {
+        res.sendFile(path.join(__dirname, "../public/index.html"));
+    });
 
     //Authentication routes
     app.post('/api/users/signup', Authentication.signup);
