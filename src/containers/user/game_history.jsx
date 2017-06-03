@@ -93,22 +93,22 @@ class GameHistory extends Component {
                             { this.props.recentGames.standard.map( (g) => this.renderGame(g, 'standard')) }
                         </ListGroup>
                     </Panel>
-                    <Panel bsStyle="info" header="Four player chess" eventKey="4">
+                    <Panel bsStyle="info" header="Four player chess" eventKey="2">
                         <ListGroup>
                             { this.props.recentGames.four_player.map( (g) => this.renderFourGame(g, 'four-player')) }
                         </ListGroup>
                     </Panel>
-                    <Panel bsStyle="info" header="S-Chess" eventKey="2">
+                    <Panel bsStyle="info" header="S-Chess" eventKey="3">
                         <ListGroup>
                             { this.props.recentGames.schess.map( (g) => this.renderGame(g, 'schess')) }
                         </ListGroup>
                     </Panel>
-                    <Panel bsStyle="info" header="Crazyhouse" eventKey="3">
+                    <Panel bsStyle="info" header="Crazyhouse" eventKey="4">
                         <ListGroup>
                             { this.props.recentGames.crazyhouse.map( (g) => this.renderGame(g, 'crazyhouse')) }
                         </ListGroup>
                     </Panel>
-                    <Panel bsStyle="info" header="Crazyhouse 960" eventKey="4">
+                    <Panel bsStyle="info" header="Crazyhouse 960" eventKey="5">
                         <ListGroup>
                             { this.props.recentGames.crazyhouse960.map( (g) => this.renderGame(g, 'crazyhouse960')) }
                         </ListGroup>
