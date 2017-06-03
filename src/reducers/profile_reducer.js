@@ -19,7 +19,7 @@ export function playerList(state = {
     switch(action.type) {
         case PLAYERLIST_SUCCESS:
             newState = Object.assign({}, state);
-            newState.players = action.payload;
+            newState.players = newState.players.concat(action.payload);
             return newState;
         case PLAYERLIST_DONE:
             newState = Object.assign({}, state);
