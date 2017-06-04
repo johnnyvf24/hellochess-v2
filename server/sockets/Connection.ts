@@ -5,10 +5,12 @@ import FourGame from '../game_models/games/FourGame';
 import Standard from '../game_models/games/Standard';
 import CrazyHouse from '../game_models/games/CrazyHouse';
 import SChess from '../game_models/games/SChess';
+import QueueItem from './../game_models/matchmaking/QueueItem';
 
 export default class Connection {
     private players: Player[];
     private rooms: Room[];
+    private _queue: QueueItem[] = [];
     
     constructor(private io) {
         this.players = [];
@@ -186,5 +188,44 @@ export default class Connection {
     
     getNumberOfPlayers() {
         return this.players.length;
+    }
+    
+    addQueueItem(entry: QueueItem) {
+        this._queue.push(entry);
+    }
+    
+    removeQueueEntryAtIndex(i: number) {
+        this._queue.splice(i, 1);
+    }
+    
+    removePlayerFromQueue(player: Player) {
+        
+        let index: number = null;
+        
+        this._queue.map( (entry: QueueItem, i: number) => {
+            if(entry.player.playerId === player.playerId) {
+                index = i;
+            } 
+        });
+        
+        if(index !== null) {
+            this.removeQueueEntryAtIndex(index);
+        }
+    }
+    
+    printQueue(): void {
+        if(this._queue.length === 0) {
+            console.log('empty queue');
+        }
+        
+        this._queue.map( (entry: QueueItem, i: number) => {
+            console.log(entry.print());
+        });
+        
+        console.log();
+    }
+    
+    get queue() : QueueItem[] {
+        return this._queue;
     }
 }

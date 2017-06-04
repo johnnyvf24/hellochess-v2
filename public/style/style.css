@@ -1263,3 +1263,16 @@ div.schess-rook-toggle {
 .tos-privacy-container {
     padding-top: 10px;
 }
+
+.btn-preset-row {
+    padding-top: 20px;
+    
+}
+
+.match-searching-row {
+    padding-top: 30px;
+}
+
+.cancel-pairing-btn {
+    margin-top: 10px;
+}

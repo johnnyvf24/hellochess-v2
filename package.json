@@ -80,6 +80,7 @@
     "react-google-login": "^2.8.9",
     "react-infinite-scroller": "^1.0.12",
     "react-loading": "0.0.9",
+    "react-loading-animation": "^1.2.1",
     "react-modal-dialog": "^4.0.3",
     "react-notification-system": "^0.2.14",
     "react-notification-system-redux": "^1.1.2",

@@ -50,3 +50,23 @@ export function recentGames(state = [], action) {
             return state;
     }
 }
+
+export function matchmaking(state = {
+    searching: false,
+}, action) {
+    switch(action.type) {
+        case 'in-queue':
+            return {
+                searching: true,
+                timeControl: action.payload.timeControl,
+                increment: action.payload.increment,
+                gameType: action.payload.gameType,
+            };
+        case 'stopped-pairing':
+            let newState = Object.assign({}, state);
+            newState.searching = false;
+            return newState;
+        default:
+            return state;
+    }
+}

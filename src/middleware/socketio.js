@@ -65,6 +65,12 @@ export function socketIoMiddleware(store) {
             case 'server/kill-ais':
                 socket.emit('kill-ais', action.payload);
                 break;
+            case 'server/pair-me':
+                socket.emit('pair-me', action.payload);
+                break;
+            case 'server/stop-pairing':
+                socket.emit('stop-pairing');
+                break;
         } 
      
         return result;
@@ -179,6 +185,19 @@ export default function(store) {
     
     socket.on('duplicate-login', data => {
         store.dispatch({type: 'duplicate-login'})
+    });
+    
+    socket.on('in-queue', data => {
+        store.dispatch({type: 'in-queue', payload: data}); 
+    });
+    
+    socket.on('stopped-pairing', data => {
+        store.dispatch({type: 'stopped-pairing'}); 
+    });
+    
+    socket.on('matchmaking-complete', data => {
+        store.dispatch({type: 'SELECTED_ROOM', payload: data});
+        store.dispatch({type: 'stopped-pairing'}); 
     });
 }
 

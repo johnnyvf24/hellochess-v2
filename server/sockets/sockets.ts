@@ -11,5 +11,6 @@ module.exports.socketServer = function(io) {
     io.on('connection', (socket) => {
         require('./listeners/connection')(io, socket, conn);
         require('./listeners/room')(io, socket, conn);
+        require('./listeners/matchmaking')(io, socket, conn);
     });
 };

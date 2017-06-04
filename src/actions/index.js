@@ -223,7 +223,7 @@ export function joinRoom(name, gameOptions = initGameOptions) {
     return (dispatch) => {
         let obj = {};
         gameOptions.room.name = name;
-        gameOptions.activePly
+        gameOptions.activePly;
         obj = gameOptions;
 
         return dispatch({

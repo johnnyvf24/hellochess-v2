@@ -4,8 +4,11 @@ import Room from '../../game_models/rooms/Room';
 module.exports = function(io, socket, connection) {
     
     function disconnect() {
-                //retrieve the user which has disconnected
+        //retrieve the user which has disconnected
         let player: Player = connection.getPlayerBySocket(socket);
+        
+        //If the player was searching for a game remove them from that game
+        connection.removePlayerFromQueue(player);
         
         //get a list of rooms in which the player is in
         let rooms: Room [] = connection.getPlayerRoomsByPlayer(player);
@@ -89,5 +92,6 @@ module.exports = function(io, socket, connection) {
     
     socket.on('disconnect', (reason) => {
         disconnect();
+        connection.printQueue();
     });
 };

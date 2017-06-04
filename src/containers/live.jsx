@@ -8,6 +8,7 @@ import {LinkContainer} from 'react-router-bootstrap';
 var Loading = require('react-loading');
 
 import SearchBar from '../components/search_bar';
+import QuickMatch from './presets/quick_match';
 import BoardWrapper from './board/board_wrapper';
 import RoomViewer from '../containers/room_viewer';
 import NewGame from './new_game';
@@ -201,6 +202,7 @@ class Live extends Component {
                             <RoomViewer />
                         </Col>
                         <Col xs={12} sm={8} md={8} lg={7}>
+                            <QuickMatch />
                         </Col>
                     </Row>
                 );
@@ -400,9 +402,6 @@ class Live extends Component {
                                     </Button>
                                 </LinkContainer>
                              </ButtonGroup>
-                            
-                                
-                                
                             </div>
                             {this.renderProfileMenu()}
                         </div>

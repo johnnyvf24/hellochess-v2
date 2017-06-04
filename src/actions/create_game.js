@@ -10,6 +10,25 @@ import {
     TOGGLE_PRIVATE
 } from './types';
 
+export function startPairing(gameType, timeControl, increment) {
+    return (dispatch) => {
+        return dispatch({
+            type: 'server/pair-me',
+            payload: {
+                timeControl,
+                increment,
+                gameType
+            }
+        });
+    }
+}
+
+export function stopPairing() {
+    return {
+        type: 'server/stop-pairing',
+    }
+}
+
 export function selectedGameType(value) {
     return {
         type: SELECTED_GAME_TYPE,

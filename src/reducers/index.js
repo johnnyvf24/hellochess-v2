@@ -6,7 +6,7 @@ import FourChess from '../../common/fourchess';
 import rooms from './rooms_reducer';
 import AuthReducer from './auth_reducer';
 import newGameOptions from './new_game_reducer';
-import currentProfile, {playerList, leaderboard, recentGames} from './profile_reducer';
+import currentProfile, {playerList, leaderboard, recentGames, matchmaking} from './profile_reducer';
 import openThreads from './open_threads_reducer';
 
 import {SELECTED_ROOM, LOGOUT_SUCCESS, CLOSE_ANALYSIS} from '../actions/types';
@@ -61,7 +61,8 @@ const rootReducer = combineReducers({
     form: formReducer,
     recentGames,
     playerList,
-    settings
+    settings,
+    matchmaking
 });
 
 export default rootReducer;
