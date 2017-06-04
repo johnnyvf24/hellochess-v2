@@ -78,7 +78,7 @@ class PlayerList extends Component {
                                 </h1>
                             </div>
                             <InfiniteScroll
-                                pageStart={playerList/24}
+                                pageStart={playerList.length ? playerList.length/24 : 0}
                                 hasMore={hasMore}
                                 loadMore={this.loadMore.bind(this)}
                                 loader={<div className="loader">Loading ...</div>}
