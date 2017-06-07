@@ -65,7 +65,7 @@ class EmptyCard extends Component {
         this.props.sitDownComputer(obj);
     }
     
-    renderAIButtons() {
+    renderPlayButtons() {
         if (this.props.gameType !== "schess") {
             return (
                 <Row>
@@ -102,18 +102,31 @@ class EmptyCard extends Component {
             );
         }
     }
+    
+    renderPlayButtonsBasedOnRoomMode() {
+        if (this.props.roomMode === "match") {
+            if (this.props.allowedPlayerIDs.includes(this.props.profile._id)) {
+                console.log("match mode, player allowed");
+                return this.renderPlayButtons();
+            } else {
+                console.log("match mode, player NOT allowed");
+                return (<Row></Row>);
+            }
+        } else {
+            console.log("not match mode, rendering play buttons");
+            return this.renderPlayButtons();
+        }
+    }
 
     render() {
-        const {game} = this.props;
-        let time = game.time;
+        const {room} = this.props;
+        let time = room.time;
         if(!time) {
             return <div></div>
         }
-        
-
         return (
             <Panel className={"player-card " + this.props.colorClass}>
-                {this.renderAIButtons()}
+                {this.renderPlayButtonsBasedOnRoomMode()}
                 <h4 className="player-time-info pull-right">{`${time.value}:00`}</h4>
             </Panel>
         );
@@ -121,12 +134,20 @@ class EmptyCard extends Component {
 }
 
 function mapStateToProps(state) {
+    let profile = state.auth.profile;
+    let activeThread = state.activeThread;
+    let room = state.openThreads[state.activeThread];
+    let gameType = room.game.gameType;
+    let roomMode = room.room.roomMode;
+    let allowedPlayerIDs = room.room.allowedPlayerIDs;
     return {
-        profile: state.auth.profile,
-        activeThread: state.activeThread,
-        game: state.openThreads[state.activeThread],
-        gameType: state.openThreads[state.activeThread].game.gameType
-    }
+        profile,
+        activeThread,
+        room,
+        gameType,
+        roomMode,
+        allowedPlayerIDs
+    };
 }
 
 

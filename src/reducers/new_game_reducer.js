@@ -10,7 +10,8 @@ const initialState = {
     room: {
         voiceChat: false,
         maxPlayers: 50,
-        private: false
+        private: false,
+        roomMode: 'open-table'
     }
 }
 
@@ -35,6 +36,8 @@ export default function newGameOptions (state=initialState, action) {
             return {...state, room: {...state.room, maxPlayers: action.payload}}
         case ActionTypes.TOGGLE_PRIVATE:
             return {...state, room: {...state.room, private: !state.room.private}}
+        case 'selected-room-mode':
+            return {...state, room: {...state.room, roomMode: action.payload}};
         default:
             return state;
     }

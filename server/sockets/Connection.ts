@@ -1,5 +1,6 @@
 import Player from '../game_models/players/Player';
 import Room from '../game_models/rooms/Room';
+import {User} from '../models/user';
 //Game Rules
 import FourGame from '../game_models/games/FourGame';
 import Standard from '../game_models/games/Standard';
@@ -17,7 +18,7 @@ export default class Connection {
         this.rooms = [];
     }
     
-    createNewRoom(roomName: string, gameType: string, time: any, roomObj: any): Room {
+    createNewRoom(roomName: string, gameType: string, time: any, roomObj: any, host: any): Room {
         let newRoomName;
         let roomCopyCounter = 1;
         let room: Room = this.getRoomByName(roomName);
@@ -52,9 +53,24 @@ export default class Connection {
         if (time) {
             room.time = time;
         }
+        if (roomObj.challengedPlayerUsername) {
+            this.setChallengedPlayer(roomObj.challengedPlayerUsername, room);
+            room.addAllowedPlayerID(host._id);
+        }
         room.setRoomAttributes(roomObj);
         this.addRoom(room);
         return room;
+    }
+    
+    setChallengedPlayer(username, room): any {
+        User.findOne({username: username}, (err, user) => {
+            if (!err) {
+                console.log("adding opponent:", user.username);
+                room.addAllowedPlayerID(user._id);
+            } else {
+                console.log("error getting opponent:", err);
+            }
+        });
     }
     
     addRoom(roomObj: Room): void {
@@ -150,6 +166,7 @@ export default class Connection {
             room.updatePlayer(data);
         });
     }
+    
     
     //Remove a player from the room;
     removePlayer(playerId) {

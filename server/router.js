@@ -50,5 +50,6 @@ module.exports = function(app) {
     app.get('/api/leaderboard', User.getLeaderboard);
     app.get('/api/playerlist/:n/', User.getPlayers);
     app.get('/api/games/recentgames/:id', requireAuth, Games.getRecentGames);
+    app.get('/api/users/search', User.userSearch);
 
 }

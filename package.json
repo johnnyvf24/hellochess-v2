@@ -55,6 +55,7 @@
     "howler": "^2.0.3",
     "html-webpack-plugin": "^2.28.0",
     "http": "0.0.0",
+    "jquery-typeahead": "^2.8.0",
     "jsonwebtoken": "^7.4.1",
     "jwt-decode": "^2.1.0",
     "lodash": "^3.10.1",

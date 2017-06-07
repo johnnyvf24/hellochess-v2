@@ -95,7 +95,8 @@ module.exports = function(io, socket, connection) {
             return;
         }
         let roomName = data.room.name;
-        let room: Room = connection.createNewRoom(roomName, data.gameType, data.time, data.room);
+        console.log("create-room data:", data);
+        let room: Room = connection.createNewRoom(roomName, data.gameType, data.time, data.room, data.host);
         if(!data.gameType) {
             //TODO error
             return;

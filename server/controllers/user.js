@@ -219,3 +219,21 @@ exports.getLeaderboard = (req, res, next) => {
     });
 }
 
+
+exports.userSearch = (req, res, next) => {
+    let searchString = req.query.q;
+    console.log("user search api, query:", searchString);
+    User.find(
+        {"username": {"$regex": `^${searchString}`}},
+        {"username": true}
+    ).sort(
+        {"username": 1}
+    ).limit(
+        10
+    ).then(cursor => {
+        let users = cursor.toArray();
+        console.log("retrieved users:", users);
+        res.send(users);
+    });
+    
+}

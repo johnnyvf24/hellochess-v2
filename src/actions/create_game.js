@@ -93,3 +93,10 @@ export function finalizeGameRoom(game, host) {
         });
     }
 }
+
+export function selectedRoomMode(value) {
+    return {
+        type: 'selected-room-mode',
+        payload: value
+    }
+}

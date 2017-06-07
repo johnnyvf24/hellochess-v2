@@ -18,6 +18,8 @@ export default class Room {
     private gameStartAction: string;
     private newMoveAction: string;
     private clock: Clock = null;
+    private _roomMode: string;
+    private _allowedPlayerIDs: any;
     
     static numRooms: number = 0;
     
@@ -42,6 +44,7 @@ export default class Room {
                 this.newMoveAction = "new-move";
                 break;
         }
+        this._allowedPlayerIDs = [];
     }
     
     setRoomAttributes(roomObj: any): boolean {
@@ -55,7 +58,16 @@ export default class Room {
         this._voiceChat = roomObj.voiceChat;
         this._maxPlayers = roomObj.maxPlayers;
         this._name = roomObj.name;
+        if (typeof roomObj.roomMode === "undefined") {
+            this._roomMode = "open-table";
+        } else {
+            this._roomMode = roomObj.roomMode;
+        }
         return true;
+    }
+    
+    addAllowedPlayerID(id) {
+        this._allowedPlayerIDs.push(id);
     }
     
     getRoom(): Object {
@@ -71,7 +83,9 @@ export default class Room {
                     name: this._name,
                     private: this._priv,
                     voiceChat: this._voiceChat,
-                    maxPlayers: this._maxPlayers
+                    maxPlayers: this._maxPlayers,
+                    roomMode: this._roomMode,
+                    allowedPlayerIDs: this._allowedPlayerIDs
                 },
                 gameType: this._game.gameType,
                 users: this.getAllRoomPlayersWithoutSockets(),
@@ -91,7 +105,9 @@ export default class Room {
                 name: this._name,
                 private: this._priv,
                 voiceChat: this._voiceChat,
-                maxPlayers: this._maxPlayers
+                maxPlayers: this._maxPlayers,
+                roomMode: this._roomMode,
+                allowedPlayerIDs: this._allowedPlayerIDs
             },
             gameType: this._game.gameType,
             numPlayers: this._players.length,

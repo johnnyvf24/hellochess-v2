@@ -36,6 +36,15 @@ function connection(state = {status: false, error: false}, action) {
     }
 }
 
+function userSearch(state = {}, action) {
+    switch (action.type) {
+        case 'user-search':
+            return action.payload;
+        default:
+            return state;
+    }
+}
+
 function settings(state = {}, action) {
     let newState = null;
     switch (action.type) {

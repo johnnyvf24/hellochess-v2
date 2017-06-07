@@ -33,7 +33,7 @@ function isNormalInteger(str) {
     return String(n) === str && n >= 0;
 }
 
-class NewGameModalContent extends Component {
+class NewGameModalGameOptions extends Component {
     constructor(props) {
         super(props);
 
@@ -128,6 +128,8 @@ class NewGameModalContent extends Component {
                         name="game-type"
                         value={this.props.newGame.gameType}
                         options={gameTypeOptions}
+                        clearable={false}
+                        searchable={false}
                         onChange={this.onSelectGameType.bind(this)}
                     />
                 </Col>
@@ -244,4 +246,4 @@ export default connect(mapStateToProps,
     showError,
     changeMaxPlayers,
     togglePrivate
-}) (NewGameModalContent);
+}) (NewGameModalGameOptions);

@@ -2,7 +2,8 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import Select from 'react-select';
 
-import NewGameModalContent from '../components/create_game/new_game_modal_content';
+import NewGameModalGameOptions from '../components/create_game/new_game_modal_game_options';
+import NewGameModalRoomOptions from '../components/create_game/new_game_modal_room_options';
 
 import {Button, Modal} from 'react-bootstrap';
 
@@ -15,7 +16,7 @@ class NewGame extends Component {
         super(props);
 
         this.renderModal = this.renderModal.bind(this);
-        this.renderModalContent = this.renderModalContent.bind(this);
+        this.renderGameOptions = this.renderGameOptions.bind(this);
         this.state = { showModal: false };
     }
     
@@ -31,18 +32,25 @@ class NewGame extends Component {
     onCreateGame() {
         this.props.createGameRoom();
     }
-
-    renderModalContent() {
+    
+    renderRoomOptions() {
         return (
-            <NewGameModalContent
-                roomNameRef={(input) => this.roomNameInput = input}
-                />
+            <NewGameModalRoomOptions
+                challengedPlayerRef={(input) => this.challengedPlayerInput = input} />
+        );
+    }
+
+    renderGameOptions() {
+        return (
+            <NewGameModalGameOptions
+                roomNameRef={(input) => this.roomNameInput = input} />
         );
     }
     
     submitRoom() {
         this.props.resetNewGameModal();
         this.props.room.name = this.roomNameInput.value;
+        this.props.room.challengedPlayerUsername = this.challengedPlayerInput.value;
         this.props.finalizeGameRoom(this.props.game, this.props.profile);
         this.close();
     }
@@ -67,8 +75,11 @@ class NewGame extends Component {
                 <Modal.Header closeButton>
                     <Modal.Title>New Game Room</Modal.Title>
                 </Modal.Header>
+                <Modal.Header>
+                    {this.renderRoomOptions()}
+                </Modal.Header>
                 <Modal.Body>
-                    {this.renderModalContent()}
+                    {this.renderGameOptions()}
                 </Modal.Body>
                 <Modal.Footer>
                     {this.renderModalFooter()}
