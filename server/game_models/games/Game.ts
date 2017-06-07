@@ -4,6 +4,40 @@ import Engine from '../../engine/Engine';
 import AI from '../players/AI';
 import Connection from '../../sockets/Connection';
 import Room from '../rooms/Room';
+const Elo = require('elo-js');
+const {User} = require('../../models/user');
+import {DrawMessage, WinnerMessage} from '../rooms/Message';
+
+function getTimeTypeForTimeControl (time) {
+    let tcIndex;
+    //this time estimate is based on an estimated game length of 35 moves
+    let totalTimeMs = (time.value * 60 * 1000) + (35 * time.increment * 1000);
+
+    //Two player cutoff times
+    let twoMins = 120000; //two minutes in ms
+    let eightMins = 480000;
+    let fifteenMins = 900000;
+
+    //four player cutoff times
+    let fourMins = 240000;
+    let twelveMins = 720000;
+    let twentyMins = 12000000;
+
+    if (totalTimeMs <= twoMins) {
+        //bullet
+        tcIndex = 'bullet';
+    } else if (totalTimeMs <= eightMins) {
+        //blitz
+        tcIndex = 'blitz';
+    } else if (totalTimeMs <= fifteenMins) {
+        //rapid
+        tcIndex = 'rapid';
+    } else {
+        //classical
+        tcIndex = 'classic';
+    }
+    return tcIndex;
+}
 
 abstract class Game {
     public static COLOR_SHORT_TO_LONG: any =
@@ -40,6 +74,9 @@ abstract class Game {
     time: any;
     connection: Connection;
     moveHistory: any[] = [];
+    ratings_type: string;
+    startPos: string;
+    gameClassDB: any;
     
     abstract addPlayer(player: Player, color: string): boolean;
     abstract removePlayer(color: string): boolean;
@@ -48,7 +85,6 @@ abstract class Game {
     abstract outColor(): string;
     abstract newEngineInstance(roomName: string, io: any): void;
     abstract startGame(): any;
-    abstract endAndSaveGame(draw) : boolean;
     abstract setPlayerResignByPlayerObj(player: Player);
     abstract removePlayerFromAllSeats(player: Player);
     abstract setPlayerOutByColor(color: string);
@@ -277,6 +313,194 @@ abstract class Game {
             return;
         }
         this.io.to(this.roomName).emit('update-room', room.getRoom());
+    }
+    
+    endAndSaveGame(draw): boolean {
+        if(this.engineInstance && typeof this.engineInstance.kill == 'function') {
+            this.engineInstance.kill(); //stop any active engine
+        }
+        
+        let winner, loser, wOldelo, lOldElo;
+        
+        if(!this.white || !this.black) {
+            return;
+        }
+        
+        //get the loser and the winner
+        if(this.white.alive == true) {
+            winner = this.white;
+            loser = this.black;
+        } else {
+            winner = this.black;
+            loser = this.white;
+        }
+        
+        let room = this.connection.getRoomByName(this.roomName);
+        
+        if(winner.type == 'computer' || loser.type == 'computer') {
+             //console.log("no ratings! Computer in game");
+        } else {
+            let timeType = getTimeTypeForTimeControl(this.time);
+            
+            if(!timeType) {
+                console.log("no timeType");
+                return;
+            }
+            
+            let elo = new Elo();
+            
+            let winnerElo = winner[this.ratings_type][timeType];
+            let loserElo = loser[this.ratings_type][timeType];
+
+            let newWinnerElo = elo.ifWins(winnerElo, loserElo);
+            let newLoserElo = elo.ifLoses(loserElo, winnerElo);
+            
+            if(draw) {
+                newWinnerElo = elo.ifTies(winnerElo, loserElo);
+                newLoserElo = elo.ifTies(loserElo, winnerElo);
+            }
+            
+            winner[this.ratings_type][timeType] = newWinnerElo;
+            loser[this.ratings_type][timeType] = newLoserElo;
+            
+            this.connection.updatePlayer(winner);
+            this.connection.updatePlayer(loser);
+            
+            let data;
+            
+            if(winner.playerId === this.white.playerId) {
+                let result = (draw) ? "1/2-1/2" : "1-0";
+                data = {
+                    white: {
+                        "user_id": this.white.playerId, 
+                        "elo": winnerElo
+                        
+                    },
+                    black: {
+                        "user_id": this.black.playerId,
+                        "elo": loserElo
+                    },
+                    pgn: this.gameRulesObj.pgn(),
+                    final_fen: this.gameRulesObj.fen(),
+                    time: this.time,
+                    result: result
+                }
+                
+                
+            } else {
+                let result = (draw) ? "1/2-1/2" : "0-1";
+                data = {
+                    white: {
+                        "user_id": this.white.playerId, 
+                        "elo": loserElo
+                        
+                    },
+                    black: {
+                        "user_id": this.black.playerId,
+                        "elo": winnerElo
+                    },
+                    pgn: this.gameRulesObj.pgn(),
+                    final_fen: this.gameRulesObj.fen(),
+                    time: this.time,
+                    result: result
+                }
+            }
+            
+            if (this.startPos) {
+                data.initial_fen = this.startPos;
+            }
+            
+            var gameObjDB = new this.gameClassDB(data);
+            gameObjDB.save().then((game) => {
+                console.log('saved game ', game);
+            }).catch(e => console.log(e));
+            
+            //send new ratings to each individual player
+            setTimeout( function() {
+                try {
+                    
+                    //save winner
+                    User.findById({_id: winner.playerId})
+                    .then( function (user) {
+                        user[this.ratings_type][timeType] = newWinnerElo;
+                        user.save( function(err, updatedUser) {
+                            if(err) {
+                                return;
+                            }
+                            let eloNotif = {
+                                title: `${winner.username}'s elo is now ${newWinnerElo} ${newWinnerElo - winnerElo}`,
+                                position: 'tr',
+                                autoDismiss: 6,
+                            };
+                            
+                            winner.socket.emit('action', Notifications.success(eloNotif));
+                            winner.socket.emit('update-user', updatedUser);
+                        }.bind(this));
+                    }.bind(this)).catch(e => console.log(e));
+                    
+                    //save loser
+                    User.findById({_id: loser.playerId})
+                    .then( function (user) {
+                        user[this.ratings_type][timeType] = newLoserElo;
+                        user.save( function(err, updatedUser) {
+                            if(err) {
+                                return;
+                            }
+                            let eloNotif = {
+                                title: `${loser.username}'s elo is now ${newLoserElo} ${newLoserElo - loserElo}`,
+                                position: 'tr',
+                                autoDismiss: 6,
+                            };
+                            
+                            loser.socket.emit('action', Notifications.success(eloNotif));
+                            loser.socket.emit('update-user', updatedUser);
+                        }.bind(this));
+                    }.bind(this)).catch(e => console.log(e));
+                
+                } catch (e) {console.log(e)};
+                
+            }.bind(this), 1000);
+        } 
+        
+        if(draw) {
+            let drawNotif = {
+                title: 'Game Over',
+                message: 'The game has ended in a draw!',
+                position: 'tr',
+                autoDismiss: 5
+            }
+            
+            this.io.to(this.roomName).emit('action', Notifications.warning(drawNotif));
+            if (room)
+                room.addMessage(new DrawMessage(null, null, this.roomName));
+        } else {
+            let endNotif = {
+                title: 'Game Over',
+                message: `The game is over, ${winner.username} has won!`,
+                position: 'tr',
+                autoDismiss: 5
+            }
+            
+            this.io.to(this.roomName).emit('action', Notifications.info(endNotif));
+            if (room)
+                room.addMessage(new WinnerMessage(winner, null, this.roomName));
+        }
+        
+        this.gameStarted = false;
+
+        //wait 3 seconds before resetting the room
+        setTimeout(function() {
+            this.removePlayer('w');
+            this.removePlayer('b');
+            
+            if(!room) {
+                return;
+            }
+            
+            this.io.to(this.roomName).emit('update-room', room.getRoom());
+        }.bind(this), 3000);
+        
+        return true;
     }
     
 }

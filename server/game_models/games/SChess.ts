@@ -53,6 +53,8 @@ export default class SChess extends Game {
     };
     time: any;
     connection: Connection;
+    ratings_type: string = "schess_ratings";
+    gameClassDB: any = SChessDB;
     
     constructor(io: Object, roomName:string, time: any, connection: Connection) {
         super();
@@ -156,7 +158,6 @@ export default class SChess extends Game {
         this.moveHistory = [];
     }
     
-    
     setPlayerOutByColor(color: string) {
         let playerOut = null;
         switch(color.charAt(0)) {
@@ -171,191 +172,5 @@ export default class SChess extends Game {
                 this.times.b = 1;
                 break;
         }
-    }
-
-    endAndSaveGame(draw): boolean {
-        
-        if(this.engineInstance && typeof this.engineInstance.kill == 'function') {
-            this.engineInstance.kill(); //stop any active engine
-        }
-        
-        let winner, loser, wOldelo, lOldElo;
-        
-        if(!this.white || !this.black) {
-            return;
-        }
-        
-        //get the loser and the winner
-        if(this.white.alive == true) {
-            winner = this.white;
-            loser = this.black;
-        } else {
-            winner = this.black;
-            loser = this.white;
-        }
-        
-        let room = this.connection.getRoomByName(this.roomName);
-        
-        if(winner.type == 'computer' || loser.type == 'computer') {
-             //console.log("no ratings! Computer in game");
-        } else {
-            let timeType = getTimeTypeForTimeControl(this.time);
-            
-            if(!timeType) {
-                console.log("no timeType");
-                return;
-            }
-            
-            let elo = new Elo();
-            
-            let winnerElo = winner.schess_ratings[timeType];
-            let loserElo = loser.schess_ratings[timeType];
-
-            let newWinnerElo = elo.ifWins(winnerElo, loserElo);
-            let newLoserElo = elo.ifLoses(loserElo, winnerElo);
-            
-            if(draw) {
-                newWinnerElo = elo.ifTies(winnerElo, loserElo);
-                newLoserElo = elo.ifTies(loserElo, winnerElo);
-            }
-            
-            winner.schess_ratings[timeType] = newWinnerElo;
-            loser.schess_ratings[timeType] = newLoserElo;
-            
-            this.connection.updatePlayer(winner);
-            this.connection.updatePlayer(loser);
-            
-            let data;
-            if(winner.playerId === this.white.playerId) {
-                let result = (draw) ? "1/2-1/2" : "1-0";
-                data = {
-                    white: {
-                        "user_id": this.white.playerId, 
-                        "elo": winnerElo
-                        
-                    },
-                    black: {
-                        "user_id": this.black.playerId,
-                        "elo": loserElo
-                    },
-                    pgn: this.gameRulesObj.pgn(),
-                    final_fen: this.gameRulesObj.fen(),
-                    time: this.time,
-                    result: result
-                }
-                
-                
-            } else {
-                let result = (draw) ? "1/2-1/2" : "0-1";
-                data = {
-                    white: {
-                        "user_id": this.white.playerId, 
-                        "elo": loserElo
-                        
-                    },
-                    black: {
-                        "user_id": this.black.playerId,
-                        "elo": winnerElo
-                    },
-                    pgn: this.gameRulesObj.pgn(),
-                    final_fen: this.gameRulesObj.fen(),
-                    time: this.time,
-                    result: result
-                }
-            }
-            
-            
-            var schess_game = new SChessDB(data);
-            schess_game.save().then((game) => {
-                console.log('saved schess game ', game);
-            }).catch(e => console.log(e));
-            
-            
-            //send new ratings to each individual player
-            setTimeout( function() {
-                try {
-                    
-                    //save winner
-                    User.findById({_id: winner.playerId})
-                    .then( function (user) {
-                        user.schess_ratings[timeType] = newWinnerElo;
-                        user.save( function(err, updatedUser) {
-                            if(err) {
-                                return;
-                            }
-                            let eloNotif = {
-                                title: `${winner.username}'s elo is now ${newWinnerElo} ${newWinnerElo - winnerElo}`,
-                                position: 'tr',
-                                autoDismiss: 6,
-                            };
-                            
-                            winner.socket.emit('action', Notifications.success(eloNotif));
-                            winner.socket.emit('update-user', updatedUser);
-                        }.bind(this));
-                    }.bind(this)).catch(e => console.log(e));
-                    
-                    //save loser
-                    User.findById({_id: loser.playerId})
-                    .then( function (user) {
-                        user.schess_ratings[timeType] = newLoserElo;
-                        user.save( function(err, updatedUser) {
-                            if(err) {
-                                return;
-                            }
-                            let eloNotif = {
-                                title: `${loser.username}'s elo is now ${newLoserElo} ${newLoserElo - loserElo}`,
-                                position: 'tr',
-                                autoDismiss: 6,
-                            };
-                            
-                            loser.socket.emit('action', Notifications.success(eloNotif));
-                            loser.socket.emit('update-user', updatedUser);
-                        }.bind(this));
-                    }.bind(this)).catch(e => console.log(e));
-                
-                } catch (e) {console.log(e)};
-                
-            }.bind(this), 1000);
-        } 
-        
-        if(draw) {
-            let drawNotif = {
-                title: 'Game Over',
-                message: 'The game has ended in a draw!',
-                position: 'tr',
-                autoDismiss: 5
-            }
-            
-            this.io.to(this.roomName).emit('action', Notifications.warning(drawNotif));
-            if (room)
-                room.addMessage(new DrawMessage(null, null, this.roomName));
-        } else {
-            let endNotif = {
-                title: 'Game Over',
-                message: `The game is over, ${winner.username} has won!`,
-                position: 'tr',
-                autoDismiss: 5
-            }
-            
-            this.io.to(this.roomName).emit('action', Notifications.info(endNotif));
-            if (room)
-                room.addMessage(new WinnerMessage(winner, null, this.roomName));
-        }
-        
-        this.gameStarted = false;
-
-        //wait 3 seconds before resetting the room
-        setTimeout(function() {
-            this.removePlayer('w');
-            this.removePlayer('b');
-            
-            if(!room) {
-                return;
-            }
-            
-            this.io.to(this.roomName).emit('update-room', room.getRoom());
-        }.bind(this), 3000);
-        
-        return true;
     }
 }

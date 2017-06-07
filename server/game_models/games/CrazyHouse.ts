@@ -45,7 +45,7 @@ function getTimeTypeForTimeControl (time) {
 export default class CrazyHouse extends Game {
     gameType: string = 'crazyhouse';
     gameRulesObj: any = new Crazyhouse();
-    startPos: String;
+    startPos: string;
     numPlayers: number = 2;
     io: any;
     times: any = {
@@ -55,6 +55,8 @@ export default class CrazyHouse extends Game {
     time: any;
     set_960: boolean = false;
     connection: Connection;
+    ratings_type: string = "crazyhouse_ratings";
+    gameClassDB: any = CrazyhouseGame;
     
     constructor(io: Object, roomName:string, time: any, set_960: boolean, connection: Connection) {
         super();
@@ -70,7 +72,9 @@ export default class CrazyHouse extends Game {
         this.set_960 = set_960;
         if(set_960) {
             this.gameType = 'crazyhouse960';
+            this.ratings_type = "crazyhouse960_ratings";
             this.gameRulesObj = new Crazyhouse({960: true});
+            this.gameClassDB = Crazyhouse960Game;
         } else {
             this.gameRulesObj = new Crazyhouse(); 
         }
@@ -183,222 +187,5 @@ export default class CrazyHouse extends Game {
                 this.times.b = 1;
                 break;
         }
-    }
-
-    endAndSaveGame(draw): boolean {
-        
-        if(this.engineInstance && typeof this.engineInstance.kill == 'function') {
-            this.engineInstance.kill(); //stop any active engine
-        }
-        
-        let winner, loser, wOldelo, lOldElo;
-        
-        let ratingType = "crazyhouse_ratings";
-        if (this.set_960) {
-            ratingType = "crazyhouse960_ratings";
-        }
-        
-        if(!this.white || !this.black) {
-            return;
-        }
-        
-        //get the loser and the winner
-        if(!this.white.alive) {
-            loser = this.white;
-            winner = this.black;
-        } else {
-            loser = this.black;
-            winner = this.white;
-        }
-        
-        let winnerRatings, loserRatings;
-        if (this.set_960) {
-            winnerRatings = winner.crazyhouse960_ratings;
-            loserRatings = loser.crazyhouse960_ratings;
-        } else {
-            winnerRatings = winner.crazyhouse_ratings;
-            loserRatings = loser.crazyhouse_ratings;
-        }
-        
-        let room = this.connection.getRoomByName(this.roomName);
-        
-        if(winner.type == 'computer' || loser.type == 'computer') {
-             //console.log("no ratings! Computer in game");
-        } else {
-            let timeType = getTimeTypeForTimeControl(this.time);
-            
-            if(!timeType) {
-                console.log("no timeType");
-                return;
-            }
-            
-            let elo = new Elo();
-            
-            let winnerElo, loserElo;
-            
-            winnerElo = winnerRatings[timeType];
-            loserElo = loserRatings[timeType];
-
-            let newWinnerElo = elo.ifWins(winnerElo, loserElo);
-            let newLoserElo = elo.ifLoses(loserElo, winnerElo);
-            
-            if(draw) {
-                newWinnerElo = elo.ifTies(winnerElo, loserElo);
-                newLoserElo = elo.ifTies(loserElo, winnerElo);
-            }
-            
-            winnerRatings[timeType] = newWinnerElo;
-            loserRatings[timeType] = newLoserElo;
-            
-            this.connection.updatePlayer(winner);
-            this.connection.updatePlayer(loser);
-            
-            let data;
-            if(winner.playerId === this.white.playerId) {
-                let result = (draw) ? "1/2-1/2" : "1-0";
-                data = {
-                    white: {
-                        "user_id": this.white.playerId, 
-                        "elo": winnerElo
-                        
-                    },
-                    black: {
-                        "user_id": this.black.playerId,
-                        "elo": loserElo
-                    },
-                    pgn: this.gameRulesObj.pgn(),
-                    final_fen: this.gameRulesObj.fen(),
-                    time: this.time,
-                    result: result
-                }
-                
-                
-            } else {
-                let result = (draw) ? "1/2-1/2" : "0-1";
-                data = {
-                    white: {
-                        "user_id": this.white.playerId, 
-                        "elo": loserElo
-                        
-                    },
-                    black: {
-                        "user_id": this.black.playerId,
-                        "elo": winnerElo
-                    },
-                    pgn: this.gameRulesObj.pgn(),
-                    final_fen: this.gameRulesObj.fen(),
-                    time: this.time,
-                    result: result
-                }
-            }
-            
-            if(this.set_960) {
-                data.initial_fen = this.startPos;
-            }
-            
-            let crazy_game = (this.set_960) ? new Crazyhouse960Game(data) : new CrazyhouseGame(data);
-            if(crazy_game !== null) {
-                crazy_game.save().then((game) => {
-                    console.log('saved crazyhouse game ', game);
-                }).catch(e => console.log(e));
-            }
-            
-            
-            //send new ratings to each individual player
-            setTimeout( function() {
-                try {
-                    
-                    //save winner
-                    User.findById({_id: winner.playerId})
-                    .then( function (user) {
-                        if (this.set_960) {
-                            user.crazyhouse960_ratings[timeType] = newWinnerElo;
-                        } else {
-                            user.crazyhouse_ratings[timeType] = newWinnerElo;
-                        }
-                        
-                        user.save( function(err, updatedUser) {
-                            if(err) {
-                                return;
-                            }
-                            let eloNotif = {
-                                title: `${winner.username}'s elo is now ${newWinnerElo} ${newWinnerElo - winnerElo}`,
-                                position: 'tr',
-                                autoDismiss: 6,
-                            };
-                            
-                            winner.socket.emit('action', Notifications.success(eloNotif));
-                            winner.socket.emit('update-user', updatedUser);
-                        }.bind(this));
-                    }.bind(this)).catch(e => console.log(e));
-                    
-                    //save loser
-                    User.findById({_id: loser.playerId})
-                    .then( function (user) {
-                        if (this.set_960) {
-                            user.crazyhouse960_ratings[timeType] = newLoserElo;
-                        } else {
-                            user.crazyhouse_ratings[timeType] = newLoserElo;
-                        }
-                        
-                        user.save( function(err, updatedUser) {
-                            if(err) {
-                                return;
-                            }
-                            let eloNotif = {
-                                title: `${loser.username}'s elo is now ${newLoserElo} ${newLoserElo - loserElo}`,
-                                position: 'tr',
-                                autoDismiss: 6,
-                            };
-                            
-                            loser.socket.emit('action', Notifications.success(eloNotif));
-                            loser.socket.emit('update-user', updatedUser);
-                        }.bind(this));
-                    }.bind(this)).catch(e => console.log(e));
-                
-                } catch (e) {console.log(e)};
-                
-            }.bind(this), 1000);
-        } 
-        
-        if(draw) {
-            let drawNotif = {
-                title: 'Game Over',
-                message: 'The game has ended in a draw!',
-                position: 'tr',
-                autoDismiss: 5
-            }
-            
-            this.io.to(this.roomName).emit('action', Notifications.warning(drawNotif));
-            if (room)
-                room.addMessage(new DrawMessage(null, null, this.roomName));
-        } else {
-            let endNotif = {
-                title: 'Game Over',
-                message: `The game is over, ${winner.username} has won!`,
-                position: 'tr',
-                autoDismiss: 5
-            }
-            
-            this.io.to(this.roomName).emit('action', Notifications.info(endNotif));
-            if (room)
-                room.addMessage(new WinnerMessage(winner, null, this.roomName));
-        }
-        
-        this.gameStarted = false;
-        
-        //wait 3 seconds before resetting the room
-        setTimeout(function() {
-            this.removePlayer('w');
-            this.removePlayer('b');
-            
-            if(!room) {
-                return;
-            }
-            
-            this.io.to(this.roomName).emit('update-room', room.getRoom());
-        }.bind(this), 3000);
-        
-        return true;
     }
 }
