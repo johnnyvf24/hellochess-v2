@@ -126,7 +126,10 @@ export default class Connection {
         if(!this.players) {
             return false;
         }
-        
+        if (process.env.NODE_ENV !== "production") {
+            // allow duplicate logins on dev servers for testing purposes
+            return false;
+        }
         return this.players.some(player => (player.playerId === playerId || player.ipaddress === ipaddress) );
     }
     
