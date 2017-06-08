@@ -146,6 +146,20 @@ class OccupiedCard extends Component {
         }
         return className;
     }
+    
+    renderPlayerScore() {
+        if (this.props.room.room.roomMode === "match") {
+            let id = this.props.player.playerId;
+            let score = this.props.room.playerScores[id];
+            console.log("player:", this.props.player);
+            console.log(id, "score:", score);
+            return (
+                <span className="player-score">
+                    {score}
+                </span>
+            );
+        }
+    }
 
     render() {
         const {profile, room, game, time, playerTime, activeThread, gameStarted} = this.props;
@@ -160,6 +174,7 @@ class OccupiedCard extends Component {
         return (
             <div className={"player-card-border" + this.renderActiveBorder()}>
                 <Panel className={"player-card occupied " + this.renderAliveIndicator() + " " + this.props.colorClass}>
+                    {this.renderPlayerScore()}
                     { !gameStarted && this.renderLeaveSeat(player, activeThread)}
                     <Row>
                         <a href="#"
@@ -167,7 +182,16 @@ class OccupiedCard extends Component {
                             className="pull-left">
                             <img className="player-img img-circle" src={player.picture} />
                         </a>
-                        <div className="player-sit-info"><h4>{player.username}</h4>{showElo(game, time, player)}</div>
+                        <div className="player-sit-info">
+                            <h4
+                                className="player-username"
+                                title={player.username}>
+                                {player.username}
+                            </h4>
+                            <div className="player-elo">
+                                {showElo(game, time, player)}
+                            </div>
+                        </div>
                         <span className="pull-right player-time-info">
                             {this.renderTime(playerTime)}
                         </span>

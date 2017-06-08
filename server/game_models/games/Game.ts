@@ -486,6 +486,14 @@ abstract class Game {
                 room.addMessage(new WinnerMessage(winner, null, this.roomName));
         }
         
+        // update scores for match mode
+        if (draw) {
+            room.scoreDraw(winner.playerId);
+            room.scoreDraw(loser.playerId);
+        } else {
+            room.scoreWin(winner.playerId);
+        }
+        
         this.gameStarted = false;
 
         if (room) {

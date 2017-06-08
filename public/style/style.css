@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css?family=Inconsolata:400,700');
 html {
     height: 100%;
 }
@@ -568,12 +569,28 @@ tr:hover {
 
 .player-sit-info {
     padding-left: 55px;
-    word-break: break-all;
 }
 
 .player-time-info {
-    font-size: 22px;
+    font-size: 24px;
     margin-right: 10px;
+    font-family: 'Inconsolata', monospace;
+}
+
+.player-username {
+    font-size: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.player-elo {
+    font-size: 12px;
+    letter-spacing: 1px;
+}
+
+.active .player-time-info {
+    font-weight: bold;
 }
 
 .player-card .card-block .row .card-text {
@@ -1280,4 +1297,11 @@ div.schess-rook-toggle {
 .rematch-button {
     height: 75px;
     width: 150px;
+}
+
+.player-score {
+    position: absolute;
+    font-size: 14px;
+    bottom: 12px;
+    left: 29px;
 }

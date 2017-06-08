@@ -65,13 +65,18 @@ module.exports = function(io, socket, connection) {
             player.socket.emit('in-queue', data);
         } else {
             let roomObj = {
-                name: player.username + 'vs' + opponent.username,
+                name: player.username + ' vs ' + opponent.username,
                 private: false,
                 voiceChat: false,
                 maxPlayers: 10000,
+                roomMode: 'match',
             };
-            //An opponent was found start the game
-            let room: Room = connection.createNewRoom(player.username + 'vs' + opponent.username, data.gameType, timeObj, roomObj);
+            //An opponent was found, start the game
+            let room: Room = connection.createNewRoom(
+                player.username + ' vs ' + opponent.username,
+                data.gameType, timeObj, roomObj);
+            room.addAllowedPlayerID(player.playerId);
+            room.addAllowedPlayerID(opponent.playerId);
             if(!room) {
                 return;
             }

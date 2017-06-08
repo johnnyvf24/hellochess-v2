@@ -20,6 +20,7 @@ export default class Room {
     private clock: Clock = null;
     public roomMode: string;
     public allowedPlayerIDs: any;
+    public playerScores: any = {};
     public rematchOffered: boolean = false;
     public rematchSenderId: any;
     
@@ -70,6 +71,7 @@ export default class Room {
     
     addAllowedPlayerID(id) {
         this.allowedPlayerIDs.push(id);
+        this.playerScores[id] = 0;
     }
     
     getRoom(): Object {
@@ -97,7 +99,8 @@ export default class Room {
                 times: times,
                 game: game,
                 rematchOffered: this.rematchOffered,
-                rematchSenderId: this.rematchSenderId
+                rematchSenderId: this.rematchSenderId,
+                playerScores: this.playerScores
             };
         }
     }
@@ -505,5 +508,13 @@ export default class Room {
     startRematch(connection) {
         this.rotatePlayers();
         this.startGame(connection);
+    }
+    
+    scoreDraw(id) {
+        this.playerScores[id] += 0.5;
+    }
+    
+    scoreWin(id) {
+        this.playerScores[id] += 1;
     }
 }
