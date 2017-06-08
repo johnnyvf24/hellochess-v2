@@ -32,43 +32,41 @@ class NewGameModalGameOptions extends Component {
         this.renderChallengePlayerInput = this.renderChallengePlayerInput.bind(this);
     }
     
+    componentDidUpdate(prevProps) {
+        if (!this.props.userResults)
+            return;
+        if (this.deferred) {
+            this.deferred.resolve(this.props.userResults);
+        }A
+    }
+    
     setupTypeahead() {
-        console.log("setupTypeahead");
-        console.log("input:", $(".challenge-player-input"));
         $(".challenge-player-input").typeahead({
+            debug: true,
+            template: "{{username}}",
+            templateValue: "{{username}}",
+            cache: true,
             order: "asc",
-            // input: ".challenge-player-input",
+            input: ".challenge-player-input",
             minLength: 2,
             hint: true,
             highlight: true,
             limit: 10,
-            callback: {
-                onInit: () => { console.log("typeahead init"); },
-                onReady: () => { console.log("typeahead ready"); },
-                onSearch: (node, query) => { console.log("search happening:", query); },
-                onResult: (node, q, r, rc) => {console.log(`query: ${q}, result: ${JSON.stringify(r)}`)}
-            },
-            source: function() {
-                return this.userSearch()
-            },
-            callback: {
-                done: function (data, textStatus, jqXHR) {
-                    console.log("done. data:", data);
-                },
-                fail: function (jqXHR, textStatus, error) {
-                    console.log("fail. status:", textStatus);
+            dynamic: true,
+            display: ["username"],
+            emptyTemplate: 'No users found: "{{query}}"',
+            source: {
+                data: () => {
+                    let v = $(".challenge-player-input").val();
+                    if (!v || v === "" || v.length < 2) {
+                        return [];
+                    }
+                    this.props.userSearch(v);
+                    let deferred = $.Deferred();
+                    this.deferred = deferred;
+                    return deferred;
                 }
             }
-            // source: function(query, sync, async) {
-            //     console.log("query:", query);
-            //     $.ajax({
-            //         url: '/api/users/search?q=' + query,
-            //         cache: true,
-            //         success: function(res) {
-            //             async(res);
-            //         }
-            //     });
-            // },
         });
     }
     
@@ -103,12 +101,16 @@ class NewGameModalGameOptions extends Component {
             display = "none";
         }
         return (
-            <div className="form-group" style={{"display": display}}>
+            <div className="form-group typeahead__container" style={{"display": display}}>
                 <label>Challenge Player</label>
-                <input
-                    ref={this.props.challengedPlayerRef}
-                    type="text"
-                    className="form-control challenge-player-input" />
+                <div className="typeahead__field">
+                    <span className="typeahead__query">
+                        <input
+                            ref={this.props.challengedPlayerRef}
+                            type="text"
+                            className="form-control challenge-player-input js-typeahead" />
+                    </span>
+                </div>
             </div>
         );
     }
@@ -135,6 +137,7 @@ function mapStateToProps(state) {
         profile: state.auth.profile,
         room: state.newGameOptions.room,
         game: state.newGameOptions,
+        userResults: state.userSearch.userResults
     }
 }
 

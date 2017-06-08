@@ -121,3 +121,16 @@ export function getPlayerList (n) {
         });
     };
 }
+
+export function userSearch(query) {
+    return dispatch => {
+        const tokenHeader = generateTokenHeader();
+        axios.get(`${ROOT_URL}/api/users/search/${query}`, tokenHeader)
+        .then(res => {
+            return dispatch({type: 'user-search', payload: res.data});
+        })
+        .catch(error => {
+            console.log("error doing userSearch:", error);
+        });
+    }
+}

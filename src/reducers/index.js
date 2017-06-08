@@ -37,9 +37,12 @@ function connection(state = {status: false, error: false}, action) {
 }
 
 function userSearch(state = {}, action) {
+    let newState = null;
     switch (action.type) {
         case 'user-search':
-            return action.payload;
+            newState = Object.assign({}, state);
+            newState.userResults = action.payload;
+            return newState;
         default:
             return state;
     }
@@ -71,7 +74,8 @@ const rootReducer = combineReducers({
     recentGames,
     playerList,
     settings,
-    matchmaking
+    matchmaking,
+    userSearch
 });
 
 export default rootReducer;
