@@ -254,3 +254,31 @@ export function closePromotionSelector(roomName) {
         }
     };
 }
+
+export function rematchOffer(roomName, senderId) {
+    return {
+        type: 'server/rematch-offer',
+        payload: {
+            roomName,
+            senderId
+        }
+    }
+}
+
+export function rematchAccept(roomName) {
+    return {
+        type: 'server/rematch-accept',
+        payload: {
+            roomName
+        }
+    }
+}
+
+export function rematchCancel(roomName) {
+    return {
+        type: 'server/rematch-cancel',
+        payload: {
+            roomName
+        }
+    }
+}

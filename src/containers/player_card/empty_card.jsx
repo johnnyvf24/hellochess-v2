@@ -105,15 +105,13 @@ class EmptyCard extends Component {
     
     renderPlayButtonsBasedOnRoomMode() {
         if (this.props.roomMode === "match") {
-            if (this.props.allowedPlayerIDs.includes(this.props.profile._id)) {
-                console.log("match mode, player allowed");
+            if (this.props.allowedPlayerIDs.length < this.props.room.game.numPlayers ||
+                this.props.allowedPlayerIDs.includes(this.props.profile._id)) {
                 return this.renderPlayButtons();
             } else {
-                console.log("match mode, player NOT allowed");
                 return (<Row></Row>);
             }
         } else {
-            console.log("not match mode, rendering play buttons");
             return this.renderPlayButtons();
         }
     }

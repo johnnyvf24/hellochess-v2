@@ -71,6 +71,15 @@ export function socketIoMiddleware(store) {
             case 'server/stop-pairing':
                 socket.emit('stop-pairing');
                 break;
+            case 'server/rematch-offer':
+                socket.emit('rematch-offer', action.payload);
+                break;
+            case 'server/rematch-accept':
+                socket.emit('rematch-accept', action.payload);
+                break;
+            case 'server/rematch-cancel':
+                socket.emit('rematch-cancel', action.payload);
+                break;
         } 
      
         return result;

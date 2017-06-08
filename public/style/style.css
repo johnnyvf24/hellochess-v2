@@ -1276,3 +1276,8 @@ div.schess-rook-toggle {
 .cancel-pairing-btn {
     margin-top: 10px;
 }
+
+.rematch-button {
+    height: 75px;
+    width: 150px;
+}

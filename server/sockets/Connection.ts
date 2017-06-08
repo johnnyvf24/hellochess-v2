@@ -53,9 +53,11 @@ export default class Connection {
         if (time) {
             room.time = time;
         }
-        if (roomObj.challengedPlayerUsername) {
-            this.setChallengedPlayer(roomObj.challengedPlayerUsername, room);
+        if (roomObj.roomMode === "match") {
             room.addAllowedPlayerID(host._id);
+            if (roomObj.challengedPlayerUsername) {
+                this.setChallengedPlayer(roomObj.challengedPlayerUsername, room);
+            }
         }
         room.setRoomAttributes(roomObj);
         this.addRoom(room);

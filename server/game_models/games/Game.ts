@@ -488,17 +488,9 @@ abstract class Game {
         
         this.gameStarted = false;
 
-        //wait 3 seconds before resetting the room
-        setTimeout(function() {
-            this.removePlayer('w');
-            this.removePlayer('b');
-            
-            if(!room) {
-                return;
-            }
-            
-            this.io.to(this.roomName).emit('update-room', room.getRoom());
-        }.bind(this), 3000);
+        if (room) {
+            room.postGameEnd();
+        }
         
         return true;
     }

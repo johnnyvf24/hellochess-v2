@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import {resign, draw, fourResign, killAIs, abort} from '../actions/room';
+import {resign, draw, fourResign, killAIs,
+        abort, rematchOffer, rematchAccept, rematchCancel} from '../actions/room';
+import Loading from 'react-loading-animation';
 
 class GameButtons extends Component {
 
@@ -53,6 +55,18 @@ class GameButtons extends Component {
         this.props.abort(this.props.activeThread);
     }
     
+    onRematchOffer(event) {
+        this.props.rematchOffer(this.props.activeThread, this.props.profile._id);
+    }
+    
+    onRematchAccept(event) {
+        this.props.rematchAccept(this.props.activeThread);
+    }
+    
+    onRematchCancel(event) {
+        this.props.rematchCancel(this.props.activeThread);
+    }
+    
     killAIs(event) {
         this.props.killAIs(this.props.activeThread);
     }
@@ -71,6 +85,23 @@ class GameButtons extends Component {
             return false;
         }
         return true;
+    }
+    
+    seatsFilled() {
+        const game = this.props.room.game;
+        if (game.numPlayers == 4) {
+            return (
+                game.white.playerId &&
+                game.black.playerId &&
+                game.red.playerId &&
+                game.gold.playerId
+            );
+        } else {
+            return (
+                game.white.playerId &&
+                game.black.playerId
+            );
+        }
     }
     
     renderResignButton() {
@@ -128,15 +159,75 @@ class GameButtons extends Component {
             return this.renderResignButton();
         }
     }
+    
+    renderRematchButton() {
+        let isMatch = this.props.roomMode === "match";
+        let gameOver = this.props.gameStarted === false;
+        let seatsFilled = this.seatsFilled();
+        if (isMatch && gameOver && seatsFilled) {
+            if (this.props.rematchOffered) {
+                if (this.props.rematchSenderId === this.props.profile._id) {
+                    return this.cancelRematchButton();
+                } else {
+                    return this.acceptRematchButton();
+                }
+            } else {
+                return this.rematchButton();
+            }
+        } else {
+            return null;
+        }
+    }
+    
+    rematchButton() {
+        return (
+            <button
+                type="button"
+                className="btn btn-default rematch-button"
+                onClick={this.onRematchOffer.bind(this)}>
+                Rematch
+            </button>
+        );
+    }
+    
+    acceptRematchButton() {
+        return (
+            <button
+                type="button"
+                className="btn btn-info rematch-button"
+                onClick={this.onRematchAccept.bind(this)}>
+                Accept Rematch
+            </button>
+        );
+    }
+    
+    cancelRematchButton() {
+        return (
+            <button
+                type="button"
+                className="btn btn-default rematch-button"
+                onClick={this.onRematchCancel.bind(this)}>
+                <Loading height='30' width='30' />
+                Cancel Rematch
+            </button>
+        );
+    }
 
     render() {
-        const {activeThread, openThreads, profile} = this.props;
+        const {activeThread, openThreads, room, profile} = this.props;
         if (!activeThread || !openThreads[activeThread]) {
             return <div></div>
         }
-        const room = openThreads[activeThread];
-        if (room.game.gameStarted == false || room.mode === 'analysis') {
-            return <div></div>
+        if (room.mode === 'analysis')
+            return <div></div>;
+        if (this.props.gameStarted == false) {
+            return (
+                <div className="game-buttons-wrapper">
+                    <div className="game-buttons btn-group" role="group">
+                        {this.renderRematchButton()}
+                    </div>
+                </div>
+            );
         }
         if (this.onlyAIs(room.game)) {
             return (
@@ -165,14 +256,34 @@ class GameButtons extends Component {
 }
 
 function mapStateToProps(state) {
-
-    return  {
-        activeThread: state.activeThread,
-        openThreads: state.openThreads,
-        room: state.openThreads[state.activeThread],
-        profile: state.auth.profile
+    let room = state.openThreads[state.activeThread];
+    if (room) {
+        let roomMode = room.room.roomMode;
+        let gameStarted = room.game.gameStarted;
+        let rematchOffered = room.rematchOffered;
+        let rematchSenderId = room.rematchSenderId;
+        return  {
+            activeThread: state.activeThread,
+            openThreads: state.openThreads,
+            room,
+            roomMode,
+            gameStarted,
+            rematchOffered,
+            rematchSenderId,
+            profile: state.auth.profile
+        }
+    } else {
+        return {
+            activeThread: state.activeThread,
+            room,
+            openThreads: state.openThreads,
+            profile: state.auth.profile
+        }
     }
 
 }
 
-export default connect(mapStateToProps, {resign, draw, fourResign, killAIs, abort}) (GameButtons)
+export default connect(
+    mapStateToProps,
+    {resign, draw, fourResign, killAIs, abort, rematchOffer, rematchAccept, rematchCancel}
+) (GameButtons)

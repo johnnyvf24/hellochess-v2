@@ -54,6 +54,11 @@ module.exports = function(io, socket, connection) {
         room.game.setColorTime(color, timeValue);
 
         if (room.gameReady()) {
+            if (room.roomMode === "match" && room.allowedPlayerIDs.length < room.game.numPlayers) {
+                // if no opponent was specified in match mode,
+                // the first person to sit will be the match opponent
+                room.addAllowedPlayerID(player.playerId);
+            }
             // start the game if all players are seated
             room.startGame(connection);
         }
@@ -380,6 +385,48 @@ module.exports = function(io, socket, connection) {
         io.to(roomName).emit('action', Notifications.warning(notificationOpts));
         
         room.game.endAndSaveGame(true);
+        io.to(room.name).emit('update-room', room.getRoom());
+    });
+    
+    socket.on('rematch-offer', data => {
+        let roomName = data.roomName;
+        let room: Room = connection.getRoomByName(roomName);
+        if(!room) {
+            return;
+        }
+        if (room.rematchOffered === true) {
+            // the other player offered a rematch already, start the game
+            room.startRematch(connection);
+        } else if (room.hasAIopponent()) {
+            room.startRematch(connection);
+        } else {
+            room.rematchOffer(data.senderId);
+        }
+        io.to(room.name).emit('update-room', room.getRoom());
+    });
+    
+    socket.on('rematch-accept', data => {
+        let roomName = data.roomName;
+        let room: Room = connection.getRoomByName(roomName);
+        if(!room) {
+            return;
+        }
+        if (room.rematchOffered === true) {
+            room.startRematch(connection);
+        } else {
+            console.log("rematch accepted, but was never offered");
+            console.trace();
+        }
+        io.to(room.name).emit('update-room', room.getRoom());
+    });
+    
+    socket.on('rematch-cancel', data => {
+        let roomName = data.roomName;
+        let room: Room = connection.getRoomByName(roomName);
+        if(!room) {
+            return;
+        }
+        room.rematchOffered = false;
         io.to(room.name).emit('update-room', room.getRoom());
     });
 };

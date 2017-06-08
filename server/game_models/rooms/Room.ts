@@ -18,8 +18,10 @@ export default class Room {
     private gameStartAction: string;
     private newMoveAction: string;
     private clock: Clock = null;
-    private _roomMode: string;
-    private _allowedPlayerIDs: any;
+    public roomMode: string;
+    public allowedPlayerIDs: any;
+    public rematchOffered: boolean = false;
+    public rematchSenderId: any;
     
     static numRooms: number = 0;
     
@@ -44,7 +46,7 @@ export default class Room {
                 this.newMoveAction = "new-move";
                 break;
         }
-        this._allowedPlayerIDs = [];
+        this.allowedPlayerIDs = [];
     }
     
     setRoomAttributes(roomObj: any): boolean {
@@ -59,15 +61,15 @@ export default class Room {
         this._maxPlayers = roomObj.maxPlayers;
         this._name = roomObj.name;
         if (typeof roomObj.roomMode === "undefined") {
-            this._roomMode = "open-table";
+            this.roomMode = "open-table";
         } else {
-            this._roomMode = roomObj.roomMode;
+            this.roomMode = roomObj.roomMode;
         }
         return true;
     }
     
     addAllowedPlayerID(id) {
-        this._allowedPlayerIDs.push(id);
+        this.allowedPlayerIDs.push(id);
     }
     
     getRoom(): Object {
@@ -84,8 +86,8 @@ export default class Room {
                     private: this._priv,
                     voiceChat: this._voiceChat,
                     maxPlayers: this._maxPlayers,
-                    roomMode: this._roomMode,
-                    allowedPlayerIDs: this._allowedPlayerIDs
+                    roomMode: this.roomMode,
+                    allowedPlayerIDs: this.allowedPlayerIDs
                 },
                 gameType: this._game.gameType,
                 users: this.getAllRoomPlayersWithoutSockets(),
@@ -93,7 +95,9 @@ export default class Room {
                 numMessages: this._messages.length,
                 time: this._time,
                 times: times,
-                game: game
+                game: game,
+                rematchOffered: this.rematchOffered,
+                rematchSenderId: this.rematchSenderId
             };
         }
     }
@@ -106,8 +110,8 @@ export default class Room {
                 private: this._priv,
                 voiceChat: this._voiceChat,
                 maxPlayers: this._maxPlayers,
-                roomMode: this._roomMode,
-                allowedPlayerIDs: this._allowedPlayerIDs
+                roomMode: this.roomMode,
+                allowedPlayerIDs: this.allowedPlayerIDs
             },
             gameType: this._game.gameType,
             numPlayers: this._players.length,
@@ -391,6 +395,7 @@ export default class Room {
         }
         
         this.startTimer();
+        this.rematchOffered = false;
     }
     
     endGame() {
@@ -440,5 +445,65 @@ export default class Room {
     
     clearTimer() {
         this.clock.pause();
+    }
+    
+    removeAllPlayers() {
+        if (this._game.white) {
+            this._game.white = null;
+        }
+        if (this._game.black) {
+            this._game.black = null;
+        }
+        if (this._game.gold) {
+            this._game.gold = null;
+        }
+        if (this._game.red) {
+            this._game.red = null;
+        }
+    }
+    
+    postGameEnd() {
+        switch (this.roomMode) {
+            case "match":
+                break;
+            default:
+                this.removeAllPlayers();
+        }
+        this.io.to(this._name).emit('update-room', this.getRoom());
+    }
+    
+    rotatePlayers() {
+        if (this._game.numPlayers === 2) {
+            [this._game.white, this._game.black] = [this._game.black, this._game.white];
+        } else if (this._game.numPlayers === 4) {
+            [this._game.white, this._game.gold, this._game.black, this._game.red] =
+                [this._game.red, this._game.white, this._game.gold, this._game.black];
+        }
+    }
+    
+    hasAIopponent() {
+        if (this._game.numPlayers === 2) {
+            return (
+                this._game.white.type === "computer" ||
+                this._game.black.type === "computer"
+            );
+        } else if (this._game.numPlayers === 4) {
+            return (
+                this._game.white.type === "computer" ||
+                this._game.black.type === "computer" ||
+                this._game.gold.type === "computer" ||
+                this._game.red.type === "computer"
+            );
+        }
+    }
+    
+    rematchOffer(senderId) {
+        this.rematchOffered = true;
+        this.rematchSenderId = senderId;
+    }
+    
+    startRematch(connection) {
+        this.rotatePlayers();
+        this.startGame(connection);
     }
 }
