@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import Select from 'react-select';
-import {Button, Row, Col} from 'react-bootstrap';
+import {Button, Row, Col, Glyphicon, OverlayTrigger, Tooltip} from 'react-bootstrap';
 import Slider, { Range } from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import {
@@ -100,9 +100,17 @@ class NewGameModalGameOptions extends Component {
         } else {
             display = "none";
         }
+        const tooltip = <Tooltip>Leave blank to allow the first player seated to play.</Tooltip>;
         return (
             <div className="form-group typeahead__container" style={{"display": display}}>
                 <label>Challenge Player</label>
+                &nbsp;
+                <OverlayTrigger placement="top" overlay={tooltip}>
+                    <Glyphicon
+                        glyph="question-sign"
+                        bsStyle="default"
+                        rel="tooltip" />
+                </OverlayTrigger>
                 <div className="typeahead__field">
                     <span className="typeahead__query">
                         <input
