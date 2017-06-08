@@ -222,7 +222,6 @@ exports.getLeaderboard = (req, res, next) => {
 
 exports.userSearch = (req, res, next) => {
     let searchString = req.params.q;
-    console.log("user search api, query:", searchString);
     User.find(
         {"username": {"$regex": `^${searchString}`, "$options": "i"}},
         {"username": true}

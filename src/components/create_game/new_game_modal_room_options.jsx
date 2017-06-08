@@ -37,15 +37,13 @@ class NewGameModalGameOptions extends Component {
             return;
         if (this.deferred) {
             this.deferred.resolve(this.props.userResults);
-        }A
+        }
     }
     
     setupTypeahead() {
         $(".challenge-player-input").typeahead({
-            debug: true,
             template: "{{username}}",
             templateValue: "{{username}}",
-            cache: true,
             order: "asc",
             input: ".challenge-player-input",
             minLength: 2,
@@ -100,7 +98,10 @@ class NewGameModalGameOptions extends Component {
         } else {
             display = "none";
         }
-        const tooltip = <Tooltip>Leave blank to allow the first player seated to play.</Tooltip>;
+        const tooltip =
+            <Tooltip id="challenge-player-tooltip">
+                Leave blank to allow the first player seated to play.
+            </Tooltip>;
         return (
             <div className="form-group typeahead__container" style={{"display": display}}>
                 <label>Challenge Player</label>
