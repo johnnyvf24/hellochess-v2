@@ -28,6 +28,10 @@ class OccupiedCard extends Component {
             return true;
         }
         
+        if (this.props.player.playerId != nextProps.player.playerId) {
+            return true;
+        }
+        
         return false;
     }
     
@@ -151,8 +155,6 @@ class OccupiedCard extends Component {
         if (this.props.room.room.roomMode === "match") {
             let id = this.props.player.playerId;
             let score = this.props.room.playerScores[id];
-            console.log("player:", this.props.player);
-            console.log(id, "score:", score);
             return (
                 <span className="player-score">
                     {score}

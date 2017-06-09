@@ -112,12 +112,10 @@ export default class CrazyHouse extends Game {
     
     removePlayerFromAllSeats(player: Player) {
         if(this.white && this.white.playerId === player.playerId) {
-            this.removeColorTime('w');
             this.white = null;
         }
         
         if(this.black && this.black.playerId === player.playerId) {
-            this.removeColorTime('b');
             this.black = null;
         }
     }
@@ -178,12 +176,10 @@ export default class CrazyHouse extends Game {
             case 'w':
                 this.white.alive = false;
                 playerOut = this.white;
-                this.times.w = 1;
                 break;
             case 'b':
                 this.black.alive = false;
                 playerOut = this.black;
-                this.times.b = 1;
                 break;
         }
     }

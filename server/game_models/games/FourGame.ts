@@ -382,6 +382,7 @@ export default class FourGame extends Game {
             return;
         }
         let room = this.connection.getRoomByName(this.roomName);
+        room.clearTimer();
         let winnerColor = this.gameRulesObj.getWinnerColor(); //player that won
         let winner = this.getPlayer(winnerColor);
         

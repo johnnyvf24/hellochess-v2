@@ -338,6 +338,7 @@ abstract class Game {
         }
         
         let room = this.connection.getRoomByName(this.roomName);
+        room.clearTimer();
         
         if(winner.type == 'computer' || loser.type == 'computer') {
              //console.log("no ratings! Computer in game");
@@ -482,7 +483,6 @@ abstract class Game {
                 position: 'tr',
                 autoDismiss: 5
             }
-            
             this.io.to(this.roomName).emit('action', Notifications.info(endNotif));
             if (room)
                 room.addMessage(new WinnerMessage(winner, null, this.roomName));
