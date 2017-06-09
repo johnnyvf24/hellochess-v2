@@ -164,7 +164,6 @@ export default class CrazyHouse extends Game {
         this.white.alive = true;
         this.black.alive = true;
         this.resetClocks();
-        this.lastMoveTime = Date.now();
         this.gameRulesObj = new Crazyhouse({960: this.set_960});
         if (this.set_960) {
             this.startPos = this.gameRulesObj.fen();

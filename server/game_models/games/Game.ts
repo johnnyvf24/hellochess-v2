@@ -253,12 +253,14 @@ abstract class Game {
         // calculate the time difference between the last move.
         // subtract any lag up to 1 second.
         */
-        let timeElapsed = Date.now() - this.lastMoveTime;// - lag;
-        this.lastMoveTime = Date.now();//moveTime;
-        
-        //calculate the time increment and add it to the current players time
-        let timeIncrement = increment * 1000;
-        this.setColorTime(this._lastTurn, this.times[this._lastTurn] - timeElapsed + timeIncrement);
+        if (this.lastMoveTime) {
+            let timeElapsed = Date.now() - this.lastMoveTime;// - lag;
+            this.lastMoveTime = Date.now();
+            
+            //calculate the time increment and add it to the current players time
+            let timeIncrement = increment * 1000;
+            this.setColorTime(this._lastTurn, this.times[this._lastTurn] - timeElapsed + timeIncrement);
+        }
         
         //check to see if the game is over
         if (this.gameRulesObj.game_over()) {
@@ -495,6 +497,7 @@ abstract class Game {
         }
         
         this.gameStarted = false;
+        this.lastMoveTime = null;
 
         if (room) {
             room.postGameEnd();

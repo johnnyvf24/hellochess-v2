@@ -397,7 +397,6 @@ export default class Room {
             this._game.engineGo();
         }
         
-        this.startTimer();
         this.rematchOffered = false;
     }
     
@@ -415,8 +414,10 @@ export default class Room {
         // make the move in the game logic
         this._game.makeMove(move, this.time.increment, moveTime);
         
-        if(this._game.gameStarted == true) {
+        let shouldClocksStart = this._game.getMoveHistory().length >= this._game.numPlayers;
+        if(this._game.gameStarted == true && shouldClocksStart) {
             this.startTimer();
+            this._game.lastMoveTime = Date.now();
         }
         
         this.io.to(this.name).emit('update-room', this.getRoom());

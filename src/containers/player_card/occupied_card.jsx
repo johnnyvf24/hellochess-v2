@@ -32,13 +32,12 @@ class OccupiedCard extends Component {
     }
     
     componentWillReceiveProps(nextProps) {
-        let gameJustStarted = !this.props.gameStarted && nextProps.gameStarted === true;
-        let newTurnStarted = (this.props.turn !== nextProps.turn) && nextProps.gameStarted;
-        let isOurTurn = nextProps.turn === this.props.color;
         if (nextProps.gameStarted === false) {
             this.clock.pause();
         } else {
-            if(isOurTurn && nextProps.gameStarted === true) {
+            let isOurTurn = nextProps.turn === this.props.color;
+            let shouldClocksStart = this.props.moveNum >= this.props.numPlayers - 1;
+            if(isOurTurn && nextProps.gameStarted === true && shouldClocksStart) {
                 this.clock.start(this.props.playerTime);
             } else {
                 this.clock.pause();
@@ -59,7 +58,8 @@ class OccupiedCard extends Component {
         }
         this.clock = new Clock(initialTime, this.props.time.increment);
         this.clock.onTick(this.updateTime.bind(this));
-        if(this.props.turn == this.props.color && this.props.gameStarted == true) {
+        let shouldClocksStart = this.props.moveNum >= this.props.numPlayers - 1;
+        if(this.props.turn == this.props.color && this.props.gameStarted == true && shouldClocksStart) {
             this.clock.start();
         } else if(this.props.gameStarted == false){
             this.clock.pause();
@@ -215,6 +215,8 @@ function mapStateToProps(state, props) {
         playerTime: state.openThreads[state.activeThread].times[cardPlayer.charAt(0)],
         playerColor: cardPlayer,
         gameStarted: state.openThreads[state.activeThread].game.gameStarted,
+        moveNum: state.openThreads[state.activeThread].game.pgn.length,
+        numPlayers: state.openThreads[state.activeThread].game.numPlayers,
         activeThread: state.activeThread
     }
 }

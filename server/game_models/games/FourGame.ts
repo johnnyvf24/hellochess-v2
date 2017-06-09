@@ -90,7 +90,6 @@ export default class FourGame extends Game {
         this.gold.alive = true;
         this.red.alive = true;
         this.resetClocks();
-        this.lastMoveTime = Date.now();
         this.gameRulesObj = new FourChess();
         this.fenHistory = [];
     }
@@ -197,11 +196,13 @@ export default class FourGame extends Game {
             }
         }
         
-        //calculate the time difference between the last move
-        let timeElapsed = Date.now() - this.lastMoveTime;
-        this.lastMoveTime = Date.now();
-        
-        this.setColorTime(this._lastTurn, this.times[this._lastTurn] - timeElapsed);
+        if (this.lastMoveTime) {
+            //calculate the time difference between the last move
+            let timeElapsed = Date.now() - this.lastMoveTime;
+            this.lastMoveTime = Date.now();
+            
+            this.setColorTime(this._lastTurn, this.times[this._lastTurn] - timeElapsed);
+        }
         
         //check to see if the game is over
         if (this.gameRulesObj.game_over()) {
@@ -341,12 +342,14 @@ export default class FourGame extends Game {
         lag = Math.min(lag, 1000);
         //calculate the time difference between the last move
         */
-        let timeElapsed = Date.now() - this.lastMoveTime;// - lag;
-        this.lastMoveTime = Date.now();//moveTime;
-        
-        //calculate the time increment and add it to the current players time
-        let timeIncrement = increment * 1000;
-        this.setColorTime(this._lastTurn, this.times[this._lastTurn] - timeElapsed + timeIncrement);
+        if (this.lastMoveTime) {
+            let timeElapsed = Date.now() - this.lastMoveTime;// - lag;
+            this.lastMoveTime = Date.now();//moveTime;
+            
+            //calculate the time increment and add it to the current players time
+            let timeIncrement = increment * 1000;
+            this.setColorTime(this._lastTurn, this.times[this._lastTurn] - timeElapsed + timeIncrement);
+        }
         
         //check to see if the game is over
         if (this.gameRulesObj.game_over()) {
@@ -575,6 +578,7 @@ export default class FourGame extends Game {
             }.bind(this), 1000);
         }
         this.gameStarted = false;
+        this.lastMoveTime = null;
 
         //wait 3 seconds before resetting the room
         setTimeout(function() {

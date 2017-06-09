@@ -153,7 +153,6 @@ export default class SChess extends Game {
         this.white.alive = true;
         this.black.alive = true;
         this.resetClocks();
-        this.lastMoveTime = Date.now();
         this.gameRulesObj = new SChessGame();
         this.moveHistory = [];
     }
