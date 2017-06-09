@@ -55,6 +55,8 @@ class QuickMatch extends Component {
                             name="game-type"
                             value={this.state.gameType}
                             options={gameTypeOptions}
+                            clearable={false}
+                            searchable={false}
                             onChange={this.onSelectGameType.bind(this)}
                         />
                     </Col>
