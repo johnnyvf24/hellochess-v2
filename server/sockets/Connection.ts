@@ -57,8 +57,21 @@ export default class Connection {
             if (host) {
                 room.addAllowedPlayerID(host._id);
             }
-            if (roomObj.challengedPlayerUsername) {
-                this.setChallengedPlayer(roomObj.challengedPlayerUsername, room);
+            if (roomObj.challengedPlayerUsername && roomObj.challengedPlayerId) {
+                this.setChallengedPlayer(roomObj.challengedPlayerId, room);
+            }
+            
+            let invitedPlayer: Player = this.getPlayerByPlayerId(roomObj.challengedPlayerId);
+            let challenger: Player = this.getPlayerByPlayerId(host._id);
+            
+            //Check to see if the invitedPlayer is online
+            if( invitedPlayer && invitedPlayer.socket &&
+                challenger && challenger.username) {
+                //Send the invitedPlayer an invitation to join the room
+                invitedPlayer.socket.emit('new-challenge', {
+                    roomName,
+                    opponent: challenger.username,
+                });
             }
         }
         room.setRoomAttributes(roomObj);
@@ -66,15 +79,8 @@ export default class Connection {
         return room;
     }
     
-    setChallengedPlayer(username, room): any {
-        User.findOne({username: username}, (err, user) => {
-            if (!err) {
-                console.log("adding opponent:", user.username);
-                room.addAllowedPlayerID(user._id);
-            } else {
-                console.log("error getting opponent:", err);
-            }
-        });
+    setChallengedPlayer(playerId, room): any {
+        room.addAllowedPlayerID(playerId);
     }
     
     addRoom(roomObj: Room): void {
@@ -140,6 +146,13 @@ export default class Connection {
             return null;
         }
         return this.players.find(player => player.socket.id === socket.id);
+    }
+    
+    getPlayerByPlayerId(userId: string) : Player {
+        if(!userId) {
+            return null;
+        }
+        return this.players.find(player => player.playerId === userId);
     }
     
     duplicateUser(playerId: string, ipaddress) {

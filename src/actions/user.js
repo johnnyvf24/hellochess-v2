@@ -134,3 +134,10 @@ export function userSearch(query) {
         });
     }
 }
+
+export function selectedChallengeId(userId) {
+    return {
+        type: 'challenged-player-id',
+        payload: userId,
+    }
+}
