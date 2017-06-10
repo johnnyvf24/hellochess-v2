@@ -161,10 +161,11 @@ class GameButtons extends Component {
     }
     
     renderRematchButton() {
+        const {profile, room} = this.props;
         let isMatch = this.props.roomMode === "match";
         let gameOver = this.props.gameStarted === false;
         let seatsFilled = this.seatsFilled();
-        if (isMatch && gameOver && seatsFilled) {
+        if (isMatch && gameOver && seatsFilled && this.userIsPlaying(profile, room)) {
             if (this.props.rematchOffered) {
                 if (this.props.rematchSenderId === this.props.profile._id) {
                     return this.cancelRematchButton();
