@@ -12,6 +12,7 @@ import QuickMatch from './presets/quick_match';
 import BoardWrapper from './board/board_wrapper';
 import RoomViewer from '../containers/room_viewer';
 import NewGame from './new_game';
+import RoomInfo from './room_info';
 import PlayerTimes from './player_card/player_times';
 import GameButtons from './game_btns';
 import NotificationHandler from './notification_handler';
@@ -188,7 +189,8 @@ class Live extends Component {
                                 </Col>
                             </Row>
                         </Col>
-                        <Col id="time-ads-column" xs={12} sm={2} md={2} lg={2}>
+                        <Col id="player-cards-column" xs={12} sm={2} md={2} lg={2}>
+                            <RoomInfo />
                             <PlayerTimes />
                             <GameButtons />
                         </Col>

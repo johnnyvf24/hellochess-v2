@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Inconsolata:400,700');
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,400i,600');
 html {
     height: 100%;
 }
@@ -533,8 +534,8 @@ tr:hover {
     margin-bottom: none;
 }
 
-#time-ads-column {
-    padding-top: 50px;
+#player-cards-column {
+    padding-top: 5px;
     margin-right: -15px;
     margin-left: 0px;
     padding-left: 0px;
@@ -1070,9 +1071,9 @@ tr:hover {
 }
 
 .game-buttons {
+    padding-top: 5px;
     display: table;
     margin: 0 auto;
-    padding: 15px;
 }
 
 .chat-board-wrapper {
@@ -1304,4 +1305,56 @@ div.schess-rook-toggle {
     font-size: 14px;
     bottom: 12px;
     left: 29px;
+}
+
+.room-info-panel {
+    background-color: #000000;
+    color: white;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    border-width: 4px;
+    text-align: center;
+    border-color: #4d999c;
+    padding: 5px;
+    border-left-style: double;
+    border-right-style: double;
+    font-family: 'Montserrat', sans-serif;
+    letter-spacing: 1px;
+}
+
+.room-info-panel .room-name {
+    font-size: 15px;
+    font-weight: bold;
+    border-bottom: 1px solid #4d999c;
+}
+
+.room-info-panel .time-control {
+    font-size: 12px;
+    margin-right: 2px;
+}
+
+.room-info-panel .separator {
+    margin: 0px 2px;
+    color: #4d999c;
+    font-size: 15px;
+}
+
+.room-info-panel .game-type {
+    font-size: 12px;
+    margin-left: 2px;
+}
+
+.room-info-panel .room-mode-wrapper {
+    line-height: 8px;
+}
+
+.room-info-panel .room-mode {
+    font-style: italic;
+    color: #ccc;
+    font-size: 9px;
+}
+
+.room-info-panel div {
+    display: table;
+    margin: 0 auto;
 }
