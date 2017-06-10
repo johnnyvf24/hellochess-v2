@@ -281,6 +281,7 @@ export default class Room {
             return;
         }
         let turn = this.game.getTurn();
+        this._game.updateColorTime(turn);
         
         //get the player that lost and remove them from the game
         let loser = this.game.getPlayer(turn);

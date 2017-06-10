@@ -129,14 +129,17 @@ abstract class Game {
     
     getCurrentTimes() {
         let times = {...this.times};
-        if (this.lastMoveTime && this.gameStarted) {
-            let currentTurn = this.gameRulesObj.turn();
-            let currentTime = times[currentTurn];
+        this.updateColorTime(this.gameRulesObj.turn());
+        return times;
+    }
+    
+    updateColorTime(color: string) {
+        if (this.lastMoveTime) {
+            let currentTime = this.times[color];
             let timeElapsed = Date.now() - this.lastMoveTime;
             let updatedTime = currentTime - timeElapsed;
-            times[this.gameRulesObj.turn()] = updatedTime;
+            this.times[color] = updatedTime;
         }
-        return times;
     }
     
     get fen(): string {
