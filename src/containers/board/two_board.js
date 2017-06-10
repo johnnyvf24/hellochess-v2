@@ -487,6 +487,9 @@ class TwoBoard extends Component {
     }
 
     onDrop(source, target, piece) {
+        if (this.props.game.gameStarted !== true) {
+            return 'snapback';
+        }
         this.drag = {from: '', to: ''};
         let turn = this.formatTurn(this.game.turn());
         if (piece.length > 1) {
