@@ -43,6 +43,10 @@ function userSearch(state = {}, action) {
             newState = Object.assign({}, state);
             newState.userResults = action.payload;
             return newState;
+        case 'challenged-player-id':
+            newState = Object.assign({}, state);
+            newState.selectedId = action.payload;
+            return newState;
         default:
             return state;
     }

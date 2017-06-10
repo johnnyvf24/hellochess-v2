@@ -21,6 +21,9 @@ export function socketIoMiddleware(store) {
                 socket.emit('update-user', action.payload);
                 break;
             case 'server/create-room':
+                if(action.payload.room && action.payload.room.challengedPlayerUsername) {
+                    action.payload.room.challengedPlayerId = store.getState().userSearch.selectedId;
+                }
                 socket.emit('create-room', action.payload);
                 break;
             case 'server/join-room':
@@ -111,6 +114,25 @@ export default function(store) {
                 callback: () => {
                     socket.emit('accept-draw', {
                         roomName: data.thread
+                    });
+                }
+            }
+        };
+        store.dispatch(Notifications.info(notif));
+    });
+    
+    socket.on('new-challenge', data => {
+        let notif = {
+            title: `You have been invited to ${data.roomName} by ${data.opponent}`,
+            position: 'tc',
+            autoDismiss: 15,
+            action: {
+                label: 'Accept',
+                callback: () => {
+                    socket.emit('join-room', {
+                        room: {
+                            name: data.roomName
+                        }
                     });
                 }
             }

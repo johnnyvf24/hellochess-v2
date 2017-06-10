@@ -18,7 +18,7 @@ import {
     selectedNewTimeIncrement,
     selectedRoomMode,
 } from '../../actions/create_game.js';
-import {userSearch} from '../../actions/user';
+import {userSearch, selectedChallengeId} from '../../actions/user';
 
 const roomModeOptions = [
     { value: 'open-table', label: 'Open Table' },
@@ -53,6 +53,13 @@ class NewGameModalGameOptions extends Component {
             dynamic: true,
             display: ["username"],
             emptyTemplate: 'No users found: "{{query}}"',
+            callback: {
+                onClickAfter: (node, a, item, e) => {
+                    if(item && item._id) {
+                        this.props.selectedChallengeId(item._id);
+                    }
+                }
+            },
             source: {
                 data: () => {
                     let v = $(".challenge-player-input").val();
@@ -159,5 +166,6 @@ export default connect(mapStateToProps,
     changeMaxPlayers,
     togglePrivate,
     selectedRoomMode,
-    userSearch
+    userSearch,
+    selectedChallengeId
 }) (NewGameModalGameOptions);
