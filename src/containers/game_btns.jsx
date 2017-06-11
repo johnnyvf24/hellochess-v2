@@ -38,6 +38,27 @@ class GameButtons extends Component {
 
         return false;
     }
+    
+    userIsSeated(userObj, roomObj) {
+        if(roomObj.game.white &&
+            userObj._id === roomObj.game.white.playerId) {
+            return true;
+        }
+        if(roomObj.game.black &&
+            userObj._id === roomObj.game.black.playerId) {
+            return true;
+        }
+        if(roomObj.game.gold &&
+            userObj._id === roomObj.game.gold.playerId) {
+            return true;
+        }
+        if(roomObj.game.red &&
+            userObj._id === roomObj.game.red.playerId) {
+            return true;
+        }
+
+        return false;
+    }
 
     onResign(event) {
         this.props.resign(this.props.profile._id, this.props.activeThread);
@@ -165,7 +186,8 @@ class GameButtons extends Component {
         let isMatch = this.props.roomMode === "match";
         let gameOver = this.props.gameStarted === false;
         let seatsFilled = this.seatsFilled();
-        if (isMatch && gameOver && seatsFilled && this.userIsPlaying(profile, room)) {
+        let isSeated = this.userIsSeated(profile, room);
+        if (isMatch && gameOver && seatsFilled && isSeated) {
             if (this.props.rematchOffered) {
                 if (this.props.rematchSenderId === this.props.profile._id) {
                     return this.cancelRematchButton();

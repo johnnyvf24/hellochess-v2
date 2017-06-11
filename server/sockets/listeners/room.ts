@@ -54,11 +54,6 @@ module.exports = function(io, socket, connection) {
         room.game.setColorTime(color, timeValue);
 
         if (room.gameReady()) {
-            if (room.roomMode === "match" && room.allowedPlayerIDs.length < room.game.numPlayers) {
-                // if no opponent was specified in match mode,
-                // the first person to sit will be the match opponent
-                room.addAllowedPlayerID(player.playerId);
-            }
             // start the game if all players are seated
             room.startGame(connection);
         }

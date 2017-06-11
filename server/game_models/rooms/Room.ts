@@ -74,6 +74,10 @@ export default class Room {
         this.playerScores[id] = 0;
     }
     
+    isAllowedPlayerID(id) {
+        return this.allowedPlayerIDs.includes(id);
+    }
+    
     getRoom(): Object {
         let game;
         
@@ -399,6 +403,15 @@ export default class Room {
         }
         
         this.rematchOffered = false;
+        if (this.roomMode === "match" && this.allowedPlayerIDs.length < this._game.numPlayers) {
+            // if no opponent was specified in match mode,
+            // the first person(s) to sit will be the match opponent
+            players.forEach(player => {
+                if (!this.isAllowedPlayerID(player.playerId)) {
+                    this.addAllowedPlayerID(player.playerId);
+                }
+            });
+        }
     }
     
     endGame() {
