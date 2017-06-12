@@ -1141,19 +1141,43 @@ var FourChess = function (fen) {
 
         return false;
     }
+    
+    function insufficentMaterial(color) {
+        var count = 0;
+        for(var i = 0; i < BOARD.length; i++) {
+            var piece = BOARD[i];
+            switch(color) {
+                case WHITE:
+                    if (whitePiece(piece)) { count++; }
+                case BLACK:
+                    if (blackPiece(piece)) { count++; }
+                case GOLD:
+                    if (goldPiece(piece)) { count++; }
+                case RED:
+                    if (redPiece(piece)) { count++; }
+                    break;
+            }
+            
+        }
+        if(count > 1) {
+            return false;
+        }
+        
+        return true;
+    }
 
     function gameOver() {
         var counter = 0;
-        if(whiteOut) {
+        if(whiteOut || insufficentMaterial(WHITE)) {
             counter++;
         }
-        if(goldOut) {
+        if(goldOut || insufficentMaterial(GOLD)) {
             counter++;
         }
-        if(blackOut) {
+        if(blackOut || insufficentMaterial(BLACK)) {
             counter++;
         }
-        if(redOut) {
+        if(redOut || insufficentMaterial(RED)) {
             counter++;
         }
 
@@ -1647,6 +1671,27 @@ var FourChess = function (fen) {
             return null;
         }
     }
+    
+    function getRemainingPlayers() {
+        var remaining =[];
+        if (!whiteOut) {
+            remaining.push(WHITE);
+        }
+        
+        if (!blackOut) {
+            remaining.push(BLACK);
+        }
+        
+        if (!goldOut) {
+            remaining.push(GOLD);
+        }
+        
+        if (!redOut) {
+            remaining.push(RED);
+        }
+        
+        return remaining;
+    }
 
     function search(state, alpha, beta, depth, maximizingPlayer) {
         if(depth == 0) {
@@ -2035,7 +2080,18 @@ var FourChess = function (fen) {
             return null;
         },
         in_draw: function() {
-            return false;
+            var remainingPlayers = getRemainingPlayers();
+            if(remainingPlayers.length === 1) {
+                return false;
+            } else {
+                for(var i = 0; i < remainingPlayers.length; i++) {
+                    if (insufficentMaterial(remainingPlayers[i]) === false) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            
         },
         turn: function() {
             return TURN;

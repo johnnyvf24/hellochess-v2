@@ -10,7 +10,7 @@ import FourEngine from '../../engine/FourEngine';
 import Engine from '../../engine/Engine';
 import AI from '../players/AI';
 import Room from '../rooms/Room';
-import {EliminationMessage, WinnerMessage} from '../rooms/Message';
+import {EliminationMessage, DrawMessage, WinnerMessage} from '../rooms/Message';
 
 function mapObject(object, callback) {
     return Object.keys(object).map(function (key) {
@@ -209,7 +209,7 @@ export default class FourGame extends Game {
     
             
             if (this.gameRulesObj.in_draw()) {
-                
+                this.endAndSaveGame(true);
             } else {
                 this.endAndSaveGame();
                 return;
@@ -354,7 +354,7 @@ export default class FourGame extends Game {
         //check to see if the game is over
         if (this.gameRulesObj.game_over()) {
             if (this.gameRulesObj.in_draw()) {
-                
+                this.endAndSaveGame(true);
             } else {
                 this.endAndSaveGame();
                 return;
@@ -368,7 +368,7 @@ export default class FourGame extends Game {
         }
     }
     
-    endAndSaveGame(): boolean {
+    endAndSaveGame(draw = false): boolean {
         if(this.engineInstance && typeof this.engineInstance.kill == 'function') {
             this.engineInstance.kill(); //stop any active engine
         }
@@ -386,12 +386,15 @@ export default class FourGame extends Game {
         let winnerColor = this.gameRulesObj.getWinnerColor(); //player that won
         let winner = this.getPlayer(winnerColor);
         
-        if (this.gameStarted && winner && room) {
+        if (draw === true) {
+            room.addMessage(new DrawMessage(null, null, this.roomName));
+        } else if (this.gameStarted && winner && room) {
             room.addMessage(new WinnerMessage(winner, null, this.roomName));
         }
         
         if( white.type == 'computer' || black.type == 'computer'
-            || gold.type == 'computer' || red.type == 'computer') {
+            || gold.type == 'computer' || red.type == 'computer' 
+            || draw === true) {
             //Dont save computer games
             //console.log("no ratings! Computer in game");
         } else {
