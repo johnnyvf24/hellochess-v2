@@ -1358,3 +1358,13 @@ div.schess-rook-toggle {
     display: table;
     margin: 0 auto;
 }
+
+noscript {
+    color: white;
+    position: fixed;
+    top: 0;
+    left: 25vw;
+    right: 25vw;
+    font-size: 20px;
+    text-align: center;
+}
