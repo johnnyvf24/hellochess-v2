@@ -472,7 +472,7 @@ var FourChess = function (fen) {
     function generateCastleMoves(toSquare, rank, alpha, color) {
         switch(color) {
             case 'w':
-                if(white_moved_king) {
+                if(white_moved_king || inCheck()) {
                     return;
                 }
                 var square1Right = String.fromCharCode(alpha.charCodeAt(0) + 1) + rank;
@@ -491,7 +491,7 @@ var FourChess = function (fen) {
                 }
                 break;
             case 'g':
-                if(gold_moved_king) {
+                if(gold_moved_king || inCheck()) {
                     return;
                 }
                 var square1Right = alpha + (rank-1);
@@ -511,7 +511,7 @@ var FourChess = function (fen) {
 
                 break;
             case 'b':
-                if(black_moved_king) {
+                if(black_moved_king || inCheck()) {
                     return;
                 }
 
@@ -532,7 +532,7 @@ var FourChess = function (fen) {
                 break;
 
             case 'r':
-                if(red_moved_king) {
+                if(red_moved_king || inCheck()) {
                     return;
                 }
                 var square1Right = alpha + (rank+1);
@@ -684,7 +684,7 @@ var FourChess = function (fen) {
         }
     }
 
-    function generateMovesForPiece(piece, alpha, rank) {
+    function generateMovesForPiece(piece, alpha, rank, checkCastling = true) {
         var toSquare = [];
         var squaresToCheck = [];
 
@@ -831,7 +831,9 @@ var FourChess = function (fen) {
                 generateRankMoves(toSquare, rank, alpha, true);
                 generateFileMoves(toSquare, rank, alpha, true);
                 generateDiagnolMoves(toSquare, rank, alpha, true);
-                generateCastleMoves(toSquare, rank, alpha, 'w');
+                if (checkCastling === true) {
+                    generateCastleMoves(toSquare, rank, alpha, 'w');
+                }
                 break;
             case SQUARE_STATUS['bR']:
                 generateFileMoves(toSquare, rank, alpha, false);
@@ -868,7 +870,9 @@ var FourChess = function (fen) {
                 generateRankMoves(toSquare, rank, alpha, true);
                 generateFileMoves(toSquare, rank, alpha, true);
                 generateDiagnolMoves(toSquare, rank, alpha, true);
-                generateCastleMoves(toSquare, rank, alpha, 'b');
+                if (checkCastling === true) {
+                    generateCastleMoves(toSquare, rank, alpha, 'b');
+                }
                 break;
             case SQUARE_STATUS['gR']:
                 generateRankMoves(toSquare, rank, alpha, false);
@@ -904,7 +908,9 @@ var FourChess = function (fen) {
                 generateRankMoves(toSquare, rank, alpha, true);
                 generateFileMoves(toSquare, rank, alpha, true);
                 generateDiagnolMoves(toSquare, rank, alpha, true);
-                generateCastleMoves(toSquare, rank, alpha, 'g');
+                if (checkCastling === true) {
+                    generateCastleMoves(toSquare, rank, alpha, 'g');
+                }
                 break;
             case SQUARE_STATUS['rR']:
                 generateRankMoves(toSquare, rank, alpha, false);
@@ -940,7 +946,9 @@ var FourChess = function (fen) {
                 generateRankMoves(toSquare, rank, alpha, true);
                 generateFileMoves(toSquare, rank, alpha, true);
                 generateDiagnolMoves(toSquare, rank, alpha, true);
-                generateCastleMoves(toSquare, rank, alpha, 'r');
+                if (checkCastling === true) {
+                    generateCastleMoves(toSquare, rank, alpha, 'r');
+                }
                 break;
         }
         if(toSquare.length == 0) {
@@ -954,7 +962,7 @@ var FourChess = function (fen) {
         return toSquare;
     }
 
-    function generateMovesForSquare(square) {
+    function generateMovesForSquare(square, castling = true) {
         var alpha = square.charAt(0);
         if(square.length === 2)
             var rank = parseInt(square.charAt(1), 10);
@@ -964,7 +972,7 @@ var FourChess = function (fen) {
 
         var piece = BOARD[SQUARES[square]];
 
-        return generateMovesForPiece(piece, alpha, rank);
+        return generateMovesForPiece(piece, alpha, rank, castling);
     }
 
     function calculateSquareFromIndex(index) {
@@ -1094,7 +1102,7 @@ var FourChess = function (fen) {
     }
 
 
-    function inCheck() {
+    function inCheck(color) {
         var currentKing = "";
         switch(TURN) {
             case 'w':
@@ -1120,7 +1128,7 @@ var FourChess = function (fen) {
 
         for(var i = 0; i < BOARD.length; i++) {
             var currentSquare = getKeyByValue(SQUARES, i);
-            var moves = generateMovesForSquare(currentSquare);
+            var moves = generateMovesForSquare(currentSquare, false);
             if(moves == null) {
                 continue;
             }
