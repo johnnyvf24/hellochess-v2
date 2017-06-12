@@ -745,7 +745,7 @@ var FourChess = function (fen) {
             case SQUARE_STATUS['gP']:
 
                 if(alpha === 'b') {
-                    if(isSquareEmpty('d' + rank)) {
+                    if(isSquareEmpty('d' + rank) && isSquareEmpty('c' + rank)) {
                         squaresToCheck.push('d' + rank);
                     }
                 }
@@ -772,7 +772,7 @@ var FourChess = function (fen) {
                 break;
             case SQUARE_STATUS['rP']:
                 if(alpha === 'm') {
-                    if(isSquareEmpty('k' + rank)) {
+                    if(isSquareEmpty('k' + rank) && isSquareEmpty('l' + rank)) {
                         squaresToCheck.push('k' + rank);
                     }
                 }
