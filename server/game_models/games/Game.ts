@@ -312,6 +312,7 @@ abstract class Game {
         this.black = null;
         this.gold = null;
         this.red = null;
+        this.lastMoveTime = null;
         let room: Room = this.connection.getRoomByName(this.roomName);
         
         if(!room) {
