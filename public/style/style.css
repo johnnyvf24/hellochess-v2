@@ -1359,7 +1359,7 @@ div.schess-rook-toggle {
     margin: 0 auto;
 }
 
-noscript {
+.site-description {
     color: white;
     position: fixed;
     top: 0;
