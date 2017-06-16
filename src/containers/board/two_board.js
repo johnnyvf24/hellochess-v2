@@ -406,14 +406,21 @@ class TwoBoard extends Component {
                     return 'a8';
             }
         }
-        function isPawnPromotion(a) {
+        let isPawnPromotion = function (a) {
             let re = /[a-n]+(\d+)/ig;
-            let to_rank = re.exec(a.to)[1];
+            let to_rank = re.exec(a.to);
+            if (to_rank) {
+                to_rank = to_rank[1];
+            } else {
+                return false;
+            }
             return (
                 a.piece === 'p' &&
-                (to_rank === '1' || to_rank === '8')
+                ((to_rank === '1' && this.props.usColor === 'b') ||
+                 (to_rank === '8' && this.props.usColor === 'w'))
             );
-        }
+        }.bind(this);
+        
         if (isPawnPromotion(action)) {
             this.makePromotionMove(action);
             return null;
@@ -611,6 +618,12 @@ function mapStateToProps(state) {
     let fen = game.fen;
     let pgn = game.pgn;
     let activePly = room.activePly;
+    let usColor = 'w';
+    if (room) {
+        if (game.black.playerId === profile._id) {
+            usColor = 'b';
+        }
+    }
     return {
         profile: profile,
         move: move,
@@ -621,7 +634,8 @@ function mapStateToProps(state) {
         pgn: pgn,
         gameType: game.gameType,
         activePly: activePly,
-        zoomLevel: state.settings.zoomLevel
+        zoomLevel: state.settings.zoomLevel,
+        usColor
     }
 }
 
