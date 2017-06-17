@@ -1321,7 +1321,9 @@ function beginDraggingPiece(source, piece, x, y) {
       display: '',
       position: 'absolute',
       left: x - (SQUARE_SIZE / 2),
-      top: y - (SQUARE_SIZE / 2)
+      top: y - (SQUARE_SIZE / 2),
+      cursor: 'move',
+      'z-index': '999'
     });
 
   if (source !== 'spare' && source !== 'hand') {
@@ -1859,6 +1861,8 @@ function addEvents() {
 }
 
 function initDom() {
+  // delete any existing drag pieces
+  $('body .' + CSS.piece).remove();
   // build board and save it in memory
   containerEl.html(buildBoardContainer());
   boardEl = containerEl.find('.' + CSS.board);
