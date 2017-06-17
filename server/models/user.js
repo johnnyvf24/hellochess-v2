@@ -33,7 +33,7 @@ var UserSchema = new Schema({
     },
     picture: {
         type: String,
-        default: 'https://www.hellochess.com/img/default-img.png'
+        default: '/img/default-img.png'
     },
     name: {
         type: String,

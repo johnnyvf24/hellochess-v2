@@ -87,7 +87,9 @@ if(env == "production") {
 app.use(allowCrossDomain);
 app.use(bodyParser.json());
 //serve up static public folder
-app.use(express.static(path.join(__dirname, '../public')));
+app.use(express.static(path.join(__dirname, '../public'), {
+    maxAge: '1d'
+}));
 
 if(env == "production") {
     httpapp.listen(httpapp.get('httpport'), function() {
