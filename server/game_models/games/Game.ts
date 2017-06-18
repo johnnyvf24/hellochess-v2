@@ -470,24 +470,9 @@ abstract class Game {
         } 
         
         if(draw) {
-            let drawNotif = {
-                title: 'Game Over',
-                message: 'The game has ended in a draw!',
-                position: 'tr',
-                autoDismiss: 5
-            }
-            
-            this.io.to(this.roomName).emit('action', Notifications.warning(drawNotif));
             if (room)
                 room.addMessage(new DrawMessage(null, null, this.roomName));
         } else {
-            let endNotif = {
-                title: 'Game Over',
-                message: `The game is over, ${winner.username} has won!`,
-                position: 'tr',
-                autoDismiss: 5
-            }
-            this.io.to(this.roomName).emit('action', Notifications.info(endNotif));
             if (room)
                 room.addMessage(new WinnerMessage(winner, null, this.roomName));
         }

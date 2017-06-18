@@ -320,15 +320,6 @@ export default class FourGame extends Game {
             if(this.gameRulesObj.inCheckMate()) { //this player is in checkmate
                 if(this.roomName) {
                     let currentPlayer = this.currentTurnPlayer();
-                    
-                    const notificationOpts = {
-                        title: 'Checkmate',
-                        message: `A player is in checkmate! ${currentPlayer.username}'s turn has been skipped.`,
-                        position: 'tr',
-                        autoDismiss: 5,
-                    };
-                    
-                    this.io.to(this.roomName).emit('action', Notifications.warning(notificationOpts));
                 }
                 this.gameRulesObj.nextTurn();
             }
@@ -637,15 +628,6 @@ export default class FourGame extends Game {
             let room = this.connection.getRoomByName(this.roomName);
             if (room)
                 room.addMessage(new EliminationMessage(playerOut, null, this.roomName));
-            const notificationOpts = {
-                title: 'Player Elimination',
-                message: `${playerOut.username} has been eliminated!`,
-                position: 'tr',
-                autoDismiss: 5,
-            };
-            if(this.roomName) {
-                this.io.to(this.roomName).emit('action', Notifications.info(notificationOpts));
-            }
             this.lastMoveTime = Date.now();
         }
     }
