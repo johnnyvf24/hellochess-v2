@@ -242,26 +242,6 @@ export default class FourGame extends Game {
         }
     }
     
-    addPlayer(player: Player, color: string) {
-        this.removePlayerFromAllSeats(player);
-        switch(color.charAt(0)) {
-            case 'w':
-                this.white = player;
-                break;
-            case 'b':
-                this.black = player;
-                break;
-            case 'g':
-                this.gold = player;
-                break;
-            case 'r':
-                this.red = player;
-                break;
-        }
-        return false;
-    }
-    
-    
     removePlayer(color: string) {
         switch(color.charAt(0)) {
             case 'w':
