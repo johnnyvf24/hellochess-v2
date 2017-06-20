@@ -45,7 +45,7 @@
     "chess.js": "^0.10.2",
     "chessboardjs": "0.0.1",
     "cors": "^2.8.1",
-    "crazyhouse.js": "0.0.7",
+    "crazyhouse.js": "0.0.8",
     "crypto-js": "^3.1.9-1",
     "dotenv": "^4.0.0",
     "elo-js": "^1.0.1",
