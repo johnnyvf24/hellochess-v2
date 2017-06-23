@@ -109,19 +109,6 @@ export default class SChess extends Game {
         }
     }
     
-    addPlayer(player: Player, color: string) {
-        this.removePlayerFromAllSeats(player);
-        switch(color.charAt(0)) {
-            case 'w':
-                this.white = player;
-                break;
-            case 'b':
-                this.black = player;
-                break;
-        }
-        return false;
-    }
-    
     removePlayer(color: string) {
         switch(color.charAt(0)) {
             case 'w':

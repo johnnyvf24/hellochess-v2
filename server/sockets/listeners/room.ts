@@ -235,17 +235,8 @@ module.exports = function(io, socket, connection) {
             return;
         }
         
-        //Notify all players that a player has resigned
-        let notificationOpts = {
-            title: `${player.username} has resigned!`,
-            position: 'tr',
-            autoDismiss: 5,
-        };
-        
         //add resign message to the room
         room.addMessage(new ResignMessage(player, data.msg, roomName));
-        
-        io.to(room.name).emit('action', Notifications.info(notificationOpts));
         
         room.game.setPlayerResignByPlayerObj(player);
         room.clearTimer();
@@ -270,15 +261,6 @@ module.exports = function(io, socket, connection) {
         
         //add resign message to the room
         room.addMessage(new ResignMessage(player, data.msg, roomName));
-        
-        //Notify all players that a player has resigned
-        let notificationOpts = {
-            title: `${player.username} has resigned!`,
-            position: 'tr',
-            autoDismiss: 5,
-        };
-        
-        io.to(room.name).emit('action', Notifications.info(notificationOpts));
         
         room.clearTimer();
         room.game.setPlayerResignByPlayerObj(player);
@@ -307,15 +289,6 @@ module.exports = function(io, socket, connection) {
         room.game.abort();
         
         room.addMessage(new AbortMessage(player, null, roomName));
-        
-        let notificationOpts = {
-            title: `${player.username} aborted the game.`,
-            position: 'tr',
-            autoDismiss: 5,
-        };
-        
-        io.to(room.name).emit('action', Notifications.info(notificationOpts));
-        
         io.to(room.name).emit('update-room', room.getRoom());
     });
     
@@ -345,15 +318,6 @@ module.exports = function(io, socket, connection) {
                 thread: roomName
             });
         }
-        
-        
-        
-        let notif = {
-            title: `Draw request sent by ${player.username}!`,
-            position: 'tr',
-            autoDismiss: 2,
-        };
-        io.to(roomName).emit('action', Notifications.info(notif));
     });
     
     socket.on('accept-draw', data => {
@@ -368,16 +332,6 @@ module.exports = function(io, socket, connection) {
         if(!room.game || !player) {
             return;
         }
-        
-        //Notify all players that the game has ended in a draw
-        let notificationOpts = {
-            title: 'Game Over',
-            message: 'The game ended in a draw!',
-            position: 'tr',
-            autoDismiss: 5,
-        };
-        
-        io.to(roomName).emit('action', Notifications.warning(notificationOpts));
         
         room.game.endAndSaveGame(true);
         io.to(room.name).emit('update-room', room.getRoom());

@@ -78,7 +78,6 @@ abstract class Game {
     startPos: string;
     gameClassDB: any;
     
-    abstract addPlayer(player: Player, color: string): boolean;
     abstract removePlayer(color: string): boolean;
     abstract getGame(): any;
     abstract gameReady(): boolean;
@@ -88,6 +87,26 @@ abstract class Game {
     abstract setPlayerResignByPlayerObj(player: Player);
     abstract removePlayerFromAllSeats(player: Player);
     abstract setPlayerOutByColor(color: string);
+    
+    addPlayer(player: Player, color: string) {
+        this.removePlayerFromAllSeats(player);
+        let playerClone = Object.assign(Object.create(player), player);
+        switch(color.charAt(0)) {
+            case 'w':
+                this.white = playerClone;
+                break;
+            case 'b':
+                this.black = playerClone;
+                break;
+            case 'g':
+                this.gold = playerClone;
+                break;
+            case 'r':
+                this.red = playerClone;
+                break;
+        }
+        return false;
+    }
     
     resetClocks() {
         let initialTime = this.time.value * 60 * 1000;
@@ -470,24 +489,9 @@ abstract class Game {
         } 
         
         if(draw) {
-            let drawNotif = {
-                title: 'Game Over',
-                message: 'The game has ended in a draw!',
-                position: 'tr',
-                autoDismiss: 5
-            }
-            
-            this.io.to(this.roomName).emit('action', Notifications.warning(drawNotif));
             if (room)
                 room.addMessage(new DrawMessage(null, null, this.roomName));
         } else {
-            let endNotif = {
-                title: 'Game Over',
-                message: `The game is over, ${winner.username} has won!`,
-                position: 'tr',
-                autoDismiss: 5
-            }
-            this.io.to(this.roomName).emit('action', Notifications.info(endNotif));
             if (room)
                 room.addMessage(new WinnerMessage(winner, null, this.roomName));
         }

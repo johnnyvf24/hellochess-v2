@@ -294,25 +294,10 @@ export default class Room {
         this.game.setPlayerOutByColor(turn);
         
         this.addMessage(new TimeForfeitMessage(loser, null, this._name));
-        //Notify all players that a player has lost on time
-        let notificationOpts = {
-            title: `${loser.username} has lost on time!`,
-            position: 'tr',
-            autoDismiss: 5,
-        };
-        this.io.to(this._name).emit('action', Notifications.info(notificationOpts));
         
         //Check to see if the game has ended
         if(this.game.gameOver()) {
             this.game.endAndSaveGame(false);
-            
-            //Notify all players that the game is over
-            let notificationOpts = {
-                title: `${this._name}'s game is over`,
-                position: 'tr',
-                autoDismiss: 5,
-            };
-            this.io.to(this._name).emit('action', Notifications.success(notificationOpts));
             
             //sync the room again
             this.io.to(this.name).emit('update-room', this.getRoom());
@@ -376,14 +361,6 @@ export default class Room {
         if (this._game.black !== null) players.push(this._game.black);
         if (this._game.red !== null) players.push(this._game.red);
         this.addMessage(new GameStartedMessage(players, null, this._name));
-        //Notify all players that the game is ready to be played
-        const notificationOpts = {
-            title: 'The game has begun',
-            message: '',
-            position: 'tr',
-            autoDismiss: 3,
-        };
-        this.io.to(this._name).emit('action', Notifications.warning(notificationOpts));
         
         // if there are any AI players, add an engine instance to the game
         this._game.newEngineInstance(this._name, connection);

@@ -48,7 +48,7 @@ class MessageSend extends Component {
                         value={this.state.msg}
                         onChange={this.onInputChange}
                         className="form-control"
-                        autocomplete="off"
+                        autoComplete="off"
                         placeholder="Write a Message" />
                     <span className="input-group-btn">
                         <Button bsStyle="default"
