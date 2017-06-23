@@ -1,12 +1,12 @@
+import {production, staging, local} from '../../config/config';
+
 let url;
 if (process.env.NODE_ENV === "production") {
-    url = 'https://hellochess.com';
+    url = production;
 } else if (process.env.NODE_ENV === "staging") {
-    url = 'https://hellochess-dev-johnnyvf24.c9users.io';
-} else if(process.env.NODE_ENV === "dev2") {
-    url = 'https://hellochess-johnnyvf24.c9users.io';
+    url = staging;
 } else {
-    url = 'http://localhost:3000';
+    url = local;
 }
 
 export const ROOT_URL = url;

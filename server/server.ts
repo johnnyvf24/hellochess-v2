@@ -3,6 +3,8 @@ const dotenv = require('dotenv').load();
 const express = require('express');
 const app = express();
 
+import {production, staging, local} from '../config/config';
+
 const env = process.env.NODE_ENV || "development";
 
 let http, https, httpapp;
@@ -22,7 +24,7 @@ if(env == "production") {
     http = require('http').createServer(httpapp);
 
     httpapp.get('*', (req, res) => {
-        res.redirect('https://hellochess.com');
+        res.redirect(production);
     });
     https = require('https').createServer(credentials, app);
 } else {
@@ -64,10 +66,9 @@ if(env == "production") {
 } else {
     allowCrossDomain = function(req, res, next) {
         res.header('Access-Control-Allow-Origin', [
-            'http://localhost:8080', 
-            'https://hellochess-johnnyvf24.c9users.io', 
-            'https://www.hellochess.com', 
-            'https://hellochess-dev-johnnyvf24.c9users.io'
+            production,
+            staging,
+            local
         ]);
         res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH');
         res.header('Access-Control-Allow-Headers', 'Content-Type, x-auth');

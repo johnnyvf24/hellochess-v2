@@ -1,6 +1,7 @@
 // import createSocketIoMiddleware from 'redux-socket.io';
 import io from 'socket.io-client';
 import Notifications from 'react-notification-system-redux';
+import {production, staging, local} from '../../config/config';
 
 let socket = null;
 
@@ -91,13 +92,11 @@ export function socketIoMiddleware(store) {
 
 export default function(store) {
     if (process.env.NODE_ENV === "production") {
-        socket = io.connect('https://www.hellochess.com');
+        socket = io.connect(production);
     } else if (process.env.NODE_ENV === "staging") {
-        socket = io.connect('https://hellochess-dev-johnnyvf24.c9users.io');
-    } else if(process.env.NODE_ENV === "dev2") {
-        socket = io.connect('https://hellochess-johnnyvf24.c9users.io');
+        socket = io.connect(staging);
     } else {
-        socket = io.connect('http://localhost:3000');
+        socket = io.connect(local);
     }
 
     socket.on('connected-user', data => {
