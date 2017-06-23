@@ -7,41 +7,13 @@ import {production, staging, local} from '../config/config';
 
 const env = process.env.NODE_ENV || "development";
 
-let http, https, httpapp;
-
-if(env == "production") {
-
-    httpapp = express();
-    httpapp.set('httpport', 8080);
-    const creds = require('../config/config').credentials;
-    const credentials = {
-        key: fs.readFileSync(creds.key),
-        cert: fs.readFileSync(creds.cert),
-        requestCert: true
-    }; 
-
-
-    http = require('http').createServer(httpapp);
-
-    httpapp.get('*', (req, res) => {
-        res.redirect(production);
-    });
-    https = require('https').createServer(credentials, app);
-} else {
-    http = require('http').createServer(app);
-}
-
+let http = require('http').createServer(app);
 
 const path = require('path');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const _ = require('lodash');
-let io;
-if(env == "production") {
-    io = require('socket.io')(https);
-} else {
-    io = require('socket.io')(http);
-}
+let io = require('socket.io')(http);
 
 const cors = require('cors');
 
@@ -77,12 +49,8 @@ if(env == "production") {
     }
 }
 
-if(env == "production") {
-    //set port variable
-    app.set('port', process.env.PORT || 8443);
-} else {
-    app.set('port', process.env.PORT || 3000);
-}
+const port = process.env.PORT || 8080;
+
 //middleware
 //app.use(morgan('combined'));
 app.use(allowCrossDomain);
@@ -92,20 +60,12 @@ app.use(express.static(path.join(__dirname, '../public'), {
     maxAge: '1d'
 }));
 
-if(env == "production") {
-    httpapp.listen(httpapp.get('httpport'), function() {
-        console.log(`http redirecting from port ${httpapp.get('httpport')}`);
-    });
-    //listen to the required port
-    https.listen(app.get('port'), function() {
-      console.log(`Express server listening on port ${app.get('port')}`);
-    });
-} else {
-    //listen to the required port
-    http.listen(app.get('port'), function() {
-        console.log(`Express server listening on port ${app.get('port')}`);
-    });
-}
+
+//listen to the required port
+http.listen(port, function() {
+    console.log(`Express server listening on port ${port}`);
+});
+
 
 process.on("uncaughtException", function(err) {
     console.log("uncaughtException:", err);
