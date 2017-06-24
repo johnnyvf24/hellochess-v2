@@ -156,6 +156,7 @@ abstract class Game {
         if (this.lastMoveTime) {
             let currentTime = this.times[color];
             let timeElapsed = Date.now() - this.lastMoveTime;
+            this.lastMoveTime = Date.now();
             let updatedTime = currentTime - timeElapsed;
             this.times[color] = updatedTime;
         }
