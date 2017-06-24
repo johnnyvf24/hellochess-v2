@@ -163,7 +163,7 @@ export default class Connection {
             // allow duplicate logins on dev servers for testing purposes
             return false;
         }
-        return this.players.some(player => (player.playerId === playerId || player.ipaddress === ipaddress) );
+        return this.players.some(player => (player.playerId === playerId) );
     }
     
     updatePlayer(data) {
