@@ -6,6 +6,7 @@ import FourBoard from './four_board';
 import Chess from 'chess.js';
 import Crazyhouse from 'crazyhouse.js';
 import SChess from 'schess.js';
+import VRChess from '../../../common/vrchess.js';
 
 export const DARK_SQUARE_HIGHLIGHT_COLOR = '#d2dd9b';
 export const LIGHT_SQUARE_HIGHLIGHT_COLOR = '#f2ffb2';
@@ -123,6 +124,21 @@ class BoardWrapper extends Component {
                             newGameObject={newGameObject}
                             setBoardPosition={setBoardPosition}
                             crazyhouse={true}
+                            key={roomName}/>
+                    </div>
+                );
+            case 'vrchess':
+                newGameObject = function() {
+                    return new VRChess();
+                };
+                setBoardPosition = function(fen) {
+                    this.board.position(fen, false);
+                };
+                return (
+                    <div id="board-wrapper">
+                        <TwoBoard
+                            setBoardPosition={setBoardPosition}
+                            newGameObject={newGameObject}
                             key={roomName}/>
                     </div>
                 );

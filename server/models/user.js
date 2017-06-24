@@ -133,6 +133,24 @@ var UserSchema = new Schema({
             default: 1200
         }
     },
+    vrchess_ratings: {
+        bullet: {
+            type: Number,
+            default: 1200
+        },
+        blitz: {
+            type: Number,
+            default: 1200
+        },
+        rapid: {
+            type: Number,
+            default: 1200
+        },
+        classic: {
+            type: Number,
+            default: 1200
+        }
+    },
     socket_id: {
         type: String
     },
@@ -171,7 +189,8 @@ UserSchema.methods.toJSON = function() {
         'schess_ratings',
         'fourplayer_ratings',
         'crazyhouse_ratings',
-        'crazyhouse960_ratings'
+        'crazyhouse960_ratings',
+        'vrchess_ratings'
     ]);
 };
 

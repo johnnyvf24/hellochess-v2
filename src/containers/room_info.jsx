@@ -18,6 +18,8 @@ class RoomInfo extends Component {
                 return 'Crazyhouse 960';
             case 'schess':
                 return 'S-Chess';
+            case 'vrchess':
+                return 'VR Chess';
         }
     }
     

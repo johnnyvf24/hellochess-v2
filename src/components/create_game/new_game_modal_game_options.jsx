@@ -25,6 +25,7 @@ const gameTypeOptions = [
     { value: 'schess', label: 'S-Chess'},
     { value: 'crazyhouse', label: 'Crazyhouse'},
     { value: 'crazyhouse960', label: 'Crazyhouse 960'},
+    { value: 'vrchess', label: 'VR Chess'}
     // { value: 'four-player-team', label: 'Four Player Teams'}
 ];
 

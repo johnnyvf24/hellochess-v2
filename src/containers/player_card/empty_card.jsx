@@ -48,6 +48,9 @@ class EmptyCard extends Component {
             case "crazyhouse960":
                 ratings = "crazyhouse960_ratings";
                 break;
+            case 'vrchess':
+                ratings = "vrchess_ratings";
+                break;
         }
         obj.profile = {
             type: 'computer',
@@ -66,40 +69,49 @@ class EmptyCard extends Component {
     }
     
     renderPlayButtons() {
-        if (this.props.gameType !== "schess") {
-            return (
-                <Row>
-                    <SplitButton id={"player-button-" + this.props.colorClass} 
-                        onClick={this.onSit} title="Play" bsStyle="info">
-                        <MenuItem eventKey="1" onClick={this.aiSit.bind(this, 1)} >
-                            Very Easy AI
-                        </MenuItem>
-                        <MenuItem eventKey="2" onClick={this.aiSit.bind(this, 5)} >
-                            Easy AI
-                        </MenuItem>
-                        <MenuItem eventKey="3" onClick={this.aiSit.bind(this, 10)} >
-                            Normal AI
-                        </MenuItem>
-                        <MenuItem eventKey="4" onClick={this.aiSit.bind(this, 15)} >
-                            Hard AI
-                        </MenuItem>
-                        <MenuItem eventKey="5" onClick={this.aiSit.bind(this, 20)} >
-                            Very Hard AI
-                        </MenuItem>
-                    </SplitButton>
-                </Row>
-            );
-        } else {
-            return (
-                <Row>
-                    <SplitButton id={"player-button-" + this.props.colorClass} 
-                        onClick={this.onSit} title="Play" bsStyle="info">
-                        <MenuItem eventKey="1" onClick={this.aiSit.bind(this, 15)} >
-                            Computer
-                        </MenuItem>
-                    </SplitButton>
-                </Row>
-            );
+        switch (this.props.gameType) {
+            case 'schess':
+                return (
+                    <Row>
+                        <SplitButton id={"player-button-" + this.props.colorClass} 
+                            onClick={this.onSit} title="Play" bsStyle="info">
+                            <MenuItem eventKey="1" onClick={this.aiSit.bind(this, 15)} >
+                                Computer
+                            </MenuItem>
+                        </SplitButton>
+                    </Row>
+                );
+            case 'vrchess':
+                return (
+                    <Row>
+                        <SplitButton id={"player-button-" + this.props.colorClass}
+                            onClick={this.onSit} title="Play" bsStyle="info">
+                        </SplitButton>
+                    </Row>
+                );
+            default:
+                return (
+                    <Row>
+                        <SplitButton id={"player-button-" + this.props.colorClass} 
+                            onClick={this.onSit} title="Play" bsStyle="info">
+                            <MenuItem eventKey="1" onClick={this.aiSit.bind(this, 1)} >
+                                Very Easy AI
+                            </MenuItem>
+                            <MenuItem eventKey="2" onClick={this.aiSit.bind(this, 5)} >
+                                Easy AI
+                            </MenuItem>
+                            <MenuItem eventKey="3" onClick={this.aiSit.bind(this, 10)} >
+                                Normal AI
+                            </MenuItem>
+                            <MenuItem eventKey="4" onClick={this.aiSit.bind(this, 15)} >
+                                Hard AI
+                            </MenuItem>
+                            <MenuItem eventKey="5" onClick={this.aiSit.bind(this, 20)} >
+                                Very Hard AI
+                            </MenuItem>
+                        </SplitButton>
+                    </Row>
+                );
         }
     }
     

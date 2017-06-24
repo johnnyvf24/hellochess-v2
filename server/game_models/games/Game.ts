@@ -374,7 +374,6 @@ abstract class Game {
             }
             
             let elo = new Elo();
-            
             let winnerElo = winner[this.ratings_type][timeType];
             let loserElo = loser[this.ratings_type][timeType];
 

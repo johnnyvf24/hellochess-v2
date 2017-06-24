@@ -6,6 +6,7 @@ import FourGame from '../game_models/games/FourGame';
 import Standard from '../game_models/games/Standard';
 import CrazyHouse from '../game_models/games/CrazyHouse';
 import SChess from '../game_models/games/SChess';
+import VRChess from '../game_models/games/VRChess';
 import QueueItem from './../game_models/matchmaking/QueueItem';
 
 export default class Connection {
@@ -48,6 +49,9 @@ export default class Connection {
                 break;
             case 'crazyhouse960':
                 room = new Room(this.io, new CrazyHouse(this.io, roomName, time, true, this));
+                break;
+            case 'vrchess':
+                room = new Room(this.io, new VRChess(this.io, roomName, time, this));
                 break;
         }
         if (time) {
@@ -174,7 +178,8 @@ export default class Connection {
                 player.standard_ratings = data.standard_ratings;
                 player.fourplayer_ratings = data.fourplayer_ratings;
                 player.crazyhouse_ratings = data.crazyhouse_ratings;
-                player.crazyhouse960_ratings = player.crazyhouse960_ratings;
+                player.crazyhouse960_ratings = data.crazyhouse960_ratings;
+                player.vrchess_ratings = data.vrchess_ratings;
                 return status;
             } 
         });

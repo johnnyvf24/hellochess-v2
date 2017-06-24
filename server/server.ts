@@ -3,7 +3,7 @@ const dotenv = require('dotenv').load();
 const express = require('express');
 const app = express();
 
-import {production, staging, local} from '../config/config';
+import {production, staging, staging2, local} from '../config/config';
 
 const env = process.env.NODE_ENV || "development";
 
@@ -40,6 +40,7 @@ if(env == "production") {
         res.header('Access-Control-Allow-Origin', [
             production,
             staging,
+            staging2,
             local
         ]);
         res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH');
