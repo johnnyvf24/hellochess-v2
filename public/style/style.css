@@ -1304,3 +1304,7 @@ div.schess-rook-toggle {
     font-size: 20px;
     text-align: center;
 }
+
+.game-type-select .Select-menu {
+    overflow: visible;
+}

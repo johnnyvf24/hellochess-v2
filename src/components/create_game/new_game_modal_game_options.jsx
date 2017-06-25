@@ -127,6 +127,7 @@ class NewGameModalGameOptions extends Component {
                     </label>
                     <Select
                         name="game-type"
+                        className="game-type-select"
                         value={this.props.newGame.gameType}
                         options={gameTypeOptions}
                         clearable={false}
