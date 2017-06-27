@@ -920,7 +920,9 @@ var VRChess = function (fen) {
         var us = turn;
         var them = swap_color(us);
         push(move);
-        if ((move.captured) && (pieces_moved[them] & PIECE_BITS[square_to_piece_order[move.to]])) {
+        if ((move.captured) &&
+            (pieces_moved[them] & PIECE_BITS[square_to_piece_order[move.to]]) &&
+            ((them === WHITE && rank(move.to) === RANK_1) || (them === BLACK && rank(move.to) === RANK_8))) {
             // if we capture a piece, disable piece placement for other side
             pieces_moved[them] ^= PIECE_BITS[square_to_piece_order[move.to]];
         }
