@@ -17,7 +17,7 @@ export default class Player {
         public fourplayer_ratings: Ratings,
         public crazyhouse_ratings: Ratings,
         public crazyhouse960_ratings: Ratings,
-        public vrchess_ratings: Ratings,
+        public fullhouse-chess_ratings: Ratings,
         private _IP: any) {
     }
     
@@ -38,7 +38,7 @@ export default class Player {
             fourplayer_ratings: this.fourplayer_ratings,
             crazyhouse_ratings: this.crazyhouse_ratings,
             crazyhouse960_ratings: this.crazyhouse960_ratings,
-            vrchess_ratings: this.vrchess_ratings,
+            fullhouse-chess_ratings: this.fullhouse-chess_ratings,
             alive: this._alive,
             level: this._playerLevel,
             type: this._type

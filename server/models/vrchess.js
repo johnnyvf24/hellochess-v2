@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-var VRChessSchema = new Schema({
+var FullhouseChessSchema = new Schema({
     white: {
         user_id: {
             type: mongoose.Schema.Types.ObjectId,
@@ -47,6 +47,6 @@ var VRChessSchema = new Schema({
     }
 });
 
-var VRChessDB = mongoose.model('VRChessDB', VRChessSchema);
+var FullhouseChessDB = mongoose.model('FullhouseChessDB', FullhouseChessSchema);
 
-module.exports = {VRChessDB};
+module.exports = {FullhouseChessDB};

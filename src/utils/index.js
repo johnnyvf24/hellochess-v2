@@ -60,8 +60,8 @@ export function showElo(game, time, player) {
         case 'four-player':
             ratings = 'fourplayer_ratings';
             break;
-        case 'vrchess':
-            ratings = 'vrchess_ratings';
+        case 'fullhouse-chess':
+            ratings = 'fullhouse-chess_ratings';
             break;
     }
     switch(game.gameType) {
@@ -69,7 +69,7 @@ export function showElo(game, time, player) {
         case 'schess':
         case 'crazyhouse':
         case 'crazyhouse960':
-        case 'vrchess':
+        case 'fullhouse-chess':
             if( totalTimeMs <= twoMins) {
                 //bullet
                 tcIndex = 'bullet';

@@ -64,7 +64,7 @@ module.exports = function(io, socket, connection) {
             data.schess_ratings,
             data.fourplayer_ratings,
             data.crazyhouse_ratings, data.crazyhouse960_ratings,
-            data.vrchess_ratings,
+            data.fullhouse-chess_ratings,
             IP);
             
         //check to see if the player is already connected elsewhere

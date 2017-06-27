@@ -36,7 +36,7 @@
  * https://github.com/jhlywa/chess.js/blob/master/LICENSE
  */
 
-var VRChess = function (fen) {
+var FullhouseChess = function (fen) {
 
     /* jshint indent: false */
 
@@ -1767,6 +1767,6 @@ var VRChess = function (fen) {
 
 /* export Chess object if using node or any other CommonJS compatible
  * environment */
-if (typeof exports !== 'undefined') exports.VRChess = VRChess;
+if (typeof exports !== 'undefined') exports.FullhouseChess = FullhouseChess;
 /* export Chess object for any RequireJS compatible environment */
-if (typeof define !== 'undefined') define( function () { return VRChess;  });
+if (typeof define !== 'undefined') define( function () { return FullhouseChess;  });

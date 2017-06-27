@@ -133,7 +133,7 @@ var UserSchema = new Schema({
             default: 1200
         }
     },
-    vrchess_ratings: {
+    fullhouse-chess_ratings: {
         bullet: {
             type: Number,
             default: 1200
@@ -190,7 +190,7 @@ UserSchema.methods.toJSON = function() {
         'fourplayer_ratings',
         'crazyhouse_ratings',
         'crazyhouse960_ratings',
-        'vrchess_ratings'
+        'fullhouse-chess_ratings'
     ]);
 };
 

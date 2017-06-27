@@ -1,7 +1,7 @@
 import Game from './Game';
-import {VRChess as VRChessGame} from '../../../common/vrchess';
+import {FullhouseChess as FullhouseChessGame} from '../../../common/fullhouse-chess';
 const {User} = require('../../models/user');
-const {VRChessDB} = require('../../models/vrchess');
+const {FullhouseChessDB} = require('../../models/fullhouse-chess');
 const Elo = require('elo-js');
 import Player from '../players/Player';
 import TwoEngine from '../../engine/TwoEngine';
@@ -10,9 +10,9 @@ import Connection from '../../sockets/Connection';
 import Room from '../rooms/Room';
 import {DrawMessage, WinnerMessage} from '../rooms/Message';
 
-export default class VRChess extends Game {
-    gameType: string = 'vrchess';
-    gameRulesObj: any = VRChessGame();
+export default class FullhouseChess extends Game {
+    gameType: string = 'fullhouse-chess';
+    gameRulesObj: any = FullhouseChessGame();
     numPlayers: number = 2;
     io: any;
     times: any = {
@@ -21,13 +21,13 @@ export default class VRChess extends Game {
     };
     time: any;
     connection: Connection;
-    ratings_type: string = 'vrchess_ratings';
-    gameClassDB: any = VRChessDB;
+    ratings_type: string = 'fullhouse-chess_ratings';
+    gameClassDB: any = FullhouseChessDB;
     
     constructor(io: Object, roomName:string, time: any, connection: Connection) {
         super();
         this.io = io;
-        this.gameRulesObj = VRChessGame();
+        this.gameRulesObj = FullhouseChessGame();
         this.roomName = roomName;
         this.time = time;
         let initialTime = time.value * 60 * 1000;
@@ -106,7 +106,7 @@ export default class VRChess extends Game {
         this.white.alive = true;
         this.black.alive = true;
         this.resetClocks();
-        this.gameRulesObj = VRChessGame();
+        this.gameRulesObj = FullhouseChessGame();
         this.moveHistory = [];
     }
     

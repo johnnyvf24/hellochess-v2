@@ -48,8 +48,8 @@ class EmptyCard extends Component {
             case "crazyhouse960":
                 ratings = "crazyhouse960_ratings";
                 break;
-            case 'vrchess':
-                ratings = "vrchess_ratings";
+            case 'fullhouse-chess':
+                ratings = "fullhouse-chess_ratings";
                 break;
         }
         obj.profile = {
@@ -81,7 +81,7 @@ class EmptyCard extends Component {
                         </SplitButton>
                     </Row>
                 );
-            case 'vrchess':
+            case 'fullhouse-chess':
                 return (
                     <Row>
                         <SplitButton id={"player-button-" + this.props.colorClass}
