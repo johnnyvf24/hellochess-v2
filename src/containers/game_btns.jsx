@@ -144,9 +144,7 @@ class GameButtons extends Component {
     
     renderDrawButton() {
         let room = this.props.room;
-        if(room.gameType == 'standard' ||
-           room.gameType == 'crazyhouse' ||
-           room.gameType == 'crazyhouse960') {
+        if(room.game.numPlayers == 2) {
             return (
                 <button
                     type="button"
