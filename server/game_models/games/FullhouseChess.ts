@@ -21,7 +21,7 @@ export default class FullhouseChess extends Game {
     };
     time: any;
     connection: Connection;
-    ratings_type: string = 'fullhouse-chess_ratings';
+    ratings_type: string = 'fullhouse_ratings';
     gameClassDB: any = FullhouseChessDB;
     
     constructor(io: Object, roomName:string, time: any, connection: Connection) {

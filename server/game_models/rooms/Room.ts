@@ -234,7 +234,7 @@ export default class Room {
                 player.fourplayer_ratings = data.fourplayer_ratings;
                 player.crazyhouse_ratings = data.crazyhouse_ratings;
                 player.crazyhouse960_ratings = data.crazyhouse960_ratings;
-                player.fullhouse-chess_ratings = data.fullhouse-chess_ratings;
+                player.fullhouse_ratings = data.fullhouse_ratings;
                 return status;
             } 
         });

@@ -61,7 +61,7 @@ export function showElo(game, time, player) {
             ratings = 'fourplayer_ratings';
             break;
         case 'fullhouse-chess':
-            ratings = 'fullhouse-chess_ratings';
+            ratings = 'fullhouse_ratings';
             break;
     }
     switch(game.gameType) {

@@ -49,7 +49,7 @@ class EmptyCard extends Component {
                 ratings = "crazyhouse960_ratings";
                 break;
             case 'fullhouse-chess':
-                ratings = "fullhouse-chess_ratings";
+                ratings = "fullhouse_ratings";
                 break;
         }
         obj.profile = {
