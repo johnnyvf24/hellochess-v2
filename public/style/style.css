@@ -1308,3 +1308,12 @@ div.schess-rook-toggle {
 .game-type-select .Select-menu {
     overflow: visible;
 }
+
+/* Fix for react-select menu option opacity making it look weird
+   on the new game modal*/
+.Select-option.is-selected {
+  background-color: #f5faff!important;
+}
+.Select-option.is-focused {
+  background-color: #ebf5ff!important;
+}
