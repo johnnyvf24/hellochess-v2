@@ -51,8 +51,9 @@ var FullhouseChess = function (fen) {
     var ROOK = 'r';
     var QUEEN = 'q';
     var KING = 'k';
+    var VRKING = 'v';
 
-    var SYMBOLS = 'pnbrqkehPNBRQK';
+    var SYMBOLS = 'pnbrqkvPNBRQKV';
 
     var DEFAULT_POSITION = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR SSSSSSSSssssssss w KQkq - 0 1';
 
@@ -68,7 +69,8 @@ var FullhouseChess = function (fen) {
         b: [-17, -15, 17, 15],
         r: [-16, 1, 16, -1],
         q: [-17, -16, -15, 1, 17, 16, 15, -1],
-        k: [-17, -16, -15, 1, 17, 16, 15, -1]
+        k: [-17, -16, -15, 1, 17, 16, 15, -1],
+        v: [-17, -16, -15, 1, 17, 16, 15, -1]
     };
 
     var ATTACKS = [
@@ -107,14 +109,15 @@ var FullhouseChess = function (fen) {
         -15, 0, 0, 0, 0, 0, 0, -16, 0, 0, 0, 0, 0, 0, -17
     ];
 
-    var SHIFTS = { p: 0, n: 1, b: 2, r: 3, q: 4, k: 5, e: 6, h: 7 };
+    var SHIFTS = { p: 0, n: 1, b: 2, r: 3, q: 4, k: 5, v: 6 };
     var MASKS = {
         p: 1,
         n: 1 << 1,
         b: 1 << 2,
         r: 1 << 3,
         q: 1 << 4,
-        k: 1 << 5
+        k: 1 << 5,
+        v: 1 << 5
     };
 
     var FLAGS = {
@@ -234,7 +237,6 @@ var FullhouseChess = function (fen) {
         if (!validate_fen(fen).valid) {
             return false;
         }
-
         clear();
         for (var i = 0; i < position.length; i++) {
             var piece = position.charAt(i);
@@ -249,7 +251,6 @@ var FullhouseChess = function (fen) {
                 square++;
             }
         }
-
         if (tokens[1] === '-') {
             pieces_moved.w = 0;
             pieces_moved.b = 0;
@@ -364,7 +365,7 @@ var FullhouseChess = function (fen) {
                     sum_fields += parseInt(rows[i][k], 10);
                     previous_was_number = true;
                 } else {
-                    if (!/^[prnbqkehPRNBQKEH]$/.test(rows[i][k])) {
+                    if (!/^[prnbqkvPRNBQKV]$/.test(rows[i][k])) {
                         return { valid: false, error_number: 9, error: errors[9] };
                     }
                     sum_fields += 1;
@@ -558,7 +559,7 @@ var FullhouseChess = function (fen) {
             /* if pawn promotion */
             if (board[from].type === PAWN &&
                 (rank(to) === RANK_8 || rank(to) === RANK_1)) {
-                var pieces = [QUEEN, ROOK, BISHOP, KNIGHT];
+                var pieces = [QUEEN, ROOK, BISHOP, KNIGHT, VRKING];
                 for (var i = 0, len = pieces.length; i < len; i++) {
                     moves.push(build_move(board, from, to, flags, pieces[i]));
                 }
@@ -584,7 +585,7 @@ var FullhouseChess = function (fen) {
                     }
 
                     /* break, if knight or king */
-                    if (type === 'n' || type === 'k') break;
+                    if (type === 'n' || type === 'k' || type === 'v') break;
                 }
             }
         }
@@ -704,7 +705,6 @@ var FullhouseChess = function (fen) {
             }
             undo_move();
         }
-
         return legal_moves;
     }
 
@@ -776,7 +776,6 @@ var FullhouseChess = function (fen) {
             var piece = board[i];
             var difference = i - square;
             var index = difference + 119;
-
             if (ATTACKS[index] & MASKS[piece.type]) {
                 if (piece.type === PAWN) {
                     if (difference > 0) {
@@ -788,11 +787,7 @@ var FullhouseChess = function (fen) {
                 }
 
                 /* if the piece is a knight or a king */
-                if (piece.type === 'n' || piece.type === 'k') return true;
-                /* for elephant and hawk, check for knight-attacks */
-                if (piece.type === 'e' || piece.type === 'h') {
-                    if (ATTACKS[index] & MASKS[KNIGHT]) return true;
-                }
+                if (piece.type === 'n' || piece.type === 'k' || piece.type === 'v') return true;
 
                 var offset = RAYS[index];
                 var j = i + offset;
@@ -901,6 +896,20 @@ var FullhouseChess = function (fen) {
         }
 
         return repetition;
+    }
+
+    function three_kings_ending() {
+        var num_fake_kings = 0;
+        for (var i = SQUARES.a8; i <= SQUARES.h1; i++) {
+            if (board[i] == null)
+                continue;
+            var color = board[i].color;
+            var piece = board[i].type;
+            if (color === swap_color(turn) && piece === VRKING) {
+                num_fake_kings++;
+            }
+        } 
+        return num_fake_kings === 2;
     }
 
     function push(move) {
@@ -1178,7 +1187,7 @@ var FullhouseChess = function (fen) {
         // if we're using the sloppy parser run a regex to grab piece, to, and from
         // this should parse invalid SAN like: Pe2-e4, Rc1c4, Qf3xf7
         if (sloppy) {
-            var matches = clean_move.match(/([pnbrqkehPNBRQKEH])?([a-h][1-8])x?-?([a-h][1-8])([qrbnehQRBNEH])?/);
+            var matches = clean_move.match(/([pnbrqkvPNBRQKV])?([a-h][1-8])x?-?([a-h][1-8])([qrbnvQRBNV])?/);
             if (matches) {
                 var piece = matches[1];
                 var from = matches[2];
@@ -1386,10 +1395,15 @@ var FullhouseChess = function (fen) {
             return in_threefold_repetition();
         },
 
+        in_three_kings_ending: function() {
+            return three_kings_ending();
+        },
+
         game_over: function () {
             return half_moves >= 100 ||
                 in_checkmate() ||
                 in_stalemate() ||
+                three_kings_ending() ||
                 insufficient_material() ||
                 in_threefold_repetition();
         },

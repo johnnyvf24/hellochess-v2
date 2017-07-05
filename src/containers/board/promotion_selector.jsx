@@ -8,14 +8,19 @@ class PromotionSelector extends Component {
     
     pieceTypes() {
         let pieceTypes;
+        console.log("promotion. game type:", this.props.gameType);
         switch(this.props.gameType) {
             case 'schess':
                 pieceTypes = ['e', 'h', 'q', 'r', 'n', 'b'];
+                break;
+            case 'fullhouse-chess':
+                pieceTypes = ['q', 'r', 'n', 'b', 'v'];
                 break;
             default:
                 pieceTypes = ['q', 'r', 'n', 'b'];
                 break;
         }
+        console.log("piece types:", JSON.stringify(pieceTypes));
         return pieceTypes;
     }
     

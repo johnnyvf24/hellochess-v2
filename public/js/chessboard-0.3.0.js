@@ -35,7 +35,7 @@ function validSquare(square) {
 
 function validPieceCode(code) {
   if (typeof code !== 'string') return false;
-  return (code.search(/^[bw][KQRNBPEH]$/) !== -1);
+  return (code.search(/^[bw][KQRNBPEHV]$/) !== -1);
 }
 
 // TODO: this whole function could probably be replaced with a single regex
@@ -54,7 +54,7 @@ function validFen(fen) {
   for (var i = 0; i < 8; i++) {
     if (chunks[i] === '' ||
         chunks[i].length > 8 ||
-        chunks[i].search(/[^kqrbnpehKQRNBPEH1-8]/) !== -1) {
+        chunks[i].search(/[^kqrbnpehvKQRNBPEHV1-8]/) !== -1) {
       return false;
     }
   }
