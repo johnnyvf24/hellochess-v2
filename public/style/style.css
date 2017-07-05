@@ -1317,3 +1317,21 @@ div.schess-rook-toggle {
 .Select-option.is-focused {
   background-color: #ebf5ff!important;
 }
+
+/* Footer */
+
+#footer a {
+    color: rgba(195, 195, 195, 0.66);
+    background-color: transparent;
+    margin-right: 10px;
+    font-size: 10px;
+}
+
+#footer a:hover {
+    color: rgba(195, 195, 195, 0.9);
+    text-decoration: none;
+}
+
+#footer a:focus {
+    text-decoration: none;
+}

@@ -315,6 +315,23 @@ class Live extends Component {
             </Dropdown>
         );
     }
+    
+    renderFooter() {
+        return (
+            <div id="footer">
+                <a href="https://github.com/johnnyvf24/hellochess-v2/issues"
+                    target="_blank"
+                    rel="noopener">
+                    Bug Report
+                </a>
+                <a href="https://github.com/johnnyvf24/hellochess-v2"
+                    target="_blank"
+                    rel="noopener">
+                    Source Code
+                </a>
+            </div>
+        );
+    }
 
     render() {
         if(this.props.connection.error) {
@@ -374,11 +391,15 @@ class Live extends Component {
                         <p>
                             Check out our new variant: <b>S-Chess</b>! 
                             Learn the rules&nbsp;
-                            <a href="https://en.wikipedia.org/wiki/Seirawan_chess" target="_blank">
+                            <a href="https://en.wikipedia.org/wiki/Seirawan_chess"
+                                target="_blank"
+                                rel="noopener">
                                 here
                             </a> 
                             &nbsp;and report any bugs or issues on&nbsp;
-                            <a href="https://github.com/johnnyvf24/hellochess-v2/issues" target="_blank">
+                            <a href="https://github.com/johnnyvf24/hellochess-v2/issues"
+                                target="_blank"
+                                rel="noopener">
                                 our GitHub issues page
                             </a>
                             .
@@ -412,8 +433,8 @@ class Live extends Component {
                         </div>
                     </Row>
                     { this.renderInputUsername() }
-
                     { this.renderLiveContent() }
+                    { this.renderFooter() }
                 </div>
             )
         }
