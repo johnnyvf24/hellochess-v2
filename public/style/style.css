@@ -1319,6 +1319,11 @@ div.schess-rook-toggle {
 }
 
 /* Footer */
+#footer {
+    position: absolute;
+    bottom: 4px;
+    left: 10px;
+}
 
 #footer a {
     color: rgba(195, 195, 195, 0.66);
