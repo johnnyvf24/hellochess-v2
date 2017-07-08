@@ -142,9 +142,10 @@ export default class Room {
         playerObj.socket.join(this._name);
         
         this._players.push(playerObj);
-        let joinMsg: JoinMessage = new JoinMessage(playerObj, null, this._name);
-        
-        this.addMessage(joinMsg);
+        if (!playerObj.anonymous) {
+            let joinMsg: JoinMessage = new JoinMessage(playerObj, null, this._name);
+            this.addMessage(joinMsg);
+        }
         
         //Tell everyone in the room that a new user has connnected
         this.io.to(this.name).emit('update-room', this.getRoom());
@@ -171,15 +172,21 @@ export default class Room {
             this._players = this._players.filter(
                 player => player.playerId !== playerThatLeft.playerId
             );
-            let leftMsg: LeaveMessage = new LeaveMessage(playerThatLeft, null, this._name);
-            this.addMessage(leftMsg);
+            let leftMsgObj;
+            if (playerThatLeft.anonymous === true) {
+                leftMsgObj = null;
+            } else {
+                let leftMsg: LeaveMessage = new LeaveMessage(playerThatLeft, null, this._name);
+                this.addMessage(leftMsg);
+                leftMsgObj = leftMsg.getMessage();
+            }
             playerThatLeft.socket.leave(this._name);
             playerThatLeft.socket.emit('left-room', this._name);
             //Tell everyone in a room that a user has left
             this.io.to(this._name).emit('user-room-left', {
                 name: this._name,
                 user: playerThatLeft.getPlayer(),
-                message: leftMsg.getMessage()
+                message: leftMsgObj
             });
         }
         return foundPlayer;

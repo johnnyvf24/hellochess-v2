@@ -14,12 +14,27 @@ export default class RoomUserList extends Component {
             </li>
         );
     }
+    
 
     render() {
         return (
-            <ul className="list-group">
-                {this.props.users.map(this.renderUserListItem)}
-            </ul>
+            <div>
+                <ul className="list-group">
+                    {this.props.users
+                        .filter(user => user.anonymous !== true)
+                        .map(this.renderUserListItem)}
+                </ul>
+                <div style={
+                    {"bottom":"0px"},
+                    {"position": "absolute"},
+                    {"margin-bottom": "5px"}
+                }>
+                    Anonymous:&nbsp;
+                    {this.props.users
+                        .filter(user => user.anonymous === true)
+                        .length}
+                </div>
+            </div>
         )
     }
 }
