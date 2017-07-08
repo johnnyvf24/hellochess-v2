@@ -7,6 +7,7 @@ import {Message, JoinMessage, LeaveMessage, GameStartedMessage, TimeForfeitMessa
 import Clock from '../../../common/Clock';
 
 export default class Room {
+    private NUM_MESSAGE_LIMIT: number = 100;
     private _players: Player [];
     private _messages: Message [];
     private _priv: boolean;
@@ -224,7 +225,10 @@ export default class Room {
     //add a message to the room
     addMessage(message: Message) {
         this._messages.push(message);
-        
+        // keep number of messages in room limited
+        if (this._messages.length > this.NUM_MESSAGE_LIMIT) {
+            this._messages.shift();
+        }
     }
     
     //add all players in the room
