@@ -24,11 +24,12 @@ export default class RoomUserList extends Component {
                         .filter(user => user.anonymous !== true)
                         .map(this.renderUserListItem)}
                 </ul>
-                <div style={
-                    {"bottom":"0px"},
-                    {"position": "absolute"},
-                    {"margin-bottom": "5px"}
-                }>
+                <div style={{
+                    "bottom":"0px",
+                    "position": "absolute",
+                    "marginBottom": "5px",
+                    "marginLeft": "10px"
+                }}>
                     Anonymous:&nbsp;
                     {this.props.users
                         .filter(user => user.anonymous === true)
