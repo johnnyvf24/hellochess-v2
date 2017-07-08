@@ -19,8 +19,6 @@ class RoomViewer extends Component {
         if(this.props.connection.status) {
             if(!this.props.activeProfile._id) {
                 this.props.updateLiveUser(this.props.profile);
-                // this.props.selectedRoom(200); // open Games tab on connect
-                this.props.joinRoom('Global');
             }
         }
     }
@@ -104,7 +102,6 @@ class RoomViewer extends Component {
 
         return (
             <Tabs
-                defaultActiveKey={this.props.activeThread}
                 activeKey={this.props.activeThread}
                 onSelect={this.onSelectTab.bind(this)}
                 animation={false}

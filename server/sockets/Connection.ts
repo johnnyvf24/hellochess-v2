@@ -17,6 +17,15 @@ export default class Connection {
     constructor(private io) {
         this.players = [];
         this.rooms = [];
+        // create Global room on startup
+        let global = this.createNewRoom(
+            'Global',
+            'four-player',
+            {'value': 5, 'increment': 5},
+            {'name': 'Global', 'private': false, 'voiceChat': false,
+             'maxPlayers': 10000, 'roomMode': 'open-table', 'allowedPlayerIDs': []},
+            null
+        );
     }
     
     createNewRoom(roomName: string, gameType: string, time: any, roomObj: any, host: any): Room {
@@ -132,7 +141,8 @@ export default class Connection {
         if(!this.rooms) {
             return null;
         }
-        return this.rooms.map(room => room.getRoomCondensed());
+        let allRooms = this.rooms.map(room => room.getRoomCondensed());
+        return allRooms;
     }
     
     getPlayerRoomsByPlayer(player: Player): Room[]{

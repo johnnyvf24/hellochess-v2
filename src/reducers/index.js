@@ -11,7 +11,7 @@ import openThreads from './open_threads_reducer';
 
 import {SELECTED_ROOM, LOGOUT_SUCCESS, CLOSE_ANALYSIS} from '../actions/types';
 
-function activeThread (state = 'Global', action) {
+function activeThread (state = 200, action) {
     switch(action.type) {
         case SELECTED_ROOM:
             return action.payload;

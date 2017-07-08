@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import Select from 'react-select';
 import { connect } from 'react-redux';
 import { mapObject } from '../utils/'
-import { joinRoom } from '../actions/';
+import { joinRoom, selectedRoom } from '../actions/';
 
 import {Row, Col, Button, Table} from 'react-bootstrap';
 
@@ -23,17 +23,15 @@ class ExistingRoomList extends Component {
 
     onClickRoom(room, event) {
         this.props.joinRoom(room.room.name, room);
+        this.props.selectedRoom(room.room.name);
     }
 
     renderRoomItems(room) {
-        if(!room.numPlayers) {
-            return;
-        }
         return (
             <tr key={room.id} onClick={this.onClickRoom.bind(this, room)}>
                 <td>{room.room.name}</td>
                 <td>{room.gameType}</td>
-                <td>{`${room.time.value}mins/${room.time.increment}secs` }</td>
+                <td>{`${room.time.value}+${room.time.increment}` }</td>
                 <td>{room.numPlayers}</td>
             </tr>
         );
@@ -87,4 +85,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps, {joinRoom}) (ExistingRoomList)
+export default connect(mapStateToProps, {joinRoom, selectedRoom}) (ExistingRoomList)

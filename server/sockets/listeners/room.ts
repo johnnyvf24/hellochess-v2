@@ -74,7 +74,7 @@ module.exports = function(io, socket, connection) {
             return;
         }
         
-        if (room.empty()) { //there are no users in the room
+        if (room.empty() && roomName !== 'Global') { //there are no users in the room
             if(connection.removeRoomByName(roomName)) {
                 //TODO not sure if anything else is needed here
             } else {

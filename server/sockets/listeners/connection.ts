@@ -28,7 +28,7 @@ module.exports = function(io, socket, connection) {
                 return;
             }
             
-            if (room.empty()) { //there are no users in the room
+            if (room.empty() && room.name !== 'Global') { //there are no users in the room
                 if(connection.removeRoomByName(room.name)) {
                     //TODO not sure if anything else is needed here
                 } else {
@@ -80,6 +80,7 @@ module.exports = function(io, socket, connection) {
         }
         
         connection.addPlayer(p);
+        connection.emitAllRooms();
     });
     
     socket.on('update-user', data => {
