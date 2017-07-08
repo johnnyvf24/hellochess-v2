@@ -19,7 +19,8 @@ class RoomViewer extends Component {
         if(this.props.connection.status) {
             if(!this.props.activeProfile._id) {
                 this.props.updateLiveUser(this.props.profile);
-                this.props.joinRoom('Global'); //join the default chatroom
+                // this.props.selectedRoom(200); // open Games tab on connect
+                this.props.joinRoom('Global');
             }
         }
     }
@@ -73,16 +74,16 @@ class RoomViewer extends Component {
     }
 
     renderNavTab(chats, active) {
-        return mapObject(chats, (key, value) => {
+        return mapObject(chats, (key, chat) => {
             let title = <span>
-                            <button onClick={(e) =>this.onCloseChatTab(key, e, value)}
+                            <button onClick={(e) =>this.onCloseChatTab(key, e, chat)}
                                 className="close closeTab" 
                                 type="button" >×</button>{key}
                             </span>;
             return (
                 <Tab key={key} eventKey={key} title={title}>
                     <div id="chat-tab-content">
-                        <Room key={key} index={key} value={value} active={active}/>
+                        <Room key={key} index={key} chat={chat} active={active}/>
                     </div>
                 </Tab>
             );

@@ -284,6 +284,17 @@ class Live extends Component {
         localStorage.setItem("zoomLevel", value);
     }
     
+    renderProfileButton() {
+        let isAnonymous = this.props.profile.anonymous === true;
+        if (isAnonymous) {
+            return null;
+        } else {
+            return (
+                <MenuItem onClick={this.onProfileClick.bind(this)} eventKey="1">Profile</MenuItem>
+            );
+        }
+    }
+    
     renderProfileMenu() {
         let enableSounds = this.state.enableSounds;
         let soundMenuString = `Move sounds ${enableSounds ? '✔' : ''}`;
@@ -296,7 +307,7 @@ class Live extends Component {
                         src={this.props.profile.picture} alt="" />
                 </CustomToggle>
                 <CustomMenu bsRole="menu" id="profile-menu" rootCloseEvent="click">
-                    <MenuItem onClick={this.onProfileClick.bind(this)} eventKey="1">Profile</MenuItem>
+                    {this.renderProfileButton()}
                     <MenuItem onClick={this.toggleSounds.bind(this)} eventKey="2">
                         {soundMenuString}
                     </MenuItem>

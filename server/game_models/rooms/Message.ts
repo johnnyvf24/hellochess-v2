@@ -6,6 +6,7 @@ export class Message {
     protected playerId: string;
     protected eventType: string = 'chat-message';
     protected timeSent = new Date();
+    protected anonymous: boolean = false;
     
     constructor(player: Player, 
                 protected messageBody: string,
@@ -14,6 +15,7 @@ export class Message {
             this.picture = player.picture;
             this.username = player.username;
             this.playerId = player.playerId;
+            this.anonymous = player.anonymous;
         }
     }
     
@@ -24,7 +26,8 @@ export class Message {
             picture: this.picture,
             event_type: this.eventType,
             time: this.timeSent,
-            playerId: this.playerId
+            playerId: this.playerId,
+            anonymous: this.anonymous
         };
     }
 }

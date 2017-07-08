@@ -18,7 +18,8 @@ export default class Player {
         public crazyhouse_ratings: Ratings,
         public crazyhouse960_ratings: Ratings,
         public fullhouse_ratings: Ratings,
-        private _IP: any) {
+        private _IP: any,
+        public anonymous: boolean) {
     }
     
     get alive(): boolean { return this._alive; }
@@ -41,7 +42,8 @@ export default class Player {
             fullhouse_ratings: this.fullhouse_ratings,
             alive: this._alive,
             level: this._playerLevel,
-            type: this._type
+            type: this._type,
+            anonymous: this.anonymous
         };
     }
     

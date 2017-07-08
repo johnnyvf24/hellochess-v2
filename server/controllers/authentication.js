@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const {User} = require('../models/user');
+const {ObjectID} = require('mongodb');
 
 exports.signup = (req, res, next) => {
 
@@ -37,6 +38,28 @@ exports.login = (req, res, next) => {
     }).catch((e) => {
         res.status(401).send();
     });
+}
+
+exports.anonLogin = (req, res, next) => {
+    let defaultRatings = {
+        classic: 1200, rapid: 1200, blitz: 1200, bullet: 1200
+    }
+    let newID = ObjectID();
+    let anonProfile = {
+        _id: newID,
+        picture: "/img/default-img.png",
+        email: "",
+        username: "Anonymous",
+        social: false,
+        anonymous: true,
+        standard_ratings: {...defaultRatings},
+        schess_ratings: {...defaultRatings},
+        fourplayer_ratings: {...defaultRatings},
+        crazyhouse_ratings: {...defaultRatings},
+        crazyhouse960_ratings: {...defaultRatings},
+        fullhouse_ratings: {...defaultRatings}
+    };
+    res.send(anonProfile);
 }
 
 exports.fbLogin = (req, res) => {

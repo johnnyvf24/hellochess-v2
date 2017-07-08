@@ -43,6 +43,7 @@ module.exports = function(app) {
     //Authentication routes
     app.post('/api/users/signup', Authentication.signup);
     app.post('/api/users/login', requireLogin, Authentication.login);
+    app.post('/api/users/anonLogin', Authentication.anonLogin);
     app.post('/api/auth/facebook/token', requireFB, Authentication.fbLogin);
     app.get('/api/auth/google/token', requireGoogle, Authentication.googleLogin);
     app.patch('/api/users/:id', requireAuth, User.updateUser);

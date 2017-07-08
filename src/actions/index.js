@@ -153,6 +153,35 @@ export function loginUser({loginEmail, loginPassword}) {
     }
 }
 
+export function anonLogin() {
+    return (dispatch) => {
+        axios.post(`${ROOT_URL}/api/users/anonLogin`, {test: 'a'})
+            .then((res) => {
+                localStorage.setItem('token','');
+                localStorage.setItem('profile', JSON.stringify(res.data));
+                //redirect to main page
+                dispatch({type: LOGIN_SUCCESS, payload: res.data});
+                browserHistory.push('/live');
+            })
+            .catch((res) => {
+                const notificationOpts = {
+                    // uid: 'once-please', // you can specify your own uid if required
+                    title: 'Anonymous login failed',
+                    message: 'Anonymous login failed',
+                    position: 'tc',
+                    autoDismiss: 0
+                };
+
+                //Show failed log in
+                dispatch(
+                    Notifications.error(notificationOpts)
+                );
+
+                dispatch({type: LOGIN_ERROR})
+            });
+    }
+}
+
 export function logout(profile) {
 
     localStorage.removeItem('token');

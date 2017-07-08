@@ -16,10 +16,10 @@ export default class Room extends Component {
     }
     
     shouldComponentUpdate(nextProps) {
-        if(!this.props.value.room.name != nextProps.value.room.name) {
+        if(!this.props.chat.room.name != nextProps.chat.room.name) {
             return true;
         }
-        if(nextProps.value.numMessages != this.props.value.numMessages) {
+        if(nextProps.chat.numMessages != this.props.chat.numMessages) {
             return true;
         }
         return false;
@@ -38,28 +38,28 @@ export default class Room extends Component {
     }
 
     render() {
-        const {index, value, active} = this.props;
-        if(value.mode === 'analysis') {
+        const {index, chat, active} = this.props;
+        if(chat.mode === 'analysis') {
             return <div>In Analysis Mode!</div>
         } else {
             return (
                 <div
-                    id={"room-chat-" + value.id}
+                    id={"room-chat-" + chat.id}
                     key={index} role="tabpanel"
                     className= {index === active ? "tab-pane active" : "tab-pane"}>
                     <Row className="chatbox-top-stats-wrapper">
                         <span className="chatbox-top-stats">
-                            <RoomSettings value={value}/>
+                            <RoomSettings value={chat}/>
                             <a  className="pull-right num-user-modal-link"
                                 href="#" onClick={this.openUserModal.bind(this)}>
-                                {value.users.length} users
+                                {chat.users.length} users
                             </a>
                             <Modal show={this.state.showModal} onHide={this.closeUserModal.bind(this)}>
                                 <Modal.Header closeButton>
                                     <Modal.Title>Room Members</Modal.Title>
                                 </Modal.Header>
                                 <Modal.Body id="room-user-list-modal-body">
-                                    <RoomUserList users={value.users}/>
+                                    <RoomUserList users={chat.users}/>
                                 </Modal.Body>
                                 <Modal.Footer>
                                     <Button onClick={this.closeUserModal.bind(this)}>Close</Button>
@@ -68,7 +68,7 @@ export default class Room extends Component {
                         </span>
                     </Row> 
                     <Row className="chatbox-message-list-wrapper">
-                        <MessageList messages={value.messages} thread={active} />
+                        <MessageList messages={chat.messages} thread={active} />
                     </Row>
                     <Row className="chatbox-input-send-wrapper">
                         <MessageSend />

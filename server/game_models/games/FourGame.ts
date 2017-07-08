@@ -474,79 +474,87 @@ export default class FourGame extends Game {
             setTimeout( function() {
                 try {
                 //save winner
-                User.findById({_id: winner.playerId})
-                .then( function (user) {
-                    user.fourplayer_ratings[timeType] = newWinnerElo;
-                    user.save( function(err, updatedUser) {
-                        if(err) {
-                            return;
-                        }
-                        let eloNotif = {
-                            title: `${winner.username}'s elo is now ${newWinnerElo} ${newWinnerElo - winnerElo}`,
-                            position: 'tr',
-                            autoDismiss: 6,
-                        };
-                        
-                        winner.socket.emit('action', Notifications.success(eloNotif));
-                        firstOut.socket.emit('update-user', updatedUser);
-                    }.bind(this));
-                }.bind(this)).catch(e => console.log(e));
+                if (!winner.anonymous) {
+                    User.findById({_id: winner.playerId})
+                    .then( function (user) {
+                        user.fourplayer_ratings[timeType] = newWinnerElo;
+                        user.save( function(err, updatedUser) {
+                            if(err) {
+                                return;
+                            }
+                            let eloNotif = {
+                                title: `${winner.username}'s elo is now ${newWinnerElo} ${newWinnerElo - winnerElo}`,
+                                position: 'tr',
+                                autoDismiss: 6,
+                            };
+                            
+                            winner.socket.emit('action', Notifications.success(eloNotif));
+                            firstOut.socket.emit('update-user', updatedUser);
+                        }.bind(this));
+                    }.bind(this)).catch(e => console.log(e));
+                }
                 
                 //save second
-                User.findById({_id: thirdOut.playerId})
-                .then( function (user) {
-                    user.fourplayer_ratings[timeType] = newThirdOutElo;
-                    user.save( function(err, updatedUser) {
-                        if(err) {
-                            return;
-                        }
-                        let eloNotif = {
-                            title: `${thirdOut.username}'s elo is now ${newThirdOutElo} ${newThirdOutElo - thirdOutElo}`,
-                            position: 'tr',
-                            autoDismiss: 6,
-                        };
-                        
-                        thirdOut.socket.emit('action', Notifications.success(eloNotif));
-                        thirdOut.socket.emit('update-user', updatedUser);
-                    }.bind(this));
-                }.bind(this)).catch(e => console.log(e));
+                if (!thirdOut.anonymous) {
+                    User.findById({_id: thirdOut.playerId})
+                    .then( function (user) {
+                        user.fourplayer_ratings[timeType] = newThirdOutElo;
+                        user.save( function(err, updatedUser) {
+                            if(err) {
+                                return;
+                            }
+                            let eloNotif = {
+                                title: `${thirdOut.username}'s elo is now ${newThirdOutElo} ${newThirdOutElo - thirdOutElo}`,
+                                position: 'tr',
+                                autoDismiss: 6,
+                            };
+                            
+                            thirdOut.socket.emit('action', Notifications.success(eloNotif));
+                            thirdOut.socket.emit('update-user', updatedUser);
+                        }.bind(this));
+                    }.bind(this)).catch(e => console.log(e));
+                }
                 
                 //save third
-                User.findById({_id: secondOut.playerId})
-                .then( function(user) {
-                    user.fourplayer_ratings[timeType] = newSecondOutElo;
-                    user.save( function(err, updatedUser) {
-                        if(err) {
-                            return;
-                        }
-                        let eloNotif = {
-                            title: `${secondOut.username}'s elo is now ${newSecondOutElo} ${newSecondOutElo - secondOutElo}`,
-                            position: 'tr',
-                            autoDismiss: 6,
-                        };
-                        
-                        secondOut.socket.emit('action', Notifications.error(eloNotif));
-                        secondOut.socket.emit('update-user', updatedUser);
-                    }.bind(this));
-                }.bind(this)).catch(e => console.log(e));
+                if (!secondOut.anonymous) {
+                    User.findById({_id: secondOut.playerId})
+                    .then( function(user) {
+                        user.fourplayer_ratings[timeType] = newSecondOutElo;
+                        user.save( function(err, updatedUser) {
+                            if(err) {
+                                return;
+                            }
+                            let eloNotif = {
+                                title: `${secondOut.username}'s elo is now ${newSecondOutElo} ${newSecondOutElo - secondOutElo}`,
+                                position: 'tr',
+                                autoDismiss: 6,
+                            };
+                            
+                            secondOut.socket.emit('action', Notifications.error(eloNotif));
+                            secondOut.socket.emit('update-user', updatedUser);
+                        }.bind(this));
+                    }.bind(this)).catch(e => console.log(e));
+                }
                 
                 //save last
-                User.findById({_id: firstOut.playerId})
-                .then( function(user) {
-                    user.fourplayer_ratings[timeType] = newFirstOutElo;
-                    user.save( function(err, updatedUser) {
-                        if(err) {
-                            return;
-                        }
-                        let eloNotif = {
-                            title: `${firstOut.username}'s elo is now ${newFirstOutElo} ${newFirstOutElo - firstOutElo}`,
-                            position: 'tr',
-                            autoDismiss: 6,
-                        };
-                        firstOut.socket.emit('action', Notifications.error(eloNotif));
-                        firstOut.socket.emit('update-user', updatedUser);
-                    }.bind(this));
-                }.bind(this)).catch(e => console.log(e));
+                if (!firstOut.anonymous) {
+                    User.findById({_id: firstOut.playerId})
+                    .then( function(user) {
+                        user.fourplayer_ratings[timeType] = newFirstOutElo;
+                        user.save( function(err, updatedUser) {
+                            if(err) {
+                                return;
+                            }
+                            let eloNotif = {
+                                title: `${firstOut.username}'s elo is now ${newFirstOutElo} ${newFirstOutElo - firstOutElo}`,
+                                position: 'tr',
+                                autoDismiss: 6,
+                            };
+                            firstOut.socket.emit('action', Notifications.error(eloNotif));
+                            firstOut.socket.emit('update-user', updatedUser);
+                        }.bind(this));
+                    }.bind(this)).catch(e => console.log(e));
+                }
                 } catch(err) {
                     console.log(err);
                 }

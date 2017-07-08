@@ -56,6 +56,11 @@ module.exports = function(io, socket, connection) {
         let IP = socket.request.connection.remoteAddress;
         console.log('client connected IP is ', IP);
         
+        let anonymous = false;
+        if (data.anonymous === true) {
+            anonymous = true;
+        }
+        
         //TODO get player data from database instead of client
         let p = new Player(
             socket, data._id, data.username, data.picture,
@@ -65,7 +70,8 @@ module.exports = function(io, socket, connection) {
             data.fourplayer_ratings,
             data.crazyhouse_ratings, data.crazyhouse960_ratings,
             data.fullhouse_ratings,
-            IP);
+            IP,
+            anonymous);
             
         //check to see if the player is already connected elsewhere
         if(connection.duplicateUser(data._id, IP) == true) {

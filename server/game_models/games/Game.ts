@@ -446,42 +446,46 @@ abstract class Game {
                 try {
                     
                     //save winner
-                    User.findById({_id: winner.playerId})
-                    .then( function (user) {
-                        user[this.ratings_type][timeType] = newWinnerElo;
-                        user.save( function(err, updatedUser) {
-                            if(err) {
-                                return;
-                            }
-                            let eloNotif = {
-                                title: `${winner.username}'s elo is now ${newWinnerElo} ${newWinnerElo - winnerElo}`,
-                                position: 'tr',
-                                autoDismiss: 6,
-                            };
-                            
-                            winner.socket.emit('action', Notifications.success(eloNotif));
-                            winner.socket.emit('update-user', updatedUser);
-                        }.bind(this));
-                    }.bind(this)).catch(e => console.log(e));
+                    if (!winner.anonymous) {
+                        User.findById({_id: winner.playerId})
+                        .then( function (user) {
+                            user[this.ratings_type][timeType] = newWinnerElo;
+                            user.save( function(err, updatedUser) {
+                                if(err) {
+                                    return;
+                                }
+                                let eloNotif = {
+                                    title: `${winner.username}'s elo is now ${newWinnerElo} ${newWinnerElo - winnerElo}`,
+                                    position: 'tr',
+                                    autoDismiss: 6,
+                                };
+                                
+                                winner.socket.emit('action', Notifications.success(eloNotif));
+                                winner.socket.emit('update-user', updatedUser);
+                            }.bind(this));
+                        }.bind(this)).catch(e => console.log(e));
+                    }
                     
                     //save loser
-                    User.findById({_id: loser.playerId})
-                    .then( function (user) {
-                        user[this.ratings_type][timeType] = newLoserElo;
-                        user.save( function(err, updatedUser) {
-                            if(err) {
-                                return;
-                            }
-                            let eloNotif = {
-                                title: `${loser.username}'s elo is now ${newLoserElo} ${newLoserElo - loserElo}`,
-                                position: 'tr',
-                                autoDismiss: 6,
-                            };
-                            
-                            loser.socket.emit('action', Notifications.success(eloNotif));
-                            loser.socket.emit('update-user', updatedUser);
-                        }.bind(this));
-                    }.bind(this)).catch(e => console.log(e));
+                    if (!loser.anonymous) {
+                        User.findById({_id: loser.playerId})
+                        .then( function (user) {
+                            user[this.ratings_type][timeType] = newLoserElo;
+                            user.save( function(err, updatedUser) {
+                                if(err) {
+                                    return;
+                                }
+                                let eloNotif = {
+                                    title: `${loser.username}'s elo is now ${newLoserElo} ${newLoserElo - loserElo}`,
+                                    position: 'tr',
+                                    autoDismiss: 6,
+                                };
+                                
+                                loser.socket.emit('action', Notifications.success(eloNotif));
+                                loser.socket.emit('update-user', updatedUser);
+                            }.bind(this));
+                        }.bind(this)).catch(e => console.log(e));
+                    }
                 
                 } catch (e) {console.log(e)};
                 

@@ -162,6 +162,27 @@ class OccupiedCard extends Component {
             );
         }
     }
+    
+    renderPlayerImage() {
+        let {player} = this.props;
+        let isAnonymous = player.anonymous === true;
+        let playerImage = <img className="player-img img-circle" src={player.picture} />;
+        if (isAnonymous) {
+            return (
+                <div className="pull-left">
+                    {playerImage}
+                </div>
+            );
+        } else {
+            return (
+                <a href="#"
+                    onClick={(e) => browserHistory.push(`/profile/${player.playerId}`)}
+                    className="pull-left">
+                    {playerImage}
+                </a>
+            );
+        }
+    }
 
     render() {
         const {profile, room, game, time, playerTime, activeThread, gameStarted} = this.props;
@@ -179,11 +200,7 @@ class OccupiedCard extends Component {
                     {this.renderPlayerScore()}
                     { !gameStarted && this.renderLeaveSeat(player, activeThread)}
                     <Row>
-                        <a href="#"
-                            onClick={(e) => browserHistory.push(`/profile/${player.playerId}`)}
-                            className="pull-left">
-                            <img className="player-img img-circle" src={player.picture} />
-                        </a>
+                        {this.renderPlayerImage()}
                         <div className="player-sit-info">
                             <h4
                                 className="player-username"

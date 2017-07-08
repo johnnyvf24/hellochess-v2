@@ -39,6 +39,7 @@ export default class MessageList extends Component {
                 uid={message.playerId}
                 event_type={message.event_type}
                 time={message.time}
+                anonymous={message.anonymous}
             />
         );
     }

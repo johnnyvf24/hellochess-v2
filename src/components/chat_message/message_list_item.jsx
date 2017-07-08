@@ -58,16 +58,33 @@ export default (props) => {
     
     let message_item = <li></li>;
     
+    let renderPlayerImage = function () {
+        const pic = props.picture;
+        let isAnonymous = props.anonymous === true;
+        let playerImage =
+            <img className="img-circle msg-pic"
+                title={user} alt="User image"
+                src={pic} data-holder-rendered="true"/>;
+        if (isAnonymous) {
+            return (
+                playerImage
+            );
+        } else {
+            return (
+                <a href="#"
+                    onClick={(e) => browserHistory.push(`/profile/${uid}`)}>
+                    {playerImage}
+                </a>
+            );
+        }
+    }
+    
     switch(event_type) {
         case 'chat-message':
-            const pic = props.picture;
             message_item =
                 <ListGroupItem>
                     <div className="pull-left">
-                        <a href="#"
-                            onClick={(e) => browserHistory.push(`/profile/${uid}`)}>
-                            <img className="img-circle msg-pic" title="User1" alt="User image" src={pic} data-holder-rendered="true"  />
-                        </a>
+                        {renderPlayerImage()}
                     </div>
                     <Row>
                         <div>

@@ -18,11 +18,11 @@ body .container-fluid {
     background: -webkit-linear-gradient(top, #aadeee, #c0e6f2);
     padding: 5px;
     float: center;
-    margin-top: 45px;
+    margin-top: 12px;
 }
 
 .home-logo {
-    padding: 40px 0;
+    padding: 30px 0;
 }
 
 .reg-login-header {
@@ -81,6 +81,14 @@ body .container-fluid {
 .landing-video {
     margin-bottom: -5px;
     height: 26vw;
+}
+
+#anonLoginButton {
+    width: 50%;
+    display: table;
+    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 
@@ -383,7 +391,7 @@ body .container-fluid {
     margin-right: 5px;
 }
 
-.msg-pic:hover {
+a .msg-pic:hover {
     cursor: pointer;
 }
 
