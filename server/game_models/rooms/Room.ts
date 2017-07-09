@@ -79,7 +79,7 @@ export default class Room {
         return this.allowedPlayerIDs.includes(id);
     }
     
-    getRoom(): Object {
+    getRoomObjFull(): Object {
         let game;
         
         if(this._game) {
@@ -149,7 +149,7 @@ export default class Room {
         }
         
         //Tell everyone in the room that a new user has connnected
-        this.io.to(this.name).emit('update-room', this.getRoom());
+        this.io.to(this.name).emit('update-room-full', this.getRoomObjFull());
         
         return true;
     }
@@ -312,7 +312,7 @@ export default class Room {
             this.game.endAndSaveGame(false);
             
             //sync the room again
-            this.io.to(this.name).emit('update-room', this.getRoom());
+            this.io.to(this.name).emit('update-room-full', this.getRoomObjFull());
         } else {
             //set the next turn
             this.game.setNextTurn();
@@ -323,7 +323,7 @@ export default class Room {
             }
             
             //sync the room again
-            this.io.to(this.name).emit('update-room', this.getRoom());
+            this.io.to(this.name).emit('update-room-full', this.getRoomObjFull());
             
             //start the next players timer
             this.startTimer();
@@ -377,7 +377,7 @@ export default class Room {
         // if there are any AI players, add an engine instance to the game
         this._game.newEngineInstance(this._name, connection);
         
-        let roomObj: any = this.getRoom();
+        let roomObj: any = this.getRoomObjFull();
         this.io.to(this._name).emit(this.gameStartAction,
             {
                 thread: this._name,
@@ -423,7 +423,7 @@ export default class Room {
             this._game.lastMoveTime = Date.now();
         }
         
-        this.io.to(this.name).emit('update-room', this.getRoom());
+        this.io.to(this.name).emit('update-room-full', this.getRoomObjFull());
         
         // // if it's a legal move, emit to other players
         // let thread: string = this._name;
@@ -476,7 +476,7 @@ export default class Room {
             default:
                 this.removeAllPlayers();
         }
-        this.io.to(this._name).emit('update-room', this.getRoom());
+        this.io.to(this._name).emit('update-room-full', this.getRoomObjFull());
     }
     
     rotatePlayers() {

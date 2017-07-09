@@ -574,7 +574,7 @@ export default class FourGame extends Game {
                 return;
             }
             
-            this.io.to(this.roomName).emit('update-room', room.getRoom());
+            this.io.to(this.roomName).emit('update-room-full', room.getRoomObjFull());
         }.bind(this), 3000);
         
         return true;

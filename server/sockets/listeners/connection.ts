@@ -39,7 +39,7 @@ module.exports = function(io, socket, connection) {
                     room.game.removePlayerFromAllSeats(player);
                 }
                 //tell everyone that the player has left the room
-                io.to(room.name).emit('update-room', room.getRoom());
+                io.to(room.name).emit('update-room-full', room.getRoomObjFull());
             }
         });
         

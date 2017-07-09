@@ -98,7 +98,7 @@ module.exports = function(io, socket, connection) {
                 // start the game if all players are seated
                 room.startGame(connection);
             }
-            io.to(room.name).emit('update-room', room.getRoom());
+            io.to(room.name).emit('update-room-full', room.getRoomObjFull());
             io.to(room.name).emit('matchmaking-complete', room.name);
         }
         connection.printQueue();

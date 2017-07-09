@@ -77,7 +77,7 @@ export function joinAnalysisRoom(game, gameType, roomName) {
         game.pgn = g.history();
     }
     return {
-        type: 'update-room',
+        type: 'update-room-full',
         payload: {
             gameType,
             room: {

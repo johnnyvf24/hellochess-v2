@@ -43,7 +43,7 @@ export default function openThreads(state = {}, action) {
             messages = [...newState[roomName].messages, msg_obj];
             obj = {...newState[roomName], messages};
             return {...newState, [roomName]: obj};
-        case 'update-room':
+        case 'update-room-full':
             newState = {...state, [action.payload.room.name]: action.payload };
             if (state[action.payload.room.name]) {
                 activePly = state[action.payload.room.name].activePly;

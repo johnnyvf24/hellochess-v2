@@ -145,8 +145,8 @@ export default function(store) {
     });
     
     //User has successfully joined a room
-    socket.on('update-room', data => {
-        store.dispatch({type: 'update-room', payload: data}); 
+    socket.on('update-room-full', data => {
+        store.dispatch({type: 'update-room-full', payload: data}); 
     });
     
     socket.on('sit-down-w', data => {

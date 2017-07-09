@@ -28,7 +28,7 @@ module.exports = function(io, socket, connection) {
         room.addMessage(new Message(player, data.msg, roomName));
         
         // tell everyone there is a new message
-        io.to(room.name).emit('update-room', room.getRoom());
+        io.to(room.name).emit('update-room-full', room.getRoomObjFull());
     });
     
     socket.on('sit-down-board', data => {
@@ -57,7 +57,7 @@ module.exports = function(io, socket, connection) {
             // start the game if all players are seated
             room.startGame(connection);
         }
-        io.to(roomName).emit('update-room', room.getRoom());
+        io.to(roomName).emit('update-room-full', room.getRoomObjFull());
     });
     
     socket.on('leave-room', data => {
@@ -69,7 +69,7 @@ module.exports = function(io, socket, connection) {
         
         if(!room || !player || !room.removePlayer(player)) {
             //TODO error
-            // io.to(room.name).emit('update-room', {room {name: roomName}};
+            // io.to(room.name).emit('update-room-full', {room {name: roomName}};
             connection.emitAllRooms();
             return;
         }
@@ -84,7 +84,7 @@ module.exports = function(io, socket, connection) {
             if(room.game && room.game.gameStarted == false) {
                 room.game.removePlayerFromAllSeats(player);
             }
-            io.to(room.name).emit('update-room', room.getRoom());
+            io.to(room.name).emit('update-room-full', room.getRoomObjFull());
         }
         
         connection.emitAllRooms();
@@ -187,7 +187,7 @@ module.exports = function(io, socket, connection) {
         if(!room) return;
         if(room.game) {
             room.game.endAndSaveGame(false);
-            io.to(roomName).emit('update-room', room.getRoom());
+            io.to(roomName).emit('update-room-full', room.getRoomObjFull());
         }
     });
     
@@ -219,7 +219,7 @@ module.exports = function(io, socket, connection) {
         }
         
         room.game.removePlayerByPlayerId(player.playerId);
-        io.to(room.name).emit('update-room', room.getRoom());
+        io.to(room.name).emit('update-room-full', room.getRoomObjFull());
     });
     
     socket.on('resign', data => {
@@ -243,7 +243,7 @@ module.exports = function(io, socket, connection) {
         room.game.endAndSaveGame(false);
         
         
-        io.to(room.name).emit('update-room', room.getRoom());
+        io.to(room.name).emit('update-room-full', room.getRoomObjFull());
     });
     
     socket.on('four-resign', data => {
@@ -272,7 +272,7 @@ module.exports = function(io, socket, connection) {
             }
         }
         
-        io.to(room.name).emit('update-room', room.getRoom());
+        io.to(room.name).emit('update-room-full', room.getRoomObjFull());
     });
     
     socket.on('abort', data => {
@@ -289,7 +289,7 @@ module.exports = function(io, socket, connection) {
         room.game.abort();
         
         room.addMessage(new AbortMessage(player, null, roomName));
-        io.to(room.name).emit('update-room', room.getRoom());
+        io.to(room.name).emit('update-room-full', room.getRoomObjFull());
     });
     
     socket.on('draw', data => {
@@ -334,7 +334,7 @@ module.exports = function(io, socket, connection) {
         }
         
         room.game.endAndSaveGame(true);
-        io.to(room.name).emit('update-room', room.getRoom());
+        io.to(room.name).emit('update-room-full', room.getRoomObjFull());
     });
     
     socket.on('rematch-offer', data => {
@@ -351,7 +351,7 @@ module.exports = function(io, socket, connection) {
         } else {
             room.rematchOffer(data.senderId);
         }
-        io.to(room.name).emit('update-room', room.getRoom());
+        io.to(room.name).emit('update-room-full', room.getRoomObjFull());
     });
     
     socket.on('rematch-accept', data => {
@@ -366,7 +366,7 @@ module.exports = function(io, socket, connection) {
             console.log("rematch accepted, but was never offered");
             console.trace();
         }
-        io.to(room.name).emit('update-room', room.getRoom());
+        io.to(room.name).emit('update-room-full', room.getRoomObjFull());
     });
     
     socket.on('rematch-cancel', data => {
@@ -376,6 +376,6 @@ module.exports = function(io, socket, connection) {
             return;
         }
         room.rematchOffered = false;
-        io.to(room.name).emit('update-room', room.getRoom());
+        io.to(room.name).emit('update-room-full', room.getRoomObjFull());
     });
 };

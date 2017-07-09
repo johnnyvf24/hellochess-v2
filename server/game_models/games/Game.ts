@@ -338,7 +338,7 @@ abstract class Game {
         if(!room) {
             return;
         }
-        this.io.to(this.roomName).emit('update-room', room.getRoom());
+        this.io.to(this.roomName).emit('update-room-full', room.getRoomObjFull());
     }
     
     endAndSaveGame(draw): boolean {
