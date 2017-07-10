@@ -989,7 +989,9 @@ var FullhouseChess = function (fen) {
             if ((us === WHITE && rank(move.from) === RANK_1) ||
                 (us === BLACK && rank(move.from) === RANK_8)) {
                     if ((pieces_moved[turn] & PIECE_BITS[square_to_piece_order[move.from]])) {
-                        if (move.piece !== KING) {
+                        if (move.piece === KING) {
+                            board[move.from] = { type: VRKING, color: us };
+                        } else {
                             board[move.from] = board[move.to];
                         }
                         pieces_moved[turn] ^= PIECE_BITS[square_to_piece_order[move.from]];
