@@ -15,7 +15,7 @@ var FourChess = function (fen) {
     var blackOut = false;
     var goldOut = false;
     var redOut = false;
-    
+
     var moveHistory = [];
 
     var numOut = 0;
@@ -1141,7 +1141,7 @@ var FourChess = function (fen) {
 
         return false;
     }
-    
+
     function insufficentMaterial(color) {
         var count = 0;
         for(var i = 0; i < BOARD.length; i++) {
@@ -1157,12 +1157,12 @@ var FourChess = function (fen) {
                     if (redPiece(piece)) { count++; }
                     break;
             }
-            
+
         }
         if(count > 1) {
             return false;
         }
-        
+
         return true;
     }
 
@@ -1187,7 +1187,7 @@ var FourChess = function (fen) {
 
         return false;
     }
-    
+
     function setImmediateTurn() {
         //Set the new Turn
         var newTurnSet = false;
@@ -1657,7 +1657,7 @@ var FourChess = function (fen) {
         moves = moves.concat(worseMoves);
         return moves;
     }
-    
+
     function getWinColor() {
         if(goldOut && blackOut && redOut) {
             return 'w';
@@ -1671,25 +1671,25 @@ var FourChess = function (fen) {
             return null;
         }
     }
-    
+
     function getRemainingPlayers() {
         var remaining =[];
         if (!whiteOut) {
             remaining.push(WHITE);
         }
-        
+
         if (!blackOut) {
             remaining.push(BLACK);
         }
-        
+
         if (!goldOut) {
             remaining.push(GOLD);
         }
-        
+
         if (!redOut) {
             remaining.push(RED);
         }
-        
+
         return remaining;
     }
 
@@ -1875,18 +1875,24 @@ var FourChess = function (fen) {
             if(move == undefined) {
                 return;
             }
+
             if (move.piece && move.piece.charAt(0).toLowerCase() !== TURN) {
                 return null;
             }
-            
+
+            var piece = getKeyByValue(SQUARE_STATUS, BOARD[SQUARES[move.from]]);
+            if (piece && piece.charAt(0).toLowerCase() !== TURN) {
+              return null;
+            }
+
             if(inCheckMate()) {
                 setImmediateTurn();
             }
-            
+
             if(move.color) {
                 TURN = move.color;
             }
-            
+
             // make sure the piece that is being moved is
             // on the correct square
             if (move.piece && SQUARE_STATUS[move.piece] !== BOARD[SQUARES[move.from]]) {
@@ -1924,9 +1930,9 @@ var FourChess = function (fen) {
                 if(options[i].to === move.to) { //this was a valid move
                     var piece = BOARD[SQUARES[move.from]];
                     BOARD[SQUARES[move.from]] = EMPTY;
-                    
+
                     var moveString = TURN + ":" + move.from + "-" + move.to;
-                    
+
                     pgn += moveString + " ";
 
                     //a castle occurred
@@ -2058,7 +2064,7 @@ var FourChess = function (fen) {
                         default:
                             BOARD[SQUARES[move.to]] = piece;
                     }
-                    
+
                     moveHistory.push({
                        color: TURN,
                        san: move.from + '-' + move.to,
@@ -2066,13 +2072,13 @@ var FourChess = function (fen) {
                        to: move.to,
                        fen: generateFen()
                     });
-                    
+
                     setImmediateTurn();
-                    
+
                     // setNextTurn();
 
                     status.turn = TURN;
-                    
+
 
                     return status;
                 }
@@ -2091,7 +2097,7 @@ var FourChess = function (fen) {
                 }
                 return true;
             }
-            
+
         },
         turn: function() {
             return TURN;
@@ -2137,7 +2143,7 @@ var FourChess = function (fen) {
             if(whiteOut === false) {
                 numOut++;
                 whiteOut = true;
-                nWhiteOut = numOut;   
+                nWhiteOut = numOut;
             }
         },
         setGoldOut: function() {
