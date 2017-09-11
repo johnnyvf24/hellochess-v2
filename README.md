@@ -1,5 +1,7 @@
 #hellochess
 
+Not under active development anymore!
+
 Setup:
 Create a config directory inside of the project root. Inside that folder create a config.js file.
 
