@@ -25,7 +25,8 @@ export default class AI extends Player {
             defaultRatings,
             defaultRatings,
             defaultRatings,
-            null);
+            null,
+            false);
             
         this.playerLevel = playerLevel;
         AI.aiId++;

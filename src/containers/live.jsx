@@ -92,7 +92,7 @@ class Live extends Component {
         let enableSounds = JSON.parse(localStorage.getItem('enableSounds'));
         if (typeof enableSounds === "undefined" || enableSounds === null)
             enableSounds = true;
-        let showDevAlert = JSON.parse(localStorage.getItem('showDevAlert1'));
+        let showDevAlert = JSON.parse(localStorage.getItem('showDevAlert2'));
         if (typeof showDevAlert === "undefined" || showDevAlert === null)
             showDevAlert = true;
         let zoomLevel = JSON.parse(localStorage.getItem('zoomLevel'));
@@ -237,7 +237,7 @@ class Live extends Component {
     }
     
     handleAlertDismiss() {
-        localStorage.setItem('showDevAlert1', false);
+        localStorage.setItem('showDevAlert2', false);
         this.setState({alertVisible: false});
     }
     
@@ -398,22 +398,10 @@ class Live extends Component {
                             right: '25%'
                         }}>
                         <i className="fa fa-wrench fa-lg" aria-hidden="true"></i>
-                        <strong> Please note this site is under active development.</strong>
+                        <strong>This site is not actively maintained</strong>
                         <p>
-                            Check out our new variant: <b>S-Chess</b>! 
-                            Learn the rules&nbsp;
-                            <a href="https://en.wikipedia.org/wiki/Seirawan_chess"
-                                target="_blank"
-                                rel="noopener">
-                                here
-                            </a> 
-                            &nbsp;and report any bugs or issues on&nbsp;
-                            <a href="https://github.com/johnnyvf24/hellochess-v2/issues"
-                                target="_blank"
-                                rel="noopener">
-                                our GitHub issues page
-                            </a>
-                            .
+                            Four Player chess has moved to <b>Chess.com</b> where it is actively maintained
+                            <a src="https://www.chess.com/4-player-chess" />
                         </p>
                     </Alert>
                     }
