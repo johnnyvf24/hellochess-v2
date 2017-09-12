@@ -400,8 +400,9 @@ class Live extends Component {
                         <i className="fa fa-wrench fa-lg" aria-hidden="true"></i>
                         <strong>This site is not actively maintained</strong>
                         <p>
-                            Four Player chess has moved to <b>Chess.com</b> where it is actively maintained
-                            <a src="https://www.chess.com/4-player-chess" />
+                            <a src="https://www.chess.com/4-player-chess">
+                                Four Player chess has moved to <b>Chess.com</b> where it is actively maintained
+                            </a>
                         </p>
                     </Alert>
                     }
