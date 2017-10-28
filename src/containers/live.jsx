@@ -92,7 +92,7 @@ class Live extends Component {
         let enableSounds = JSON.parse(localStorage.getItem('enableSounds'));
         if (typeof enableSounds === "undefined" || enableSounds === null)
             enableSounds = true;
-        let showDevAlert = JSON.parse(localStorage.getItem('showDevAlert2'));
+        let showDevAlert = JSON.parse(localStorage.getItem('showDevAlert3'));
         if (typeof showDevAlert === "undefined" || showDevAlert === null)
             showDevAlert = true;
         let zoomLevel = JSON.parse(localStorage.getItem('zoomLevel'));
@@ -237,7 +237,7 @@ class Live extends Component {
     }
     
     handleAlertDismiss() {
-        localStorage.setItem('showDevAlert2', false);
+        localStorage.setItem('showDevAlert3', false);
         this.setState({alertVisible: false});
     }
     
@@ -401,7 +401,12 @@ class Live extends Component {
                         <strong>This site is not actively maintained</strong>
                         <p>
                             <a href="https://www.chess.com/4-player-chess">
-                                Four Player chess has moved to <b>Chess.com</b> where it is actively maintained
+                                Four Player chess has moved to <b>Chess.com</b> where it is actively maintained.
+                            </a>
+                        </p>
+                        <p>
+                            <a href="https://schess.org">
+                                And for S-Chess, check out <b>SChess.org</b>!
                             </a>
                         </p>
                     </Alert>
