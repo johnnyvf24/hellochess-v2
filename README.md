@@ -1,4 +1,4 @@
-#hellochess
+# hellochess
 
 Not under active development anymore!
 
@@ -25,7 +25,7 @@ Place similar content as below inside config.js:
 npm install
 
 
-Make sure you have mongodb installed and run
+Make sure you have MongoDB installed and run
 mongod
 
 For development purposes I run the webpack dev server on localhost:8080
